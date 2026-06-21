@@ -61,34 +61,34 @@ export default function App() {
           },
         }}
       />
-      <Suspense fallback={<LoadingSpinner text="Opening your learning space..." />}>
-        <Routes>
-          <Route path="/login" element={<GuestRoute><LoginPage /></GuestRoute>} />
-          <Route path="/signup" element={<GuestRoute><SignupPage /></GuestRoute>} />
-          <Route path="/share/:shareId" element={<SharedCoursePage />} />
-          <Route path="/" element={<GuestRoute><LandingPage /></GuestRoute>} />
-          <Route path="/onboarding" element={<ProtectedRoute><OnboardingPage /></ProtectedRoute>} />
-          <Route path="/dashboard" element={<DashboardPage><HomePage /></DashboardPage>} />
-          <Route path="/course/:id" element={<DashboardPage><CourseOverviewPage /></DashboardPage>} />
-          <Route path="/course/:id/certificate" element={<DashboardPage><CertificatePage /></DashboardPage>} />
-          <Route path="/certificate/:id" element={<CertificatePage />} />
-          <Route path="/course/:id/test" element={<DashboardPage><FinalTestPage /></DashboardPage>} />
-          <Route
-            path="/course/:courseId/lesson/:id"
-            element={<DashboardPage><LessonViewerPage /></DashboardPage>}
-          />
-          <Route path="/analytics" element={<DashboardPage><AnalyticsPage /></DashboardPage>} />
-          <Route path="/roadmaps" element={<DashboardPage><RoadmapPage /></DashboardPage>} />
-          <Route path="/interview-prep" element={<DashboardPage><InterviewPrepPage /></DashboardPage>} />
-          <Route path="/agents" element={<DashboardPage><AiAgentsPage /></DashboardPage>} />
-          <Route path="/profile" element={<DashboardPage><ProfilePage /></DashboardPage>} />
-          <Route path="/profile/:userId" element={<DashboardPage><PublicProfilePage /></DashboardPage>} />
-          <Route path="/community" element={<DashboardPage><CommunityTemplatesPage /></DashboardPage>} />
-          <Route path="/leaderboard" element={<DashboardPage><LeaderboardPage /></DashboardPage>} />
-          <Route path="/settings" element={<DashboardPage><SettingsPage /></DashboardPage>} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </Suspense>
+      <Routes>
+        <Route path="/login" element={<Suspense fallback={<LoadingSpinner text="Loading..." />}><GuestRoute><LoginPage /></GuestRoute></Suspense>} />
+        <Route path="/signup" element={<Suspense fallback={<LoadingSpinner text="Loading..." />}><GuestRoute><SignupPage /></GuestRoute></Suspense>} />
+        <Route path="/share/:shareId" element={<Suspense fallback={<LoadingSpinner text="Loading..." />}><SharedCoursePage /></Suspense>} />
+        <Route path="/" element={<Suspense fallback={<LoadingSpinner text="Loading..." />}><GuestRoute><LandingPage /></GuestRoute></Suspense>} />
+        
+        {/* Protected Routes */}
+        <Route path="/onboarding" element={<Suspense fallback={<LoadingSpinner text="Loading..." />}><ProtectedRoute><OnboardingPage /></ProtectedRoute></Suspense>} />
+        <Route path="/dashboard" element={<Suspense fallback={<LoadingSpinner text="Loading..." />}><DashboardPage><HomePage /></DashboardPage></Suspense>} />
+        <Route path="/course/:id" element={<Suspense fallback={<LoadingSpinner text="Loading..." />}><DashboardPage><CourseOverviewPage /></DashboardPage></Suspense>} />
+        <Route path="/course/:id/certificate" element={<Suspense fallback={<LoadingSpinner text="Loading..." />}><DashboardPage><CertificatePage /></DashboardPage></Suspense>} />
+        <Route path="/certificate/:id" element={<Suspense fallback={<LoadingSpinner text="Loading..." />}><CertificatePage /></Suspense>} />
+        <Route path="/course/:id/test" element={<Suspense fallback={<LoadingSpinner text="Loading..." />}><DashboardPage><FinalTestPage /></DashboardPage></Suspense>} />
+        <Route
+          path="/course/:courseId/lesson/:id"
+          element={<Suspense fallback={<LoadingSpinner text="Loading..." />}><DashboardPage><LessonViewerPage /></DashboardPage></Suspense>}
+        />
+        <Route path="/analytics" element={<Suspense fallback={<LoadingSpinner text="Loading..." />}><DashboardPage><AnalyticsPage /></DashboardPage></Suspense>} />
+        <Route path="/roadmaps" element={<Suspense fallback={<LoadingSpinner text="Loading..." />}><DashboardPage><RoadmapPage /></DashboardPage></Suspense>} />
+        <Route path="/interview-prep" element={<Suspense fallback={<LoadingSpinner text="Loading..." />}><DashboardPage><InterviewPrepPage /></DashboardPage></Suspense>} />
+        <Route path="/agents" element={<Suspense fallback={<LoadingSpinner text="Loading..." />}><DashboardPage><AiAgentsPage /></DashboardPage></Suspense>} />
+        <Route path="/profile" element={<Suspense fallback={<LoadingSpinner text="Loading..." />}><DashboardPage><ProfilePage /></DashboardPage></Suspense>} />
+        <Route path="/profile/:userId" element={<Suspense fallback={<LoadingSpinner text="Loading..." />}><DashboardPage><PublicProfilePage /></DashboardPage></Suspense>} />
+        <Route path="/community" element={<Suspense fallback={<LoadingSpinner text="Loading..." />}><DashboardPage><CommunityTemplatesPage /></DashboardPage></Suspense>} />
+        <Route path="/leaderboard" element={<Suspense fallback={<LoadingSpinner text="Loading..." />}><DashboardPage><LeaderboardPage /></DashboardPage></Suspense>} />
+        <Route path="/settings" element={<Suspense fallback={<LoadingSpinner text="Loading..." />}><DashboardPage><SettingsPage /></DashboardPage></Suspense>} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     </ErrorBoundary>
   );
 }
