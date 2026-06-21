@@ -80,7 +80,6 @@ export default function SignupPage() {
             shape="rectangular"
             text="signup_with"
             size="large"
-            width="100%"
           />
         </div>
 
