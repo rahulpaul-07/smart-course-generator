@@ -1,0 +1,34 @@
+services:
+  - type: web
+    name: unified-course-backend
+    env: node
+    region: oregon
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 8000
+      - key: CLIENT_URL
+        fromService:
+          name: unified-course-frontend
+          type: web
+          property: url
+
+  - type: web
+    name: unified-course-frontend
+    env: static
+    region: oregon
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        fromService:
+          name: unified-course-backend
+          type: web
+          envVarKey: RENDER_EXTERNAL_URL
+        # Append /api to the backend URL
+        # VITE_API_BASE_URL will be https://backend-xxx.onrender.com/api

@@ -1,0 +1,207 @@
+import { useState, useEffect } from 'react';
+import { User, Save, Camera, Mail, Sparkles, Loader2, BookOpen, Trophy } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { motion } from 'framer-motion';
+import api from '../utils/api';
+import { useAuth } from '../hooks/useAuth';
+import { PageContainer } from '../components/layout/PageContainer';
+import { SectionHeader } from '../components/ui/SectionHeader';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Switch } from '@/components/ui/switch';
+import { Badge } from '@/components/ui/badge';
+
+export default function ProfilePage() {
+  const { user, login } = useAuth();
+  const [profile, setProfile] = useState({
+    name: '',
+    bio: '',
+    avatar: '',
+    isProfilePublic: false,
+    skillLevel: 'beginner',
+    learningInterests: [],
+  });
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      setProfile({
+        name: user.name || '',
+        bio: user.bio || '',
+        avatar: user.avatar || '',
+        isProfilePublic: user.isProfilePublic || false,
+        skillLevel: user.skillLevel || 'beginner',
+        learningInterests: user.learningInterests || [],
+      });
+    }
+  }, [user]);
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      const { data } = await api.put('/user/profile', {
+        name: profile.name,
+        bio: profile.bio,
+        isProfilePublic: profile.isProfilePublic,
+      });
+      login({ ...user, ...data });
+      toast.success('Profile updated successfully');
+    } catch (e) {
+      toast.error('Failed to update profile');
+      console.error(e);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (!user) return null;
+
+  return (
+    <PageContainer>
+      <SectionHeader 
+        title="Your Profile" 
+        description="Manage your personal information and learning identity."
+      />
+
+      <div className="grid lg:grid-cols-[1fr_350px] gap-8 mt-8">
+        <div className="space-y-6">
+          <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+            <CardHeader>
+              <CardTitle>Personal Information</CardTitle>
+              <CardDescription>Update your photo and personal details.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="flex items-center gap-6">
+                <div className="relative group">
+                  <Avatar className="h-24 w-24 ring-4 ring-background shadow-xl">
+                    <AvatarImage src={profile.avatar} />
+                    <AvatarFallback className="bg-primary/10 text-primary text-2xl font-semibold">
+                      {profile.name?.charAt(0)?.toUpperCase() || <User />}
+                    </AvatarFallback>
+                  </Avatar>
+                  <button className="absolute bottom-0 right-0 p-2 bg-primary text-primary-foreground rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity translate-y-2 group-hover:translate-y-0">
+                    <Camera className="w-4 h-4" />
+                  </button>
+                </div>
+                <div>
+                  <h3 className="text-lg font-medium">{profile.name}</h3>
+                  <div className="flex items-center gap-2 text-muted-foreground text-sm mt-1">
+                    <Mail className="w-4 h-4" />
+                    {user.email}
+                  </div>
+                  <Badge variant="secondary" className="mt-3 capitalize">
+                    {profile.skillLevel} Level
+                  </Badge>
+                </div>
+              </div>
+
+              <div className="space-y-4 pt-4 border-t border-border/50">
+                <div className="grid gap-2">
+                  <label className="text-sm font-medium">Display Name</label>
+                  <Input 
+                    value={profile.name}
+                    onChange={e => setProfile({...profile, name: e.target.value})}
+                  />
+                </div>
+
+                <div className="grid gap-2">
+                  <label className="text-sm font-medium">Bio</label>
+                  <Textarea 
+                    value={profile.bio}
+                    onChange={e => setProfile({...profile, bio: e.target.value})}
+                    placeholder="Tell us a little bit about yourself and your learning goals..."
+                    className="min-h-[120px]"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Brief description for your profile. URLs are hyperlinked.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+            <CardHeader>
+              <CardTitle>Privacy & Display</CardTitle>
+              <CardDescription>Control how others see your profile.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <label className="text-sm font-medium">Public Profile</label>
+                  <p className="text-sm text-muted-foreground">
+                    Allow your profile to appear on the leaderboard and community templates.
+                  </p>
+                </div>
+                <Switch 
+                  checked={profile.isProfilePublic}
+                  onCheckedChange={(c) => setProfile({...profile, isProfilePublic: c})}
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          <div className="flex justify-end">
+            <Button onClick={handleSave} disabled={saving} className="w-full sm:w-auto">
+              {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
+              Save Changes
+            </Button>
+          </div>
+        </div>
+
+        <div className="space-y-6">
+          <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-primary" />
+                Learning Interests
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-wrap gap-2">
+                {profile.learningInterests.length > 0 ? (
+                  profile.learningInterests.map((interest) => (
+                    <Badge key={interest} variant="secondary" className="bg-background/50 hover:bg-background/80 capitalize">
+                      {interest.replace('-', ' ')}
+                    </Badge>
+                  ))
+                ) : (
+                  <p className="text-sm text-muted-foreground">No learning interests set.</p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+            <CardHeader>
+              <CardTitle>Account Stats</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between p-3 rounded-lg bg-secondary/50">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-blue-500/10 rounded-md text-blue-500">
+                    <BookOpen className="w-4 h-4" />
+                  </div>
+                  <span className="font-medium">Courses Generated</span>
+                </div>
+                <span className="font-bold text-lg">0</span>
+              </div>
+              <div className="flex items-center justify-between p-3 rounded-lg bg-secondary/50">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-amber-500/10 rounded-md text-amber-500">
+                    <Trophy className="w-4 h-4" />
+                  </div>
+                  <span className="font-medium">Certificates</span>
+                </div>
+                <span className="font-bold text-lg">{user.certificates?.length || 0}</span>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </PageContainer>
+  );
+}

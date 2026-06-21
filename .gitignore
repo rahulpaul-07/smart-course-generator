@@ -1,0 +1,41 @@
+# Environment
+
+.env
+.env.*
+!.env.example
+
+# Node
+
+node_modules/
+**/node_modules/
+
+# Build
+
+dist/
+build/
+**/dist/
+
+# Logs
+
+logs/
+*.log
+**/logs/
+
+# OS
+
+.DS_Store
+Thumbs.db
+
+# IDE
+
+.vscode/
+.idea/
+
+# Coverage
+
+coverage/
+
+# Temporary
+
+tmp/
+temp/
