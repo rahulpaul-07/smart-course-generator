@@ -37,15 +37,9 @@ function GuestRoute({ children }) {
 }
 
 function DashboardPage({ children }: { children: React.ReactNode }) {
-  const { user } = useAuth();
-  
   return (
     <ProtectedRoute>
-      {user && !user.onboardingCompleted && window.location.pathname !== '/onboarding' ? (
-        <Navigate to="/onboarding" replace />
-      ) : (
-        <AppShell>{children}</AppShell>
-      )}
+      <AppShell>{children}</AppShell>
     </ProtectedRoute>
   );
 }

@@ -22,7 +22,6 @@ export default function LoginPage() {
     try {
       setLoading(true);
       await loginWithGoogle(credentialResponse.credential);
-      navigate('/dashboard');
     } catch (error) {
       console.error('Google login error', error);
     } finally {
@@ -41,7 +40,6 @@ export default function LoginPage() {
     try {
       const { data } = await api.post('/auth/login', { email, password });
       login(data);
-      navigate('/dashboard');
     } catch (error: any) {
       toast.error(error.response?.data?.error || 'Invalid credentials. Please try again.');
     } finally {
