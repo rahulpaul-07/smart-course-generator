@@ -22,5 +22,20 @@ api.interceptors.request.use((config) => {
   return Promise.reject(error);
 });
 
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    // Prevent React Error 31 (rendering objects as children) by ensuring error messages are always strings
+    if (error.response?.data?.error) {
+      if (typeof error.response.data.error === 'object') {
+        error.response.data.error = error.response.data.error.message || 'An unexpected server error occurred';
+      } else if (typeof error.response.data.error !== 'string') {
+        error.response.data.error = String(error.response.data.error);
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 export default api;
 
