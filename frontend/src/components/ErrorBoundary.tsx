@@ -32,7 +32,7 @@ class ErrorBoundary extends Component {
             >
               Refresh Page
             </button>
-            {process.env.NODE_ENV === 'development' && this.state.error && (
+            {this.state.error && (
               <details className="mt-6 text-left bg-gray-900 p-4 rounded text-xs text-red-400 overflow-auto">
                 <summary className="cursor-pointer mb-2 font-bold">Error Details</summary>
                 {this.state.error.toString()}
