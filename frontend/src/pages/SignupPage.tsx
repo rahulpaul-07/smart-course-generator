@@ -10,6 +10,8 @@ import api from '../utils/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
+const hasGoogleAuth = !!(import.meta.env.VITE_GOOGLE_CLIENT_ID && import.meta.env.VITE_GOOGLE_CLIENT_ID !== 'dummy-google-client-id');
+
 export default function SignupPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -69,19 +71,21 @@ export default function SignupPage() {
         </>
       )}
     >
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
-        <div className="flex justify-center mb-6">
-          <GoogleLogin
-            onSuccess={handleGoogleSuccess}
-            onError={() => {
-              toast.error('Google signup failed');
-            }}
-            theme="filled_black"
-            shape="rectangular"
-            text="signup_with"
-            size="large"
-          />
-        </div>
+      <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+        {hasGoogleAuth && (
+          <div className="flex justify-center mb-6">
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() => {
+                toast.error('Google signup failed');
+              }}
+              theme="filled_black"
+              shape="rectangular"
+              text="signup_with"
+              size="large"
+            />
+          </div>
+        )}
 
         <div className="relative mb-6">
           <div className="absolute inset-0 flex items-center">
@@ -167,7 +171,7 @@ export default function SignupPage() {
             )}
           </Button>
         </form>
-      </motion.div>
+      </div>
     </AuthLayout>
   );
 }

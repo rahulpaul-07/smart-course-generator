@@ -39,12 +39,12 @@ const CommunityTemplatesPage = withSuspense(lazy(() => import('./pages/Community
 const LeaderboardPage = withSuspense(lazy(() => import('./pages/LeaderboardPage')));
 const SettingsPage = withSuspense(lazy(() => import('./pages/SettingsPage')));
 
-function GuestRoute({ children }) {
+function GuestRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, loading } = useAuth();
 
-  if (loading) return <div className="flex min-h-screen items-center justify-center"><LoadingSpinner text="Loading..." /></div>;
+  if (loading) return <div key="loading" className="flex min-h-screen items-center justify-center"><LoadingSpinner text="Loading..." /></div>;
   if (isAuthenticated) return <Navigate to="/dashboard" replace />;
-  return children;
+  return <div key="content" className="w-full h-full">{children}</div>;
 }
 
 function DashboardPage({ children }: { children: React.ReactNode }) {

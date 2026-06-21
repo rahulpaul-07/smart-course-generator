@@ -10,6 +10,8 @@ import api from '../utils/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
+const hasGoogleAuth = !!(import.meta.env.VITE_GOOGLE_CLIENT_ID && import.meta.env.VITE_GOOGLE_CLIENT_ID !== 'dummy-google-client-id');
+
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -61,19 +63,21 @@ export default function LoginPage() {
         </>
       )}
     >
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
-        <div className="flex justify-center mb-6">
-          <GoogleLogin
-            onSuccess={handleGoogleSuccess}
-            onError={() => {
-              toast.error('Google login failed');
-            }}
-            theme="filled_black"
-            shape="rectangular"
-            text="continue_with"
-            size="large"
-          />
-        </div>
+      <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+        {hasGoogleAuth && (
+          <div className="flex justify-center mb-6">
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() => {
+                toast.error('Google login failed');
+              }}
+              theme="filled_black"
+              shape="rectangular"
+              text="continue_with"
+              size="large"
+            />
+          </div>
+        )}
 
         <div className="relative mb-6">
           <div className="absolute inset-0 flex items-center">
@@ -88,7 +92,7 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+            <label className="text-sm font-medium leading-none">
               Email
             </label>
             <div className="relative">
@@ -106,7 +110,7 @@ export default function LoginPage() {
 
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+              <label className="text-sm font-medium leading-none">
                 Password
               </label>
               <Link to="#" className="text-sm font-medium text-primary hover:underline">
@@ -133,7 +137,7 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <Button type="submit" className="w-full h-11" disabled={loading}>
+          <Button type="submit" className="w-full h-11 mt-2" disabled={loading}>
             {loading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -144,7 +148,7 @@ export default function LoginPage() {
             )}
           </Button>
         </form>
-      </motion.div>
+      </div>
     </AuthLayout>
   );
 }

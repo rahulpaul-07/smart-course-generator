@@ -28,13 +28,18 @@ function AuthWrapper({ children }) {
   );
 }
 
-createRoot(document.getElementById('root')).render(
+const container = document.getElementById('root');
+if (!window._reactRoot) {
+  window._reactRoot = createRoot(container);
+}
+
+window._reactRoot.render(
   <BrowserRouter>
     <AuthWrapper>
       <AuthProvider>
         <App />
       </AuthProvider>
     </AuthWrapper>
-  </BrowserRouter>,
+  </BrowserRouter>
 );
 
