@@ -8,9 +8,21 @@ const validateRequest = (schema) => {
       });
 
       // Override req data with parsed/sanitized values
-      req.body = parsedBody.body || req.body;
-      req.query = parsedBody.query || req.query;
-      req.params = parsedBody.params || req.params;
+      if (parsedBody.body) req.body = parsedBody.body;
+      
+      // Safely override req.query which has a getter in Express
+      if (parsedBody.query) {
+        Object.defineProperty(req, 'query', {
+          value: parsedBody.query,
+          writable: true,
+          configurable: true,
+          enumerable: true
+        });
+      }
+      
+      if (parsedBody.params) {
+        req.params = parsedBody.params;
+      }
 
       next();
     } catch (error) {
