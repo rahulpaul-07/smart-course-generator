@@ -32,7 +32,7 @@ function GuestRoute({ children }) {
   const { isAuthenticated, loading } = useAuth();
 
   if (loading) return <LoadingSpinner text="Loading..." />;
-  if (isAuthenticated) return <Navigate to="/" replace />;
+  if (isAuthenticated) return <Navigate to="/dashboard" replace />;
   return children;
 }
 
