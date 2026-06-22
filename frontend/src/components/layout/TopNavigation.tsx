@@ -1,49 +1,129 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { Bell, Menu, Search, User } from "lucide-react";
+import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Bell, Menu, Search, User, X, Settings } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
+import { navItems } from "./Sidebar";
+import { cn } from "@/lib/utils";
 
 export function TopNavigation() {
   const { user, logout } = useAuth();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const location = useLocation();
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-border/50 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="flex h-16 items-center px-4 md:px-6 gap-4">
-        {/* Mobile Menu Button */}
-        <Button variant="ghost" size="icon" className="md:hidden">
-          <Menu className="h-5 w-5" />
-          <span className="sr-only">Toggle menu</span>
-        </Button>
-
-        {/* Search Bar */}
-        <div className="flex-1 max-w-md hidden sm:flex items-center relative">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input 
-            type="search" 
-            placeholder="Search courses, topics..." 
-            className="w-full pl-9 bg-muted/30 border-transparent focus-visible:bg-background focus-visible:border-primary"
-          />
-        </div>
-
-        <div className="flex flex-1 items-center justify-end gap-4">
-          <Button variant="ghost" size="icon" className="relative text-muted-foreground hover:text-foreground">
-            <Bell className="h-5 w-5" />
-            <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-primary" />
+    <>
+      <header className="sticky top-0 z-40 w-full border-b border-border/50 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="flex h-16 items-center px-4 md:px-6 gap-4">
+          {/* Mobile Menu Button */}
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="md:hidden"
+            onClick={() => setMobileMenuOpen(true)}
+          >
+            <Menu className="h-5 w-5" />
+            <span className="sr-only">Toggle menu</span>
           </Button>
-          
-          <div className="flex items-center gap-3">
-            <div className="hidden md:flex flex-col items-end">
-              <span className="text-sm font-medium leading-none">{user?.name || "Guest"}</span>
-              <span className="text-xs text-muted-foreground mt-1">Pro Member</span>
-            </div>
-            <Button variant="ghost" size="icon" className="rounded-full border border-border bg-card">
-              <User className="h-5 w-5" />
+
+          {/* Search Bar */}
+          <div className="flex-1 max-w-md hidden sm:flex items-center relative">
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input 
+              type="search" 
+              placeholder="Search courses, topics..." 
+              className="w-full pl-9 bg-muted/30 border-transparent focus-visible:bg-background focus-visible:border-primary"
+            />
+          </div>
+
+          <div className="flex flex-1 items-center justify-end gap-4">
+            <Button variant="ghost" size="icon" className="relative text-muted-foreground hover:text-foreground">
+              <Bell className="h-5 w-5" />
+              <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-primary" />
             </Button>
+            
+            <div className="flex items-center gap-3">
+              <div className="hidden md:flex flex-col items-end">
+                <span className="text-sm font-medium leading-none">{user?.name || "Guest"}</span>
+                <span className="text-xs text-muted-foreground mt-1">Pro Member</span>
+              </div>
+              <Button variant="ghost" size="icon" className="rounded-full border border-border bg-card">
+                <User className="h-5 w-5" />
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
-    </header>
+      </header>
+
+      {/* Mobile Navigation Drawer */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm md:hidden"
+              onClick={() => setMobileMenuOpen(false)}
+            />
+            <motion.div
+              initial={{ x: "-100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "-100%" }}
+              transition={{ type: "spring", bounce: 0, duration: 0.3 }}
+              className="fixed inset-y-0 left-0 z-50 w-3/4 max-w-sm border-r border-border bg-sidebar p-6 shadow-2xl md:hidden flex flex-col"
+            >
+              <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-2 font-bold text-lg text-primary tracking-tight">
+                  CourseAI Pro
+                </div>
+                <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(false)}>
+                  <X className="h-5 w-5" />
+                </Button>
+              </div>
+
+              <div className="flex-1 space-y-2">
+                <div className="text-xs font-semibold text-muted-foreground/50 tracking-wider uppercase mb-3 px-2">
+                  Menu
+                </div>
+                {navItems.map((item) => {
+                  const isActive = location.pathname.startsWith(item.href);
+                  return (
+                    <Link
+                      key={item.name}
+                      to={item.href}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={cn(
+                        "group flex items-center gap-3 rounded-md px-3 py-3 text-sm font-medium transition-all",
+                        isActive
+                          ? "bg-primary/10 text-primary"
+                          : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
+                      )}
+                    >
+                      <item.icon className={cn("h-5 w-5 shrink-0", isActive ? "text-primary" : "text-muted-foreground")} />
+                      {item.name}
+                    </Link>
+                  );
+                })}
+              </div>
+
+              <div className="mt-auto pt-6 border-t border-border/50">
+                <Link
+                  to="/settings"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 rounded-md px-3 py-3 text-sm font-medium text-muted-foreground hover:bg-white/5 hover:text-foreground transition-all"
+                >
+                  <Settings className="h-5 w-5 shrink-0" />
+                  Settings
+                </Link>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
