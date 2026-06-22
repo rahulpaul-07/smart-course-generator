@@ -57,7 +57,9 @@ export default function CertificatePage() {
     setIsExporting(true);
     try {
       const canvas = await html2canvas(certificateRef.current, {
-        scale: 2,
+        scale: 3,
+        useCORS: true,
+        allowTaint: true,
         backgroundColor: '#020817', // Match dark background
       });
       const imgData = canvas.toDataURL('image/png');
