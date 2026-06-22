@@ -24,11 +24,11 @@ async function claimCertificate(req, res) {
       return res.status(400).json({ error: "Invalid answers submitted." });
     }
 
-    // Validate each answer index is within range
+    // Validate each answer index is within range (allow -1 for unanswered)
     for (let i = 0; i < answers.length; i++) {
       const ans = answers[i];
       const optionsCount = course.finalTest.questions[i].options.length;
-      if (typeof ans !== 'number' || ans < 0 || ans >= optionsCount) {
+      if (typeof ans !== 'number' || ans < -1 || ans >= optionsCount) {
         return res.status(400).json({ error: `Answer for question ${i + 1} is out of range.` });
       }
     }
