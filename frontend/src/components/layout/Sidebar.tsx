@@ -65,13 +65,14 @@ export function Sidebar() {
                 key={item.name}
                 to={item.href}
                 className={cn(
-                  "group relative flex items-center rounded-xl py-2.5 text-sm font-medium transition-all duration-200 overflow-hidden",
+                  "group relative flex items-center rounded-xl py-2.5 text-sm font-medium transition-all duration-200 overflow-hidden focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-primary",
                   isSidebarCollapsed ? "justify-center px-0" : "gap-3 px-3",
                   isActive
                     ? "bg-primary/10 text-primary"
                     : "text-muted-foreground hover:bg-muted hover:text-foreground"
                 )}
                 title={isSidebarCollapsed ? item.name : undefined}
+                aria-label={isSidebarCollapsed ? item.name : undefined}
               >
                 {isActive && (
                   <motion.div 
@@ -79,7 +80,7 @@ export function Sidebar() {
                     className="absolute left-0 top-1 bottom-1 w-1 bg-primary rounded-r-full" 
                   />
                 )}
-                <item.icon className={cn("h-5 w-5 shrink-0 transition-all duration-200", isActive ? "text-primary scale-110" : "text-muted-foreground group-hover:text-foreground group-hover:scale-110")} />
+                <item.icon className={cn("h-5 w-5 shrink-0 transition-all duration-200", isActive ? "text-primary scale-110" : "text-muted-foreground group-hover:text-foreground group-hover:scale-110")} aria-hidden="true" />
                 {!isSidebarCollapsed && (
                   <span className="truncate">{item.name}</span>
                 )}
@@ -93,13 +94,14 @@ export function Sidebar() {
         <Link
           to="/settings"
           className={cn(
-            "group relative flex items-center rounded-xl py-2.5 text-sm font-medium transition-all duration-200",
+            "group relative flex items-center rounded-xl py-2.5 text-sm font-medium transition-all duration-200 focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-primary",
             isSidebarCollapsed ? "justify-center px-0" : "gap-3 px-3",
             location.pathname.startsWith("/settings")
               ? "bg-primary/10 text-primary"
               : "text-muted-foreground hover:bg-muted hover:text-foreground"
           )}
           title={isSidebarCollapsed ? "Settings" : undefined}
+          aria-label={isSidebarCollapsed ? "Settings" : undefined}
         >
           {location.pathname.startsWith("/settings") && (
             <motion.div 
@@ -107,7 +109,7 @@ export function Sidebar() {
               className="absolute left-0 top-1 bottom-1 w-1 bg-primary rounded-r-full" 
             />
           )}
-          <Settings className={cn("h-5 w-5 shrink-0 transition-all duration-200", location.pathname.startsWith("/settings") ? "text-primary scale-110" : "text-muted-foreground group-hover:text-foreground group-hover:scale-110")} />
+          <Settings className={cn("h-5 w-5 shrink-0 transition-all duration-200", location.pathname.startsWith("/settings") ? "text-primary scale-110" : "text-muted-foreground group-hover:text-foreground group-hover:scale-110")} aria-hidden="true" />
           {!isSidebarCollapsed && <span>Settings</span>}
         </Link>
         

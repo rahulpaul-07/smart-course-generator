@@ -42,6 +42,7 @@ export default function AIChatPanel({ lessonId, lessonTitle, isOpen, onClose }: 
   const [sending, setSending] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const recognitionRef = useRef<any>(null);
 
   useEffect(() => {
@@ -111,6 +112,7 @@ export default function AIChatPanel({ lessonId, lessonTitle, isOpen, onClose }: 
       setMessages([...history, { role: 'assistant', content: 'Could not answer that question.' }]);
     } finally {
       setSending(false);
+      setTimeout(() => inputRef.current?.focus(), 50);
     }
   }
 
@@ -221,6 +223,7 @@ export default function AIChatPanel({ lessonId, lessonTitle, isOpen, onClose }: 
       <div className="p-4 border-t border-border/50 bg-background/95">
         <div className="relative flex items-end gap-2 rounded-xl border border-border bg-muted/20 p-1 transition-colors focus-within:border-primary/50 focus-within:ring-1 focus-within:ring-primary/50">
           <Textarea
+            ref={inputRef}
             value={input}
             onChange={(event) => setInput(event.target.value)}
             onKeyDown={handleKeyDown}
@@ -232,17 +235,19 @@ export default function AIChatPanel({ lessonId, lessonTitle, isOpen, onClose }: 
             size="icon"
             variant="ghost"
             onClick={toggleListening}
+            aria-label={isListening ? "Stop voice dictation" : "Start voice dictation"}
             className={`mb-1 ml-1 h-9 w-9 shrink-0 rounded-lg transition-colors ${isListening ? 'bg-red-500/20 text-red-500 hover:bg-red-500/30 hover:text-red-500' : 'text-muted-foreground hover:text-foreground'}`}
           >
-            {isListening ? <Mic className="h-4 w-4 animate-pulse" /> : <MicOff className="h-4 w-4" />}
+            {isListening ? <Mic className="h-4 w-4 animate-pulse" aria-hidden="true" /> : <MicOff className="h-4 w-4" aria-hidden="true" />}
           </Button>
           <Button
             size="icon"
             onClick={() => sendMessage()}
             disabled={!input.trim() || sending}
+            aria-label="Send message"
             className="mb-1 mr-1 h-9 w-9 shrink-0 rounded-lg transition-transform active:scale-95"
           >
-            {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+            {sending ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : <Send className="h-4 w-4" aria-hidden="true" />}
           </Button>
         </div>
         <p className="mt-2 text-center text-[10px] uppercase tracking-wider text-muted-foreground font-medium">

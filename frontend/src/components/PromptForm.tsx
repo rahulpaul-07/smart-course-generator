@@ -26,9 +26,10 @@ export default function PromptForm({ onSubmit, isLoading = false }: { onSubmit: 
   return (
     <Card className={`relative overflow-hidden transition-all duration-500 bg-card/60 backdrop-blur ${isFocused ? 'ring-2 ring-primary/50 shadow-lg shadow-primary/20' : 'hover:border-primary/30'}`}>
       <form onSubmit={handleSubmit} className="flex flex-col">
-        <label className="block p-4 sm:p-6 pb-2 relative">
-          <span className="sr-only">What course do you want to create?</span>
+        <div className="block p-4 sm:p-6 pb-2 relative">
+          <label htmlFor="course-prompt" className="sr-only">What course do you want to create?</label>
           <textarea
+            id="course-prompt"
             value={prompt}
             onChange={(event) => setPrompt(event.target.value)}
             onFocus={() => setIsFocused(true)}
@@ -39,7 +40,7 @@ export default function PromptForm({ onSubmit, isLoading = false }: { onSubmit: 
             rows={3}
             className="w-full resize-none border-0 bg-transparent text-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-0 disabled:opacity-50"
           />
-        </label>
+        </div>
 
         <div className="flex flex-wrap gap-2 px-4 sm:px-6 pb-4">
           <AnimatePresence>

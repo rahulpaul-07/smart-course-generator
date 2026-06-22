@@ -153,22 +153,46 @@ export default function InterviewPrepPage() {
           {activePrep ? (
             <div className="animate-enter">
               {/* Tabs */}
-              <div className="mb-6 flex gap-1 overflow-x-auto rounded-xl border border-white/[0.06] bg-white/[0.02] p-1">
+              <div 
+                role="tablist"
+                aria-label="Interview Prep Sections"
+                className="mb-6 flex gap-1 overflow-x-auto rounded-xl border border-white/[0.06] bg-white/[0.02] p-1"
+                onKeyDown={(e) => {
+                  const currentIndex = TABS.findIndex(t => t.key === activeTab);
+                  let nextIndex = currentIndex;
+                  if (e.key === 'ArrowRight') nextIndex = (currentIndex + 1) % TABS.length;
+                  if (e.key === 'ArrowLeft') nextIndex = (currentIndex - 1 + TABS.length) % TABS.length;
+                  if (e.key === 'Home') nextIndex = 0;
+                  if (e.key === 'End') nextIndex = TABS.length - 1;
+                  
+                  if (nextIndex !== currentIndex) {
+                    e.preventDefault();
+                    setActiveTab(TABS[nextIndex].key);
+                    document.getElementById(`tab-${TABS[nextIndex].key}`)?.focus();
+                  }
+                }}
+              >
                 {TABS.map(({ key, label, icon: Icon }) => (
                   <button
                     key={key}
+                    id={`tab-${key}`}
+                    role="tab"
+                    aria-selected={activeTab === key}
+                    aria-controls={`panel-${key}`}
+                    tabIndex={activeTab === key ? 0 : -1}
                     onClick={() => setActiveTab(key)}
-                    className={`flex items-center gap-1.5 rounded-lg px-4 py-2 text-xs font-medium transition ${
+                    className={`flex items-center gap-1.5 rounded-lg px-4 py-2 text-xs font-medium transition focus-visible:ring-2 focus-visible:outline-none ${
                       activeTab === key
                         ? 'bg-brand-500/20 text-brand-200 shadow'
                         : 'text-slate-500 hover:text-slate-300'
                     }`}
                   >
-                    <Icon className="h-3.5 w-3.5" /> {label}
+                    <Icon className="h-3.5 w-3.5" aria-hidden="true" /> {label}
                   </button>
                 ))}
               </div>
 
+              <div role="tabpanel" id={`panel-${activeTab}`} aria-labelledby={`tab-${activeTab}`}>
               {/* Score Banner */}
               {activePrep.status === 'completed' && (
                 <motion.div 
@@ -224,6 +248,7 @@ export default function InterviewPrepPage() {
               {activeTab === 'theory' && <TheorySection prep={activePrep} onUpdate={setActivePrep} />}
               {activeTab === 'coding' && <CodingSection prep={activePrep} />}
               {activeTab === 'mock' && <MockSection prep={activePrep} onUpdate={setActivePrep} />}
+              </div>
             </div>
           ) : (
             <div className="glass-card flex flex-col items-center justify-center rounded-2xl py-24 text-center border-dashed border-2 border-slate-700/50">

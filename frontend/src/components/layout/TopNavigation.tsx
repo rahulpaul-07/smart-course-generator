@@ -55,8 +55,8 @@ export function TopNavigation() {
           <div className="flex flex-1 items-center justify-end gap-4">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative text-muted-foreground hover:text-foreground">
-                  <Bell className="h-5 w-5" />
+                <Button variant="ghost" size="icon" className="relative text-muted-foreground hover:text-foreground" aria-label="Notifications">
+                  <Bell className="h-5 w-5" aria-hidden="true" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-64 bg-card border-border">
@@ -76,8 +76,8 @@ export function TopNavigation() {
               </div>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="rounded-full border border-border bg-card">
-                    <User className="h-5 w-5" />
+                  <Button variant="ghost" size="icon" className="rounded-full border border-border bg-card" aria-label="User Profile Menu">
+                    <User className="h-5 w-5" aria-hidden="true" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56 bg-card border-border">
