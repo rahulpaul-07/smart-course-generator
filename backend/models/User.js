@@ -29,7 +29,8 @@ const userSchema = new mongoose.Schema({
   theme: { type: String, enum: ['dark', 'light', 'system'], default: 'dark' },
   notifications: {
     email: { type: Boolean, default: true },
-    push: { type: Boolean, default: true }
+    push: { type: Boolean, default: true },
+    courseUpdates: { type: Boolean, default: true }
   },
   onboardingCompleted: { type: Boolean, default: false },
   bookmarkedLessons: [{
