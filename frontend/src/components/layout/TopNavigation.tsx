@@ -8,15 +8,17 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { useAuth } from "@/hooks/useAuth";
 import { navItems } from "./Sidebar";
 import { cn } from "@/lib/utils";
+import { useLayout } from "@/contexts/LayoutContext";
 
 export function TopNavigation() {
   const { user, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const { toggleSidebar } = useLayout();
 
   return (
     <div id="top-navigation" className="shrink-0">
-      <header className="sticky top-0 z-40 w-full border-b border-border bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="sticky top-0 z-40 w-full border-b border-border bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
         <div className="flex h-16 items-center px-4 md:px-6 gap-4">
           {/* Mobile Menu Button */}
           <Button 
@@ -26,7 +28,18 @@ export function TopNavigation() {
             onClick={() => setMobileMenuOpen(true)}
           >
             <Menu className="h-5 w-5" />
-            <span className="sr-only">Toggle menu</span>
+            <span className="sr-only">Toggle mobile menu</span>
+          </Button>
+
+          {/* Desktop Toggle Button */}
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="hidden md:flex text-muted-foreground hover:text-foreground"
+            onClick={toggleSidebar}
+          >
+            <Menu className="h-5 w-5" />
+            <span className="sr-only">Toggle sidebar</span>
           </Button>
 
           {/* Search Bar */}
