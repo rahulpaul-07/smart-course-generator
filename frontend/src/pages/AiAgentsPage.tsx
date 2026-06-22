@@ -259,7 +259,7 @@ export default function AiAgentsPage() {
                         value={selectedCourse}
                         onChange={(e) => setSelectedCourse(e.target.value)}
                       >
-                        {courses.map(c => <option key={c._id} value={c._id}>{c.title}</option>)}
+                        {courses.map(c => <option key={c._id} value={c._id} className="bg-slate-900 text-white">{c.title}</option>)}
                       </select>
                     </div>
                   )}

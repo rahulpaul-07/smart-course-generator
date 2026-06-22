@@ -117,11 +117,11 @@ export default function RoadmapPage() {
                 onChange={(e) => setForm({ ...form, duration: e.target.value })}
                 className="w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-2.5 text-sm text-white outline-none transition focus:border-brand-400/50"
               >
-                <option value="2 weeks">2 Weeks</option>
-                <option value="4 weeks">4 Weeks</option>
-                <option value="6 weeks">6 Weeks</option>
-                <option value="8 weeks">8 Weeks</option>
-                <option value="12 weeks">12 Weeks</option>
+                <option value="2 weeks" className="bg-slate-900 text-white">2 Weeks</option>
+                <option value="4 weeks" className="bg-slate-900 text-white">4 Weeks</option>
+                <option value="6 weeks" className="bg-slate-900 text-white">6 Weeks</option>
+                <option value="8 weeks" className="bg-slate-900 text-white">8 Weeks</option>
+                <option value="12 weeks" className="bg-slate-900 text-white">12 Weeks</option>
               </select>
             </div>
             <div>
@@ -131,9 +131,9 @@ export default function RoadmapPage() {
                 onChange={(e) => setForm({ ...form, skillLevel: e.target.value })}
                 className="w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-2.5 text-sm text-white outline-none transition focus:border-brand-400/50"
               >
-                <option value="beginner">Beginner</option>
-                <option value="intermediate">Intermediate</option>
-                <option value="advanced">Advanced</option>
+                <option value="beginner" className="bg-slate-900 text-white">Beginner</option>
+                <option value="intermediate" className="bg-slate-900 text-white">Intermediate</option>
+                <option value="advanced" className="bg-slate-900 text-white">Advanced</option>
               </select>
             </div>
           </div>

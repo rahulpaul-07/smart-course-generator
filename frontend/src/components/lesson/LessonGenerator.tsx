@@ -66,9 +66,9 @@ export default function LessonGenerator({
               onChange={(event) => onDepthChange(event.target.value)}
               className="input-field mt-2"
             >
-              <option value="brief">Brief</option>
-              <option value="standard">Standard</option>
-              <option value="deep">Deep</option>
+              <option value="brief" className="bg-slate-900 text-white">Brief</option>
+              <option value="standard" className="bg-slate-900 text-white">Standard</option>
+              <option value="deep" className="bg-slate-900 text-white">Deep</option>
             </select>
           </label>
 
