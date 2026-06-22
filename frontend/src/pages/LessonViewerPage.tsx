@@ -81,9 +81,13 @@ export default function LessonViewerPage() {
     setLesson((prev) => prev ? { ...prev, content: [] } : prev);
 
     try {
+      const token = localStorage.getItem('token');
       const response = await fetch(`${API_BASE}/courses/${courseId}/lessons/${lessonId}/enrich-stream`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
         credentials: 'include',
         body: JSON.stringify({ depth: selectedDepth, language: selectedLanguage }),
       });
