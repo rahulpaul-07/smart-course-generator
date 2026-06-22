@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
-import { BarChart3, BookOpen, Brain, Clock, Flame, Target, TrendingDown, TrendingUp, Trophy, Zap } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { BarChart3, BookOpen, Brain, Clock, Flame, Target, TrendingDown, TrendingUp, Trophy, Zap, PlusCircle } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import api from '../utils/api';
 import LoadingSpinner from '../components/LoadingSpinner';
+import ActivityGrid from '../components/ActivityGrid';
 
 export default function AnalyticsPage() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     api.get('/analytics/dashboard')
@@ -122,12 +125,15 @@ export default function AnalyticsPage() {
             </div>
           ))}
           {data.courseStats.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <div className="mb-4 rounded-full bg-white/5 p-4 ring-1 ring-white/10">
-                <BookOpen className="h-8 w-8 text-slate-400" />
+            <div className="flex flex-col items-center justify-center py-16 text-center glass-card rounded-2xl border-dashed border-2 border-slate-700/50">
+              <div className="mb-4 rounded-full bg-brand-500/10 p-4 ring-1 ring-brand-500/20">
+                <BookOpen className="h-8 w-8 text-brand-400" />
               </div>
-              <h3 className="mb-1 text-base font-medium text-slate-200">No courses yet</h3>
-              <p className="text-sm text-slate-500">Create your first course to start tracking your progress.</p>
+              <h3 className="mb-2 text-xl font-bold text-white">No Learning Data Yet</h3>
+              <p className="mb-6 max-w-sm text-sm text-slate-400">Generate your first course to start tracking your XP, streaks, and completion rates.</p>
+              <button onClick={() => navigate('/dashboard')} className="btn-primary">
+                <PlusCircle className="mr-2 h-4 w-4" /> Start Learning
+              </button>
             </div>
           )}
         </div>

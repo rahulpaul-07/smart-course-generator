@@ -157,7 +157,16 @@ export default function CommunityTemplatesPage() {
         ))}
       </div>
       {templates.length === 0 && (
-        <div className="text-center py-20 text-slate-500">No public templates available yet. Be the first to publish one!</div>
+        <div className="flex flex-col items-center justify-center py-24 text-center glass-card rounded-2xl border-dashed border-2 border-slate-700/50">
+          <div className="mb-4 rounded-full bg-slate-800/50 p-4 ring-1 ring-slate-700/50">
+            <Globe className="h-8 w-8 text-slate-400" />
+          </div>
+          <h3 className="mb-2 text-xl font-bold text-white">No Community Courses Yet</h3>
+          <p className="mb-6 max-w-sm text-sm text-slate-400">Be the first to publish a course and share it with the community!</p>
+          <button onClick={() => navigate('/dashboard')} className="btn-primary">
+            <Plus className="mr-2 h-4 w-4" /> Create Course
+          </button>
+        </div>
       )}
     </div>
   );

@@ -139,7 +139,7 @@ export default function RoadmapPage() {
           </div>
           <div className="mt-5 flex gap-3">
             <button type="submit" disabled={generating} className="btn-primary">
-              {generating ? <><LoadingSpinner small /> Generating...</> : <><Sparkles className="h-4 w-4" /> Generate Roadmap</>}
+              {generating ? <><LoadingSpinner small /> Building your roadmap...</> : <><Sparkles className="h-4 w-4" /> Generate Roadmap</>}
             </button>
             <button type="button" onClick={() => setShowForm(false)} className="btn-secondary">Cancel</button>
           </div>
@@ -171,7 +171,13 @@ export default function RoadmapPage() {
                 </div>
               </div>
             ))}
-            {roadmaps.length === 0 && <p className="py-4 text-center text-xs text-slate-600">No roadmaps yet.</p>}
+            {roadmaps.length === 0 && (
+              <div className="py-6 text-center text-slate-500">
+                <Map className="h-8 w-8 mx-auto mb-2 opacity-20" />
+                <p className="text-sm font-medium">No roadmaps yet</p>
+                <p className="text-xs mt-1">Create one to map your journey</p>
+              </div>
+            )}
           </div>
         </aside>
 
@@ -180,9 +186,17 @@ export default function RoadmapPage() {
           {activeRoadmap ? (
             <RoadmapDetail roadmap={activeRoadmap} onGenerateCourse={generateCourseFromTopic} />
           ) : (
-            <div className="glass-card flex flex-col items-center justify-center rounded-2xl py-20 text-center">
-              <Map className="h-12 w-12 text-slate-700" />
-              <p className="mt-4 text-sm text-slate-500">Select a roadmap or create a new one</p>
+            <div className="glass-card flex flex-col items-center justify-center rounded-2xl py-24 text-center border-dashed border-2 border-slate-700/50">
+              <div className="h-16 w-16 bg-slate-800/50 rounded-full flex items-center justify-center mb-4">
+                <Map className="h-8 w-8 text-slate-400" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">Build Your Path</h3>
+              <p className="text-sm text-slate-400 max-w-sm mb-6">Select a saved roadmap from the sidebar, or generate a new one to guide your learning.</p>
+              {!showForm && (
+                <button onClick={() => setShowForm(true)} className="btn-primary">
+                  <PlusCircle className="h-4 w-4 mr-2" /> Create Roadmap
+                </button>
+              )}
             </div>
           )}
         </main>

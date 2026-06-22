@@ -429,6 +429,18 @@ async function generateText(messages, maxTokens = 1024) {
       try {
         return await provider.generateText(messages, maxTokens, model);
       } catch (error) {
+        let category = error.failureCategory || 'provider_error';
+        if (error.status === 429) category = 'rate_limit';
+        else if (error.message && error.message.includes('timeout')) category = 'timeout';
+        
+        const reqStr = messages.map((m) => m.content).join(' ').toLowerCase();
+        const reqType = reqStr.includes('lesson') ? 'lesson' : 
+                        reqStr.includes('course') ? 'course' :
+                        reqStr.includes('roadmap') ? 'roadmap' :
+                        reqStr.includes('interview') ? 'interview' : 'unknown';
+
+        structuredAiLog(provider.name, reqType, category, error.message || String(error));
+        logTelemetry({ provider: provider.name, model, endpoint: 'generateText', status: 'failure', reason: error.message || String(error) });
         console.warn(`[AI Router] ${provider.name} (${model}) failed to generateText. Switching to next...`);
         lastError = error;
       }

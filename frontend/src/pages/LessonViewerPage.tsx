@@ -410,6 +410,16 @@ export default function LessonViewerPage() {
 
           <LessonRenderer content={lesson.content} isStreaming={generating} />
 
+          {!hasContent && !generating && streamStatus !== 'error' && (
+            <div className="flex flex-col items-center justify-center py-20 text-center glass-card rounded-2xl border-dashed border-2 border-slate-700/50 mt-8">
+              <div className="h-16 w-16 bg-slate-800/50 rounded-full flex items-center justify-center mb-4">
+                <BookOpen className="h-8 w-8 text-slate-400" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">No Content Yet</h3>
+              <p className="text-sm text-slate-400 max-w-sm">Use the generator above to bring this lesson to life.</p>
+            </div>
+          )}
+
           {hasContent && !generating && (
             <StudyTools
               key={lessonId}

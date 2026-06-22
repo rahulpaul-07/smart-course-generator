@@ -33,6 +33,7 @@ export default function HomePage() {
 
     try {
       const { data } = await api.post('/courses/generate', { prompt });
+      toast.success('Course generated successfully!');
       navigate(`/course/${data._id}`);
       return true;
     } catch (error: any) {
@@ -99,6 +100,44 @@ export default function HomePage() {
             <Skeleton className="h-40 w-full" />
             <Skeleton className="h-40 w-full" />
           </motion.div>
+        ) : courses.length === 0 && !search ? (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className="mb-10 bg-card/60 backdrop-blur-sm border border-border/50 rounded-3xl p-8 lg:p-12 text-center"
+          >
+            <div className="h-16 w-16 mx-auto bg-primary/10 rounded-2xl flex items-center justify-center mb-6">
+              <Sparkles className="h-8 w-8 text-primary" />
+            </div>
+            <h2 className="text-3xl font-bold mb-4">Welcome to your Learning Hub! 🎉</h2>
+            <p className="text-lg text-muted-foreground mb-10 max-w-2xl mx-auto">
+              You're just a few steps away from mastering any topic. Here's how to get started on your personalized learning journey:
+            </p>
+            <div className="grid md:grid-cols-3 gap-6 text-left">
+              <div className="bg-primary/5 p-6 rounded-2xl border border-primary/10">
+                <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+                  <span className="text-xl font-bold text-primary">1</span>
+                </div>
+                <h3 className="font-bold text-lg mb-2 text-foreground">Generate Course</h3>
+                <p className="text-muted-foreground text-sm">Describe what you want to learn below, and our AI will build a personalized curriculum instantly.</p>
+              </div>
+              <div className="bg-cyan-500/5 p-6 rounded-2xl border border-cyan-500/10">
+                <div className="h-12 w-12 rounded-xl bg-cyan-500/10 flex items-center justify-center mb-4">
+                  <span className="text-xl font-bold text-cyan-500">2</span>
+                </div>
+                <h3 className="font-bold text-lg mb-2 text-foreground">Complete Lessons</h3>
+                <p className="text-muted-foreground text-sm">Read interactive content, pass quizzes, and build your daily learning streak.</p>
+              </div>
+              <div className="bg-amber-500/5 p-6 rounded-2xl border border-amber-500/10">
+                <div className="h-12 w-12 rounded-xl bg-amber-500/10 flex items-center justify-center mb-4">
+                  <span className="text-xl font-bold text-amber-500">3</span>
+                </div>
+                <h3 className="font-bold text-lg mb-2 text-foreground">Earn Certificates</h3>
+                <p className="text-muted-foreground text-sm">Take the final test to validate your knowledge and earn a verifiable certificate.</p>
+              </div>
+            </div>
+          </motion.div>
         ) : (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -147,7 +186,7 @@ export default function HomePage() {
                   </motion.div>
                 ))}
               </motion.div>
-            ) : (
+            ) : search ? (
               <motion.div 
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -160,27 +199,13 @@ export default function HomePage() {
                     <BookOpen className="h-10 w-10 text-primary" />
                   </div>
                 </div>
-                <h3 className="text-2xl font-bold text-foreground mb-2">
-                  {search ? 'No matches found' : 'Ready to start learning?'}
-                </h3>
+                <h3 className="text-2xl font-bold text-foreground mb-2">No matches found</h3>
                 <p className="text-muted-foreground mb-8 max-w-md">
-                  {search 
-                    ? "We couldn't find any courses matching your search terms. Try using different keywords." 
-                    : "You haven't created any courses yet. Describe what you want to learn in the generator to create your first personalized curriculum."}
+                  We couldn't find any courses matching your search terms. Try using different keywords.
                 </p>
-                {search ? (
-                  <Button onClick={() => setSearchParams({})} className="btn-secondary">Clear Search</Button>
-                ) : (
-                  <Button 
-                    onClick={() => document.querySelector('textarea')?.focus()} 
-                    className="btn-primary animate-pulse"
-                  >
-                    <PlusCircle className="mr-2 h-4 w-4" />
-                    Generate Course
-                  </Button>
-                )}
+                <Button onClick={() => setSearchParams({})} className="btn-secondary">Clear Search</Button>
               </motion.div>
-            )}
+            ) : null}
           </AnimatePresence>
         </div>
 

@@ -107,7 +107,7 @@ export default function InterviewPrepPage() {
           maxLength={300}
         />
         <button type="submit" disabled={generating} className="btn-primary shrink-0">
-          {generating ? <LoadingSpinner small /> : <><Plus className="h-4 w-4" /> Generate</>}
+          {generating ? <><LoadingSpinner small /> Preparing questions...</> : <><Plus className="h-4 w-4" /> Generate</>}
         </button>
       </form>
 
@@ -138,7 +138,13 @@ export default function InterviewPrepPage() {
                 </div>
               </div>
             ))}
-            {preps.length === 0 && <p className="py-4 text-center text-xs text-slate-600">No packs yet.</p>}
+            {preps.length === 0 && (
+              <div className="py-6 text-center text-slate-500">
+                <Brain className="h-8 w-8 mx-auto mb-2 opacity-20" />
+                <p className="text-sm font-medium">No packs yet</p>
+                <p className="text-xs mt-1">Generate one to start practicing</p>
+              </div>
+            )}
           </div>
         </aside>
 
@@ -220,9 +226,15 @@ export default function InterviewPrepPage() {
               {activeTab === 'mock' && <MockSection prep={activePrep} onUpdate={setActivePrep} />}
             </div>
           ) : (
-            <div className="glass-card flex flex-col items-center justify-center rounded-2xl py-20 text-center">
-              <Brain className="h-12 w-12 text-slate-700" />
-              <p className="mt-4 text-sm text-slate-500">Select or generate an interview prep pack</p>
+            <div className="glass-card flex flex-col items-center justify-center rounded-2xl py-24 text-center border-dashed border-2 border-slate-700/50">
+              <div className="h-16 w-16 bg-slate-800/50 rounded-full flex items-center justify-center mb-4">
+                <Brain className="h-8 w-8 text-slate-400" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">Ready to Ace Your Interview?</h3>
+              <p className="text-sm text-slate-400 max-w-sm mb-6">Select a saved prep pack from the sidebar or generate a new one to start answering questions.</p>
+              <button onClick={() => document.querySelector('input')?.focus()} className="btn-primary">
+                <Plus className="h-4 w-4 mr-2" /> Generate Prep Pack
+              </button>
             </div>
           )}
         </main>

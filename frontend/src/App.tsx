@@ -24,6 +24,7 @@ import SignupPage from './pages/SignupPage';
 import OnboardingPage from './pages/OnboardingPage';
 
 const CertificatePage = withSuspense(lazy(() => import('./pages/CertificatePage')));
+const CertificatesPage = withSuspense(lazy(() => import('./pages/CertificatesPage')));
 const CourseOverviewPage = withSuspense(lazy(() => import('./pages/CourseOverviewPage')));
 const HomePage = withSuspense(lazy(() => import('./pages/HomePage')));
 const LessonViewerPage = withSuspense(lazy(() => import('./pages/LessonViewerPage')));
@@ -84,6 +85,7 @@ export default function App() {
         <Route path="/course/:id" element={<DashboardPage><CourseOverviewPage /></DashboardPage>} />
         <Route path="/course/:id/certificate" element={<DashboardPage><CertificatePage /></DashboardPage>} />
         <Route path="/certificate/:id" element={<CertificatePage />} />
+        <Route path="/certificates" element={<DashboardPage><CertificatesPage /></DashboardPage>} />
         <Route path="/course/:id/test" element={<DashboardPage><FinalTestPage /></DashboardPage>} />
         <Route
           path="/course/:courseId/lesson/:id"
