@@ -3,6 +3,7 @@ import {
   Award, BookOpen, Brain, CheckCircle2, ChevronRight, Code2, MessageSquare,
   Plus, Send, Sparkles, Trash2, Trophy, XCircle,
 } from 'lucide-react';
+import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 import api from '../utils/api';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -150,13 +151,53 @@ export default function InterviewPrepPage() {
 
               {/* Score Banner */}
               {activePrep.status === 'completed' && (
-                <div className="mb-6 flex items-center gap-4 rounded-2xl border border-amber-400/15 bg-amber-500/[0.05] p-4">
-                  <Trophy className="h-8 w-8 text-amber-400" />
-                  <div>
-                    <p className="text-sm font-medium text-amber-200">Interview Score</p>
-                    <p className="font-display text-3xl font-bold text-white">{activePrep.overallScore}%</p>
+                <motion.div 
+                  initial={{ opacity: 0, y: 10, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  className="mb-6 flex items-center gap-6 rounded-3xl border border-amber-500/20 bg-gradient-to-r from-amber-500/10 to-amber-500/5 p-6 shadow-2xl relative overflow-hidden"
+                >
+                  <div className="absolute right-0 top-0 h-full w-1/3 bg-gradient-to-l from-amber-500/10 to-transparent pointer-events-none" />
+                  <div className="relative flex h-24 w-24 shrink-0 items-center justify-center">
+                    <svg className="h-full w-full -rotate-90" viewBox="0 0 100 100">
+                      <circle
+                        className="text-amber-500/20 stroke-current"
+                        strokeWidth="8"
+                        cx="50"
+                        cy="50"
+                        r="40"
+                        fill="transparent"
+                      ></circle>
+                      <motion.circle
+                        className="text-amber-500 stroke-current drop-shadow-md"
+                        strokeWidth="8"
+                        strokeLinecap="round"
+                        cx="50"
+                        cy="50"
+                        r="40"
+                        fill="transparent"
+                        initial={{ strokeDasharray: "251.2", strokeDashoffset: "251.2" }}
+                        animate={{ strokeDashoffset: 251.2 - (251.2 * activePrep.overallScore) / 100 }}
+                        transition={{ duration: 1.5, ease: "easeOut" }}
+                      ></motion.circle>
+                    </svg>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center">
+                      <span className="text-xl font-bold text-amber-400">{activePrep.overallScore}%</span>
+                    </div>
                   </div>
-                </div>
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <Trophy className="h-5 w-5 text-amber-400" />
+                      <p className="text-sm font-semibold uppercase tracking-wider text-amber-200/80">Overall Score</p>
+                    </div>
+                    <h2 className="text-2xl font-bold text-white tracking-tight">
+                      {activePrep.overallScore >= 80 ? 'Outstanding Performance!' : 
+                       activePrep.overallScore >= 60 ? 'Good Effort!' : 'Keep Practicing!'}
+                    </h2>
+                    <p className="mt-1 text-sm text-slate-400 max-w-md">
+                      Based on your responses across MCQs, Theory, and Coding challenges.
+                    </p>
+                  </div>
+                </motion.div>
               )}
 
               {activeTab === 'mcq' && <MCQSection prep={activePrep} onUpdate={setActivePrep} />}
