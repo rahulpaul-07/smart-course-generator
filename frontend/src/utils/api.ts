@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-let baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+let baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
 // In Render, the base URL is provided without /api (e.g. https://my-backend.onrender.com)
 if (baseURL && !baseURL.endsWith('/api') && baseURL.startsWith('http')) {
   baseURL = `${baseURL}/api`;

@@ -90,7 +90,11 @@ export default function LessonViewerPage() {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || 'Failed to start generation');
+        let errMsg = errorData.error || 'Failed to start generation';
+        if (typeof errMsg === 'object') {
+          errMsg = errMsg.message || JSON.stringify(errMsg);
+        }
+        throw new Error(errMsg);
       }
 
       const reader = response.body.getReader();
@@ -131,7 +135,11 @@ export default function LessonViewerPage() {
                 // Final saved lesson from the server
                 updateCurrentLesson(data);
               } else if (currentEvent === 'error') {
-                throw new Error(data.error || 'Generation failed');
+                let errMsg = data.error || 'Generation failed';
+                if (typeof errMsg === 'object') {
+                  errMsg = errMsg.message || JSON.stringify(errMsg);
+                }
+                throw new Error(errMsg);
               }
             } catch (parseErr) {
               if (parseErr.message && !parseErr.message.includes('JSON')) {
