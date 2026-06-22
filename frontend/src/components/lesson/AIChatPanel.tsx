@@ -83,7 +83,9 @@ export default function AIChatPanel({ lessonId, lessonTitle, isOpen, onClose }: 
 
   useEffect(() => {
     if (isOpen) {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      }, 50);
     }
   }, [isOpen, messages, sending]);
 
