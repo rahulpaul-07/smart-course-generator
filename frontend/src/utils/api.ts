@@ -13,19 +13,61 @@ const api = axios.create({
   timeout: 180000,
 });
 
+const pendingRequests = new Map();
+
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+
+  // Request Deduplication and Generation Recovery
+  if (config.method === 'post' && config.url && (config.url.includes('/generate') || config.url.includes('/certificates/claim'))) {
+    const key = `${config.method}:${config.url}:${JSON.stringify(config.data || {})}`;
+    
+    const activeStr = sessionStorage.getItem('active_generation_job');
+    if (activeStr) {
+      try {
+        const activeJob = JSON.parse(activeStr);
+        // If the same generation job was started less than 2 minutes ago, prevent duplicate
+        if (activeJob.key === key && Date.now() - activeJob.timestamp < 120000) {
+          toast.success('Generation is continuing in the background. Please wait...');
+          return Promise.reject({ isDuplicate: true, message: 'Generation already in progress.' });
+        }
+      } catch {}
+    }
+
+    if (pendingRequests.has(key)) {
+      return Promise.reject({ isDuplicate: true, message: 'Request already in progress' });
+    }
+    pendingRequests.set(key, true);
+    (config as any).metadata = { key };
+    
+    // Save active generation job for recovery
+    sessionStorage.setItem('active_generation_job', JSON.stringify({ key, timestamp: Date.now() }));
+  }
+
   return config;
 }, (error) => {
   return Promise.reject(error);
 });
 
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    if ((response.config as any)?.metadata?.key) {
+      pendingRequests.delete((response.config as any).metadata.key);
+      sessionStorage.removeItem('active_generation_job');
+    }
+    return response;
+  },
   (error) => {
+    if (error.isDuplicate) return Promise.reject(error);
+    
+    if (error.config && (error.config as any).metadata?.key) {
+      pendingRequests.delete((error.config as any).metadata.key);
+      // We don't remove active_generation_job here because the browser might have just disconnected but the backend is still running
+    }
+
     if (error.response) {
       const status = error.response.status;
       let msg = error.response.data?.error || 'An unexpected server error occurred';

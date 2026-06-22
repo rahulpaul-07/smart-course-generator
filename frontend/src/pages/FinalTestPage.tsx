@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Loader2, ArrowLeft, CheckCircle2, Trophy, Sparkles, RotateCcw } from 'lucide-react';
 import Confetti from 'react-confetti';
@@ -41,7 +41,11 @@ export default function FinalTestPage() {
     loadTest();
   }, [id, fetchApi]);
 
+  const isSubmittingRef = useRef(false);
+
   const handleSubmit = async () => {
+    if (submitting || isSubmittingRef.current) return;
+    
     const questions = course.finalTest.questions;
     const answeredCount = Object.keys(answers).length;
     
@@ -51,6 +55,7 @@ export default function FinalTestPage() {
       }
     }
 
+    isSubmittingRef.current = true;
     setSubmitting(true);
     try {
       const answersArray = questions.map((_: any, idx: number) => answers[idx] !== undefined ? answers[idx] : -1);

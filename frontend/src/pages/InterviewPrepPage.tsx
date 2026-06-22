@@ -19,9 +19,23 @@ export default function InterviewPrepPage() {
   const [preps, setPreps] = useState([]);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
-  const [activePrep, setActivePrep] = useState(null);
-  const [activeTab, setActiveTab] = useState('mcq');
+  const [activePrep, setActivePrep] = useState(() => {
+    const saved = sessionStorage.getItem('interview_active_prep');
+    return saved ? JSON.parse(saved) : null;
+  });
+  const [activeTab, setActiveTab] = useState(() => {
+    return sessionStorage.getItem('interview_active_tab') || 'mcq';
+  });
   const [topic, setTopic] = useState('');
+
+  useEffect(() => {
+    if (activePrep) sessionStorage.setItem('interview_active_prep', JSON.stringify(activePrep));
+    else sessionStorage.removeItem('interview_active_prep');
+  }, [activePrep]);
+
+  useEffect(() => {
+    sessionStorage.setItem('interview_active_tab', activeTab);
+  }, [activeTab]);
 
   useEffect(() => { loadPreps(); }, []);
 
@@ -219,9 +233,25 @@ export default function InterviewPrepPage() {
 
 /* ─── MCQ Section ─── */
 function MCQSection({ prep, onUpdate }) {
-  const [answers, setAnswers] = useState(prep.mcqs.map((q) => q.userAnswer >= 0 ? q.userAnswer : -1));
-  const [submitted, setSubmitted] = useState(prep.status === 'completed');
+  const [answers, setAnswers] = useState(() => {
+    const saved = sessionStorage.getItem(`interview_mcq_${prep._id}`);
+    if (saved) return JSON.parse(saved);
+    return prep.mcqs.map((q) => q.userAnswer >= 0 ? q.userAnswer : -1);
+  });
+  const [submitted, setSubmitted] = useState(() => {
+    const saved = sessionStorage.getItem(`interview_mcq_submitted_${prep._id}`);
+    if (saved) return JSON.parse(saved);
+    return prep.status === 'completed';
+  });
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    sessionStorage.setItem(`interview_mcq_${prep._id}`, JSON.stringify(answers));
+  }, [answers, prep._id]);
+
+  useEffect(() => {
+    sessionStorage.setItem(`interview_mcq_submitted_${prep._id}`, JSON.stringify(submitted));
+  }, [submitted, prep._id]);
 
   async function submitMCQs() {
     setSubmitting(true);
@@ -293,8 +323,16 @@ function MCQSection({ prep, onUpdate }) {
 
 /* ─── Theory Section ─── */
 function TheorySection({ prep, onUpdate }) {
-  const [answers, setAnswers] = useState(prep.theoryQuestions.map((q) => q.userAnswer || ''));
+  const [answers, setAnswers] = useState(() => {
+    const saved = sessionStorage.getItem(`interview_theory_${prep._id}`);
+    if (saved) return JSON.parse(saved);
+    return prep.theoryQuestions.map((q) => q.userAnswer || '');
+  });
   const submitted = prep.status === 'completed';
+
+  useEffect(() => {
+    sessionStorage.setItem(`interview_theory_${prep._id}`, JSON.stringify(answers));
+  }, [answers, prep._id]);
 
   function updateAnswer(i, val) {
     const a = [...answers];
@@ -378,7 +416,15 @@ function CodingSection({ prep }) {
 function MockSection({ prep, onUpdate }) {
   const [message, setMessage] = useState('');
   const [sending, setSending] = useState(false);
-  const [chat, setChat] = useState(prep.mockChat || []);
+  const [chat, setChat] = useState(() => {
+    const saved = sessionStorage.getItem(`interview_mock_${prep._id}`);
+    if (saved) return JSON.parse(saved);
+    return prep.mockChat || [];
+  });
+
+  useEffect(() => {
+    sessionStorage.setItem(`interview_mock_${prep._id}`, JSON.stringify(chat));
+  }, [chat, prep._id]);
 
   async function sendMessage(e) {
     e.preventDefault();

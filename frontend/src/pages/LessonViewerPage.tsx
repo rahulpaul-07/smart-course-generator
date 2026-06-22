@@ -52,25 +52,30 @@ export default function LessonViewerPage() {
 
   useEffect(() => {
     let cancelled = false;
+    const abortController = new AbortController();
 
     async function loadLesson() {
       setLoading(true);
 
       try {
-        const { data } = await api.get(`/courses/${courseId}/lessons/${lessonId}`);
+        const { data } = await api.get(`/courses/${courseId}/lessons/${lessonId}`, {
+          signal: abortController.signal
+        });
         if (cancelled) return;
 
         setCourse(data.course);
         setLesson(data.lesson);
         setSelectedLanguage(data.lesson.language || 'English');
 
-        api.patch(`/courses/lessons/${lessonId}/progress`, { opened: true })
+        api.patch(`/courses/lessons/${lessonId}/progress`, { opened: true }, { signal: abortController.signal })
           .then(({ data: updatedLesson }) => {
             if (!cancelled) updateCurrentLesson(updatedLesson);
           })
           .catch(() => {});
-      } catch {
-        if (!cancelled) toast.error('Failed to load lesson');
+      } catch (error: any) {
+        if (!cancelled && error.name !== 'CanceledError' && error.name !== 'AbortError') {
+          toast.error('Failed to load lesson');
+        }
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -81,10 +86,30 @@ export default function LessonViewerPage() {
 
     return () => {
       cancelled = true;
+      abortController.abort();
     };
   }, [courseId, lessonId]);
 
+  const isGeneratingRef = useRef(false);
+
   async function generateLesson() {
+    if (isGeneratingRef.current) return;
+    
+    const jobKey = `lesson_gen_${courseId}_${lessonId}`;
+    const activeStr = sessionStorage.getItem('active_generation_job');
+    if (activeStr) {
+      try {
+        const activeJob = JSON.parse(activeStr);
+        if (activeJob.key === jobKey && Date.now() - activeJob.timestamp < 120000) {
+          toast.success('Generation is continuing in the background. Please wait...');
+          return;
+        }
+      } catch {}
+    }
+
+    isGeneratingRef.current = true;
+    sessionStorage.setItem('active_generation_job', JSON.stringify({ key: jobKey, timestamp: Date.now() }));
+
     setGenerating(true);
     setShowDepthPicker(false);
     setStreamedCount(0);
@@ -193,7 +218,7 @@ export default function LessonViewerPage() {
         toast.error('No content was generated. Please try again.');
         setStreamStatus('error');
       }
-    } catch (error) {
+    } catch (error: any) {
       if (error.message === 'STREAM_INTERRUPTED') {
         setStreamStatus('interrupted');
         return;
@@ -201,6 +226,8 @@ export default function LessonViewerPage() {
       setStreamStatus('error');
       setStreamError(error.message || 'Failed to generate content');
     } finally {
+      sessionStorage.removeItem('active_generation_job');
+      isGeneratingRef.current = false;
       setGenerating(false);
       setStreamedCount(0);
     }
