@@ -23,6 +23,7 @@ export function Sidebar() {
 
   return (
     <motion.aside
+      id="global-sidebar"
       initial={{ x: -250 }}
       animate={{ x: 0 }}
       transition={{ duration: 0.3, ease: "easeOut" }}

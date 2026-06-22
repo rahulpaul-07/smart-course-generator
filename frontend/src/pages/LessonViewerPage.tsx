@@ -37,6 +37,16 @@ export default function LessonViewerPage() {
   const [addingVideos, setAddingVideos] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [streamedCount, setStreamedCount] = useState(0);
+  const [isFocusMode, setIsFocusMode] = useState(false);
+
+  useEffect(() => {
+    if (isFocusMode) {
+      document.body.classList.add('focus-mode-active');
+    } else {
+      document.body.classList.remove('focus-mode-active');
+    }
+    return () => document.body.classList.remove('focus-mode-active');
+  }, [isFocusMode]);
 
   useEffect(() => {
     let cancelled = false;
@@ -223,10 +233,10 @@ export default function LessonViewerPage() {
   const hasContent = lesson.content?.length > 0;
 
   return (
-    <div className="flex h-[calc(100vh-4.5rem)] overflow-hidden">
+    <div className={`flex overflow-hidden ${isFocusMode ? 'fixed inset-0 z-50 bg-background h-screen' : 'h-[calc(100vh-4.5rem)]'}`}>
       <ReadingProgress containerRef={lessonScrollRef} />
 
-      {course && (
+      {course && !isFocusMode && (
         <LessonSidebar
           course={course}
           currentLessonId={lessonId}
@@ -259,9 +269,12 @@ export default function LessonViewerPage() {
           <header className="relative mb-8 overflow-hidden rounded-3xl border border-border bg-card/50 p-6 shadow-xl backdrop-blur sm:p-10">
             <div className="absolute -right-20 -top-28 h-80 w-80 rounded-full bg-primary/10 blur-[80px] pointer-events-none" />
             <div className="relative">
-              <p className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-4">
-                <BookOpen className="h-4 w-4" /> Focus Mode
-              </p>
+              <button 
+                onClick={() => setIsFocusMode(!isFocusMode)}
+                className={`flex items-center gap-2 text-sm font-semibold uppercase tracking-wider mb-4 transition-colors px-3 py-1.5 rounded-lg border ${isFocusMode ? 'text-primary border-primary/50 bg-primary/10' : 'text-muted-foreground border-border hover:bg-muted/50'}`}
+              >
+                <BookOpen className="h-4 w-4" /> Focus Mode {isFocusMode ? 'ON' : 'OFF'}
+              </button>
               <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-foreground leading-tight">
                 {lesson.title}
               </h1>
