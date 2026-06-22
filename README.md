@@ -1,5 +1,8 @@
 <h1 align="center">CourseAI Pro 🚀</h1>
 <p align="center">
+  <img src="https://github.com/yourusername/smart-course-generator/actions/workflows/ci.yml/badge.svg" alt="CI Pipeline" />
+</p>
+<p align="center">
   <em>An intelligent, scalable EdTech platform generating personalized, highly structured learning courses dynamically via advanced LLM orchestration.</em>
 </p>
 
@@ -121,14 +124,21 @@ Deployment pipelines and orchestrators can utilize the built-in probes:
 
 ---
 
-## 🧪 Testing
+## 🧪 Testing & CI/CD Pipeline
 
 The repository uses **Jest** and **Supertest** for isolated integration testing, heavily utilizing `mongodb-memory-server` to mock DB connections cleanly.
 ```bash
 cd backend
 npm run test
 ```
-Continuous Integration is configured via **GitHub Actions** (`.github/workflows/ci.yml`) ensuring builds fail if tests or coverage metrics drop.
+
+### Continuous Integration (GitHub Actions)
+CourseAI Pro implements a production-grade CI pipeline (`.github/workflows/ci.yml`) that runs on every `push` and `pull_request` to `main`.
+The pipeline ensures code quality by automating:
+- **Frontend**: Dependency installation (with npm caching), ESLint checks, TypeScript type checking (`npx tsc --noEmit`), and production build verification (`npm run build`).
+- **Backend**: Dependency installation and ESLint checks.
+
+Builds will automatically **fail** if there are syntax errors, missing dependencies, TypeScript type errors, or failed linting rules.
 
 ---
 
