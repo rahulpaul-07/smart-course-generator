@@ -17,7 +17,7 @@ export default function LessonRenderer({ content = [], isStreaming = false }: { 
   }
 
   return (
-    <article id="lesson-content" data-print-content className="space-y-6 text-[17px] leading-relaxed text-slate-300">
+    <article id="lesson-content" data-print-content className="space-y-6 text-[17px] leading-relaxed text-foreground">
       {content.map((block, index) => {
         if (block.type === 'heading') {
           const Heading = block.level === 3 ? 'h3' : 'h2';

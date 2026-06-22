@@ -15,8 +15,8 @@ export function TopNavigation() {
   const location = useLocation();
 
   return (
-    <div className="flex flex-col flex-1" id="top-navigation">
-      <header className="sticky top-0 z-40 w-full border-b border-white/10 bg-black/80 backdrop-blur supports-[backdrop-filter]:bg-black/60">
+    <div id="top-navigation" className="shrink-0">
+      <header className="sticky top-0 z-40 w-full border-b border-border bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="flex h-16 items-center px-4 md:px-6 gap-4">
           {/* Mobile Menu Button */}
           <Button 

@@ -27,10 +27,10 @@ export function Sidebar() {
       initial={{ x: -250 }}
       animate={{ x: 0 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
-      className="hidden w-64 flex-col border-r border-white/10 bg-black h-screen md:flex"
+      className="hidden w-64 flex-col border-r border-border bg-card h-screen md:flex"
     >
-      <div className="flex h-16 shrink-0 items-center px-6 border-b border-white/10">
-        <div className="flex items-center gap-2 font-bold text-lg text-white tracking-tight">
+      <div className="flex h-16 shrink-0 items-center px-6 border-b border-border">
+        <div className="flex items-center gap-2 font-bold text-lg text-foreground tracking-tight">
           <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center">
             <Layers className="w-5 h-5 text-black" />
           </div>
@@ -51,14 +51,14 @@ export function Sidebar() {
               className={cn(
                 "group relative flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-all duration-200",
                 isActive
-                  ? "bg-white/10 text-white"
-                  : "text-zinc-400 hover:bg-white/5 hover:text-white"
+                  ? "bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
               )}
             >
               {isActive && (
                 <motion.div 
                   layoutId="sidebar-active" 
-                  className="absolute left-0 top-1 bottom-1 w-1 bg-white rounded-r-full" 
+                  className="absolute left-0 top-1 bottom-1 w-1 bg-primary rounded-r-full" 
                 />
               )}
               <item.icon className={cn("h-4 w-4 shrink-0 transition-colors duration-200", isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground")} />
