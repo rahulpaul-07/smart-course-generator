@@ -122,7 +122,13 @@ export default function AnalyticsPage() {
             </div>
           ))}
           {data.courseStats.length === 0 && (
-            <p className="py-8 text-center text-sm text-slate-500">No courses yet. Create your first course to see progress.</p>
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <div className="mb-4 rounded-full bg-white/5 p-4 ring-1 ring-white/10">
+                <BookOpen className="h-8 w-8 text-slate-400" />
+              </div>
+              <h3 className="mb-1 text-base font-medium text-slate-200">No courses yet</h3>
+              <p className="text-sm text-slate-500">Create your first course to start tracking your progress.</p>
+            </div>
           )}
         </div>
       </section>
@@ -155,7 +161,10 @@ export default function AnalyticsPage() {
                 </div>
               </div>
             )) : (
-              <p className="py-6 text-center text-sm text-slate-500">Complete quizzes to discover your strengths.</p>
+              <div className="flex flex-col items-center justify-center py-10 text-center glass-card rounded-2xl">
+                <Brain className="mb-3 h-8 w-8 text-slate-500 opacity-50" />
+                <p className="text-sm text-slate-400">Complete quizzes to discover your strengths.</p>
+              </div>
             )}
           </div>
         </section>
@@ -176,7 +185,10 @@ export default function AnalyticsPage() {
                 </div>
               </div>
             )) : (
-              <p className="py-6 text-center text-sm text-slate-500">No weak areas detected. Keep going!</p>
+              <div className="flex flex-col items-center justify-center py-10 text-center glass-card rounded-2xl">
+                <Trophy className="mb-3 h-8 w-8 text-slate-500 opacity-50" />
+                <p className="text-sm text-slate-400">No weak areas detected. Keep going!</p>
+              </div>
             )}
           </div>
         </section>
