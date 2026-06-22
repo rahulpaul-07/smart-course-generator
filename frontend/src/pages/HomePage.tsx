@@ -62,21 +62,28 @@ export default function HomePage() {
     : courses;
 
   return (
-    <PageContainer>
-      <div className="mb-10 flex flex-col md:flex-row gap-4 md:items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">Dashboard</h1>
-          <p className="text-muted-foreground mt-1">Welcome back. Here's your learning progress.</p>
-        </div>
-        {search && (
-          <Button variant="outline" onClick={() => setSearchParams({})}>
-            <X className="mr-2 h-4 w-4" />
-            Clear Search
-          </Button>
-        )}
+    <div className="relative min-h-screen">
+      {/* Dynamic Glowing Background Background */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-primary/20 blur-[120px] mix-blend-screen opacity-50 animate-pulse" />
+        <div className="absolute top-[40%] -right-[10%] w-[40%] h-[60%] rounded-full bg-blue-500/10 blur-[120px] mix-blend-screen opacity-50" />
       </div>
 
-      <AnimatePresence mode="wait">
+      <PageContainer className="relative z-10">
+        <div className="mb-10 flex flex-col md:flex-row gap-4 md:items-center justify-between">
+          <div>
+            <h1 className="text-4xl font-extrabold tracking-tight text-foreground bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">Dashboard</h1>
+            <p className="text-muted-foreground mt-2 text-lg">Welcome back. Here's your learning progress.</p>
+          </div>
+          {search && (
+            <Button variant="outline" onClick={() => setSearchParams({})}>
+              <X className="mr-2 h-4 w-4" />
+              Clear Search
+            </Button>
+          )}
+        </div>
+
+        <AnimatePresence mode="wait">
         {loading ? (
           <motion.div
             initial={{ opacity: 0 }}
@@ -195,6 +202,7 @@ export default function HomePage() {
           </div>
         </div>
       </div>
-    </PageContainer>
+      </PageContainer>
+    </div>
   );
 }
