@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, BookOpen, ChevronDown, ChevronRight, Flag, Map, Plus, Rocket, Sparkles, Trash2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import api from '../utils/api';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -234,63 +235,74 @@ function RoadmapDetail({ roadmap, onGenerateCourse }) {
                   {isExpanded ? <ChevronDown className="h-4 w-4 text-slate-500" /> : <ChevronRight className="h-4 w-4 text-slate-500" />}
                 </button>
 
-                {isExpanded && (
-                  <div className="border-t border-white/[0.06] p-4 pt-3 space-y-4">
-                    {/* Topics */}
-                    {week.topics?.length > 0 && (
-                      <div>
-                        <p className="mb-2 text-xs font-medium uppercase tracking-wider text-slate-500">Topics</p>
-                        <div className="flex flex-wrap gap-2">
-                          {week.topics.map((topic, i) => (
-                            <button
-                              key={i}
-                              onClick={() => onGenerateCourse(topic)}
-                              className="group/topic flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-xs text-slate-300 transition hover:border-brand-400/30 hover:bg-brand-500/10 hover:text-white"
-                              title={`Generate a course on "${topic}"`}
-                            >
-                              <BookOpen className="h-3 w-3 opacity-50 transition group-hover/topic:opacity-100" />
-                              {topic}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Milestones */}
-                    {week.milestones?.length > 0 && (
-                      <div>
-                        <p className="mb-2 text-xs font-medium uppercase tracking-wider text-slate-500">Milestones</p>
-                        <ul className="space-y-1.5">
-                          {week.milestones.map((m, i) => (
-                            <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
-                              <Flag className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-400" />
-                              {m}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-
-                    {/* Project */}
-                    {week.project?.title && (
-                      <div className="rounded-xl border border-amber-400/15 bg-amber-500/[0.05] p-3">
-                        <p className="flex items-center gap-1.5 text-xs font-medium text-amber-300">
-                          <Rocket className="h-3.5 w-3.5" /> Weekly Project
-                        </p>
-                        <p className="mt-1 text-sm font-medium text-white">{week.project.title}</p>
-                        {week.project.description && (
-                          <p className="mt-1 text-xs leading-relaxed text-slate-400">{week.project.description}</p>
+                <AnimatePresence initial={false}>
+                  {isExpanded && (
+                    <motion.div
+                      key={`content-${week.weekNumber}`}
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: 'easeInOut' }}
+                      className="overflow-hidden"
+                    >
+                      <div className="border-t border-white/[0.06] p-4 pt-3 space-y-4">
+                        {/* Topics */}
+                        {week.topics?.length > 0 && (
+                          <div>
+                            <p className="mb-2 text-xs font-medium uppercase tracking-wider text-slate-500">Topics</p>
+                            <div className="flex flex-wrap gap-2">
+                              {week.topics.map((topic, i) => (
+                                <button
+                                  key={i}
+                                  onClick={() => onGenerateCourse(topic)}
+                                  className="group/topic flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-xs text-slate-300 transition hover:border-brand-400/30 hover:bg-brand-500/10 hover:text-white"
+                                  title={`Generate a course on "${topic}"`}
+                                >
+                                  <BookOpen className="h-3 w-3 opacity-50 transition group-hover/topic:opacity-100" />
+                                  {topic}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
                         )}
-                        <button
-                          onClick={() => onGenerateCourse(week.project.title)}
-                          className="mt-2 flex items-center gap-1 text-xs font-medium text-brand-300 transition hover:text-brand-200"
-                        >
-                          Generate course <ArrowRight className="h-3 w-3" />
-                        </button>
+
+                        {/* Milestones */}
+                        {week.milestones?.length > 0 && (
+                          <div>
+                            <p className="mb-2 text-xs font-medium uppercase tracking-wider text-slate-500">Milestones</p>
+                            <ul className="space-y-1.5">
+                              {week.milestones.map((m, i) => (
+                                <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
+                                  <Flag className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-400" />
+                                  {m}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
+                        {/* Project */}
+                        {week.project?.title && (
+                          <div className="rounded-xl border border-amber-400/15 bg-amber-500/[0.05] p-3">
+                            <p className="flex items-center gap-1.5 text-xs font-medium text-amber-300">
+                              <Rocket className="h-3.5 w-3.5" /> Weekly Project
+                            </p>
+                            <p className="mt-1 text-sm font-medium text-white">{week.project.title}</p>
+                            {week.project.description && (
+                              <p className="mt-1 text-xs leading-relaxed text-slate-400">{week.project.description}</p>
+                            )}
+                            <button
+                              onClick={() => onGenerateCourse(week.project.title)}
+                              className="mt-2 flex items-center gap-1 text-xs font-medium text-brand-300 transition hover:text-brand-200"
+                            >
+                              Generate course <ArrowRight className="h-3 w-3" />
+                            </button>
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
-                )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
           );
