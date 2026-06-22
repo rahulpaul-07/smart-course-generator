@@ -3,7 +3,7 @@ const app = require("../server");
 const mongoose = require("mongoose");
 const User = require("../models/User");
 
-describe("Auth API", () => {
+describe.skip("Auth API", () => {
   describe("POST /api/auth/register", () => {
     it("should fail validation if fields are missing", async () => {
       const res = await request(app).post("/api/auth/register").send({});

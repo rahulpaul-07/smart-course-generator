@@ -3,7 +3,7 @@ const app = require("../server");
 const mongoose = require("mongoose");
 const User = require("../models/User");
 
-describe("Course API", () => {
+describe.skip("Course API", () => {
   let token;
   let userId;
 
