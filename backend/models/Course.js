@@ -41,5 +41,7 @@ const courseSchema = new mongoose.Schema(
 );
 
 courseSchema.index({ shareId: 1 }, { unique: true, sparse: true });
+courseSchema.index({ isPublic: 1, upvotesCount: -1 });
+courseSchema.index({ creator: 1, createdAt: -1 });
 
 module.exports = mongoose.model("Course", courseSchema);

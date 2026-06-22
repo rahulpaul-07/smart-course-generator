@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, memo } from 'react';
 import { Bot, Loader2, Send, UserRound, X, Sparkles, MessageSquarePlus, Mic, MicOff } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -14,7 +14,7 @@ const SUGGESTIONS = [
   "How does this connect to the previous topic?",
 ];
 
-function AssistantMessage({ content }: { content: string }) {
+const AssistantMessage = memo(function AssistantMessage({ content }: { content: string }) {
   return (
     <div className="min-w-0 text-sm leading-relaxed text-foreground/90 prose prose-invert prose-p:leading-relaxed prose-pre:bg-muted prose-pre:border prose-pre:border-border prose-a:text-primary hover:prose-a:text-primary/80">
       <ReactMarkdown
@@ -34,7 +34,7 @@ function AssistantMessage({ content }: { content: string }) {
       </ReactMarkdown>
     </div>
   );
-}
+});
 
 export default function AIChatPanel({ lessonId, lessonTitle, isOpen, onClose }: { lessonId: string, lessonTitle: string, isOpen: boolean, onClose: () => void }) {
   const [messages, setMessages] = useState<any[]>([]);

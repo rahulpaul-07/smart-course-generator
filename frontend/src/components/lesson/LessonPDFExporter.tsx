@@ -1,5 +1,4 @@
 import { useState } from "react";
-import html2pdf from "html2pdf.js";
 import { Printer } from "lucide-react";
 
 const escapeHtml = (value = "") => {
@@ -199,6 +198,7 @@ const LessonPDFExporter = ({ lesson }) => {
         },
       };
 
+      const { default: html2pdf } = await import("html2pdf.js");
       await html2pdf().set(options).from(pdfElement).save();
     } catch (error) {
       console.error("PDF download failed:", error);

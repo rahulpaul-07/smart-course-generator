@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { baseURL } from "../utils/api";
 import { useParams, useNavigate } from 'react-router-dom';
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
 import { Award, Download, ArrowLeft, Loader2, Share2, Check } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useApi } from '../hooks/useApi';
@@ -56,6 +54,11 @@ export default function CertificatePage() {
     
     setIsExporting(true);
     try {
+      const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
+        import('html2canvas'),
+        import('jspdf')
+      ]);
+
       const canvas = await html2canvas(certificateRef.current, {
         scale: 3,
         useCORS: true,
