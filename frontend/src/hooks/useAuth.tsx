@@ -38,19 +38,36 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const root = window.document.documentElement;
-    const theme = user?.theme || 'system';
+    const theme = user?.theme || localStorage.getItem('theme') || 'system';
+    
+    localStorage.setItem('theme', theme);
 
-    root.classList.remove('light', 'dark');
+    const applyTheme = (t) => {
+      root.classList.remove('light', 'dark');
+      if (t === 'system') {
+        const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        root.classList.add(isDark ? 'dark' : 'light');
+      } else {
+        root.classList.add(t);
+      }
+    };
 
-    if (theme === 'system') {
-      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
-        ? 'dark'
-        : 'light';
-      root.classList.add(systemTheme);
-    } else {
-      root.classList.add(theme);
-    }
+    applyTheme(theme);
   }, [user?.theme]);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const listener = (e) => {
+      const currentTheme = localStorage.getItem('theme') || 'system';
+      if (currentTheme === 'system') {
+        const root = window.document.documentElement;
+        root.classList.remove('light', 'dark');
+        root.classList.add(e.matches ? 'dark' : 'light');
+      }
+    };
+    mediaQuery.addEventListener('change', listener);
+    return () => mediaQuery.removeEventListener('change', listener);
+  }, []);
 
   useEffect(() => {
     if (!hasAuth0Session) {
