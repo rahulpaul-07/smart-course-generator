@@ -37,12 +37,11 @@ function formatCourse(result) {
 
 async function createCourseOutline(prompt, language = "English") {
   const instructions = `
-Create a highly professional and comprehensive course outline covering all essential concepts from fundamental to advanced.
-Ensure absolutely no parts are missing and the progression is logical and pedagogically sound.
-Return JSON with "title", "description", and "modules".
-Create 5-10 detailed modules. Each module needs a "title" and a "lessons" array.
-Each lesson must be an object with a "title".
-Do not include lesson content, quizzes, or videos.
+Create a professional course outline.
+Return MINIFIED JSON with ONLY "title", "description", and "modules".
+Create exactly 5-8 modules. Each module needs a "title" and a "lessons" array.
+Each lesson must be an object with ONLY a "title".
+No explanations, no markdown, no extra text.
 The entire course outline MUST be generated completely in this language: ${language}.
   `.trim();
 

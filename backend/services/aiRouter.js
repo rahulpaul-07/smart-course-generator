@@ -18,22 +18,19 @@ groq.name = "groq";
 openrouter.name = "openrouter";
 
 const fallbackChain = [
-  // Tier 1: Heavyweight / High Intelligence (Highest Success Rates)
+  // Tier 1: Ultra-fast / Speed Optimized (Highest Priority)
+  { provider: groq, model: "llama-3.1-8b-instant", key: "GROQ_API_KEY" },
+  { provider: gemini, model: "gemini-2.5-flash", key: "GEMINI_API_KEY" },
   { provider: groq, model: "llama-3.3-70b-versatile", key: "GROQ_API_KEY" },
+  
+  // Tier 2: Heavyweight / High Intelligence Fallbacks
   { provider: groq, model: "openai/gpt-oss-120b", key: "GROQ_API_KEY" },
+  { provider: openrouter, model: "openai/gpt-4o-mini", key: "OPENROUTER_API_KEY" },
   { provider: openrouter, model: "openai/gpt-4o", key: "OPENROUTER_API_KEY" },
   
-  // Tier 2: Fast & Capable (Mid-size)
+  // Tier 3: General Fallbacks
   { provider: openrouter, model: "mistralai/mixtral-8x7b-instruct", key: "OPENROUTER_API_KEY" },
-  { provider: gemini, model: "gemini-2.5-flash", key: "GEMINI_API_KEY" },
-  { provider: groq, model: "meta-llama/llama-4-scout-17b-16e-instruct", key: "GROQ_API_KEY" },
-  { provider: groq, model: "qwen/qwen3.6-27b", key: "GROQ_API_KEY" },
-  { provider: groq, model: "groq/compound", key: "GROQ_API_KEY" },
-  
-  // Tier 3: Ultra-fast / Lite / High Quota
   { provider: openrouter, model: "meta-llama/llama-3-8b-instruct", key: "OPENROUTER_API_KEY" },
-  { provider: groq, model: "llama-3.1-8b-instant", key: "GROQ_API_KEY" },
-  { provider: groq, model: "groq/compound-mini", key: "GROQ_API_KEY" },
 ];
 
 function getProviderChain() {
