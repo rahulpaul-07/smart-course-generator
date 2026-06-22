@@ -101,14 +101,26 @@ export default function PromptForm({ onSubmit, isLoading = false }: { onSubmit: 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 z-50 bg-background/50 backdrop-blur-sm flex items-center justify-center"
+            className="absolute inset-0 z-50 overflow-hidden flex items-center justify-center rounded-xl bg-background/80 backdrop-blur-md"
           >
-            <div className="flex flex-col items-center gap-4">
+            {/* Shimmer gradient overlay */}
+            <div className="absolute inset-0 z-0 bg-[linear-gradient(110deg,transparent,rgba(var(--primary),0.1),transparent)] bg-[length:200%_100%] animate-shimmer pointer-events-none" />
+            
+            <div className="flex flex-col items-center gap-5 relative z-10">
               <div className="relative">
-                <div className="absolute inset-0 rounded-full blur-md bg-primary/30 animate-pulse" />
-                <Loader2 className="h-8 w-8 animate-spin text-primary relative z-10" />
+                <div className="absolute inset-0 rounded-full blur-xl bg-primary/40 animate-pulse" />
+                <div className="h-14 w-14 rounded-2xl bg-card border border-primary/20 flex items-center justify-center shadow-2xl relative z-10 animate-float">
+                  <Wand2 className="h-6 w-6 text-primary animate-pulse" />
+                </div>
               </div>
-              <p className="text-sm font-medium animate-pulse text-primary">Designing your personalized journey...</p>
+              
+              <div className="space-y-1 text-center">
+                <h4 className="text-lg font-bold text-foreground animate-pulse">Crafting Your Journey</h4>
+                <p className="text-sm font-medium text-muted-foreground flex items-center justify-center gap-2">
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  Generating AI curriculum...
+                </p>
+              </div>
             </div>
           </motion.div>
         )}
