@@ -3,6 +3,7 @@ import { Globe, Heart, Copy, Star, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import LoadingSpinner from '../components/LoadingSpinner';
+import toast from 'react-hot-toast';
 
 export default function CommunityTemplatesPage() {
   const [templates, setTemplates] = useState([]);
@@ -22,10 +23,27 @@ export default function CommunityTemplatesPage() {
   };
 
   const handleUpvote = async (courseId) => {
+    // Optimistic UI Update
+    setTemplates(prev => prev.map(t => 
+      t._id === courseId 
+        ? { ...t, upvotesCount: (t.upvotesCount || 0) + 1, hasUpvoted: true } 
+        : t
+    ));
     try {
       const res = await api.post(`/collab/templates/${courseId}/upvote`);
-      setTemplates(templates.map(t => t._id === courseId ? { ...t, upvotesCount: res.data.upvotesCount } : t));
-    } catch (e) { console.error(e); }
+      // Sync with server if successful
+      setTemplates(prev => prev.map(t => 
+        t._id === courseId ? { ...t, upvotesCount: res.data.upvotesCount } : t
+      ));
+    } catch (e) { 
+      // Revert on failure
+      toast.error('Failed to upvote');
+      setTemplates(prev => prev.map(t => 
+        t._id === courseId 
+          ? { ...t, upvotesCount: Math.max(0, (t.upvotesCount || 1) - 1), hasUpvoted: false } 
+          : t
+      ));
+    }
   };
 
   const handleRate = async (courseId, rating) => {
