@@ -2,9 +2,7 @@ const { z } = require("zod");
 
 const generateCourseSchema = z.object({
   body: z.object({
-    topic: z.string().min(2, "Topic must be at least 2 characters").max(100),
-    level: z.enum(['Beginner', 'Intermediate', 'Advanced', 'Expert']),
-    modulesCount: z.number().int().min(1).max(10).default(3),
+    prompt: z.string().min(10, "Describe the course in at least 10 characters").max(2000),
     language: z.string().default('English')
   })
 });
