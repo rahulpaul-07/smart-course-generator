@@ -18,9 +18,9 @@ import HinglishAudioExplanation from '../components/lesson/HinglishAudioExplanat
 import LessonRenderer from '../components/lesson/LessonRenderer';
 import LessonSidebar from '../components/lesson/LessonSidebar';
 import StudyTools from '../components/lesson/StudyTools';
-import api from '../utils/api';
+import api, { baseURL } from '../utils/api';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+const API_BASE = baseURL;
 
 export default function LessonViewerPage() {
   const { id: lessonId, courseId } = useParams();

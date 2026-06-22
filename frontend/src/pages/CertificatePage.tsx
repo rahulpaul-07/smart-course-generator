@@ -1,4 +1,5 @@
-import { useRef, useState, useEffect } from 'react';
+import { useEffect, useRef, useState } from "react";
+import { baseURL } from "../utils/api";
 import { useParams, useNavigate } from 'react-router-dom';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
@@ -27,8 +28,7 @@ export default function CertificatePage() {
   const fetchApi = useApi();
 
   useEffect(() => {
-    const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
-    fetch(`${baseUrl}/certificates/${id}`)
+    fetch(`${baseURL}/certificates/${id}`)
       .then(async res => {
         if (!res.ok) {
           const text = await res.text();

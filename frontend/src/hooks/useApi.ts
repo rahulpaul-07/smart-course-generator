@@ -1,4 +1,5 @@
 import { useAuth } from './useAuth';
+import { baseURL } from '../utils/api';
 
 export function useApi() {
   const { getToken, login } = useAuth();
@@ -15,9 +16,7 @@ export function useApi() {
       }
     }
 
-    const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
-    
-    const res = await fetch(`${baseUrl}${endpoint}`, {
+    const res = await fetch(`${baseURL}${endpoint}`, {
       ...options,
       headers: {
         'Content-Type': 'application/json',
