@@ -150,12 +150,15 @@ export default function QuizPanel({ lesson, onLessonUpdate, embedded = false }: 
               else if (isSelected && !checked) optionClass = 'border-primary bg-primary/10 text-primary ring-1 ring-primary';
 
               return (
-                <button
+                <motion.button
                   key={optionIndex}
                   type="button"
+                  whileHover={checked ? {} : { scale: 1.01 }}
+                  whileTap={checked ? {} : { scale: 0.98 }}
+                  animate={isWrong ? { x: [-5, 5, -5, 5, 0], transition: { duration: 0.4 } } : {}}
                   onClick={() => !checked && setAnswer(optionIndex)}
                   disabled={checked}
-                  className={`flex w-full items-center gap-4 rounded-xl border p-4 text-left text-[15px] font-medium transition-all duration-200 ${optionClass}`}
+                  className={`flex w-full items-center gap-4 rounded-xl border p-4 text-left text-[15px] font-medium transition-colors duration-200 ${optionClass}`}
                 >
                   <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border text-sm font-bold ${
                     isCorrect ? 'bg-emerald-500 border-emerald-500 text-white' :
@@ -168,7 +171,7 @@ export default function QuizPanel({ lesson, onLessonUpdate, embedded = false }: 
                      String.fromCharCode(65 + optionIndex)}
                   </span>
                   <span className="leading-relaxed">{option}</span>
-                </button>
+                </motion.button>
               );
             })}
           </div>
