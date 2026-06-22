@@ -4,6 +4,8 @@ import ListBlock from '../blocks/ListBlock';
 import VideoBlock from '../blocks/VideoBlock';
 import { motion } from 'framer-motion';
 import { Skeleton } from '@/components/ui/skeleton';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 export default function LessonRenderer({ content = [], isStreaming = false }: { content: any[], isStreaming?: boolean }) {
   if (!content.length && !isStreaming) {
@@ -43,14 +45,16 @@ export default function LessonRenderer({ content = [], isStreaming = false }: { 
         if (block.type === 'callout') return <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} key={index}><CalloutBlock block={block} /></motion.div>;
         if (block.type === 'video') return <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} key={index}><VideoBlock block={block} /></motion.div>;
         if (block.text) return (
-          <motion.p 
+          <motion.div 
             key={index} 
             initial={{ opacity: 0 }} 
             animate={{ opacity: 1 }} 
-            className="text-muted-foreground leading-[1.8]"
+            className="text-muted-foreground leading-[1.8] prose prose-invert prose-p:my-2 prose-strong:text-foreground prose-code:text-primary prose-code:bg-primary/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md max-w-none"
           >
-            {block.text}
-          </motion.p>
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {block.text}
+            </ReactMarkdown>
+          </motion.div>
         );
         return null;
       })}
