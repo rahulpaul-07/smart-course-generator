@@ -14,6 +14,6 @@ router.post("/google", authLimiter, validateRequest(googleLoginSchema), googleLo
 
 // Protected routes
 router.get("/me", verifyAuth0Token, getMe);
-router.post("/auth0-sync", verifyAuth0Token, validateRequest(auth0SyncSchema), auth0Sync);
+router.post("/auth0-sync", verifyAuth0Token, auth0Sync);
 
 module.exports = router;
