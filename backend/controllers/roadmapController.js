@@ -50,7 +50,10 @@ Generate the complete week-by-week roadmap.`;
 
     const result = await aiRouter.generateJson(systemPrompt, userPrompt, 8192);
 
-    const weeks = (result.weeks || []).map((w, i) => ({
+    const parsedWeeks = result.weeks || result.roadmap?.weeks || result.roadmap || [];
+    const parsedSummary = result.summary || result.roadmap?.summary || "";
+
+    const weeks = (Array.isArray(parsedWeeks) ? parsedWeeks : []).map((w, i) => ({
       weekNumber: w.weekNumber || i + 1,
       title: w.title || `Week ${i + 1}`,
       topics: Array.isArray(w.topics) ? w.topics : [],
@@ -66,7 +69,7 @@ Generate the complete week-by-week roadmap.`;
       goal,
       duration,
       skillLevel,
-      summary: result.summary || "",
+      summary: parsedSummary,
       weeks,
     });
 
