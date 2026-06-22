@@ -82,10 +82,10 @@ export function TopNavigation() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56 bg-card border-border">
                   <div className="flex items-center justify-start gap-2 p-2">
-                    <div className="flex flex-col space-y-1 leading-none">
-                      {user?.name && <p className="font-medium">{user.name}</p>}
+                    <div className="flex flex-col space-y-1 leading-none min-w-0 flex-1">
+                      {user?.name && <p className="font-medium truncate">{user.name}</p>}
                       {user?.email && (
-                        <p className="w-[200px] truncate text-sm text-muted-foreground">
+                        <p className="w-full truncate text-sm text-muted-foreground">
                           {user.email}
                         </p>
                       )}

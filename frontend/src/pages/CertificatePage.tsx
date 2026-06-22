@@ -178,36 +178,35 @@ export default function CertificatePage() {
             {/* Actual Certificate DOM (what gets exported) */}
             <div 
               ref={certificateRef}
-              className="relative w-full max-w-[900px] aspect-[1.414/1] bg-[#020817] border-[12px] border-[#0f172a] flex flex-col items-center justify-center p-12 text-center overflow-hidden shadow-inner"
+              className="relative w-full max-w-[900px] aspect-[1.414/1] bg-[#020817] border-[4px] sm:border-[8px] md:border-[12px] border-[#0f172a] flex flex-col items-center justify-center p-6 md:p-12 text-center overflow-hidden shadow-inner"
               style={{ backgroundImage: 'linear-gradient(135deg, rgba(var(--primary), 0.05), rgba(var(--primary), 0.02))' }}
             >
-              <div className="absolute top-0 left-0 w-[400px] h-[400px] bg-primary/10 rounded-full blur-[100px] -ml-32 -mt-32"></div>
-              <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-cyan-500/10 rounded-full blur-[100px] -mr-40 -mb-40"></div>
+              <div className="absolute top-0 left-0 w-[200px] md:w-[400px] h-[200px] md:h-[400px] bg-primary/10 rounded-full blur-[60px] md:blur-[100px] -ml-16 md:-ml-32 -mt-16 md:-mt-32 pointer-events-none"></div>
+              <div className="absolute bottom-0 right-0 w-[200px] md:w-[400px] h-[200px] md:h-[400px] bg-cyan-500/10 rounded-full blur-[60px] md:blur-[100px] -mr-20 md:-mr-40 -mb-20 md:-mb-40 pointer-events-none"></div>
               
-              <div className="border border-primary/20 w-full h-full p-8 flex flex-col items-center justify-center relative z-10 backdrop-blur-sm bg-background/5">
-                <Award className="w-20 h-20 text-primary mb-6" />
+              <div className="border border-primary/20 w-full h-full p-4 md:p-8 flex flex-col items-center justify-center relative z-10 backdrop-blur-sm bg-background/5 min-w-0">
+                <Award className="w-12 h-12 md:w-20 md:h-20 text-primary mb-4 md:mb-6 shrink-0" />
                 
-                <h1 className="text-4xl md:text-5xl font-extrabold text-foreground mb-2 tracking-widest uppercase opacity-90">
+                <h1 className="text-2xl sm:text-3xl md:text-5xl font-extrabold text-foreground mb-2 tracking-widest uppercase opacity-90 break-words w-full px-2">
                   Certificate of Completion
                 </h1>
-                <div className="w-32 h-1.5 bg-primary/80 rounded-full mb-10 shadow-[0_0_15px_rgba(var(--primary),0.5)]"></div>
+                <div className="w-16 md:w-32 h-1 md:h-1.5 bg-primary/80 rounded-full mb-6 md:mb-10 shadow-[0_0_15px_rgba(var(--primary),0.5)] shrink-0"></div>
                 
-                <p className="text-xl text-muted-foreground mb-4 font-serif italic">This is to certify that</p>
-                <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-8 tracking-tight">{certificate.userName}</h2>
+                <p className="text-sm sm:text-lg md:text-xl text-muted-foreground mb-2 md:mb-4 font-serif italic">This is to certify that</p>
+                <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4 md:mb-8 tracking-tight break-words w-full px-2">{certificate.userName}</h2>
                 
-                <p className="text-lg text-muted-foreground mb-4 font-serif italic">has successfully completed the course</p>
-                <h3 className="text-2xl sm:text-3xl font-bold text-primary mb-12 max-w-2xl leading-tight">{certificate.courseTitle}</h3>
+                <p className="text-sm sm:text-base md:text-lg text-muted-foreground mb-2 md:mb-4 font-serif italic">has successfully completed the course</p>
+                <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-primary mb-6 md:mb-12 max-w-2xl leading-tight break-words w-full px-2">{certificate.courseTitle}</h3>
                 
-                <div className="flex justify-between w-full max-w-3xl mt-auto pt-8 border-t border-border/50 pb-4">
-                  <div className="text-center">
-                    <p className="text-lg font-bold text-foreground mb-1">
-                      {new Date(certificate.issuedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-                    </p>
-                    <p className="text-xs text-muted-foreground uppercase tracking-widest font-semibold">Date Issued</p>
+                <div className="flex w-full items-center justify-between px-4 sm:px-8 mt-auto pt-4 border-t border-border/30">
+                  <div className="text-left min-w-0">
+                    <p className="text-[10px] sm:text-xs text-muted-foreground mb-1 uppercase tracking-wider">Date Issued</p>
+                    <p className="font-mono text-xs sm:text-sm text-foreground">{new Date(certificate.issuedAt).toLocaleDateString()}</p>
                   </div>
-                  <div className="text-center">
-                    <p className="text-xl font-bold text-primary mb-1 font-signature tracking-wider">CourseAI Pro</p>
-                    <p className="text-xs text-muted-foreground uppercase tracking-widest font-semibold">Platform</p>
+                  
+                  <div className="text-right min-w-0">
+                    <p className="text-[10px] sm:text-xs text-muted-foreground mb-1 uppercase tracking-wider">Certificate ID</p>
+                    <p className="font-mono text-[10px] sm:text-xs text-foreground bg-black/20 px-2 py-1 rounded truncate max-w-[120px] sm:max-w-none">{certificate.certificateId}</p>
                   </div>
                 </div>
               </div>

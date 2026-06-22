@@ -49,7 +49,7 @@ export default function LessonRenderer({ content = [], isStreaming = false }: { 
             key={index} 
             initial={{ opacity: 0 }} 
             animate={{ opacity: 1 }} 
-            className="text-muted-foreground leading-[1.8] prose prose-invert prose-p:my-2 prose-strong:text-foreground prose-code:text-primary prose-code:bg-primary/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md max-w-none"
+            className="text-muted-foreground leading-[1.8] prose prose-invert prose-p:my-2 prose-strong:text-foreground prose-code:text-primary prose-code:bg-primary/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md max-w-none break-words overflow-wrap-anywhere prose-pre:overflow-x-auto prose-pre:max-w-full prose-table:block prose-table:overflow-x-auto"
           >
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {block.text}
