@@ -19,10 +19,12 @@ export default function VideoBlock({ block }) {
 
   if (url.protocol !== 'http:' && url.protocol !== 'https:') return null;
 
-  const id = youtubeId(url);
+  let id = youtubeId(url);
+  const isSearch = url.searchParams.get('listType') === 'search';
+  const searchQuery = url.searchParams.get('list');
   const title = block.title || 'Lesson video';
 
-  if (!id) {
+  if (!id && !isSearch) {
     return (
       <a
         href={url.href}
@@ -39,7 +41,7 @@ export default function VideoBlock({ block }) {
     <div className="my-7 overflow-hidden rounded-2xl border border-white/[0.09] bg-[#070914] shadow-2xl shadow-black/20">
       <iframe
         className="aspect-video w-full"
-        src={`https://www.youtube.com/embed/${id}`}
+        src={isSearch ? `https://www.youtube.com/embed?listType=search&list=${searchQuery}` : `https://www.youtube.com/embed/${id}`}
         title={title}
         loading="lazy"
         allowFullScreen

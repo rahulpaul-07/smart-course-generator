@@ -22,9 +22,12 @@ async function findLessonVideos({ lesson, moduleDoc, course, heading }) {
   for (let attempt = 0; attempt < 3; attempt++) {
     const apiKey = youtubeKeys.getKey();
     if (!apiKey) {
-      const error = new Error("server error");
-      error.statusCode = 500;
-      throw error;
+      // Fallback: return a search query block instead of failing
+      return [{
+        type: "video",
+        url: `https://www.youtube.com/results?listType=search&list=${encodeURIComponent(query)}`,
+        title: `${query} (Search Results)`
+      }];
     }
 
     const params = new URLSearchParams({

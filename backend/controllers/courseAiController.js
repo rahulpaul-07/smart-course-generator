@@ -368,6 +368,28 @@ async function chatAboutCourse(req, res) {
   }
 }
 
+async function addVideosToLesson(req, res) {
+  try {
+    const context = await getOwnedLesson(req.params.lessonId, req.user._id);
+    
+    // Find videos using youtubeService
+    const videos = await findLessonVideos(context);
+    
+    if (videos && videos.length > 0) {
+      // Append videos to the end of the content array
+      if (!context.lesson.content) context.lesson.content = [];
+      context.lesson.content.push(...videos);
+      
+      await context.course.save();
+    }
+    
+    return res.json({ lesson: context.lesson, videos });
+  } catch (error) {
+    console.error("Add Videos Error:", error);
+    return res.status(error.statusCode || 500).json({ error: error.message || "Failed to add videos" });
+  }
+}
+
 module.exports = {
   generateCourseContent,
   enrichLesson,
@@ -379,4 +401,5 @@ module.exports = {
   generateLessonOutline,
   generateLessonChunk,
   generateLessonQuizChunk,
+  addVideosToLesson
 };
