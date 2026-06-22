@@ -1,3 +1,4 @@
+const ytSearch = require("yt-search");
 const KeyManager = require("./keyManager");
 const youtubeKeys = new KeyManager("YOUTUBE_API_KEY");
 
@@ -19,15 +20,27 @@ async function findLessonVideos({ lesson, moduleDoc, course, heading }) {
     ? `${course?.title || ""} ${heading} tutorial` 
     : `${course?.title || ""} ${lesson.title} tutorial`;
 
+  const fallbackSearch = async () => {
+    try {
+      const results = await ytSearch(query);
+      if (results && results.videos && results.videos.length > 0) {
+        const video = results.videos[0];
+        return [{
+          type: "video",
+          url: video.url,
+          title: video.title || `${query} Tutorial`
+        }];
+      }
+    } catch (e) {
+      console.warn("yt-search fallback failed:", e);
+    }
+    return [];
+  };
+
   for (let attempt = 0; attempt < 3; attempt++) {
     const apiKey = youtubeKeys.getKey();
     if (!apiKey) {
-      // Fallback: return a search query block instead of failing
-      return [{
-        type: "video",
-        url: `https://www.youtube.com/results?listType=search&list=${encodeURIComponent(query)}`,
-        title: `${query} (Search Results)`
-      }];
+      return await fallbackSearch();
     }
 
     const params = new URLSearchParams({
@@ -47,20 +60,16 @@ async function findLessonVideos({ lesson, moduleDoc, course, heading }) {
         signal: AbortSignal.timeout(10000),
       });
     } catch {
-      const error = new Error("Could not reach YouTube. Please try again.");
-      error.statusCode = 502;
-      throw error;
+      continue; // Try next key or move to fallback
     }
 
     if (!response.ok) {
       if (response.status === 403) {
         youtubeKeys.markExhausted(apiKey);
         console.warn(`[YouTube] Key exhausted or quota exceeded. Retrying with a new key...`);
-        continue; // Try the next key
+        continue;
       }
-      const error = new Error("YouTube video search failed.");
-      error.statusCode = 502;
-      throw error;
+      continue; // If 400/500, skip to next or fallback
     }
 
     const data = await response.json();
@@ -85,14 +94,16 @@ async function findLessonVideos({ lesson, moduleDoc, course, heading }) {
     }
 
     if (!videos.length) {
-      const error = new Error("No new relevant videos were found for this lesson.");
-      error.statusCode = 409;
-      throw error;
+      // No relevant videos found via API, fallback to ytSearch
+      break;
     }
   }
 
-  // If we exhaust attempts and still haven't returned:
-  const error = new Error("YouTube video search failed after multiple attempts due to quota limits.");
+  // If we exhaust attempts or break due to no videos:
+  const fallbackVideos = await fallbackSearch();
+  if (fallbackVideos.length > 0) return fallbackVideos;
+
+  const error = new Error("YouTube video search failed after multiple attempts.");
   error.statusCode = 502;
   throw error;
 }
