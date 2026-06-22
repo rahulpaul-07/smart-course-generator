@@ -142,21 +142,35 @@ export default function HomePage() {
               </motion.div>
             ) : (
               <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="flex flex-col items-center justify-center p-12 text-center rounded-xl border border-dashed border-border bg-muted/20"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="relative overflow-hidden flex flex-col items-center justify-center p-14 text-center rounded-2xl border border-border/50 bg-card/40 backdrop-blur-sm"
               >
-                <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                  <BookOpen className="h-6 w-6 text-primary" />
+                <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
+                <div className="relative">
+                  <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full" />
+                  <div className="h-20 w-20 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-6 relative z-10 animate-float">
+                    <BookOpen className="h-10 w-10 text-primary" />
+                  </div>
                 </div>
-                <h3 className="text-lg font-semibold text-foreground">No courses found</h3>
-                <p className="text-muted-foreground mt-1 mb-6 max-w-md">
+                <h3 className="text-2xl font-bold text-foreground mb-2">
+                  {search ? 'No matches found' : 'Ready to start learning?'}
+                </h3>
+                <p className="text-muted-foreground mb-8 max-w-md">
                   {search 
-                    ? "We couldn't find any courses matching your search terms." 
-                    : "You haven't created any courses yet. Start by generating your first learning journey!"}
+                    ? "We couldn't find any courses matching your search terms. Try using different keywords." 
+                    : "You haven't created any courses yet. Describe what you want to learn in the generator to create your first personalized curriculum."}
                 </p>
-                {search && (
-                  <Button onClick={() => setSearchParams({})}>Clear Search</Button>
+                {search ? (
+                  <Button onClick={() => setSearchParams({})} className="btn-secondary">Clear Search</Button>
+                ) : (
+                  <Button 
+                    onClick={() => document.querySelector('textarea')?.focus()} 
+                    className="btn-primary animate-pulse"
+                  >
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    Generate Course
+                  </Button>
                 )}
               </motion.div>
             )}
