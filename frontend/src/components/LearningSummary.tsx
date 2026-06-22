@@ -2,6 +2,7 @@ import { ArrowRight, BookOpen, CheckCircle2, Target, Trophy, Clock, PlayCircle }
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { courseProgress, mostRecentLesson } from '../utils/courseProgress';
+import { useAuth } from '../hooks/useAuth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -34,10 +35,13 @@ export default function LearningSummary({ courses }: { courses: any[] }) {
   const completion = totalLessons ? Math.round((completedLessons / totalLessons) * 100) : 0;
   const completedCourses = courses.filter((course) => courseProgress(course).percentage === 100).length;
 
+  const { user } = useAuth();
+  const streak = user?.studyStreak || 0;
+
   const stats = [
     { label: 'Active Courses', value: courses.length, icon: BookOpen, color: 'text-violet-500', bg: 'bg-violet-500/10' },
     { label: 'Lessons Completed', value: completedLessons, icon: CheckCircle2, color: 'text-cyan-500', bg: 'bg-cyan-500/10' },
-    { label: 'Learning Streak', value: '3 Days', icon: Trophy, color: 'text-amber-500', bg: 'bg-amber-500/10' },
+    { label: 'Learning Streak', value: `${streak} Days`, icon: Trophy, color: 'text-amber-500', bg: 'bg-amber-500/10' },
     { label: 'Overall Progress', value: `${completion}%`, icon: Target, color: 'text-blue-500', bg: 'bg-blue-500/10' },
   ];
 
