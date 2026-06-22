@@ -1,5 +1,6 @@
 const { OpenAI } = require("openai");
 const KeyManager = require("./keyManager");
+const { parseRobustJson, structuredAiLog } = require("./aiValidator");
 
 const openrouterKeys = new KeyManager("OPENROUTER_API_KEY");
 
@@ -31,7 +32,7 @@ async function generateJson(systemPrompt, userPrompt, maxTokens = 4096, modelNam
       max_tokens: maxTokens,
     });
 
-    return JSON.parse(response.choices[0].message.content);
+    return parseRobustJson(response.choices[0].message.content);
   } catch (error) {
     if (error.status === 429) {
       openrouterKeys.markExhausted(apiKey);

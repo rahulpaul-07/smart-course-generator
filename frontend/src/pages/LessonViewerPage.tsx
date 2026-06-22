@@ -32,6 +32,8 @@ export default function LessonViewerPage() {
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [showDepthPicker, setShowDepthPicker] = useState(false);
+  const [streamStatus, setStreamStatus] = useState<'idle' | 'interrupted' | 'error'>('idle');
+  const [streamError, setStreamError] = useState('');
   const [selectedDepth, setSelectedDepth] = useState('standard');
   const [selectedLanguage, setSelectedLanguage] = useState('English');
   const [addingVideos, setAddingVideos] = useState(false);
@@ -116,9 +118,20 @@ export default function LessonViewerPage() {
       let buffer = '';
       let count = 0;
       let streamComplete = false;
+      let streamInterrupted = false;
+      let currentEvent = '';
 
       while (!streamComplete) {
-        const { done, value } = await reader.read();
+        let done, value;
+        try {
+          const result = await reader.read();
+          done = result.done;
+          value = result.value;
+        } catch (readErr) {
+          done = true;
+          streamInterrupted = true;
+        }
+
         if (done) {
           streamComplete = true;
           continue;
@@ -129,7 +142,6 @@ export default function LessonViewerPage() {
         // Keep the last partial line in the buffer
         buffer = lines.pop() || '';
 
-        let currentEvent = '';
         for (const line of lines) {
           if (line.startsWith('event: ')) {
             currentEvent = line.slice(7).trim();
@@ -166,13 +178,28 @@ export default function LessonViewerPage() {
         }
       }
 
+      if (currentEvent !== 'done' && currentEvent !== 'error') {
+        streamInterrupted = true;
+      }
+
+      if (streamInterrupted) {
+        throw new Error('STREAM_INTERRUPTED');
+      }
+
       if (count > 0) {
         toast.success('Lesson content generated');
+        setStreamStatus('idle');
       } else {
         toast.error('No content was generated. Please try again.');
+        setStreamStatus('error');
       }
     } catch (error) {
-      toast.error(error.message || 'Failed to generate content');
+      if (error.message === 'STREAM_INTERRUPTED') {
+        setStreamStatus('interrupted');
+        return;
+      }
+      setStreamStatus('error');
+      setStreamError(error.message || 'Failed to generate content');
     } finally {
       setGenerating(false);
       setStreamedCount(0);
@@ -319,6 +346,40 @@ export default function LessonViewerPage() {
             selectedDepth={selectedDepth}
             streamedCount={streamedCount}
           />
+
+          {streamStatus === 'interrupted' && (
+            <div className="bg-amber-500/10 border border-amber-500/20 p-6 rounded-xl my-6 flex flex-col items-center justify-center text-center">
+              <h3 className="text-xl font-bold text-amber-500 mb-2">Connection Lost</h3>
+              <p className="text-muted-foreground mb-6">The AI stream was disconnected. The backend may have finished saving the lesson.</p>
+              <div className="flex gap-4">
+                <button 
+                  onClick={() => window.location.reload()}
+                  className="bg-primary text-primary-foreground px-6 py-2 rounded-lg font-medium shadow-lg hover:shadow-primary/20 hover:bg-primary/90 transition-all"
+                >
+                  Resume / Reconnect
+                </button>
+                <button 
+                  onClick={generateLesson}
+                  className="bg-muted text-foreground border border-border px-6 py-2 rounded-lg font-medium hover:bg-muted/80 transition-all"
+                >
+                  Regenerate Lesson
+                </button>
+              </div>
+            </div>
+          )}
+
+          {streamStatus === 'error' && (
+            <div className="bg-destructive/10 border border-destructive/20 p-6 rounded-xl my-6 flex flex-col items-center justify-center text-center">
+              <h3 className="text-xl font-bold text-destructive mb-2">Generation Failed</h3>
+              <p className="text-muted-foreground mb-6">{streamError}</p>
+              <button 
+                onClick={generateLesson}
+                className="bg-destructive text-destructive-foreground px-6 py-2 rounded-lg font-medium hover:bg-destructive/90 transition-all"
+              >
+                Try Again
+              </button>
+            </div>
+          )}
 
           <LessonRenderer content={lesson.content} isStreaming={generating} />
 

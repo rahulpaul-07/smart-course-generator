@@ -8,15 +8,7 @@ function getAiClient() {
   return { client: new GoogleGenAI({ apiKey }), apiKey };
 }
 
-function parseJson(value) {
-  try {
-    const cleaned = value.replace(/^```(json)?\n?/i, '').replace(/\n?```$/i, '').trim();
-    return JSON.parse(cleaned);
-  } catch {
-    return null;
-  }
-}
-
+const { parseRobustJson, structuredAiLog } = require("./aiValidator");
 function geminiError(error) {
   let message = "AI service is unavailable. Please try again.";
   let statusCode = 502;
@@ -60,8 +52,7 @@ async function generateJson(systemPrompt, userPrompt, maxTokens = 4096, modelNam
           maxOutputTokens: maxTokens,
         }
       });
-      const result = parseJson(response.text || "");
-      if (result) return result;
+      return parseRobustJson(response.text || "");
     } catch (error) {
       if (error.status === 429) geminiKeys.markExhausted(apiKey);
       console.error("Generate JSON Error", error);

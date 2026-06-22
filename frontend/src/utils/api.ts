@@ -1,4 +1,5 @@
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 let baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
 // In Render, the base URL is provided without /api (e.g. https://my-backend.onrender.com)
@@ -25,13 +26,24 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Prevent React Error 31 (rendering objects as children) by ensuring error messages are always strings
-    if (error.response?.data?.error) {
-      if (typeof error.response.data.error === 'object') {
-        error.response.data.error = error.response.data.error.message || 'An unexpected server error occurred';
-      } else if (typeof error.response.data.error !== 'string') {
-        error.response.data.error = String(error.response.data.error);
+    if (error.response) {
+      const status = error.response.status;
+      let msg = error.response.data?.error || 'An unexpected server error occurred';
+      if (typeof msg === 'object') msg = msg.message || 'Error';
+      
+      // Global toasts for specific status codes
+      if (status === 401) {
+        toast.error('Your session has expired. Please log in again.');
+      } else if (status === 403) {
+        toast.error('You do not have permission to perform this action.');
+      } else if (status === 429) {
+        toast.error('Rate limit exceeded. Please wait a moment and try again.');
       }
+
+      // Prevent React Error 31 by ensuring error messages are always strings
+      error.response.data.error = msg;
+    } else if (error.request) {
+      toast.error('Network error. Please check your connection.');
     }
     return Promise.reject(error);
   }

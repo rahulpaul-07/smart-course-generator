@@ -2,6 +2,7 @@ const gemini = require("./geminiService");
 const groq = require("./groqService");
 const openrouter = require("./openrouterService");
 const AiTelemetry = require("../models/AiTelemetry");
+const { structuredAiLog } = require("./aiValidator");
 
 function logTelemetry(data) {
   try {
@@ -326,6 +327,16 @@ async function generateJson(systemPrompt, userPrompt, maxTokens = 4096, validato
         logTelemetry({ provider: provider.name, model, endpoint: 'generateJson', status: 'success' });
         return result;
       } catch (error) {
+        let category = error.failureCategory || 'provider_error';
+        if (error.status === 429) category = 'rate_limit';
+        else if (error.message && error.message.includes('timeout')) category = 'timeout';
+        
+        const reqType = (systemPrompt + userPrompt).toLowerCase().includes('lesson') ? 'lesson' : 
+                        (systemPrompt + userPrompt).toLowerCase().includes('course') ? 'course' :
+                        (systemPrompt + userPrompt).toLowerCase().includes('roadmap') ? 'roadmap' :
+                        (systemPrompt + userPrompt).toLowerCase().includes('interview') ? 'interview' : 'unknown';
+
+        structuredAiLog(provider.name, reqType, category, error.message || String(error));
         logTelemetry({ provider: provider.name, model, endpoint: 'generateJson', status: 'failure', reason: error.message || String(error) });
         console.warn(`[AI Router] ${provider.name} (${model}) failed to generateJson. Switching to next...`);
         lastError = error;
@@ -373,6 +384,16 @@ async function* generateJsonStream(systemPrompt, userPrompt, maxTokens = 4096) {
         logTelemetry({ provider: provider.name, model, endpoint: 'generateJsonStream', status: 'success' });
         return;
       } catch (error) {
+        let category = error.failureCategory || 'provider_error';
+        if (error.status === 429) category = 'rate_limit';
+        else if (error.message && error.message.includes('timeout')) category = 'timeout';
+        
+        const reqType = (systemPrompt + userPrompt).toLowerCase().includes('lesson') ? 'lesson' : 
+                        (systemPrompt + userPrompt).toLowerCase().includes('course') ? 'course' :
+                        (systemPrompt + userPrompt).toLowerCase().includes('roadmap') ? 'roadmap' :
+                        (systemPrompt + userPrompt).toLowerCase().includes('interview') ? 'interview' : 'unknown';
+
+        structuredAiLog(provider.name, reqType, category, error.message || String(error));
         logTelemetry({ provider: provider.name, model, endpoint: 'generateJsonStream', status: 'failure', reason: error.message || String(error) });
         if (yieldedChunk) {
           console.error(`[AI Router] ${provider.name} (${model}) stream failed midway. Cannot fallback.`);

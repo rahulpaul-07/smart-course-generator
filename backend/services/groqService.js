@@ -3,15 +3,7 @@ const Groq = require("groq-sdk");
 const KeyManager = require("./keyManager");
 const groqKeys = new KeyManager("GROQ_API_KEY");
 
-function parseJson(value) {
-  try {
-    const cleaned = value.replace(/^```(json)?\n?/i, '').replace(/\n?```$/i, '').trim();
-    return JSON.parse(cleaned);
-  } catch {
-    return null;
-  }
-}
-
+const { parseRobustJson, structuredAiLog } = require("./aiValidator");
 async function generateJson(systemPrompt, userPrompt, maxTokens = 4096, modelName = "llama-3.1-8b-instant") {
   const apiKey = groqKeys.getKey();
   const groq = new Groq({ apiKey });
@@ -28,9 +20,7 @@ async function generateJson(systemPrompt, userPrompt, maxTokens = 4096, modelNam
       max_tokens: maxTokens,
     });
     
-    const result = parseJson(completion.choices[0]?.message?.content || "");
-    if (!result) throw new Error("Groq returned invalid JSON");
-    return result;
+    return parseRobustJson(completion.choices[0]?.message?.content || "");
   } catch (error) {
     if (error.status === 429 || (error.response && error.response.status === 429)) {
       groqKeys.markExhausted(apiKey);
