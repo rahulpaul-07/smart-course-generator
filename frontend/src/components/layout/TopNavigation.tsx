@@ -16,7 +16,7 @@ export function TopNavigation() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full border-b border-border/50 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="sticky top-0 z-40 w-full border-b border-white/10 bg-black/80 backdrop-blur supports-[backdrop-filter]:bg-black/60">
         <div className="flex h-16 items-center px-4 md:px-6 gap-4">
           {/* Mobile Menu Button */}
           <Button 
