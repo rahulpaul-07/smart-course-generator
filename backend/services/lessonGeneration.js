@@ -192,7 +192,7 @@ CRITICAL RULE: DO NOT include code blocks UNLESS the course is specifically abou
  * Returns the full array of formatted blocks when the stream finishes.
  */
 async function streamLessonContent({ lesson, moduleDoc, course, depth, language, onBlock, otherLessons }) {
-  const { findLessonVideos } = require("./youtubeService");
+
   
   const outline = await createLessonOutline({ lesson, moduleDoc, course, otherLessons });
   
@@ -218,16 +218,7 @@ async function streamLessonContent({ lesson, moduleDoc, course, depth, language,
         if (onBlock) onBlock(block);
       }
 
-      try {
-        const videos = await findLessonVideos({ lesson, moduleDoc, heading });
-        if (videos && videos.length > 0) {
-          // We only take the first, highly-relevant video per section
-          allBlocks.push(videos[0]);
-          if (onBlock) onBlock(videos[0]);
-        }
-      } catch (err) {
-        // Ignore video errors (quota or 409 not found), keep course generation moving
-      }
+
       
     } catch (err) {
       console.error(`Failed to generate chunk for heading: ${heading}`, err);
