@@ -293,10 +293,16 @@ function MCQSection({ prep, onUpdate }) {
   async function submitMCQs() {
     setSubmitting(true);
     try {
+      const theorySaved = sessionStorage.getItem(`interview_theory_${prep._id}`);
+      const theoryAnswers = theorySaved ? JSON.parse(theorySaved) : prep.theoryQuestions.map((q) => q.userAnswer);
+
+      const codingSaved = sessionStorage.getItem(`interview_coding_${prep._id}`);
+      const codingSolutions = codingSaved ? JSON.parse(codingSaved) : prep.codingQuestions.map((q) => q.userSolution);
+
       const { data } = await api.post(`/interviews/${prep._id}/submit`, {
         mcqAnswers: answers,
-        theoryAnswers: prep.theoryQuestions.map((q) => q.userAnswer),
-        codingSolutions: prep.codingQuestions.map((q) => q.userSolution),
+        theoryAnswers,
+        codingSolutions,
       });
       setSubmitted(true);
       onUpdate({ ...prep, ...data, status: 'completed', overallScore: data.overallScore });
@@ -417,6 +423,23 @@ function TheorySection({ prep, onUpdate }) {
 
 /* ─── Coding Section ─── */
 function CodingSection({ prep }) {
+  const [solutions, setSolutions] = useState(() => {
+    const saved = sessionStorage.getItem(`interview_coding_${prep._id}`);
+    if (saved) return JSON.parse(saved);
+    return prep.codingQuestions.map((q) => q.userSolution || '');
+  });
+  const submitted = prep.status === 'completed';
+
+  useEffect(() => {
+    sessionStorage.setItem(`interview_coding_${prep._id}`, JSON.stringify(solutions));
+  }, [solutions, prep._id]);
+
+  function updateSolution(i, val) {
+    const s = [...solutions];
+    s[i] = val;
+    setSolutions(s);
+  }
+
   return (
     <div className="space-y-4">
       {prep.codingQuestions.map((q, i) => (
@@ -437,6 +460,15 @@ function CodingSection({ prep }) {
               <code>{q.starterCode}</code>
             </pre>
           )}
+          <textarea
+            value={submitted ? (q.userSolution || '') : solutions[i]}
+            onChange={(e) => updateSolution(i, e.target.value)}
+            disabled={submitted}
+            rows={6}
+            className="mt-3 w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm font-mono text-emerald-300 outline-none transition focus:border-brand-400/50 disabled:opacity-60"
+            placeholder="Write your code here..."
+            spellCheck={false}
+          />
           {q.solutionHint && (
             <details className="mt-3">
               <summary className="cursor-pointer text-xs text-amber-300 hover:text-amber-200">💡 Show hint</summary>
