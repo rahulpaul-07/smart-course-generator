@@ -57,7 +57,7 @@ export default function CommunityTemplatesPage() {
     setCloningId(courseId);
     try {
       const res = await api.post(`/collab/templates/${courseId}/clone`);
-      navigate(`/courses/${res.data.courseId}`);
+      navigate(`/course/${res.data.courseId}`);
     } catch (e) {
       console.error(e);
       setCloningId(null);
