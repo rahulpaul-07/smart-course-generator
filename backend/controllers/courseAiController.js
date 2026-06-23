@@ -69,6 +69,12 @@ async function enrichLesson(req, res) {
       });
     }
 
+    if (!blocks || blocks.length === 0) {
+      const error = new Error("AI failed to generate any lesson content.");
+      error.statusCode = 502;
+      throw error;
+    }
+
     context.lesson.content = blocks;
     context.lesson.language = language;
     context.lesson.isEnriched = true;
@@ -147,6 +153,12 @@ async function enrichLessonStream(req, res) {
       };
       blocks.push(quizBlock);
       sendEvent("block", quizBlock);
+    }
+
+    if (!blocks || blocks.length === 0) {
+      const error = new Error("AI failed to generate any lesson content.");
+      error.statusCode = 502;
+      throw error;
     }
 
     // Save final enriched content to database

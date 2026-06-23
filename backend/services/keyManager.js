@@ -21,9 +21,20 @@ class KeyManager {
       return availableKeys[Math.floor(Math.random() * availableKeys.length)];
     }
 
-    // Desperate fallback: If all keys are exhausted, just pick one at random anyway
-    console.warn(`[KeyManager] All keys for ${this.envKeyName} are exhausted. Falling back to random key.`);
-    return keys[Math.floor(Math.random() * keys.length)];
+    // If all keys are exhausted, throw structured cooldown response
+    let minWaitMs = this.cooldownDuration;
+    for (const key of keys) {
+      const cd = this.cooldowns.get(key) || 0;
+      const wait = cd - now;
+      if (wait > 0 && wait < minWaitMs) {
+        minWaitMs = wait;
+      }
+    }
+    
+    const err = new Error(`AI rate limit reached. Please wait a few seconds and try again.`);
+    err.status = 429;
+    err.retryAfterSeconds = Math.ceil(minWaitMs / 1000);
+    throw err;
   }
 
   markExhausted(key) {

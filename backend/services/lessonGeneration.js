@@ -204,24 +204,17 @@ async function streamLessonContent({ lesson, moduleDoc, course, depth, language,
   const allBlocks = [];
   
   for (const heading of outline) {
-    try {
-      const chunkBlocks = await createLessonChunk({ lesson }, heading, previousContextText, language);
+    const chunkBlocks = await createLessonChunk({ lesson }, heading, previousContextText, language);
+    
+    previousContextText = chunkBlocks
+      .filter(b => b.type === "paragraph" || b.type === "heading")
+      .map(b => b.text || "")
+      .join(" ")
+      .slice(-1500); 
       
-      previousContextText = chunkBlocks
-        .filter(b => b.type === "paragraph" || b.type === "heading")
-        .map(b => b.text || "")
-        .join(" ")
-        .slice(-1500); 
-        
-      for (const block of chunkBlocks) {
-        allBlocks.push(block);
-        if (onBlock) onBlock(block);
-      }
-
-
-      
-    } catch (err) {
-      console.error(`Failed to generate chunk for heading: ${heading}`, err);
+    for (const block of chunkBlocks) {
+      allBlocks.push(block);
+      if (onBlock) onBlock(block);
     }
   }
   
