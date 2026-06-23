@@ -11,6 +11,11 @@ dotenv.config();
 const connectDB = require("./config/db");
 const { notFound, errorHandler } = require("./middlewares/errorMiddleware");
 
+if (!process.env.JWT_SECRET) {
+  console.error("FATAL ERROR: JWT_SECRET environment variable is not set.");
+  process.exit(1);
+}
+
 const routes = require("./routes/index");
 
 const morgan = require("morgan");

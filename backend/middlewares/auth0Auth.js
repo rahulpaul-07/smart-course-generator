@@ -1,7 +1,6 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
-const JWT_SECRET = process.env.JWT_SECRET || "secret";
 const tokenCache = new Map();
 
 async function verifyAuth0Token(req, res, next) {
@@ -23,7 +22,7 @@ async function verifyAuth0Token(req, res, next) {
 
   // 1. Try verifying as local JWT
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.id);
     if (user) {
       req.user = user;
