@@ -82,9 +82,6 @@ export default function ProfilePage() {
                       {profile.name?.charAt(0)?.toUpperCase() || <User />}
                     </AvatarFallback>
                   </Avatar>
-                  <button className="absolute bottom-0 right-0 p-2 bg-primary text-primary-foreground rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity translate-y-2 group-hover:translate-y-0">
-                    <Camera className="w-4 h-4" />
-                  </button>
                 </div>
                 <div>
                   <h3 className="text-lg font-medium">{profile.name}</h3>

@@ -83,7 +83,7 @@ export default function SettingsPage() {
         description="Manage your account preferences and settings."
       />
 
-      <div className="grid lg:grid-cols-[1fr_350px] gap-8 mt-8">
+      <div className="max-w-4xl mx-auto mt-8">
         <div className="space-y-6">
           <Card className="bg-card/50 backdrop-blur-sm border-border/50">
             <CardHeader>
@@ -174,26 +174,6 @@ export default function SettingsPage() {
               Save Preferences
             </Button>
           </div>
-        </div>
-
-        <div className="space-y-6">
-          <Card className="bg-card/50 backdrop-blur-sm border-border/50">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Shield className="w-5 h-5" />
-                Security
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Button variant="outline" className="w-full justify-start">
-                <Key className="mr-2 h-4 w-4" />
-                Change Password
-              </Button>
-              <p className="text-xs text-muted-foreground">
-                If you registered using Google, you don't have a password to change.
-              </p>
-            </CardContent>
-          </Card>
         </div>
       </div>
     </PageContainer>
