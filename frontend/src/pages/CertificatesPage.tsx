@@ -12,13 +12,9 @@ export default function CertificatesPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    api.get('/user/profile')
+    api.get('/certificates/mine/all')
       .then(res => {
-        // Certificates might be populated or just IDs. Assuming populated for this view or we need to fetch them.
-        // Actually the backend might not return populated certificates in /user/profile.
-        // Let's just fetch them if there's an endpoint, but for now we'll simulate an empty state
-        // because the user mainly wanted the empty state polish.
-        setCertificates(res.data?.certificates || []);
+        setCertificates(res.data || []);
       })
       .catch(console.error)
       .finally(() => setLoading(false));

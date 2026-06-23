@@ -100,6 +100,16 @@ async function claimCertificate(req, res) {
   }
 }
 
+async function getMyCertificates(req, res) {
+  try {
+    const certificates = await Certificate.find({ user: req.user._id }).sort({ createdAt: -1 });
+    res.json(certificates);
+  } catch (error) {
+    console.error("Error fetching user certificates:", error);
+    res.status(500).json({ error: "Failed to fetch certificates" });
+  }
+}
+
 async function getCertificate(req, res) {
   try {
     const { certificateId } = req.params;
@@ -116,5 +126,6 @@ async function getCertificate(req, res) {
 
 module.exports = {
   claimCertificate,
-  getCertificate
+  getCertificate,
+  getMyCertificates
 };
