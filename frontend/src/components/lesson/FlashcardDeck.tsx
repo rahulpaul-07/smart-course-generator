@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 
-export default function FlashcardDeck({ lessonId, embedded = false }: { lessonId: string, embedded?: boolean }) {
+export default function FlashcardDeck({ lessonId, courseId, embedded = false }: { lessonId: string, courseId: string, embedded?: boolean }) {
   const [flashcards, setFlashcards] = useState<any[]>([]);
   const [index, setIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
@@ -19,7 +19,7 @@ export default function FlashcardDeck({ lessonId, embedded = false }: { lessonId
     setError('');
 
     try {
-      const { data } = await api.post(`/courses/lessons/${lessonId}/flashcards`);
+      const { data } = await api.post(`/courses/${courseId}/lessons/${lessonId}/flashcards`);
       setFlashcards(data.flashcards);
       setSessionDeck([...data.flashcards]);
       setIndex(0);

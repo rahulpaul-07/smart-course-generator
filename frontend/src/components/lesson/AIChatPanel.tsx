@@ -36,7 +36,7 @@ const AssistantMessage = memo(function AssistantMessage({ content }: { content: 
   );
 });
 
-export default function AIChatPanel({ lessonId, lessonTitle, isOpen, onClose }: { lessonId: string, lessonTitle: string, isOpen: boolean, onClose: () => void }) {
+export default function AIChatPanel({ lessonId, courseId, lessonTitle, isOpen, onClose }: { lessonId: string, courseId: string, lessonTitle: string, isOpen: boolean, onClose: () => void }) {
   const [messages, setMessages] = useState<any[]>([]);
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
@@ -100,7 +100,7 @@ export default function AIChatPanel({ lessonId, lessonTitle, isOpen, onClose }: 
     setSending(true);
 
     try {
-      const { data } = await api.post(`/courses/lessons/${lessonId}/chat`, {
+      const { data } = await api.post(`/courses/${courseId}/lessons/${lessonId}/chat`, {
         message,
         history: messages.slice(-6),
       });

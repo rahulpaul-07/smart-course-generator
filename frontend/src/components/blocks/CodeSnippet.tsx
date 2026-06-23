@@ -6,7 +6,8 @@ export default function CodeSnippet({ block }: { block: any }) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(block.code);
+    const codeToCopy = block.code || (block.codes ? Object.values(block.codes).find(Boolean) : '');
+    await navigator.clipboard.writeText(codeToCopy as string);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -40,7 +41,7 @@ export default function CodeSnippet({ block }: { block: any }) {
       </div>
       <div className="relative">
         <pre className="overflow-x-auto p-4 font-mono text-[13px] leading-relaxed text-slate-50">
-          <code>{block.code}</code>
+          <code>{block.code || (block.codes ? Object.values(block.codes).find(Boolean) : '')}</code>
         </pre>
       </div>
     </motion.div>

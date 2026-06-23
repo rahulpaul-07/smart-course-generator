@@ -116,14 +116,7 @@ export default function StudyTools({
             active={activeTool === 'flashcards'}
             onClick={() => toggleTool('flashcards')}
           />
-          <ToolCard
-            icon={Brain}
-            title="Quick quiz"
-            description="Check your understanding with five questions."
-            status={lesson.quizBestScore > 0 ? `Best ${lesson.quizBestScore}/5` : ''}
-            active={activeTool === 'quiz'}
-            onClick={() => toggleTool('quiz')}
-          />
+
           <ToolCard
             icon={MessageCircle}
             title="Ask AI"
@@ -180,11 +173,9 @@ export default function StudyTools({
                 />
               </>
             )}
-            {activeTool === 'flashcards' && <FlashcardDeck lessonId={lesson._id} embedded />}
-            {activeTool === 'quiz' && (
-              <QuizPanel lesson={lesson} onLessonUpdate={onLessonUpdate} embedded />
-            )}
-            {activeTool === 'lab' && <PracticeLab lessonId={lesson._id} embedded />}
+            {activeTool === 'flashcards' && <FlashcardDeck lessonId={lesson._id} courseId={lesson.course} embedded />}
+
+            {activeTool === 'lab' && <PracticeLab lessonId={lesson._id} courseId={lesson.course} embedded />}
           </div>
         )}
 

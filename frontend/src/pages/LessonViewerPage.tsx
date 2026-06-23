@@ -237,7 +237,7 @@ export default function LessonViewerPage() {
     setAddingVideos(true);
 
     try {
-      const { data } = await api.post(`/courses/lessons/${lessonId}/add-videos`);
+      const { data } = await api.post(`/courses/${courseId}/lessons/${lessonId}/add-videos`);
       updateCurrentLesson(data.lesson);
       toast.success(`${data.videos.length} videos added`);
     } catch (error) {
@@ -453,12 +453,12 @@ export default function LessonViewerPage() {
         </div>
       </div>
 
-      <AIChatPanel
-        key={lessonId}
-        lessonId={lessonId}
-        lessonTitle={lesson.title}
-        isOpen={showChat}
-        onClose={() => setShowChat(false)}
+      <AIChatPanel 
+        lessonId={lessonId} 
+        courseId={courseId}
+        lessonTitle={lesson?.title} 
+        isOpen={showChat} 
+        onClose={() => setShowChat(false)} 
       />
     </div>
   );

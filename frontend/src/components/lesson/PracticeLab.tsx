@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
-export default function PracticeLab({ lessonId, embedded = false }: { lessonId: string, embedded?: boolean }) {
+export default function PracticeLab({ lessonId, courseId, embedded = false }: { lessonId: string, courseId: string, embedded?: boolean }) {
   const [lab, setLab] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -18,7 +18,7 @@ export default function PracticeLab({ lessonId, embedded = false }: { lessonId: 
     setShowHint(false);
 
     try {
-      const { data } = await api.post(`/courses/lessons/${lessonId}/practice-lab`);
+      const { data } = await api.post(`/courses/${courseId}/lessons/${lessonId}/lab`);
       setLab(data.lab);
     } catch (requestError: any) {
       setError(requestError.response?.data?.error || 'Could not create a practice lab.');
