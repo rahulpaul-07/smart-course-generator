@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { Menu, Search, User, X, Settings } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,20 @@ export function TopNavigation() {
   const { user, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { toggleSidebar } = useLayout();
+  const isDashboard = location.pathname === '/dashboard';
+  const searchQuery = searchParams.get('search') || '';
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    if (val) {
+      setSearchParams({ search: val });
+    } else {
+      setSearchParams({});
+    }
+  };
 
   return (
     <div id="top-navigation" className="shrink-0">
@@ -43,14 +56,20 @@ export function TopNavigation() {
           </Button>
 
           {/* Search Bar */}
-          <div className="flex-1 max-w-md hidden sm:flex items-center relative">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input 
-              type="search" 
-              placeholder="Search courses, topics..." 
-              className="w-full pl-9 bg-muted/30 border-transparent focus-visible:bg-background focus-visible:border-primary"
-            />
-          </div>
+          {isDashboard ? (
+            <div className="flex-1 max-w-md hidden sm:flex items-center relative">
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input 
+                type="search" 
+                placeholder="Search your courses..." 
+                value={searchQuery}
+                onChange={handleSearchChange}
+                className="w-full pl-9 bg-muted/30 border-transparent focus-visible:bg-background focus-visible:border-primary"
+              />
+            </div>
+          ) : (
+            <div className="flex-1 max-w-md hidden sm:flex" />
+          )}
 
           <div className="flex flex-1 items-center justify-end gap-4">
             <div className="flex items-center gap-3">
