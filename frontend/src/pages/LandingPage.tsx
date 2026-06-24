@@ -75,7 +75,7 @@ export default function LandingPage() {
                 </Link>
               </Button>
               <Button asChild variant="outline" size="lg" className="h-12 px-8 text-base">
-                <Link to="/explore">Explore Courses</Link>
+                <Link to="/community">Explore Courses</Link>
               </Button>
             </motion.div>
           </div>
