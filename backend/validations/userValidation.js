@@ -13,12 +13,7 @@ const updateProfileSchema = z.object({
 
 const updateSettingsSchema = z.object({
   body: z.object({
-    theme: z.enum(['dark', 'light', 'system']).optional(),
-    notifications: z.object({
-      email: z.boolean().optional(),
-      push: z.boolean().optional(),
-      courseUpdates: z.boolean().optional()
-    }).optional()
+    theme: z.enum(['dark', 'light', 'system']).optional()
   })
 });
 

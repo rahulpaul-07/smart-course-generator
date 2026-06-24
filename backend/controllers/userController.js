@@ -122,7 +122,7 @@ async function updateProfile(req, res) {
 }
 
 async function updateSettings(req, res) {
-  const { theme, notifications } = req.body;
+  const { theme } = req.body;
   const user = await User.findById(req.user._id);
   
   if (!user) {
@@ -131,7 +131,6 @@ async function updateSettings(req, res) {
   }
 
   if (theme !== undefined) user.theme = theme;
-  if (notifications !== undefined) user.notifications = notifications;
   
   await user.save();
   res.json(user);

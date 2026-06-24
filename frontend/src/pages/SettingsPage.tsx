@@ -14,11 +14,6 @@ export default function SettingsPage() {
   const { user, login } = useAuth();
   const [settings, setSettings] = useState({
     theme: 'system',
-    notifications: {
-      email: true,
-      push: false,
-      courseUpdates: true,
-    }
   });
   const [saving, setSaving] = useState(false);
 
@@ -26,11 +21,6 @@ export default function SettingsPage() {
     if (user) {
       setSettings({
         theme: user.theme || 'system',
-        notifications: user.notifications || {
-          email: true,
-          push: false,
-          courseUpdates: true,
-        }
       });
     }
   }, [user]);
@@ -62,16 +52,6 @@ export default function SettingsPage() {
     } else {
       root.classList.add(theme);
     }
-  };
-
-  const toggleNotification = (key: keyof typeof settings.notifications) => {
-    setSettings({
-      ...settings,
-      notifications: {
-        ...settings.notifications,
-        [key]: !settings.notifications[key]
-      }
-    });
   };
 
   if (!user) return null;
@@ -126,47 +106,7 @@ export default function SettingsPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-card/50 backdrop-blur-sm border-border/50">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Bell className="w-5 h-5" />
-                Notifications
-              </CardTitle>
-              <CardDescription>Choose what updates you want to receive.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <label className="text-sm font-medium">Email Notifications</label>
-                  <p className="text-sm text-muted-foreground">Receive weekly summaries and important updates.</p>
-                </div>
-                <Switch 
-                  checked={settings.notifications.email}
-                  onCheckedChange={() => toggleNotification('email')}
-                />
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <label className="text-sm font-medium">Push Notifications</label>
-                  <p className="text-sm text-muted-foreground">Get notified in your browser for study reminders.</p>
-                </div>
-                <Switch 
-                  checked={settings.notifications.push}
-                  onCheckedChange={() => toggleNotification('push')}
-                />
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <label className="text-sm font-medium">Course Updates</label>
-                  <p className="text-sm text-muted-foreground">When new modules or practice labs are added.</p>
-                </div>
-                <Switch 
-                  checked={settings.notifications.courseUpdates}
-                  onCheckedChange={() => toggleNotification('courseUpdates')}
-                />
-              </div>
-            </CardContent>
-          </Card>
+
 
           <div className="flex justify-end">
             <Button onClick={handleSave} disabled={saving} className="w-full sm:w-auto">

@@ -27,11 +27,7 @@ const userSchema = new mongoose.Schema({
   learningInterests: [{ type: String }],
   skillLevel: { type: String, enum: ['beginner', 'intermediate', 'advanced', 'expert'], default: 'beginner' },
   theme: { type: String, enum: ['dark', 'light', 'system'], default: 'dark' },
-  notifications: {
-    email: { type: Boolean, default: true },
-    push: { type: Boolean, default: true },
-    courseUpdates: { type: Boolean, default: true }
-  },
+
   onboardingCompleted: { type: Boolean, default: false },
   bookmarkedLessons: [{
     type: mongoose.Schema.Types.ObjectId,
