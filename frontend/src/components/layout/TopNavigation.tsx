@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Bell, Menu, Search, User, X, Settings } from "lucide-react";
+import { Menu, Search, User, X, Settings } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -53,22 +53,6 @@ export function TopNavigation() {
           </div>
 
           <div className="flex flex-1 items-center justify-end gap-4">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative text-muted-foreground hover:text-foreground" aria-label="Notifications">
-                  <Bell className="h-5 w-5" aria-hidden="true" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-64 bg-card border-border">
-                <div className="px-4 py-3 border-b border-border">
-                  <p className="text-sm font-medium">Notifications</p>
-                </div>
-                <div className="p-4 text-center text-sm text-muted-foreground">
-                  No new notifications
-                </div>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            
             <div className="flex items-center gap-3">
               <div className="hidden md:flex flex-col items-end">
                 <span className="text-sm font-medium leading-none">{user?.name || "Guest"}</span>
