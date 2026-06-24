@@ -102,7 +102,7 @@ async function updateOnboarding(req, res) {
 }
 
 async function updateProfile(req, res) {
-  const { bio, avatar, isProfilePublic, name } = req.body;
+  const { bio, avatar, isProfilePublic, name, skillLevel, learningInterests } = req.body;
   const user = await User.findById(req.user._id);
   
   if (!user) {
@@ -114,6 +114,8 @@ async function updateProfile(req, res) {
   if (avatar !== undefined) user.avatar = avatar;
   if (isProfilePublic !== undefined) user.isProfilePublic = isProfilePublic;
   if (name !== undefined) user.name = name;
+  if (skillLevel !== undefined) user.skillLevel = skillLevel;
+  if (learningInterests !== undefined) user.learningInterests = learningInterests;
   
   await user.save();
   res.json(user);

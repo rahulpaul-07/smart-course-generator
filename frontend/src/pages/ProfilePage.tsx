@@ -46,6 +46,8 @@ export default function ProfilePage() {
         name: profile.name,
         bio: profile.bio,
         isProfilePublic: profile.isProfilePublic,
+        skillLevel: profile.skillLevel,
+        learningInterests: profile.learningInterests,
       });
       login({ ...user, ...data });
       toast.success('Profile updated successfully');

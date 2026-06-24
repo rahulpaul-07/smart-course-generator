@@ -5,7 +5,9 @@ const updateProfileSchema = z.object({
     name: z.string().min(2, "Name must be at least 2 characters").max(100).optional(),
     bio: z.string().max(500).optional(),
     isProfilePublic: z.boolean().optional(),
-    avatar: z.string().url("Invalid avatar URL").optional().or(z.literal(''))
+    avatar: z.string().url("Invalid avatar URL").optional().or(z.literal('')),
+    skillLevel: z.enum(['beginner', 'intermediate', 'advanced', 'expert']).optional(),
+    learningInterests: z.array(z.string()).optional()
   })
 });
 
