@@ -41,8 +41,12 @@ export default function AnalyticsPage() {
           </div>
           <button
             onClick={() => {
-              const headers = ['Course', 'Completed Lessons', 'Total Lessons', 'Completion %'];
-              const rows = data.courseStats.map(c => [c.title, c.completedLessons, c.totalLessons, c.completionPct]);
+              const escapeCsv = (val: any) => {
+                if (val === null || val === undefined) return '""';
+                return '"' + String(val).replace(/"/g, '""') + '"';
+              };
+              const headers = ['Course', 'Completed Lessons', 'Total Lessons', 'Completion %'].map(escapeCsv);
+              const rows = data.courseStats.map(c => [c.title, c.completedLessons, c.totalLessons, c.completionPct].map(escapeCsv));
               const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
               const blob = new Blob([csv], { type: 'text/csv' });
               const url = window.URL.createObjectURL(blob);
