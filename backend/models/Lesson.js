@@ -16,6 +16,16 @@ const lessonSchema = new mongoose.Schema(
     quizBestScore: { type: Number, default: 0, min: 0, max: 5 },
     quizAttempts: { type: Number, default: 0, min: 0 },
     module: { type: mongoose.Schema.Types.ObjectId, ref: "Module", required: true },
+    videos: {
+      type: [{
+        title: String,
+        url: String,
+        thumbnail: String,
+        duration: Number,
+        channel: String
+      }],
+      default: []
+    }
   },
   { timestamps: true }
 );

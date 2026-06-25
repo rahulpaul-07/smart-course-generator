@@ -13,6 +13,15 @@ const LANGUAGE_CODES = {
   "Punjabi": "pa", "Assamese": "as"
 };
 
+function parseIsoDuration(duration) {
+  const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+  if (!match) return 0;
+  const h = parseInt(match[1] || '0', 10);
+  const m = parseInt(match[2] || '0', 10);
+  const s = parseInt(match[3] || '0', 10);
+  return h * 3600 + m * 60 + s;
+}
+
 async function findLessonVideos({ lesson, moduleDoc, course, heading }) {
   const language = course?.language || "English";
   const langCode = LANGUAGE_CODES[language] || "en";
@@ -24,12 +33,17 @@ async function findLessonVideos({ lesson, moduleDoc, course, heading }) {
     try {
       const results = await ytSearch(query);
       if (results && results.videos && results.videos.length > 0) {
-        const video = results.videos[0];
-        return [{
-          type: "video",
+        const existingUrls = new Set((lesson.videos || []).map((v) => v.url).filter(Boolean));
+        // Filter out shorts (<120s) and duplicates
+        const filtered = results.videos.filter(v => v.seconds >= 120 && !existingUrls.has(v.url));
+        
+        return filtered.slice(0, 3).map(video => ({
+          title: video.title || `${query} Tutorial`,
           url: video.url,
-          title: video.title || `${query} Tutorial`
-        }];
+          thumbnail: video.image || video.thumbnail,
+          duration: video.seconds,
+          channel: video.author?.name || "YouTube"
+        }));
       }
     } catch (e) {
       console.warn("yt-search fallback failed:", e);
@@ -43,7 +57,7 @@ async function findLessonVideos({ lesson, moduleDoc, course, heading }) {
       return await fallbackSearch();
     }
 
-    const params = new URLSearchParams({
+    const searchParams = new URLSearchParams({
       key: apiKey,
       part: "snippet",
       type: "video",
@@ -54,58 +68,84 @@ async function findLessonVideos({ lesson, moduleDoc, course, heading }) {
       q: query,
     });
 
-    let response;
+    let searchResponse;
     try {
-      response = await fetch(`${SEARCH_URL}?${params}`, {
+      searchResponse = await fetch(`${SEARCH_URL}?${searchParams}`, {
         signal: AbortSignal.timeout(10000),
       });
     } catch {
-      continue; // Try next key or move to fallback
+      continue;
     }
 
-    if (!response.ok) {
-      if (response.status === 403) {
+    if (!searchResponse.ok) {
+      if (searchResponse.status === 403) {
         youtubeKeys.markExhausted(apiKey);
         console.warn(`[YouTube] Key exhausted or quota exceeded. Retrying with a new key...`);
         continue;
       }
-      continue; // If 400/500, skip to next or fallback
+      continue;
     }
 
-    const data = await response.json();
-    const existingUrls = new Set((lesson.content || []).map((block) => block.url).filter(Boolean));
+    const searchData = await searchResponse.json();
+    const videoIds = (searchData.items || []).map(item => item.id?.videoId).filter(Boolean);
+    
+    if (videoIds.length === 0) break;
+
+    // Fetch details to get duration
+    const videosParams = new URLSearchParams({
+      key: apiKey,
+      part: "contentDetails,snippet",
+      id: videoIds.join(",")
+    });
+
+    let videosResponse;
+    try {
+      videosResponse = await fetch(`https://www.googleapis.com/youtube/v3/videos?${videosParams}`, {
+        signal: AbortSignal.timeout(10000),
+      });
+    } catch {
+      continue;
+    }
+
+    if (!videosResponse.ok) continue;
+
+    const videosData = await videosResponse.json();
+    const existingUrls = new Set((lesson.videos || []).map((v) => v.url).filter(Boolean));
     const videos = [];
 
-    for (const item of data.items || []) {
-      const videoId = item.id?.videoId;
-      const url = videoId ? `https://www.youtube.com/watch?v=${videoId}` : "";
+    for (const item of videosData.items || []) {
+      const durationSeconds = parseIsoDuration(item.contentDetails?.duration || "");
+      const url = `https://www.youtube.com/watch?v=${item.id}`;
+      const title = item.snippet?.title || "";
 
-      if (!url || existingUrls.has(url)) continue;
+      // Filter: > 2 mins, no duplicate URLs, not a live broadcast
+      if (
+        durationSeconds >= 120 && 
+        !existingUrls.has(url) && 
+        item.snippet?.liveBroadcastContent === "none"
+      ) {
+        videos.push({
+          title,
+          url,
+          thumbnail: item.snippet?.thumbnails?.high?.url || item.snippet?.thumbnails?.default?.url,
+          duration: durationSeconds,
+          channel: item.snippet?.channelTitle || "YouTube"
+        });
+      }
 
-      videos.push({
-        type: "video",
-        url,
-        title: item.snippet?.title || query,
-      });
-
-      if (videos.length >= 1) {
+      if (videos.length >= 3) {
         return videos;
       }
     }
 
-    if (!videos.length) {
-      // No relevant videos found via API, fallback to ytSearch
-      break;
-    }
+    if (videos.length > 0) return videos;
+    break; // No suitable videos, fallback
   }
 
-  // If we exhaust attempts or break due to no videos:
   const fallbackVideos = await fallbackSearch();
   if (fallbackVideos.length > 0) return fallbackVideos;
 
-  const error = new Error("YouTube video search failed after multiple attempts.");
-  error.statusCode = 502;
-  throw error;
+  return []; // Never throw an error, just return empty!
 }
 
 module.exports = { findLessonVideos };

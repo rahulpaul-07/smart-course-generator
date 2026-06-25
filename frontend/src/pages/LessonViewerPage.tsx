@@ -18,6 +18,7 @@ import HinglishAudioExplanation from '../components/lesson/HinglishAudioExplanat
 import LessonRenderer from '../components/lesson/LessonRenderer';
 import LessonSidebar from '../components/lesson/LessonSidebar';
 import StudyTools from '../components/lesson/StudyTools';
+import VideoBlock from '../components/blocks/VideoBlock';
 import api, { baseURL } from '../utils/api';
 
 const API_BASE = baseURL;
@@ -188,6 +189,11 @@ export default function LessonViewerPage() {
                 setLesson((prev) => {
                   if (!prev) return prev;
                   return { ...prev, content: [...(prev.content || []), data] };
+                });
+              } else if (currentEvent === 'videos') {
+                setLesson((prev) => {
+                  if (!prev) return prev;
+                  return { ...prev, videos: data };
                 });
               } else if (currentEvent === 'done') {
                 setStreamStage('Saving lesson');
@@ -424,6 +430,19 @@ export default function LessonViewerPage() {
           )}
 
           <LessonRenderer content={lesson.content} isStreaming={generating} />
+
+          {lesson.videos && lesson.videos.length > 0 && (
+            <div className="mt-12 pt-8 border-t border-border/50 animate-enter">
+              <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2">
+                🎥 Recommended Videos
+              </h2>
+              <div className="space-y-6">
+                {lesson.videos.map((video: any, idx: number) => (
+                  <VideoBlock key={idx} block={{ type: 'video', url: video.url, title: video.title }} />
+                ))}
+              </div>
+            </div>
+          )}
 
           {!hasContent && !generating && streamStatus !== 'error' && (
             <div className="flex flex-col items-center justify-center py-20 text-center glass-card rounded-2xl border-dashed border-2 border-slate-700/50 mt-8">

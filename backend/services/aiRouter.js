@@ -19,19 +19,11 @@ groq.name = "groq";
 openrouter.name = "openrouter";
 
 const fallbackChain = [
-  // Tier 1: Ultra-fast / Speed Optimized (Highest Priority)
-  { provider: groq, model: "llama-3.1-8b-instant", key: "GROQ_API_KEY" },
   { provider: gemini, model: "gemini-2.5-flash", key: "GEMINI_API_KEY" },
   { provider: groq, model: "llama-3.3-70b-versatile", key: "GROQ_API_KEY" },
-  
-  // Tier 2: Heavyweight / High Intelligence Fallbacks
-  { provider: groq, model: "openai/gpt-oss-120b", key: "GROQ_API_KEY" },
+  { provider: groq, model: "llama-3.1-8b-instant", key: "GROQ_API_KEY" },
   { provider: openrouter, model: "openai/gpt-4o-mini", key: "OPENROUTER_API_KEY" },
   { provider: openrouter, model: "openai/gpt-4o", key: "OPENROUTER_API_KEY" },
-  
-  // Tier 3: General Fallbacks
-  { provider: openrouter, model: "mistralai/mixtral-8x7b-instruct", key: "OPENROUTER_API_KEY" },
-  { provider: openrouter, model: "meta-llama/llama-3-8b-instruct", key: "OPENROUTER_API_KEY" },
 ];
 
 function getProviderChain() {
@@ -295,8 +287,21 @@ function getMockResponse(systemPrompt, userPrompt) {
 }
 
 const FRIENDLY_ERROR = "Our AI service is temporarily busy. Please try again in a minute.";
-const MAX_RETRIES_PER_PROVIDER = 2; 
-const REQUEST_TIMEOUT_MS = 45000;
+const MAX_RETRIES_PER_PROVIDER = 1; 
+const REQUEST_TIMEOUT_MS = 20000;
+
+function shouldRetry(error) {
+  const msg = String(error?.message || error).toLowerCase();
+  const status = error?.status || error?.code;
+  
+  if (status === 429 || status === 500 || status === 502 || status === 503 || status === 504) return true;
+  if (msg.includes('timeout') || msg.includes('abort') || msg.includes('econnreset') || msg.includes('etimedout') || msg.includes('connection reset')) return true;
+  
+  if (status === 400 || status === 401 || status === 403) return false;
+  if (msg.includes('invalid json') || msg.includes('malformed') || msg.includes('validation')) return false;
+  
+  return true;
+}
 
 function getExponentialBackoff(attempt) {
   const baseDelay = 1000;
@@ -338,7 +343,7 @@ async function generateJson(systemPrompt, userPrompt, maxTokens = 4096, validato
     return mockResult;
   }
 
-  const activeChain = chain.length > 0 ? chain : [{ provider: gemini, model: "gemini-1.5-flash" }];
+  const activeChain = chain.length > 0 ? chain : [{ provider: gemini, model: "gemini-2.5-flash" }];
   
   for (const { provider, model } of activeChain) {
     for (let attempt = 0; attempt < MAX_RETRIES_PER_PROVIDER; attempt++) {
@@ -356,6 +361,10 @@ async function generateJson(systemPrompt, userPrompt, maxTokens = 4096, validato
         console.error(`[AI Router] generateJson ${provider.name} attempt ${attempt + 1} failed:`, error.stack || error);
         logTelemetry({ provider: provider.name, model, endpoint: 'generateJson', status: 'failure', reason: error.message || String(error) });
         
+        if (!shouldRetry(error)) {
+          break;
+        }
+
         if (attempt < MAX_RETRIES_PER_PROVIDER - 1) {
           await sleep(getExponentialBackoff(attempt));
         }
@@ -380,7 +389,7 @@ async function* generateJsonStream(systemPrompt, userPrompt, maxTokens = 4096) {
     return;
   }
 
-  const activeChain = chain.length > 0 ? chain : [{ provider: gemini, model: "gemini-1.5-flash" }];
+  const activeChain = chain.length > 0 ? chain : [{ provider: gemini, model: "gemini-2.5-flash" }];
   
   for (const { provider, model } of activeChain) {
     for (let attempt = 0; attempt < MAX_RETRIES_PER_PROVIDER; attempt++) {
@@ -406,7 +415,10 @@ async function* generateJsonStream(systemPrompt, userPrompt, maxTokens = 4096) {
           console.error(`[AI Router] Stream interrupted midway. Aborting.`);
           throw new Error(FRIENDLY_ERROR);
         }
-        
+        if (!shouldRetry(error)) {
+          break;
+        }
+
         if (attempt < MAX_RETRIES_PER_PROVIDER - 1) {
           await sleep(getExponentialBackoff(attempt));
         }
@@ -428,7 +440,7 @@ async function generateText(messages, maxTokens = 1024) {
     return "This is a friendly response from your AI tutor! Let's continue working on this lesson together.";
   }
 
-  const activeChain = chain.length > 0 ? chain : [{ provider: gemini, model: "gemini-1.5-flash" }];
+  const activeChain = chain.length > 0 ? chain : [{ provider: gemini, model: "gemini-2.5-flash" }];
   
   for (const { provider, model } of activeChain) {
     for (let attempt = 0; attempt < MAX_RETRIES_PER_PROVIDER; attempt++) {
@@ -443,7 +455,10 @@ async function generateText(messages, maxTokens = 1024) {
       } catch (error) {
         console.error(`[AI Router] generateText ${provider.name} attempt ${attempt + 1} failed:`, error.stack || error);
         logTelemetry({ provider: provider.name, model, endpoint: 'generateText', status: 'failure', reason: error.message || String(error) });
-        
+        if (!shouldRetry(error)) {
+          break;
+        }
+
         if (attempt < MAX_RETRIES_PER_PROVIDER - 1) {
           await sleep(getExponentialBackoff(attempt));
         }

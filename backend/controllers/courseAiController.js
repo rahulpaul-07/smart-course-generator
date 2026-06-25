@@ -57,8 +57,8 @@ async function enrichLesson(req, res) {
       createLessonQuiz(context.lesson)
     ]);
 
-    if (videosResult.status === "fulfilled" && videosResult.value) {
-      blocks.splice(Math.floor(blocks.length / 2), 0, ...videosResult.value);
+    if (videosResult.status === "fulfilled" && videosResult.value && videosResult.value.length > 0) {
+      context.lesson.videos = videosResult.value;
     }
 
     if (questionsResult.status === "fulfilled" && questionsResult.value) {
@@ -143,16 +143,24 @@ async function enrichLessonStream(req, res) {
     // Temporarily save text blocks to allow quiz generation to use them
     context.lesson.content = blocks;
 
-    const questionsResult = await createLessonQuiz(context.lesson);
+    const [questionsResult, videosResult] = await Promise.allSettled([
+      createLessonQuiz(context.lesson),
+      findLessonVideos(context)
+    ]);
 
-    if (Array.isArray(questionsResult) && questionsResult.length > 0) {
+    if (questionsResult.status === "fulfilled" && Array.isArray(questionsResult.value) && questionsResult.value.length > 0) {
       const quizBlock = {
         type: 'quiz',
         title: 'Knowledge Check',
-        questions: questionsResult
+        questions: questionsResult.value
       };
       blocks.push(quizBlock);
       sendEvent("block", quizBlock);
+    }
+
+    if (videosResult.status === "fulfilled" && videosResult.value && videosResult.value.length > 0) {
+      context.lesson.videos = videosResult.value;
+      sendEvent("videos", context.lesson.videos);
     }
 
     if (!blocks || blocks.length === 0) {
@@ -388,11 +396,14 @@ async function addVideosToLesson(req, res) {
     const videos = await findLessonVideos(context);
     
     if (videos && videos.length > 0) {
-      // Append videos to the end of the content array
-      if (!context.lesson.content) context.lesson.content = [];
-      context.lesson.content.push(...videos);
+      if (!context.lesson.videos) context.lesson.videos = [];
+      const existingUrls = new Set(context.lesson.videos.map(v => v.url));
       
-      await context.course.save();
+      const newVideos = videos.filter(v => !existingUrls.has(v.url));
+      if (newVideos.length > 0) {
+        context.lesson.videos.push(...newVideos);
+        await context.course.save();
+      }
     }
     
     return res.json({ lesson: context.lesson, videos });

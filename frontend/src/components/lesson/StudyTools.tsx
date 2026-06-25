@@ -67,7 +67,7 @@ export default function StudyTools({
   const [activeTool, setActiveTool] = useState('');
   const [notes, setNotes] = useState(lesson.notes || '');
   const [saving, setSaving] = useState(false);
-  const videoCount = lesson.content?.filter((block) => block.type === 'video').length || 0;
+  const videoCount = lesson.videos?.length || 0;
 
   async function updateProgress(changes, successMessage) {
     setSaving(true);
