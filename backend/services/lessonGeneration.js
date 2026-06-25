@@ -194,11 +194,14 @@ CRITICAL RULE: DO NOT include code blocks UNLESS the course is specifically abou
 async function streamLessonContent({ lesson, moduleDoc, course, depth, language, onBlock, otherLessons }) {
 
   
-  const outline = await createLessonOutline({ lesson, moduleDoc, course, otherLessons });
+  let outline = await createLessonOutline({ lesson, moduleDoc, course, otherLessons });
   
   if (!outline || outline.length === 0) {
-    outline.push("Introduction", "Main Concepts", "Summary");
+    outline = ["Introduction", "Main Concepts", "Summary"];
   }
+
+  // Deduplicate outline headings
+  outline = [...new Set(outline.map(h => String(h).trim()))].filter(Boolean);
 
   let previousContextText = "";
   const allBlocks = [];
