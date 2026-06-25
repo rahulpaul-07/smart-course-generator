@@ -1,6 +1,6 @@
-import { useState } from 'react';
+
 import { useLocation, useNavigate } from 'react-router-dom';
-import { BarChart3, BookOpen, Brain, LogOut, Map, Search, Sparkles } from 'lucide-react';
+import { BarChart3, BookOpen, Brain, LogOut, Map, Sparkles } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 
 const NAV_LINKS = [
@@ -14,25 +14,9 @@ const NAV_LINKS = [
 ];
 
 export default function Navbar() {
-  const [search, setSearch] = useState('');
   const { user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
-
-  function updateSearch(value) {
-    setSearch(value);
-    if (location.pathname === '/') {
-      navigate(value.trim() ? `/?search=${encodeURIComponent(value.trim())}` : '/', {
-        replace: true,
-      });
-    }
-  }
-
-  function submitSearch(event) {
-    event.preventDefault();
-    navigate(search.trim() ? `/?search=${encodeURIComponent(search.trim())}` : '/');
-  }
-
   async function signOut() {
     await logout();
     navigate('/login');
@@ -71,15 +55,7 @@ export default function Navbar() {
           })}
         </div>
 
-        <form onSubmit={submitSearch} className="glass-card hidden w-56 items-center gap-2 rounded-xl px-3 py-2.5 transition focus-within:border-brand-400/50 focus-within:bg-slate-900/80 xl:flex">
-          <Search className="h-4 w-4 text-slate-500" />
-          <input
-            value={search}
-            onChange={(event) => updateSearch(event.target.value)}
-            placeholder="Search courses"
-            className="min-w-0 flex-1 bg-transparent text-sm text-slate-200 outline-none"
-          />
-        </form>
+
 
         <div className="ml-auto flex items-center gap-2 sm:gap-3">
           <span className="hidden items-center gap-1.5 rounded-full border border-brand-400/15 bg-brand-500/10 px-3 py-1.5 text-xs font-medium text-brand-200 lg:flex">
