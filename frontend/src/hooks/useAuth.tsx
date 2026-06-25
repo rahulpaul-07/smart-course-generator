@@ -32,8 +32,18 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     api.get('/auth/me')
       .then(({ data }) => setUser(data))
-      .catch(() => setUser(null))
+      .catch(() => {
+        setUser(null);
+        localStorage.removeItem('token');
+      })
       .finally(() => setLoadingSession(false));
+
+    const handleUnauthorized = () => {
+      setUser(null);
+      localStorage.removeItem('token');
+    };
+    window.addEventListener('auth:unauthorized', handleUnauthorized);
+    return () => window.removeEventListener('auth:unauthorized', handleUnauthorized);
   }, []);
 
   useEffect(() => {

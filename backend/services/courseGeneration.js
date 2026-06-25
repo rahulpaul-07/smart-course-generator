@@ -2,9 +2,11 @@ const { generateJson } = require("./aiRouter");
 
 function formatCourse(result) {
   const sourceModules = Array.isArray(result.modules) ? result.modules : [];
+  const seenModuleTitles = new Set();
   const modules = sourceModules.slice(0, 10).map((module) => {
     if (!module || typeof module !== "object") return null;
 
+    const seenLessonTitles = new Set();
     const lessons = (Array.isArray(module.lessons) ? module.lessons : [])
       .slice(0, 10)
       .map((lesson) => ({
@@ -12,13 +14,26 @@ function formatCourse(result) {
           .trim()
           .slice(0, 160),
       }))
-      .filter((lesson) => lesson.title);
+      .filter((lesson) => {
+        if (!lesson.title) return false;
+        const lower = lesson.title.toLowerCase();
+        if (seenLessonTitles.has(lower)) return false;
+        seenLessonTitles.add(lower);
+        return true;
+      });
+
+    const moduleTitle = String(module.title || "").trim().slice(0, 160);
+    if (!moduleTitle || !lessons.length) return null;
+    
+    const lowerMod = moduleTitle.toLowerCase();
+    if (seenModuleTitles.has(lowerMod)) return null;
+    seenModuleTitles.add(lowerMod);
 
     return {
-      title: String(module.title || "").trim().slice(0, 160),
+      title: moduleTitle,
       lessons,
     };
-  }).filter((module) => module?.title && module.lessons.length);
+  }).filter(Boolean);
 
   const course = {
     title: String(result.title || "").trim().slice(0, 160),

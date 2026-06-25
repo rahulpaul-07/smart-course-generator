@@ -37,6 +37,7 @@ export default function HomePage() {
       navigate(`/course/${data._id}`);
       return true;
     } catch (error: any) {
+      if (error.isDuplicate) return false;
       toast.error(error.response?.data?.error || 'Failed to generate course');
       return false;
     } finally {

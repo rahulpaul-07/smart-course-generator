@@ -76,6 +76,8 @@ api.interceptors.response.use(
       // Global toasts for specific status codes
       if (status === 401) {
         toast.error('Your session has expired. Please log in again.');
+        localStorage.removeItem('token');
+        window.dispatchEvent(new Event('auth:unauthorized'));
       } else if (status === 403) {
         toast.error('You do not have permission to perform this action.');
       } else if (status === 429) {
