@@ -56,8 +56,7 @@ app.use(xss());
 // Apply global rate limiting
 app.use("/api", apiLimiter);
 
-const swaggerUi = require("swagger-ui-express");
-const swaggerSpecs = require("./docs/swagger");
+
 
 // Base Route
 app.get("/", (req, res) => {
@@ -87,8 +86,12 @@ app.get("/api/health/readiness", async (req, res) => {
   }
 });
 
-// Swagger documentation
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
+// Swagger documentation - initialized only in development to save startup time
+if (process.env.NODE_ENV !== "production") {
+  const swaggerUi = require("swagger-ui-express");
+  const swaggerSpecs = require("./docs/swagger");
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
+}
 
 app.use("/api", routes);
 
