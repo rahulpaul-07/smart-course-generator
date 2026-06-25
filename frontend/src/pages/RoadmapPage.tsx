@@ -194,7 +194,7 @@ export default function RoadmapPage() {
               <p className="text-sm text-slate-400 max-w-sm mb-6">Select a saved roadmap from the sidebar, or generate a new one to guide your learning.</p>
               {!showForm && (
                 <button onClick={() => setShowForm(true)} className="btn-primary">
-                  <PlusCircle className="h-4 w-4 mr-2" /> Create Roadmap
+                  <Plus className="h-4 w-4 mr-2" /> Create Roadmap
                 </button>
               )}
             </div>
