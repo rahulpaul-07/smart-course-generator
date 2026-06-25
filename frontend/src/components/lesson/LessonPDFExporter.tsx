@@ -1,14 +1,9 @@
 import { useState } from "react";
 import { Printer } from "lucide-react";
-
-const escapeHtml = (value = "") => {
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-};
+import { renderToStaticMarkup } from "react-dom/server";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { Highlight, themes } from "prism-react-renderer";
 
 const slugify = (value = "lesson") => {
   return value
@@ -17,86 +12,153 @@ const slugify = (value = "lesson") => {
     .replace(/(^-|-$)+/g, "");
 };
 
-const renderBlockToHtml = (block, index) => {
-  switch (block.type) {
-    case "heading":
-      return `<h2>${escapeHtml(block.text)}</h2>`;
+const PDFCodeBlock = ({ block }: { block: any }) => {
+  const code = block.code || (block.codes ? Object.values(block.codes).find(Boolean) : "");
+  const lang = block.language || "text";
 
-    case "paragraph":
-      return `<p>${escapeHtml(block.text)}</p>`;
-
-    case "code":
-      return `
-        <pre>
-          <code>${escapeHtml(block.text || block.code)}</code>
-        </pre>
-      `;
-
-    case "video":
-      return `
-        <div class="pdf-video-box">
-          <strong>Suggested Video Search:</strong>
-          <p>${escapeHtml(block.query)}</p>
-        </div>
-      `;
-
-    case "mcq": {
-      const answerText =
-        typeof block.answer === "number"
-          ? block.options?.[block.answer]
-          : block.answer;
-
-      return `
-        <div class="pdf-mcq-box">
-          <h3>Question ${index + 1}</h3>
-          <p>${escapeHtml(block.question)}</p>
-          <ul>
-            ${(block.options || [])
-              .map((option) => `<li>${escapeHtml(option)}</li>`)
-              .join("")}
-          </ul>
-          ${
-            answerText
-              ? `<p><strong>Answer:</strong> ${escapeHtml(answerText)}</p>`
-              : ""
-          }
-          ${
-            block.explanation
-              ? `<p><strong>Explanation:</strong> ${escapeHtml(block.explanation)}</p>`
-              : ""
-          }
-        </div>
-      `;
-    }
-
-    case "quiz": {
-      const questionsHtml = (block.questions || [])
-        .map((q, qIdx) => `
-          <div class="pdf-mcq-box" style="margin-top: 14px; page-break-inside: avoid;">
-            <h3>Question ${qIdx + 1}: ${escapeHtml(q.question)}</h3>
-            <ul>
-              ${(q.options || [])
-                .map((opt) => `<li>${escapeHtml(opt)}</li>`)
-                .join("")}
-            </ul>
-            <p><strong>Correct Answer:</strong> Option ${(q.correctAnswer || 0) + 1} (${escapeHtml(q.options[q.correctAnswer])})</p>
-            ${q.explanation ? `<p><strong>Explanation:</strong> ${escapeHtml(q.explanation)}</p>` : ""}
-          </div>
-        `).join("");
-      return `
-        <div style="margin-top: 24px; border-top: 2px solid #e2e8f0; padding-top: 14px;">
-          <h2>${escapeHtml(block.title || "Knowledge Check")}</h2>
-          ${questionsHtml}
-        </div>
-      `;
-    }
-
-    default:
-      return "";
-  }
+  return (
+    <div style={{ pageBreakInside: "avoid", marginBottom: "16px", border: "1px solid #e2e8f0", borderRadius: "8px", overflow: "hidden", backgroundColor: "#ffffff" }}>
+      <div style={{ backgroundColor: "#f8fafc", padding: "6px 12px", borderBottom: "1px solid #e2e8f0", fontFamily: "monospace", fontSize: "11px", color: "#64748b", textTransform: "uppercase" }}>
+        {lang}
+      </div>
+      <Highlight theme={themes.github} code={code as string} language={lang as any}>
+        {({ className, style, tokens, getLineProps, getTokenProps }) => (
+          <pre className={className} style={{ ...style, padding: "12px", margin: 0, fontSize: "12px", whiteSpace: "pre-wrap", backgroundColor: "#ffffff" }}>
+            {tokens.map((line, i) => (
+              <div key={i} {...getLineProps({ line, key: i })}>
+                {line.map((token, key) => (
+                  <span key={key} {...getTokenProps({ token, key })} />
+                ))}
+              </div>
+            ))}
+          </pre>
+        )}
+      </Highlight>
+    </div>
+  );
 };
 
-const LessonPDFExporter = ({ lesson }) => {
+const PDFMarkdown = ({ text }: { text: string }) => (
+  <div style={{ fontSize: "14px", lineHeight: "1.6", color: "#334155", marginBottom: "16px", pageBreakInside: "auto" }}>
+    <ReactMarkdown remarkPlugins={[remarkGfm]}>{text}</ReactMarkdown>
+  </div>
+);
+
+const PDFDocument = ({ lesson }: { lesson: any }) => {
+  const title = lesson.title || "Lesson";
+  const description = lesson.description || "";
+  const objectives = Array.isArray(lesson.objectives) ? lesson.objectives : [];
+  const content = Array.isArray(lesson.content) ? lesson.content : [];
+
+  return (
+    <div style={{ color: "#0f172a", fontFamily: "Inter, Arial, sans-serif", lineHeight: "1.55", padding: "0 10px" }}>
+      <style>{`
+        .markdown-content p { margin: 0 0 12px 0; }
+        .markdown-content h1, .markdown-content h2, .markdown-content h3 { page-break-after: avoid; color: #0f172a; margin-top: 24px; margin-bottom: 12px; }
+        .markdown-content ul, .markdown-content ol { margin-top: 0; margin-bottom: 16px; padding-left: 24px; }
+        .markdown-content li { margin-bottom: 6px; }
+        .markdown-content blockquote { border-left: 4px solid #cbd5e1; margin: 0 0 16px; padding-left: 16px; color: #475569; }
+        .markdown-content table { width: 100%; border-collapse: collapse; margin-bottom: 16px; page-break-inside: avoid; }
+        .markdown-content th, .markdown-content td { border: 1px solid #e2e8f0; padding: 8px; text-align: left; }
+        .markdown-content th { background-color: #f8fafc; }
+        .markdown-content code { background-color: #f1f5f9; padding: 2px 4px; border-radius: 4px; font-family: monospace; font-size: 13px; color: #c53030; }
+      `}</style>
+      
+      <h1 style={{ fontSize: "28px", margin: "0 0 12px", borderBottom: "2px solid #e2e8f0", paddingBottom: "12px", pageBreakAfter: "avoid" }}>{title}</h1>
+      
+      {description && <p style={{ color: "#475569", fontSize: "15px", marginBottom: "20px" }}>{description}</p>}
+      
+      {objectives.length > 0 && (
+        <div style={{ backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", padding: "16px", marginBottom: "24px", pageBreakInside: "avoid" }}>
+          <h3 style={{ margin: "0 0 10px", fontSize: "16px" }}>Objectives</h3>
+          <ul style={{ margin: 0, paddingLeft: "20px", fontSize: "14px" }}>
+            {objectives.map((obj, i) => (
+              <li key={i}>{obj}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      <div className="markdown-content">
+        {content.map((block, index) => {
+          if (!block) return null;
+
+          switch (block.type) {
+            case "heading": {
+              const Tag = block.level === 3 ? "h3" : "h2";
+              return <Tag key={index} style={{ pageBreakAfter: "avoid" }}>{block.text}</Tag>;
+            }
+            case "paragraph":
+            case "text":
+              return <PDFMarkdown key={index} text={block.text} />;
+            case "code":
+              return <PDFCodeBlock key={index} block={block} />;
+            case "video":
+              return (
+                <div key={index} style={{ backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", padding: "16px", marginBottom: "16px", pageBreakInside: "avoid" }}>
+                  <strong style={{ display: "block", marginBottom: "8px", color: "#334155" }}>Suggested Video Search:</strong>
+                  <p style={{ margin: 0, color: "#64748b" }}>{block.query}</p>
+                </div>
+              );
+            case "callout":
+              return (
+                <div key={index} style={{ backgroundColor: "#f0f9ff", borderLeft: "4px solid #0ea5e9", padding: "16px", margin: "16px 0", pageBreakInside: "avoid" }}>
+                  <h4 style={{ margin: "0 0 8px", color: "#0369a1", fontSize: "15px", display: "flex", alignItems: "center", gap: "8px" }}>
+                    <span>{block.emoji || "💡"}</span>
+                    {block.title || "Note"}
+                  </h4>
+                  <p style={{ margin: 0, color: "#0c4a6e", fontSize: "14px", lineHeight: "1.6" }}>{block.text}</p>
+                </div>
+              );
+            case "list": {
+              const isNumbered = block.style === "numbered";
+              const ListTag = isNumbered ? "ol" : "ul";
+              return (
+                <ListTag key={index} style={{ marginBottom: "16px", paddingLeft: "24px", fontSize: "14px", lineHeight: "1.6" }}>
+                  {(block.items || []).map((item: string, i: number) => (
+                    <li key={i}>{item}</li>
+                  ))}
+                </ListTag>
+              );
+            }
+            case "mcq":
+            case "quiz": {
+              // Exclude interactive quiz blocks from the main reading document or format them nicely
+              const questions = block.type === "quiz" ? block.questions : [block];
+              if (!questions || questions.length === 0) return null;
+              
+              return (
+                <div key={index} style={{ marginTop: "24px", borderTop: "2px solid #e2e8f0", paddingTop: "20px" }}>
+                  <h2 style={{ margin: "0 0 16px", pageBreakAfter: "avoid" }}>{block.title || "Knowledge Check"}</h2>
+                  {questions.map((q: any, qIdx: number) => {
+                    const answerText = typeof q.answer === "number" ? q.options?.[q.answer] : (q.answer || (typeof q.correctAnswer === "number" ? q.options?.[q.correctAnswer] : ""));
+                    
+                    return (
+                      <div key={qIdx} style={{ backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", padding: "16px", marginBottom: "16px", pageBreakInside: "avoid" }}>
+                        <h3 style={{ margin: "0 0 12px", fontSize: "15px" }}>Question {qIdx + 1}: {q.question}</h3>
+                        <ul style={{ margin: "0 0 12px", paddingLeft: "20px", fontSize: "14px" }}>
+                          {(q.options || []).map((opt: string, optIdx: number) => (
+                            <li key={optIdx}>{opt}</li>
+                          ))}
+                        </ul>
+                        {answerText && <p style={{ margin: "0 0 8px", fontSize: "14px" }}><strong>Correct Answer:</strong> {answerText}</p>}
+                        {q.explanation && <p style={{ margin: 0, fontSize: "14px", color: "#475569" }}><strong>Explanation:</strong> {q.explanation}</p>}
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            }
+            default:
+              return null;
+          }
+        })}
+      </div>
+    </div>
+  );
+};
+
+const LessonPDFExporter = ({ lesson }: { lesson: any }) => {
   const [downloading, setDownloading] = useState(false);
 
   const handleDownloadPDF = async () => {
@@ -106,82 +168,14 @@ const LessonPDFExporter = ({ lesson }) => {
       setDownloading(true);
 
       const title = lesson.title || "Lesson";
-      const description = lesson.description || "";
-      const objectives = Array.isArray(lesson.objectives) ? lesson.objectives : [];
-      const content = Array.isArray(lesson.content) ? lesson.content : [];
-
       const pdfElement = document.createElement("div");
 
-      pdfElement.innerHTML = `
-        <style>
-          .lesson-pdf {
-            color: #0f172a;
-            font-family: Inter, Arial, sans-serif;
-            line-height: 1.55;
-            padding: 24px;
-          }
-
-          .lesson-pdf h1 {
-            font-size: 28px;
-            margin: 0 0 10px;
-          }
-
-          .lesson-pdf h2 {
-            font-size: 20px;
-            margin: 24px 0 8px;
-          }
-
-          .lesson-pdf h3 {
-            font-size: 16px;
-            margin: 0 0 8px;
-          }
-
-          .lesson-pdf p,
-          .lesson-pdf li {
-            font-size: 12px;
-          }
-
-          .pdf-description {
-            color: #475569;
-            margin-bottom: 16px;
-          }
-
-          .lesson-pdf pre {
-            background: #0f172a;
-            border-radius: 8px;
-            color: #f8fafc;
-            overflow-wrap: anywhere;
-            padding: 14px;
-            white-space: pre-wrap;
-          }
-
-          .pdf-video-box,
-          .pdf-mcq-box,
-          .pdf-objectives {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            margin: 14px 0;
-            padding: 14px;
-          }
-        </style>
-        <div class="lesson-pdf">
-          <h1>${escapeHtml(title)}</h1>
-          ${description ? `<p class="pdf-description">${escapeHtml(description)}</p>` : ""}
-          ${
-            objectives.length
-              ? `<div class="pdf-objectives"><h3>Objectives</h3><ul>${objectives
-                  .map((objective) => `<li>${escapeHtml(objective)}</li>`)
-                  .join("")}</ul></div>`
-              : ""
-          }
-          <hr />
-          ${content.map(renderBlockToHtml).join("")}
-        </div>
-      `;
+      // Generate the static HTML using React server rendering
+      const htmlContent = renderToStaticMarkup(<PDFDocument lesson={lesson} />);
+      pdfElement.innerHTML = htmlContent;
 
       const options = {
-        margin: 0.5,
+        margin: [0.8, 0.5, 0.8, 0.5], // top, left, bottom, right in inches
         filename: `${slugify(title)}.pdf`,
         image: {
           type: "jpeg",
@@ -190,16 +184,46 @@ const LessonPDFExporter = ({ lesson }) => {
         html2canvas: {
           scale: 2,
           useCORS: true,
+          letterRendering: true,
         },
         jsPDF: {
           unit: "in",
           format: "a4",
           orientation: "portrait",
         },
+        pagebreak: { mode: ["css", "legacy"] },
       };
 
       const { default: html2pdf } = await import("html2pdf.js");
-      await html2pdf().set(options).from(pdfElement).save();
+      
+      await html2pdf()
+        .set(options)
+        .from(pdfElement)
+        .toPdf()
+        .get("pdf")
+        .then((pdf: any) => {
+          const totalPages = pdf.internal.getNumberOfPages();
+          const dateStr = new Date().toLocaleDateString();
+          
+          for (let i = 1; i <= totalPages; i++) {
+            pdf.setPage(i);
+            pdf.setFontSize(9);
+            pdf.setTextColor(100);
+            
+            // Header
+            pdf.text(title, 0.5, 0.4);
+            pdf.text(dateStr, pdf.internal.pageSize.getWidth() - 0.5, 0.4, { align: "right" });
+            
+            // Footer
+            pdf.text(`Page ${i} of ${totalPages}`, pdf.internal.pageSize.getWidth() / 2, pdf.internal.pageSize.getHeight() - 0.4, { align: "center" });
+            
+            // Add a subtle header line
+            pdf.setDrawColor(226, 232, 240); // slate-200
+            pdf.setLineWidth(0.01);
+            pdf.line(0.5, 0.5, pdf.internal.pageSize.getWidth() - 0.5, 0.5);
+          }
+        })
+        .save();
     } catch (error) {
       console.error("PDF download failed:", error);
       alert("Failed to download PDF. Please try again.");
@@ -216,7 +240,7 @@ const LessonPDFExporter = ({ lesson }) => {
       className="btn-secondary"
     >
       <Printer className="h-4 w-4" />
-      {downloading ? "Preparing PDF..." : "Print or save PDF"}
+      {downloading ? "Preparing PDF..." : "Export to PDF"}
     </button>
   );
 };
