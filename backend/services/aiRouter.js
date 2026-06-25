@@ -294,61 +294,77 @@ function getMockResponse(systemPrompt, userPrompt) {
   };
 }
 
+const FRIENDLY_ERROR = "Our AI service is temporarily busy. Please try again in a minute.";
+const MAX_RETRIES_PER_PROVIDER = 2; 
+const REQUEST_TIMEOUT_MS = 45000;
+
+function getExponentialBackoff(attempt) {
+  const baseDelay = 1000;
+  const maxDelay = 10000;
+  const delay = Math.min(baseDelay * Math.pow(2, attempt), maxDelay);
+  const jitter = Math.random() * 500;
+  return delay + jitter;
+}
+
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+async function executeWithTimeout(promiseFn, timeoutMs) {
+  const abortController = new AbortController();
+  const timeoutId = setTimeout(() => abortController.abort(), timeoutMs);
+  
+  try {
+    const result = await Promise.race([
+      promiseFn(abortController.signal),
+      new Promise((_, reject) => {
+        setTimeout(() => reject(new Error("Request timed out")), timeoutMs);
+      })
+    ]);
+    clearTimeout(timeoutId);
+    return result;
+  } catch (error) {
+    clearTimeout(timeoutId);
+    throw error;
+  }
+}
+
 async function generateJson(systemPrompt, userPrompt, maxTokens = 4096, validator = null) {
   const chain = getProviderChain();
   
   if (chain.length === 0 && !process.env.GEMINI_API_KEY) {
     const mockResult = getMockResponse(systemPrompt, userPrompt);
     if (validator) {
-      try {
-        await validator(mockResult);
-      } catch (err) {
-        console.error("Mock validation failed:", err);
-      }
+      try { await validator(mockResult); } catch (err) {}
     }
     return mockResult;
   }
 
-  let lastError;
-  const timeoutMs = 120000;
-  const startTime = Date.now();
+  const activeChain = chain.length > 0 ? chain : [{ provider: gemini, model: "gemini-1.5-flash" }];
   
-  while (Date.now() - startTime < timeoutMs) {
-    const activeChain = chain.length > 0 ? chain : [{ provider: gemini, model: "gemini-1.5-flash" }];
-    for (const { provider, model } of activeChain) {
-      if (Date.now() - startTime >= timeoutMs) break;
+  for (const { provider, model } of activeChain) {
+    for (let attempt = 0; attempt < MAX_RETRIES_PER_PROVIDER; attempt++) {
       try {
-        const result = await provider.generateJson(systemPrompt, userPrompt, maxTokens, model);
+        const result = await executeWithTimeout(
+          (signal) => provider.generateJson(systemPrompt, userPrompt, maxTokens, model, signal),
+          REQUEST_TIMEOUT_MS
+        );
         
-        if (validator) {
-          await validator(result);
-        }
+        if (validator) await validator(result);
         
         logTelemetry({ provider: provider.name, model, endpoint: 'generateJson', status: 'success' });
         return result;
       } catch (error) {
-        let category = error.failureCategory || 'provider_error';
-        if (error.status === 429) category = 'rate_limit';
-        else if (error.message && error.message.includes('timeout')) category = 'timeout';
-        
-        const reqType = (systemPrompt + userPrompt).toLowerCase().includes('lesson') ? 'lesson' : 
-                        (systemPrompt + userPrompt).toLowerCase().includes('course') ? 'course' :
-                        (systemPrompt + userPrompt).toLowerCase().includes('roadmap') ? 'roadmap' :
-                        (systemPrompt + userPrompt).toLowerCase().includes('interview') ? 'interview' : 'unknown';
-
-        structuredAiLog(provider.name, reqType, category, error.message || String(error));
+        console.error(`[AI Router] generateJson ${provider.name} attempt ${attempt + 1} failed:`, error.stack || error);
         logTelemetry({ provider: provider.name, model, endpoint: 'generateJson', status: 'failure', reason: error.message || String(error) });
-        console.warn(`[AI Router] ${provider.name} (${model}) failed to generateJson. Switching to next...`);
-        lastError = error;
+        
+        if (attempt < MAX_RETRIES_PER_PROVIDER - 1) {
+          await sleep(getExponentialBackoff(attempt));
+        }
       }
     }
-    
-    if (Date.now() - startTime < timeoutMs) {
-      await new Promise(resolve => setTimeout(resolve, 2000));
-    }
+    console.warn(`[AI Router] Exhausted retries for ${provider.name}. Failing over to next provider.`);
   }
   
-  throw lastError || new Error("Our AI servers are currently experiencing high traffic. Please try again in a few moments.");
+  throw new Error(FRIENDLY_ERROR);
 }
 
 async function* generateJsonStream(systemPrompt, userPrompt, maxTokens = 4096) {
@@ -358,54 +374,48 @@ async function* generateJsonStream(systemPrompt, userPrompt, maxTokens = 4096) {
     const mockData = getMockResponse(systemPrompt, userPrompt);
     const blocks = mockData.contentBlocks || mockData.blocks || [];
     for (const block of blocks) {
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await sleep(500);
       yield block;
     }
     return;
   }
 
-  let lastError;
-  const timeoutMs = 120000;
-  const startTime = Date.now();
+  const activeChain = chain.length > 0 ? chain : [{ provider: gemini, model: "gemini-1.5-flash" }];
   
-  while (Date.now() - startTime < timeoutMs) {
-    const activeChain = chain.length > 0 ? chain : [{ provider: gemini, model: "gemini-1.5-flash" }];
-    for (let i = 0; i < activeChain.length; i++) {
-      if (Date.now() - startTime >= timeoutMs) break;
-      const { provider, model } = activeChain[i];
+  for (const { provider, model } of activeChain) {
+    for (let attempt = 0; attempt < MAX_RETRIES_PER_PROVIDER; attempt++) {
       let yieldedChunk = false;
-      
       try {
-        const stream = await provider.generateJsonStream(systemPrompt, userPrompt, maxTokens, model);
+        const stream = await executeWithTimeout(
+          (signal) => provider.generateJsonStream(systemPrompt, userPrompt, maxTokens, model, signal),
+          REQUEST_TIMEOUT_MS
+        );
+        
         for await (const chunk of stream) {
           yieldedChunk = true;
           yield chunk;
         }
+        
         logTelemetry({ provider: provider.name, model, endpoint: 'generateJsonStream', status: 'success' });
         return;
       } catch (error) {
-        let category = error.failureCategory || 'provider_error';
-        if (error.status === 429) category = 'rate_limit';
-        else if (error.message && error.message.includes('timeout')) category = 'timeout';
-        
-        const reqType = (systemPrompt + userPrompt).toLowerCase().includes('lesson') ? 'lesson' : 
-                        (systemPrompt + userPrompt).toLowerCase().includes('course') ? 'course' :
-                        (systemPrompt + userPrompt).toLowerCase().includes('roadmap') ? 'roadmap' :
-                        (systemPrompt + userPrompt).toLowerCase().includes('interview') ? 'interview' : 'unknown';
-
-        structuredAiLog(provider.name, reqType, category, error.message || String(error));
+        console.error(`[AI Router] generateJsonStream ${provider.name} attempt ${attempt + 1} failed:`, error.stack || error);
         logTelemetry({ provider: provider.name, model, endpoint: 'generateJsonStream', status: 'failure', reason: error.message || String(error) });
+        
         if (yieldedChunk) {
-          console.error(`[AI Router] ${provider.name} (${model}) stream failed midway. Cannot fallback.`);
-          throw new Error("Our AI servers are currently experiencing high traffic. Please try again in a few moments.");
+          console.error(`[AI Router] Stream interrupted midway. Aborting.`);
+          throw new Error(FRIENDLY_ERROR);
         }
-        console.warn(`[AI Router] ${provider.name} (${model}) failed before sending data. Switching to next...`);
-        lastError = error;
+        
+        if (attempt < MAX_RETRIES_PER_PROVIDER - 1) {
+          await sleep(getExponentialBackoff(attempt));
+        }
       }
     }
+    console.warn(`[AI Router] Exhausted retries for ${provider.name} in stream. Failing over...`);
   }
   
-  throw lastError || new Error("Our AI servers are currently experiencing high traffic. Please try again in a few moments.");
+  throw new Error(FRIENDLY_ERROR);
 }
 
 async function generateText(messages, maxTokens = 1024) {
@@ -418,36 +428,31 @@ async function generateText(messages, maxTokens = 1024) {
     return "This is a friendly response from your AI tutor! Let's continue working on this lesson together.";
   }
 
-  let lastError;
-  const timeoutMs = 30000;
-  const startTime = Date.now();
+  const activeChain = chain.length > 0 ? chain : [{ provider: gemini, model: "gemini-1.5-flash" }];
   
-  while (Date.now() - startTime < timeoutMs) {
-    const activeChain = chain.length > 0 ? chain : [{ provider: gemini, model: "gemini-1.5-flash" }];
-    for (const { provider, model } of activeChain) {
-      if (Date.now() - startTime >= timeoutMs) break;
+  for (const { provider, model } of activeChain) {
+    for (let attempt = 0; attempt < MAX_RETRIES_PER_PROVIDER; attempt++) {
       try {
-        return await provider.generateText(messages, maxTokens, model);
-      } catch (error) {
-        let category = error.failureCategory || 'provider_error';
-        if (error.status === 429) category = 'rate_limit';
-        else if (error.message && error.message.includes('timeout')) category = 'timeout';
+        const result = await executeWithTimeout(
+          (signal) => provider.generateText(messages, maxTokens, model, signal),
+          REQUEST_TIMEOUT_MS
+        );
         
-        const reqStr = messages.map((m) => m.content).join(' ').toLowerCase();
-        const reqType = reqStr.includes('lesson') ? 'lesson' : 
-                        reqStr.includes('course') ? 'course' :
-                        reqStr.includes('roadmap') ? 'roadmap' :
-                        reqStr.includes('interview') ? 'interview' : 'unknown';
-
-        structuredAiLog(provider.name, reqType, category, error.message || String(error));
+        logTelemetry({ provider: provider.name, model, endpoint: 'generateText', status: 'success' });
+        return result;
+      } catch (error) {
+        console.error(`[AI Router] generateText ${provider.name} attempt ${attempt + 1} failed:`, error.stack || error);
         logTelemetry({ provider: provider.name, model, endpoint: 'generateText', status: 'failure', reason: error.message || String(error) });
-        console.warn(`[AI Router] ${provider.name} (${model}) failed to generateText. Switching to next...`);
-        lastError = error;
+        
+        if (attempt < MAX_RETRIES_PER_PROVIDER - 1) {
+          await sleep(getExponentialBackoff(attempt));
+        }
       }
     }
+    console.warn(`[AI Router] Exhausted retries for ${provider.name}. Failing over...`);
   }
   
-  throw lastError || new Error("Our AI servers are currently experiencing high traffic. Please try again in a few moments.");
+  throw new Error(FRIENDLY_ERROR);
 }
 
 module.exports = { generateJson, generateJsonStream, generateText };
