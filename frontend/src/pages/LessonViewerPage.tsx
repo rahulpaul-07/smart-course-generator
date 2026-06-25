@@ -32,8 +32,9 @@ export default function LessonViewerPage() {
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [showDepthPicker, setShowDepthPicker] = useState(false);
-  const [streamStatus, setStreamStatus] = useState<'idle' | 'interrupted' | 'error'>('idle');
+  const [streamStatus, setStreamStatus] = useState<'idle' | 'interrupted' | 'error' | 'success'>('idle');
   const [streamError, setStreamError] = useState('');
+  const [streamStage, setStreamStage] = useState('Creating outline');
   const [selectedDepth, setSelectedDepth] = useState('standard');
   const [selectedLanguage, setSelectedLanguage] = useState('English');
   const [addingVideos, setAddingVideos] = useState(false);
@@ -113,6 +114,8 @@ export default function LessonViewerPage() {
     setGenerating(true);
     setShowDepthPicker(false);
     setStreamedCount(0);
+    setStreamStage('Creating outline');
+    setStreamStatus('idle');
 
     // Clear existing content so blocks stream in fresh
     setLesson((prev) => prev ? { ...prev, content: [] } : prev);
@@ -143,6 +146,7 @@ export default function LessonViewerPage() {
       let buffer = '';
       let count = 0;
       let streamComplete = false;
+      let streamFinished = false;
       let streamInterrupted = false;
       let currentEvent = '';
 
@@ -178,13 +182,17 @@ export default function LessonViewerPage() {
               if (currentEvent === 'block') {
                 count++;
                 setStreamedCount(count);
+                if (count === 1) setStreamStage('Writing section');
+                else if (count === 3) setStreamStage('Generating code examples');
+                else if (count === 6) setStreamStage('Finalizing lesson');
                 setLesson((prev) => {
                   if (!prev) return prev;
                   return { ...prev, content: [...(prev.content || []), data] };
                 });
               } else if (currentEvent === 'done') {
-                // Final saved lesson from the server
+                setStreamStage('Saving lesson');
                 updateCurrentLesson(data);
+                streamFinished = true;
               } else if (currentEvent === 'error') {
                 let errMsg = data.error || 'Generation failed';
                 if (typeof errMsg === 'object') {
@@ -203,7 +211,7 @@ export default function LessonViewerPage() {
         }
       }
 
-      if (currentEvent !== 'done' && currentEvent !== 'error') {
+      if (!streamFinished) {
         streamInterrupted = true;
       }
 
@@ -212,8 +220,7 @@ export default function LessonViewerPage() {
       }
 
       if (count > 0) {
-        toast.success('Lesson content generated');
-        setStreamStatus('idle');
+        setStreamStatus('success');
       } else {
         toast.error('No content was generated. Please try again.');
         setStreamStatus('error');
@@ -372,7 +379,15 @@ export default function LessonViewerPage() {
             onDepthChange={setSelectedDepth}
             selectedDepth={selectedDepth}
             streamedCount={streamedCount}
+            streamStage={streamStage}
           />
+
+          {streamStatus === 'success' && !generating && (
+            <div className="bg-emerald-500/10 border border-emerald-500/20 p-4 rounded-xl my-6 flex items-center justify-center gap-3 text-emerald-500 animate-enter">
+              <Sparkles className="w-5 h-5" />
+              <span className="font-medium">Lesson generated successfully!</span>
+            </div>
+          )}
 
           {streamStatus === 'interrupted' && (
             <div className="bg-amber-500/10 border border-amber-500/20 p-6 rounded-xl my-6 flex flex-col items-center justify-center text-center">

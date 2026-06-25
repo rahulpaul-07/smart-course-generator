@@ -11,6 +11,7 @@ export default function LessonGenerator({
   onDepthChange,
   selectedDepth,
   streamedCount = 0,
+  streamStage = 'Creating outline',
 }) {
   const isStreaming = isGenerating && streamedCount > 0;
 
@@ -52,7 +53,28 @@ export default function LessonGenerator({
       </p>
 
       {isGenerating && (
-        <div className="mt-3">
+        <div className="mt-4">
+          <div className="flex items-center justify-between text-xs font-medium text-brand-300 mb-2 px-1">
+            <span className="flex items-center gap-1.5">
+              {streamStage === 'Creating outline' ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5 text-emerald-400" />}
+              Creating outline
+            </span>
+            <span className="text-slate-600 hidden sm:inline">&rarr;</span>
+            <span className={`flex items-center gap-1.5 ${streamedCount >= 1 ? 'text-brand-300' : 'text-slate-500'}`}>
+              {streamStage === 'Writing section' ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : (streamedCount >= 1 ? <Sparkles className="w-3.5 h-3.5 text-emerald-400" /> : <span className="w-3.5 h-3.5" />)}
+              Writing section
+            </span>
+            <span className="text-slate-600 hidden sm:inline">&rarr;</span>
+            <span className={`flex items-center gap-1.5 ${streamedCount >= 3 ? 'text-brand-300' : 'text-slate-500'}`}>
+              {streamStage === 'Generating code examples' ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : (streamedCount >= 3 ? <Sparkles className="w-3.5 h-3.5 text-emerald-400" /> : <span className="w-3.5 h-3.5" />)}
+              Code examples
+            </span>
+            <span className="text-slate-600 hidden sm:inline">&rarr;</span>
+            <span className={`flex items-center gap-1.5 ${streamedCount >= 6 ? 'text-brand-300' : 'text-slate-500'}`}>
+              {streamStage === 'Finalizing lesson' || streamStage === 'Saving lesson' ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : (streamStage === 'Saving lesson' ? <Sparkles className="w-3.5 h-3.5 text-emerald-400" /> : <span className="w-3.5 h-3.5" />)}
+              Finalizing
+            </span>
+          </div>
           <div className="stream-pulse-bar" />
         </div>
       )}
