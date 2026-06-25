@@ -16,7 +16,6 @@ import toast from 'react-hot-toast';
 import api from '../../utils/api';
 import FlashcardDeck from './FlashcardDeck';
 import PracticeLab from './PracticeLab';
-import QuizPanel from './QuizPanel';
 import LessonPDFExporter from './LessonPDFExporter';
 
 function ToolCard({
