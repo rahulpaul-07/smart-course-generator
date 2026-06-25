@@ -48,7 +48,7 @@ Rules:
 
 Generate the complete week-by-week roadmap.`;
 
-    const result = await aiRouter.generateJson(systemPrompt, userPrompt, 8192);
+    const result = await aiRouter.generateJson(systemPrompt, userPrompt, 2048);
 
     const parsedWeeks = result.weeks || result.roadmap?.weeks || result.roadmap || [];
     const parsedSummary = result.summary || result.roadmap?.summary || "";
