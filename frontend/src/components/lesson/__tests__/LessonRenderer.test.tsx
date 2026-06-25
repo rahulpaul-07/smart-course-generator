@@ -29,8 +29,8 @@ describe('LessonRenderer Markdown & Content Handling', () => {
 
   it('3. should render code blocks', () => {
     const { container } = render(<LessonRenderer content={mockContent} />);
-    // Our CodeSnippet component renders the code block
-    expect(screen.getByText(/console\.log\("hello"\)/)).toBeInTheDocument();
+    // Our CodeSnippet component renders the code block, which splits tokens into multiple spans
+    expect(container.textContent).toMatch(/console\.log\("hello"\)/);
   });
 
   it('4. should not fail rendering when given empty content without streaming', () => {
