@@ -142,7 +142,7 @@ export default function StudyTools({
         </div>
 
         {activeTool && (
-          <div className="mt-6 rounded-2xl border border-white/[0.08] bg-black/15 p-4 animate-scale-in sm:p-6">
+          <div className="mt-6 rounded-2xl border border-white/[0.08] bg-black/15 p-4 sm:p-6">
             {activeTool === 'notes' && (
               <>
                 <div className="flex flex-wrap items-start justify-between gap-4">

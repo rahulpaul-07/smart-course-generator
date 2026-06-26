@@ -22,6 +22,7 @@ import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import OnboardingPage from './pages/OnboardingPage';
+import FlashcardTestPage from './pages/FlashcardTestPage';
 
 const CertificatePage = withSuspense(lazy(() => import('./pages/CertificatePage')));
 const CertificatesPage = withSuspense(lazy(() => import('./pages/CertificatesPage')));
@@ -100,6 +101,7 @@ export default function App() {
         <Route path="/community" element={<DashboardPage><CommunityTemplatesPage /></DashboardPage>} />
         <Route path="/leaderboard" element={<DashboardPage><LeaderboardPage /></DashboardPage>} />
         <Route path="/settings" element={<DashboardPage><SettingsPage /></DashboardPage>} />
+        <Route path="/flashcard-test" element={<FlashcardTestPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </ErrorBoundary>

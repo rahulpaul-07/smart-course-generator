@@ -1,9 +1,7 @@
 import { ArrowLeft, ArrowRight, Layers3, Loader2, RefreshCw, Undo2 } from 'lucide-react';
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import api from '../../utils/api';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 
 export default function FlashcardDeck({ lessonId, courseId, embedded = false }: { lessonId: string, courseId: string, embedded?: boolean }) {
@@ -37,19 +35,16 @@ export default function FlashcardDeck({ lessonId, courseId, embedded = false }: 
   }
 
   function handleConfidence(level: 'again' | 'hard' | 'good' | 'easy') {
-    // Basic in-memory spaced repetition behavior for the session
     const currentCard = sessionDeck[index];
     let newDeck = [...sessionDeck];
     
     if (level === 'again' || level === 'hard') {
-      // Move slightly back in the deck so they see it again soon
       newDeck.splice(index, 1);
       const insertAt = Math.min(index + 3, newDeck.length);
       newDeck.splice(insertAt, 0, currentCard);
       setSessionDeck(newDeck);
       setShowAnswer(false);
     } else {
-      // Good or easy, just move to next
       move(1);
     }
   }
@@ -93,14 +88,44 @@ export default function FlashcardDeck({ lessonId, courseId, embedded = false }: 
         </Button>
       </div>
 
-      <div className="relative h-64 sm:h-80 w-full perspective-[1000px] cursor-pointer" onClick={() => setShowAnswer(!showAnswer)}>
-        <motion.div
-          className="w-full h-full preserve-3d relative"
-          animate={{ rotateX: showAnswer ? 180 : 0 }}
-          transition={{ duration: 0.6, type: 'spring', stiffness: 260, damping: 20 }}
+      <div 
+        className="scene"
+        onClick={() => setShowAnswer(!showAnswer)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setShowAnswer(!showAnswer);
+          }
+        }}
+        tabIndex={0}
+        role="button"
+        aria-label={showAnswer ? "Answer: " + card.back : "Question: " + card.front}
+        style={{
+          perspective: '1000px',
+          height: '20rem',
+          cursor: 'pointer'
+        }}
+      >
+        <div
+          className="card"
+          style={{
+            position: 'relative',
+            width: '100%',
+            height: '100%',
+            transformStyle: 'preserve-3d',
+            transition: 'transform .6s ease',
+            transform: showAnswer ? 'rotateY(180deg)' : 'none'
+          }}
         >
-          {/* Front of card */}
-          <Card className="absolute inset-0 backface-hidden flex flex-col p-6 sm:p-8 bg-gradient-to-br from-card to-muted/50 border-primary/20 hover:border-primary/40 transition-colors">
+          <div 
+            className="card__face card__face--front flex flex-col p-6 sm:p-8 bg-card border border-border rounded-xl shadow-sm"
+            style={{ 
+              position: 'absolute',
+              inset: 0,
+              backfaceVisibility: 'hidden',
+              transform: 'rotateY(0deg)'
+            }}
+          >
             <span className="text-xs font-bold uppercase tracking-wider text-primary mb-4 flex items-center gap-2">
               <Layers3 className="h-4 w-4" /> Question
             </span>
@@ -109,13 +134,17 @@ export default function FlashcardDeck({ lessonId, courseId, embedded = false }: 
                 {card.front}
               </h3>
             </div>
-            <p className="text-center text-xs text-muted-foreground mt-4 animate-pulse">Click to flip</p>
-          </Card>
+            <p className="text-center text-xs text-muted-foreground mt-4">Click to flip</p>
+          </div>
 
-          {/* Back of card */}
-          <Card 
-            className="absolute inset-0 backface-hidden flex flex-col p-6 sm:p-8 bg-gradient-to-br from-primary/10 to-primary/5 border-primary/30"
-            style={{ transform: 'rotateX(180deg)' }}
+          <div 
+            className="card__face card__face--back flex flex-col p-6 sm:p-8 bg-card border border-border rounded-xl shadow-sm"
+            style={{ 
+              position: 'absolute',
+              inset: 0,
+              backfaceVisibility: 'hidden', 
+              transform: 'rotateY(180deg)' 
+            }}
           >
             <span className="text-xs font-bold uppercase tracking-wider text-primary mb-4 flex items-center gap-2">
               <Undo2 className="h-4 w-4" /> Answer
@@ -125,51 +154,37 @@ export default function FlashcardDeck({ lessonId, courseId, embedded = false }: 
                 {card.back}
               </p>
             </div>
-          </Card>
-        </motion.div>
+          </div>
+        </div>
       </div>
 
-      <AnimatePresence mode="wait">
-        {showAnswer ? (
-          <motion.div 
-            key="confidence-buttons"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="mt-8 flex flex-wrap justify-center gap-2 sm:gap-4 w-full"
-          >
-            <Button variant="outline" className="w-20 bg-red-500/10 text-red-500 hover:bg-red-500/20 hover:text-red-500 border-red-500/20" onClick={() => handleConfidence('again')}>
-              Again
-            </Button>
-            <Button variant="outline" className="w-20 bg-orange-500/10 text-orange-500 hover:bg-orange-500/20 hover:text-orange-500 border-orange-500/20" onClick={() => handleConfidence('hard')}>
-              Hard
-            </Button>
-            <Button variant="outline" className="w-20 bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 hover:text-emerald-500 border-emerald-500/20" onClick={() => handleConfidence('good')}>
-              Good
-            </Button>
-            <Button variant="outline" className="w-20 bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 hover:text-blue-500 border-blue-500/20" onClick={() => handleConfidence('easy')}>
-              Easy
-            </Button>
-          </motion.div>
-        ) : (
-          <motion.div 
-            key="nav-buttons"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="mt-8 flex justify-center gap-4"
-          >
-            <Button variant="outline" size="lg" onClick={() => move(-1)} className="w-32">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Previous
-            </Button>
-            <Button size="lg" onClick={() => move(1)} className="w-32">
-              Next
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {showAnswer ? (
+        <div className="mt-8 flex flex-wrap justify-center gap-2 sm:gap-4 w-full">
+          <Button variant="outline" className="w-20 bg-red-500/10 text-red-500 hover:bg-red-500/20 hover:text-red-500 border-red-500/20" onClick={() => handleConfidence('again')}>
+            Again
+          </Button>
+          <Button variant="outline" className="w-20 bg-orange-500/10 text-orange-500 hover:bg-orange-500/20 hover:text-orange-500 border-orange-500/20" onClick={() => handleConfidence('hard')}>
+            Hard
+          </Button>
+          <Button variant="outline" className="w-20 bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 hover:text-emerald-500 border-emerald-500/20" onClick={() => handleConfidence('good')}>
+            Good
+          </Button>
+          <Button variant="outline" className="w-20 bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 hover:text-blue-500 border-blue-500/20" onClick={() => handleConfidence('easy')}>
+            Easy
+          </Button>
+        </div>
+      ) : (
+        <div className="mt-8 flex justify-center gap-4">
+          <Button variant="outline" size="lg" onClick={() => move(-1)} className="w-32">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Previous
+          </Button>
+          <Button size="lg" onClick={() => move(1)} className="w-32">
+            Next
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
