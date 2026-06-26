@@ -7,6 +7,8 @@ const { communityLimiter } = require("../middlewares/rateLimit");
 const { cacheMiddleware } = require("../middlewares/cacheMiddleware");
 
 const router = Router();
+const validateObjectIds = require("../middlewares/validateObjectIds");
+router.use(validateObjectIds);
 
 // Public routes
 router.get("/leaderboard", communityLimiter, cacheMiddleware(60), getLeaderboard);
@@ -23,3 +25,4 @@ router.post("/templates/:courseId/rate", communityLimiter, validateRequest(rateT
 router.post("/templates/:courseId/clone", communityLimiter, validateRequest(cloneTemplateSchema), cloneTemplate);
 
 module.exports = router;
+

@@ -43,6 +43,15 @@ const interviewPrepSchema = new mongoose.Schema(
     mockChat: [chatMsgSchema],
     status: { type: String, enum: ["pending", "completed"], default: "pending" },
     overallScore: { type: Number, default: 0 },
+    strengths: [{ type: String }],
+    weaknesses: [{ type: String }],
+    recommendedTopics: [{ type: String }],
+    readiness: { type: String, default: "" },
+    summary: { type: String, default: "" },
+    communicationFeedback: { type: String, default: "" },
+    technicalFeedback: { type: String, default: "" },
+    problemSolvingFeedback: { type: String, default: "" },
+    nextSteps: [{ type: String }],
   },
   { timestamps: true }
 );

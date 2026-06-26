@@ -31,7 +31,7 @@ async function getMyCourses(req, res) {
 }
 
 async function getCourseById(req, res) {
-  const course = await Course.findById(req.params.courseId)
+  const course = await Course.findOne({ _id: req.params.courseId, creator: req.user._id })
     .select("title description modules isPublic shareId creator finalTest")
     .populate(COURSE_OUTLINE)
     .lean();
@@ -58,7 +58,7 @@ async function getLessonView(req, res) {
   context.lesson.lastOpenedAt = new Date();
   await context.lesson.save();
 
-  const course = await Course.findById(req.params.courseId)
+  const course = await Course.findOne({ _id: req.params.courseId, creator: req.user._id })
     .select("title description modules")
     .populate(COURSE_OUTLINE)
     .lean();
@@ -70,7 +70,7 @@ async function getLessonView(req, res) {
 }
 
 async function deleteCourse(req, res) {
-  const course = await Course.findById(req.params.courseId);
+  const course = await Course.findOne({ _id: req.params.courseId, creator: req.user._id });
   if (!course) return res.status(404).json({ error: "Course not found" });
   if (!ownsCourse(course, req.user._id)) return res.status(403).json({ error: "Forbidden" });
 
@@ -138,7 +138,7 @@ async function updateLessonProgress(req, res) {
 }
 
 async function updateSharing(req, res) {
-  const course = await Course.findById(req.params.courseId);
+  const course = await Course.findOne({ _id: req.params.courseId, creator: req.user._id });
   if (!course) return res.status(404).json({ error: "Course not found" });
   if (!ownsCourse(course, req.user._id)) return res.status(403).json({ error: "Forbidden" });
 
@@ -175,7 +175,7 @@ async function getPublicCourse(req, res) {
 }
 
 async function generateFinalTest(req, res) {
-  const course = await Course.findById(req.params.courseId)
+  const course = await Course.findOne({ _id: req.params.courseId, creator: req.user._id })
     .populate({
       path: "modules",
       populate: { path: "lessons" }

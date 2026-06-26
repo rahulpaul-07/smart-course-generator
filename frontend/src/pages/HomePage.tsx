@@ -1,12 +1,7 @@
-import { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { BookOpen, Sparkles, X, PlusCircle, Activity } from 'lucide-react';
-import toast from 'react-hot-toast';
-import { motion, AnimatePresence } from 'framer-motion';
-import CourseCard from '../components/CourseCard';
-import LearningSummary from '../components/LearningSummary';
-import PromptForm from '../components/PromptForm';
-import ActivityFeed from '../components/ActivityFeed';
+import { useQuery } from '@tanstack/react-query';
+import { useNavigate, Link } from 'react-router-dom';
+import { BookOpen, Sparkles, Activity, PlayCircle, Layers, Brain, MessageSquare, Clock, ArrowRight, Flame, Target, BarChart2, CheckCircle, FlameKindling, Zap } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { PageContainer } from '../components/layout/PageContainer';
 import { SectionHeader } from '../components/ui/SectionHeader';
 import { Button } from '@/components/ui/button';
@@ -14,220 +9,325 @@ import { Skeleton } from '@/components/ui/skeleton';
 import api from '../utils/api';
 
 export default function HomePage() {
-  const [courses, setCourses] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [generating, setGenerating] = useState(false);
-  const [searchParams, setSearchParams] = useSearchParams();
+  
   const navigate = useNavigate();
-  const search = searchParams.get('search')?.trim().toLowerCase() || '';
 
-  useEffect(() => {
-    api.get('/courses/mine')
-      .then(({ data }) => setCourses(data))
-      .catch(() => toast.error('Failed to load courses'))
-      .finally(() => setLoading(false));
-  }, []);
-
-  async function generateCourse(prompt: string) {
-    setGenerating(true);
-
-    try {
-      const { data } = await api.post('/courses/generate', { prompt });
-      toast.success('Course generated successfully!');
-      navigate(`/course/${data._id}`);
-      return true;
-    } catch (error: any) {
-      if (error.isDuplicate) return false;
-      toast.error(error.response?.data?.error || 'Failed to generate course');
-      return false;
-    } finally {
-      setGenerating(false);
+  
+  const { data, isLoading: loading, isError: error, refetch: fetchDashboard } = useQuery({
+    queryKey: ['dashboardSummary'],
+    queryFn: async () => {
+      const res = await api.get('/dashboard/summary');
+      return res.data;
     }
-  }
+  });
 
-  async function deleteCourse(courseId: string) {
-    if (!window.confirm('Delete this course?')) return;
+  const statsList = [
+    { label: "Courses Created", value: data?.statistics?.coursesCreated || 0, icon: BookOpen },
+    { label: "Courses Completed", value: data?.statistics?.coursesCompleted || 0, icon: CheckCircle },
+    { label: "Lessons Completed", value: data?.statistics?.lessonsCompleted || 0, icon: PlayCircle },
+    { label: "Roadmaps", value: data?.statistics?.roadmapsCreated || 0, icon: Layers },
+    { label: "Practice Labs", value: data?.statistics?.practiceLabsGenerated || 0, icon: Zap },
+    { label: "Flashcards", value: data?.statistics?.flashcardsGenerated || 0, icon: Sparkles },
+    { label: "Interview Packs", value: data?.statistics?.interviewPacks || 0, icon: Brain },
+    { label: "AI Questions", value: data?.statistics?.aiQuestionsAsked || 0, icon: MessageSquare }
+  ];
 
-    try {
-      await api.delete(`/courses/${courseId}`);
-      setCourses((current) => current.filter((course) => course._id !== courseId));
-    } catch {
-      toast.error('Failed to delete course');
-    }
-  }
-
-  const visibleCourses = search
-    ? courses.filter((course) => (
-      course.title?.toLowerCase().includes(search)
-      || course.description?.toLowerCase().includes(search)
-    ))
-    : courses;
+  const ProgressBar = ({ label, value }: { label: string, value: number }) => (
+    <div className="mb-4">
+      <div className="flex justify-between items-center mb-1">
+        <span className="text-sm font-medium text-foreground">{label}</span>
+        <span className="text-sm text-muted-foreground">{value}%</span>
+      </div>
+      <div className="w-full bg-white/5 rounded-full h-2.5 overflow-hidden" role="progressbar" aria-valuenow={value} aria-valuemin={0} aria-valuemax={100}>
+        <motion.div 
+          className="bg-primary h-2.5 rounded-full" 
+          initial={{ width: 0 }}
+          animate={{ width: `${value}%` }}
+          transition={{ duration: 1, ease: "easeOut" }}
+        />
+      </div>
+    </div>
+  );
 
   return (
     <div className="relative min-h-screen">
-      {/* Dynamic Glowing Background Background */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-primary/20 blur-[120px] mix-blend-screen opacity-50 animate-pulse" />
         <div className="absolute top-[40%] -right-[10%] w-[40%] h-[60%] rounded-full bg-blue-500/10 blur-[120px] mix-blend-screen opacity-50" />
       </div>
 
       <PageContainer className="relative z-10">
-        <div className="mb-10 flex flex-col md:flex-row gap-4 md:items-center justify-between">
-          <div>
-            <h1 className="text-4xl font-extrabold tracking-tight text-foreground bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">Dashboard</h1>
-            <p className="text-muted-foreground mt-2 text-lg">Welcome back. Here's your learning progress.</p>
-          </div>
-          {search && (
-            <Button variant="outline" onClick={() => setSearchParams({})}>
-              <X className="mr-2 h-4 w-4" />
-              Clear Search
-            </Button>
-          )}
+        <div className="mb-10">
+          <h1 className="text-4xl font-extrabold tracking-tight text-foreground bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">Dashboard</h1>
+          <p className="text-muted-foreground mt-2 text-lg">Welcome back. Here's your learning progress.</p>
         </div>
 
-        <AnimatePresence mode="wait">
         {loading ? (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-10"
-          >
-            <div className="md:col-span-2 lg:col-span-2">
-              <Skeleton className="h-64 w-full" />
-            </div>
-            <Skeleton className="h-40 w-full" />
-            <Skeleton className="h-40 w-full" />
-            <Skeleton className="h-40 w-full" />
-            <Skeleton className="h-40 w-full" />
-          </motion.div>
-        ) : courses.length === 0 && !search ? (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            className="mb-10 bg-card/60 backdrop-blur-sm border border-border/50 rounded-3xl p-8 lg:p-12 text-center"
-          >
-            <div className="h-16 w-16 mx-auto bg-primary/10 rounded-2xl flex items-center justify-center mb-6">
-              <Sparkles className="h-8 w-8 text-primary" />
-            </div>
-            <h2 className="text-3xl font-bold mb-4">Welcome to your Learning Hub! 🎉</h2>
-            <p className="text-lg text-muted-foreground mb-10 max-w-2xl mx-auto">
-              You're just a few steps away from mastering any topic. Here's how to get started on your personalized learning journey:
-            </p>
-            <div className="grid md:grid-cols-3 gap-6 text-left">
-              <div className="bg-primary/5 p-6 rounded-2xl border border-primary/10">
-                <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
-                  <span className="text-xl font-bold text-primary">1</span>
-                </div>
-                <h3 className="font-bold text-lg mb-2 text-foreground">Generate Course</h3>
-                <p className="text-muted-foreground text-sm">Describe what you want to learn below, and our AI will build a personalized curriculum instantly.</p>
+          <div className="grid lg:grid-cols-[1fr_350px] gap-8">
+            <div className="space-y-8">
+              <Skeleton className="h-48 w-full rounded-3xl" />
+              <div className="grid sm:grid-cols-2 gap-4">
+                <Skeleton className="h-40 w-full rounded-2xl" />
+                <Skeleton className="h-40 w-full rounded-2xl" />
               </div>
-              <div className="bg-cyan-500/5 p-6 rounded-2xl border border-cyan-500/10">
-                <div className="h-12 w-12 rounded-xl bg-cyan-500/10 flex items-center justify-center mb-4">
-                  <span className="text-xl font-bold text-cyan-500">2</span>
-                </div>
-                <h3 className="font-bold text-lg mb-2 text-foreground">Complete Lessons</h3>
-                <p className="text-muted-foreground text-sm">Read interactive content, pass quizzes, and build your daily learning streak.</p>
-              </div>
-              <div className="bg-amber-500/5 p-6 rounded-2xl border border-amber-500/10">
-                <div className="h-12 w-12 rounded-xl bg-amber-500/10 flex items-center justify-center mb-4">
-                  <span className="text-xl font-bold text-amber-500">3</span>
-                </div>
-                <h3 className="font-bold text-lg mb-2 text-foreground">Earn Certificates</h3>
-                <p className="text-muted-foreground text-sm">Take the final test to validate your knowledge and earn a verifiable certificate.</p>
-              </div>
+              <Skeleton className="h-64 w-full rounded-3xl" />
             </div>
-          </motion.div>
+            <div className="space-y-6">
+              <Skeleton className="h-96 w-full rounded-3xl" />
+            </div>
+          </div>
+        ) : error ? (
+          <div className="flex flex-col items-center justify-center p-12 bg-card/40 border border-border/50 rounded-3xl backdrop-blur-sm">
+            <Activity className="h-12 w-12 text-rose-500 mb-4" />
+            <h3 className="text-xl font-bold mb-2">Failed to load dashboard</h3>
+            <p className="text-muted-foreground mb-6">There was an error fetching your summary.</p>
+            <Button onClick={fetchDashboard}>Try Again</Button>
+          </div>
         ) : (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-          >
-            <LearningSummary courses={courses} />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <div className="grid lg:grid-cols-[1fr_350px] xl:grid-cols-[1fr_400px] gap-10">
-        <div>
-          <SectionHeader 
-            title={search ? 'Search Results' : 'My Courses'} 
-            description={`You have ${visibleCourses.length} active learning journeys.`}
-          />
-          
-          <AnimatePresence mode="wait">
-            {loading ? (
-              <motion.div className="grid sm:grid-cols-2 gap-6">
-                {[1, 2].map((i) => <Skeleton key={i} className="h-72 w-full" />)}
-              </motion.div>
-            ) : visibleCourses.length ? (
-              <motion.div 
-                initial="hidden"
-                animate="show"
-                variants={{
-                  hidden: { opacity: 0 },
-                  show: {
-                    opacity: 1,
-                    transition: { staggerChildren: 0.1 }
-                  }
-                }}
-                className="grid sm:grid-cols-2 gap-6"
-              >
-                {visibleCourses.map((course, index) => (
-                  <motion.div 
-                    key={course._id}
-                    variants={{
-                      hidden: { opacity: 0, y: 20 },
-                      show: { opacity: 1, y: 0 }
-                    }}
-                  >
-                    <CourseCard course={course} onDelete={deleteCourse} index={index} />
-                  </motion.div>
-                ))}
-              </motion.div>
-            ) : search ? (
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="relative overflow-hidden flex flex-col items-center justify-center p-14 text-center rounded-2xl border border-border/50 bg-card/40 backdrop-blur-sm"
-              >
-                <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
-                <div className="relative">
-                  <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full" />
-                  <div className="h-20 w-20 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-6 relative z-10 animate-float">
-                    <BookOpen className="h-10 w-10 text-primary" />
+          <div className="grid lg:grid-cols-[1fr_350px] gap-8">
+            <div className="space-y-8">
+              {/* Continue Learning Widget */}
+              {data?.continueLearning ? (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="rounded-3xl border border-primary/20 bg-gradient-to-br from-primary/10 to-primary/5 p-8 relative overflow-hidden"
+                >
+                  <div className="absolute -right-10 -top-10 w-40 h-40 bg-primary/20 blur-3xl rounded-full" />
+                  <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                    <div>
+                      <div className="flex items-center gap-2 mb-3">
+                        <PlayCircle className="h-5 w-5 text-primary" />
+                        <span className="text-sm font-semibold uppercase tracking-wider text-primary">Continue Learning</span>
+                      </div>
+                      <h2 className="text-2xl font-bold text-foreground mb-2 line-clamp-1">{data.continueLearning.title}</h2>
+                      <p className="text-sm text-muted-foreground flex items-center gap-2">
+                        <span className="px-2 py-0.5 rounded-full bg-black/20">{data.continueLearning.type}</span>
+                        <Clock className="h-4 w-4 ml-2" /> Last updated {new Date(data.continueLearning.updatedAt).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <Button 
+                      size="lg" 
+                      onClick={() => navigate(data.continueLearning.url)}
+                      className="group"
+                    >
+                      Continue <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    </Button>
                   </div>
+                </motion.div>
+              ) : (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="rounded-3xl border border-border/50 bg-card/60 backdrop-blur-sm p-8 text-center flex flex-col items-center"
+                >
+                  <Sparkles className="h-10 w-10 text-primary mb-4" />
+                  <h2 className="text-xl font-bold mb-2">Ready to start learning?</h2>
+                  <p className="text-muted-foreground mb-6">You don't have any active courses yet. Generate one to get started.</p>
+                  <Button onClick={() => navigate('/')}>Create a Course</Button>
+                </motion.div>
+              )}
+
+              {/* Analytics Row 1: Streak and Weekly Goal */}
+              <div className="grid md:grid-cols-2 gap-6">
+                {/* Learning Streak */}
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="glass-card rounded-2xl p-6 border-border/50 flex flex-col justify-between hover:shadow-lg transition-shadow"
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-bold flex items-center gap-2 text-foreground">
+                      <Flame className={`h-5 w-5 ${data?.streak?.current > 0 ? 'text-orange-500' : 'text-muted-foreground'}`} />
+                      Learning Streak
+                    </h3>
+                  </div>
+                  
+                  {data?.streak?.current > 0 ? (
+                    <div className="flex items-end gap-3">
+                      <motion.span 
+                        initial={{ scale: 0.5 }}
+                        animate={{ scale: 1 }}
+                        className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-orange-400 to-rose-500"
+                      >
+                        {data.streak.current}
+                      </motion.span>
+                      <span className="text-muted-foreground pb-2 font-medium">Days</span>
+                    </div>
+                  ) : (
+                    <div className="py-4 text-center border border-dashed border-white/10 rounded-xl bg-white/[0.02]">
+                      <FlameKindling className="h-8 w-8 text-muted-foreground/50 mx-auto mb-2" />
+                      <p className="text-sm text-muted-foreground">No active streak.<br/>Start a lesson today!</p>
+                    </div>
+                  )}
+
+                  <div className="mt-6 pt-4 border-t border-border/50 flex justify-between text-sm">
+                    <div>
+                      <p className="text-muted-foreground">Longest Streak</p>
+                      <p className="font-semibold text-foreground">{data?.streak?.longest || 0} Days</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-muted-foreground">Last Active</p>
+                      <p className="font-semibold text-foreground">
+                        {data?.streak?.lastActive ? new Date(data.streak.lastActive).toLocaleDateString() : 'Never'}
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* Weekly Goal */}
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="glass-card rounded-2xl p-6 border-border/50 hover:shadow-lg transition-shadow"
+                >
+                  <h3 className="text-lg font-bold flex items-center gap-2 text-foreground mb-6">
+                    <Target className="h-5 w-5 text-emerald-500" />
+                    Weekly Goal
+                  </h3>
+                  
+                  {data?.progress?.weeklyProgress > 0 ? (
+                    <>
+                      <div className="flex justify-between items-end mb-4">
+                        <div>
+                          <p className="text-sm text-muted-foreground">Goal Completion</p>
+                          <motion.span 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className="text-3xl font-bold text-foreground"
+                          >
+                            {data.progress.weeklyProgress}%
+                          </motion.span>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm text-muted-foreground">Remaining Work</p>
+                          <span className="text-lg font-semibold text-foreground">{100 - data.progress.weeklyProgress}%</span>
+                        </div>
+                      </div>
+                      <div className="w-full bg-white/5 rounded-full h-3 overflow-hidden">
+                        <motion.div 
+                          className="bg-emerald-500 h-3 rounded-full" 
+                          initial={{ width: 0 }}
+                          animate={{ width: `${data.progress.weeklyProgress}%` }}
+                          transition={{ duration: 1, ease: "easeOut" }}
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <div className="text-center py-6 border border-dashed border-white/10 rounded-xl bg-white/[0.02]">
+                      <p className="text-sm text-muted-foreground font-medium">You haven't set a weekly goal or made progress this week.</p>
+                      <Button variant="link" className="mt-2 text-emerald-500" onClick={() => navigate('/')}>Generate a course to start</Button>
+                    </div>
+                  )}
+                </motion.div>
+              </div>
+
+              {/* Statistics & Progress Row */}
+              <div className="grid md:grid-cols-[2fr_1fr] gap-6">
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="glass-card rounded-2xl p-6 border-border/50 hover:shadow-lg transition-shadow"
+                >
+                  <h3 className="text-lg font-bold flex items-center gap-2 text-foreground mb-6">
+                    <BarChart2 className="h-5 w-5 text-brand-400" />
+                    Statistics
+                  </h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    {statsList.map((stat, i) => (
+                      <div key={i} className="bg-white/[0.02] border border-white/[0.05] rounded-xl p-4 flex flex-col items-center justify-center text-center transition-colors hover:bg-white/[0.05]">
+                        <stat.icon className="h-6 w-6 text-muted-foreground mb-2" />
+                        <motion.span 
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          className="text-2xl font-bold text-foreground mb-1"
+                        >
+                          {stat.value}
+                        </motion.span>
+                        <span className="text-xs text-muted-foreground font-medium">{stat.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+                
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="glass-card rounded-2xl p-6 border-border/50 hover:shadow-lg transition-shadow"
+                >
+                  <h3 className="text-lg font-bold flex items-center gap-2 text-foreground mb-6">
+                    <Activity className="h-5 w-5 text-blue-500" />
+                    Progress
+                  </h3>
+                  <div className="space-y-6">
+                    <ProgressBar label="Overall Completion" value={data?.progress?.overallCompletion || 0} />
+                    <ProgressBar label="Monthly Progress" value={data?.progress?.monthlyProgress || 0} />
+                  </div>
+                </motion.div>
+              </div>
+
+              {/* Quick Actions */}
+              <div>
+                <SectionHeader title="Quick Actions" />
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+                  {data?.quickActions?.map((action: any, i: number) => (
+                    <Link 
+                      key={i} 
+                      to={action.url}
+                      className="flex flex-col items-center justify-center p-6 rounded-2xl border border-white/[0.05] bg-white/[0.02] hover:bg-white/[0.05] hover:border-primary/30 transition-all group focus-visible:ring-2 focus-visible:outline-none hover:-translate-y-1"
+                    >
+                      <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                        {action.icon === 'BookOpen' && <BookOpen className="h-6 w-6 text-primary" />}
+                        {action.icon === 'Layers' && <Layers className="h-6 w-6 text-primary" />}
+                        {action.icon === 'Brain' && <Brain className="h-6 w-6 text-primary" />}
+                        {action.icon === 'PlayCircle' && <PlayCircle className="h-6 w-6 text-primary" />}
+                        {action.icon === 'MessageSquare' && <MessageSquare className="h-6 w-6 text-primary" />}
+                      </div>
+                      <span className="text-sm font-medium text-center text-foreground">{action.label}</span>
+                    </Link>
+                  ))}
                 </div>
-                <h3 className="text-2xl font-bold text-foreground mb-2">No matches found</h3>
-                <p className="text-muted-foreground mb-8 max-w-md">
-                  We couldn't find any courses matching your search terms. Try using different keywords.
-                </p>
-                <Button onClick={() => setSearchParams({})} className="btn-secondary">Clear Search</Button>
-              </motion.div>
-            ) : null}
-          </AnimatePresence>
-        </div>
+              </div>
+            </div>
 
-        <div className="space-y-8">
-          <div>
-            <h3 className="text-lg font-semibold flex items-center gap-2 mb-4">
-              <Sparkles className="h-5 w-5 text-primary" />
-              Generate New Course
-            </h3>
-            <PromptForm onSubmit={generateCourse} isLoading={generating} />
+            {/* Recent Activity */}
+            <div>
+              <div className="glass-card rounded-2xl p-6 border-border/50 sticky top-24">
+                <h3 className="text-lg font-bold text-foreground mb-6 flex items-center gap-2">
+                  <Activity className="h-5 w-5 text-brand-400" />
+                  Recent Activity
+                </h3>
+                
+                {data?.recentActivity?.length > 0 ? (
+                  <div className="space-y-4" role="list">
+                    {data.recentActivity.map((activity: any, i: number) => (
+                      <Link 
+                        key={i}
+                        to={activity.url}
+                        role="listitem"
+                        className="flex items-start gap-4 p-3 rounded-xl hover:bg-white/[0.03] transition-colors group focus-visible:ring-2 focus-visible:outline-none"
+                      >
+                        <div className="h-10 w-10 shrink-0 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-primary/20 group-hover:text-primary transition-colors">
+                          {activity.type === 'Course' ? <BookOpen className="h-5 w-5 text-slate-400 group-hover:text-primary" /> : 
+                           activity.type.includes('Interview') ? <Brain className="h-5 w-5 text-slate-400 group-hover:text-primary" /> :
+                           <Layers className="h-5 w-5 text-slate-400 group-hover:text-primary" />}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-foreground truncate">{activity.title}</p>
+                          <p className="text-xs text-muted-foreground mt-0.5">{activity.type}</p>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 px-4 border border-dashed border-white/10 rounded-xl">
+                    <p className="text-sm text-muted-foreground">No recent activity found. Start a course or interview to see it here.</p>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
-
-          <div className="glass-card rounded-2xl p-5 border-border/50">
-            <h3 className="text-lg font-display font-bold text-white mb-4 flex items-center gap-2">
-              <Activity className="h-5 w-5 text-brand-400" />
-              Community Activity
-            </h3>
-            <ActivityFeed />
-          </div>
-        </div>
-      </div>
+        )}
       </PageContainer>
     </div>
   );

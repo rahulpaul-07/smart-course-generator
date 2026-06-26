@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, lazy, Suspense } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   ArrowLeft,
@@ -10,14 +10,14 @@ import toast from 'react-hot-toast';
 import CertificateProgress from '../components/CertificateProgress';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ReadingProgress from '../components/ReadingProgress';
-import AIChatPanel from '../components/lesson/AIChatPanel';
+const AIChatPanel = lazy(() => import('../components/lesson/AIChatPanel'));
 import LessonGenerator from '../components/lesson/LessonGenerator';
 import LessonCompletion from '../components/lesson/LessonCompletion';
 import LessonAudioPlayer from '../components/lesson/LessonAudioPlayer';
 import HinglishAudioExplanation from '../components/lesson/HinglishAudioExplanation';
-import LessonRenderer from '../components/lesson/LessonRenderer';
+const LessonRenderer = lazy(() => import('../components/lesson/LessonRenderer'));
 import LessonSidebar from '../components/lesson/LessonSidebar';
-import StudyTools from '../components/lesson/StudyTools';
+const StudyTools = lazy(() => import('../components/lesson/StudyTools'));
 import VideoBlock from '../components/blocks/VideoBlock';
 import api, { baseURL } from '../utils/api';
 
@@ -429,7 +429,7 @@ export default function LessonViewerPage() {
             </div>
           )}
 
-          <LessonRenderer content={lesson.content} isStreaming={generating} />
+          <Suspense fallback={<div className="p-8 text-center animate-pulse">Loading content...</div>}><LessonRenderer content={lesson.content} isStreaming={generating} /></Suspense>
 
           {lesson.videos && lesson.videos.length > 0 && (
             <div className="mt-12 pt-8 border-t border-border/50 animate-enter">
@@ -455,15 +455,7 @@ export default function LessonViewerPage() {
           )}
 
           {hasContent && !generating && (
-            <StudyTools
-              key={lessonId}
-              lesson={lesson}
-              addingVideos={addingVideos}
-              chatOpen={showChat}
-              onAddVideos={addVideos}
-              onLessonUpdate={updateCurrentLesson}
-              onToggleChat={() => setShowChat((visible) => !visible)}
-            />
+            <Suspense fallback={<div className="p-4 text-center">Loading tools...</div>}><StudyTools key={lessonId} lesson={lesson} addingVideos={addingVideos} chatOpen={showChat} onAddVideos={addVideos} onLessonUpdate={updateCurrentLesson} onToggleChat={() => setShowChat((visible) => !visible)} /></Suspense>
           )}
 
           {hasContent && !generating && (

@@ -1,5 +1,40 @@
+const mongoose = require("mongoose");
 const InterviewPrep = require("../models/InterviewPrep");
 const aiRouter = require("../services/aiRouter");
+
+const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
+
+const validateInterviewPack = async (result) => {
+  if (!result || typeof result !== 'object') throw new Error("Invalid object");
+  
+  if (!Array.isArray(result.mcqs) || result.mcqs.length === 0) throw new Error("Missing MCQs");
+  if (!Array.isArray(result.theoryQuestions) || result.theoryQuestions.length === 0) throw new Error("Missing theory questions");
+  if (!Array.isArray(result.codingQuestions) || result.codingQuestions.length === 0) throw new Error("Missing coding questions");
+  
+  const questions = new Set();
+  
+  for (const q of result.mcqs) {
+    if (!q.question || !Array.isArray(q.options) || q.options.length < 2) throw new Error("Malformed MCQ");
+    if (typeof q.correctAnswer !== 'number' || q.correctAnswer < 0 || q.correctAnswer >= q.options.length) throw new Error("Invalid correct answer");
+    for (const opt of q.options) {
+      if (!opt || typeof opt !== 'string') throw new Error("Missing options");
+    }
+    if (questions.has(q.question)) throw new Error("Duplicate question");
+    questions.add(q.question);
+  }
+  
+  for (const q of result.theoryQuestions) {
+    if (!q.question || !q.idealAnswer) throw new Error("Malformed theory question");
+    if (questions.has(q.question)) throw new Error("Duplicate question");
+    questions.add(q.question);
+  }
+  
+  for (const q of result.codingQuestions) {
+    if (!q.title || !q.problemStatement) throw new Error("Malformed coding question");
+    if (questions.has(q.title)) throw new Error("Duplicate question");
+    questions.add(q.title);
+  }
+};
 
 /**
  * POST /api/interviews/generate
@@ -7,7 +42,8 @@ const aiRouter = require("../services/aiRouter");
  */
 async function generateInterview(req, res) {
   try {
-    const { topic, courseId } = req.body;
+    const rawTopic = String(req.body.topic || "");
+    const topic = rawTopic.replace(/[^\w\s\.\,\-\+]/gi, '').trim().slice(0, 300);
 
     if (!topic) {
       return res.status(400).json({ error: "Topic is required." });
@@ -61,7 +97,15 @@ Include:
 
 Make questions progressively harder.`;
 
-    const result = await aiRouter.generateJson(systemPrompt, userPrompt, 8192);
+    const courseId = req.body.courseId || null;
+
+    let result;
+    try {
+      result = await aiRouter.generateJson(systemPrompt, userPrompt, 8192, validateInterviewPack);
+    } catch (error) {
+      console.error("AI Generation Error:", error);
+      return res.status(502).json({ error: "The AI generated an invalid interview pack. Please try again." });
+    }
 
     // Normalize MCQs
     const mcqs = (Array.isArray(result.mcqs) ? result.mcqs : []).map(q => ({
@@ -138,6 +182,9 @@ async function getMyInterviews(req, res) {
  */
 async function getInterviewById(req, res) {
   try {
+    if (!isValidObjectId(req.params.id)) {
+      return res.status(400).json({ error: "Invalid interview id." });
+    }
     const prep = await InterviewPrep.findOne({ _id: req.params.id, user: req.user._id }).lean();
     if (!prep) return res.status(404).json({ error: "Interview prep not found" });
     return res.json(prep);
@@ -153,6 +200,9 @@ async function getInterviewById(req, res) {
  */
 async function submitInterview(req, res) {
   try {
+    if (!isValidObjectId(req.params.id)) {
+      return res.status(400).json({ error: "Invalid interview id." });
+    }
     const prep = await InterviewPrep.findOne({ _id: req.params.id, user: req.user._id });
     if (!prep) return res.status(404).json({ error: "Interview prep not found" });
 
@@ -215,11 +265,50 @@ ${answeredTheory.map((q, i) => `Q${i+1}: ${q.question}\nAnswer: ${q.userAnswer}\
           }
         }
       } catch (evalErr) {
-        console.warn("Theory evaluation failed, using basic scoring:", evalErr.message);
+        console.warn("Theory evaluation failed:", evalErr.message);
         for (const q of prep.theoryQuestions) {
-          if (q.userAnswer) {
-            q.score = q.userAnswer.length > 50 ? 6 : 4;
-            q.feedback = "AI evaluation unavailable. Basic score assigned based on response length.";
+          if (q.userAnswer && !q.feedback) {
+            q.score = 0;
+            q.feedback = "Not Evaluated";
+          }
+        }
+      }
+    }
+
+    // Use AI to evaluate coding solutions
+    const answeredCoding = prep.codingQuestions.filter(q => q.userSolution);
+    if (answeredCoding.length > 0) {
+      try {
+        const codingEvalPrompt = `Evaluate these coding solutions for an interview. Return a JSON array.
+Each element MUST match this EXACT schema:
+{ "index": 0, "score": 8, "correctness": "Good", "timeComplexityFeedback": "O(N)", "spaceComplexityFeedback": "O(1)", "codeQualityFeedback": "Clean", "improvements": "Extract function" }
+Score is 1-10.
+
+Questions and Solutions:
+${answeredCoding.map((q, i) => `Q${i+1}: ${q.problemStatement}\nConstraints: ${q.constraints}\nSolution: ${q.userSolution}`).join("\n\n")}`;
+
+        const codingEvalResult = await aiRouter.generateJson(
+          "You are a technical interviewer evaluating code. Return only a JSON array of evaluations.",
+          codingEvalPrompt,
+          2048
+        );
+
+        const evals = Array.isArray(codingEvalResult) ? codingEvalResult : (codingEvalResult.evaluations || []);
+        for (const ev of evals) {
+          const idx = Number(ev.index);
+          if (idx >= 0 && idx < prep.codingQuestions.length) {
+            prep.codingQuestions[idx].score = Math.min(10, Math.max(0, Number(ev.score) || 0));
+            prep.codingQuestions[idx].feedback = `Correctness: ${ev.correctness || ""}\nTime Complexity: ${ev.timeComplexityFeedback || ""}\nSpace Complexity: ${ev.spaceComplexityFeedback || ""}\nCode Quality: ${ev.codeQualityFeedback || ""}\nImprovements: ${ev.improvements || ""}`;
+            prep.codingQuestions[idx].passed = prep.codingQuestions[idx].score >= 7;
+          }
+        }
+      } catch (evalErr) {
+        console.warn("Coding evaluation failed:", evalErr.message);
+        for (const q of prep.codingQuestions) {
+          if (q.userSolution && !q.feedback) {
+            q.score = 0;
+            q.feedback = "Not Evaluated";
+            q.passed = false;
           }
         }
       }
@@ -228,10 +317,61 @@ ${answeredTheory.map((q, i) => `Q${i+1}: ${q.question}\nAnswer: ${q.userAnswer}\
     // Calculate overall score
     const mcqScore = prep.mcqs.length > 0 ? (mcqCorrect / prep.mcqs.length) * 100 : 0;
     const theoryScore = prep.theoryQuestions.length > 0
-      ? (prep.theoryQuestions.reduce((s, q) => s + q.score, 0) / (prep.theoryQuestions.length * 10)) * 100
+      ? (prep.theoryQuestions.reduce((s, q) => s + (q.score || 0), 0) / (prep.theoryQuestions.length * 10)) * 100
+      : 0;
+    const codingScore = prep.codingQuestions.length > 0
+      ? (prep.codingQuestions.reduce((s, q) => s + (q.score || 0), 0) / (prep.codingQuestions.length * 10)) * 100
       : 0;
 
-    prep.overallScore = Math.round((mcqScore * 0.4) + (theoryScore * 0.6));
+    prep.overallScore = Math.round((mcqScore * 0.3) + (theoryScore * 0.4) + (codingScore * 0.3));
+
+    // Generate overall evaluation
+    try {
+      const overallPrompt = `Evaluate this complete interview performance and return ONLY a JSON object.
+Schema:
+{
+  "strengths": ["string"],
+  "weaknesses": ["string"],
+  "recommendedTopics": ["string"],
+  "readiness": "Interview Ready | Almost Ready | Needs More Practice",
+  "summary": "string",
+  "communicationFeedback": "string",
+  "technicalFeedback": "string",
+  "problemSolvingFeedback": "string",
+  "nextSteps": ["string"]
+}
+
+Topic: ${prep.topic}
+MCQ Score: ${Math.round(mcqScore)}%
+Theory Score: ${Math.round(theoryScore)}%
+Coding Score: ${Math.round(codingScore)}%
+
+Analyze: correctness, communication, technical depth, optimization, edge cases, confidence, explanation quality, code quality.`;
+
+      const evalResult = await aiRouter.generateJson(
+        "You are an expert technical interviewer. Return ONLY valid JSON.",
+        overallPrompt,
+        2048
+      );
+
+      if (!evalResult.strengths || !evalResult.weaknesses || !evalResult.recommendedTopics || !evalResult.readiness || !evalResult.summary) {
+        return res.status(502).json({ error: "The AI generated an invalid interview evaluation." });
+      }
+
+      prep.strengths = evalResult.strengths;
+      prep.weaknesses = evalResult.weaknesses;
+      prep.recommendedTopics = evalResult.recommendedTopics;
+      prep.readiness = evalResult.readiness;
+      prep.summary = evalResult.summary;
+      prep.communicationFeedback = evalResult.communicationFeedback || "Not Evaluated";
+      prep.technicalFeedback = evalResult.technicalFeedback || "Not Evaluated";
+      prep.problemSolvingFeedback = evalResult.problemSolvingFeedback || "Not Evaluated";
+      prep.nextSteps = evalResult.nextSteps || [];
+    } catch (err) {
+      console.error("Overall evaluation failed:", err.message);
+      return res.status(502).json({ error: "The AI generated an invalid interview evaluation." });
+    }
+
     prep.status = "completed";
     await prep.save();
 
@@ -244,6 +384,15 @@ ${answeredTheory.map((q, i) => `Q${i+1}: ${q.question}\nAnswer: ${q.userAnswer}\
       theoryQuestions: prep.theoryQuestions,
       mcqs: prep.mcqs,
       codingQuestions: prep.codingQuestions,
+      strengths: prep.strengths,
+      weaknesses: prep.weaknesses,
+      recommendedTopics: prep.recommendedTopics,
+      readiness: prep.readiness,
+      summary: prep.summary,
+      communicationFeedback: prep.communicationFeedback,
+      technicalFeedback: prep.technicalFeedback,
+      problemSolvingFeedback: prep.problemSolvingFeedback,
+      nextSteps: prep.nextSteps
     });
   } catch (error) {
     console.error("Submit interview error:", error);
@@ -257,18 +406,19 @@ ${answeredTheory.map((q, i) => `Q${i+1}: ${q.question}\nAnswer: ${q.userAnswer}\
  */
 async function chatInterview(req, res) {
   try {
+    if (!isValidObjectId(req.params.id)) {
+      return res.status(400).json({ error: "Invalid interview id." });
+    }
     const prep = await InterviewPrep.findOne({ _id: req.params.id, user: req.user._id });
     if (!prep) return res.status(404).json({ error: "Interview prep not found" });
 
     const { message } = req.body;
     if (!message) return res.status(400).json({ error: "Message is required" });
 
-    // Add candidate message
     prep.mockChat.push({ role: "candidate", content: String(message) });
 
-    // Generate interviewer response
     const chatHistory = prep.mockChat.map(m => ({
-      role: m.role === "interviewer" ? "system" : "user",
+      role: m.role === "interviewer" ? "assistant" : "user",
       content: m.content,
     }));
 
@@ -277,18 +427,51 @@ Be professional but challenging. Ask follow-up questions based on the candidate'
 Probe for depth of understanding. Keep responses concise (2-4 sentences).
 If the candidate has answered enough questions, provide brief feedback on their performance.`;
 
-    const reply = await aiRouter.generateText([
-      { role: "system", content: systemMsg },
-      ...chatHistory,
-    ], 512);
+    res.setHeader("Content-Type", "text/event-stream");
+    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("Connection", "keep-alive");
+    res.flushHeaders();
 
-    prep.mockChat.push({ role: "interviewer", content: reply });
-    await prep.save();
+    let isAborted = false;
+    req.on('close', () => {
+      isAborted = true;
+    });
 
-    return res.json({ reply, chatHistory: prep.mockChat });
+    let fullReply = "";
+    try {
+      const stream = await aiRouter.generateTextStream([
+        { role: "system", content: systemMsg },
+        ...chatHistory,
+      ], 512);
+
+      for await (const chunk of stream) {
+        if (isAborted) break;
+        fullReply += chunk;
+        res.write(`data: ${JSON.stringify({ text: chunk })}\n\n`);
+      }
+    } catch (streamErr) {
+      console.error("Stream generation failed:", streamErr);
+      if (!isAborted) {
+        res.write(`data: ${JSON.stringify({ error: streamErr.message || "Failed to generate response." })}\n\n`);
+      }
+      return res.end();
+    }
+
+    if (!isAborted && fullReply.trim()) {
+      prep.mockChat.push({ role: "interviewer", content: fullReply.trim() });
+      await prep.save();
+    }
+
+    if (!isAborted) {
+      res.write(`data: [DONE]\n\n`);
+    }
+    res.end();
   } catch (error) {
     console.error("Interview chat error:", error);
-    return res.status(500).json({ error: "Failed to process interview chat" });
+    if (!res.headersSent) {
+      return res.status(500).json({ error: "Failed to process interview chat" });
+    }
+    res.end();
   }
 }
 
@@ -297,6 +480,9 @@ If the candidate has answered enough questions, provide brief feedback on their 
  */
 async function deleteInterview(req, res) {
   try {
+    if (!isValidObjectId(req.params.id)) {
+      return res.status(400).json({ error: "Invalid interview id." });
+    }
     const result = await InterviewPrep.deleteOne({ _id: req.params.id, user: req.user._id });
     if (result.deletedCount === 0) return res.status(404).json({ error: "Interview prep not found" });
     return res.json({ message: "Interview prep deleted" });

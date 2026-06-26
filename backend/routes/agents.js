@@ -3,6 +3,8 @@ const { runCourseReviewer, runLearningCoach, runRevisionPlanner, runRecommendati
 const { verifyAuth0Token } = require("../middlewares/auth0Auth");
 
 const router = Router();
+const validateObjectIds = require("../middlewares/validateObjectIds");
+router.use(validateObjectIds);
 
 router.use(verifyAuth0Token);
 
@@ -12,3 +14,4 @@ router.post("/planner", runRevisionPlanner);
 router.post("/recommend", runRecommendationAgent);
 
 module.exports = router;
+

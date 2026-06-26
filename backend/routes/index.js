@@ -9,10 +9,12 @@ const roadmapRoutes = require("./roadmaps");
 const interviewRoutes = require("./interviews");
 const agentRoutes = require("./agents");
 const collaborationRoutes = require("./collaboration");
+const dashboardRoutes = require("./dashboard");
 const { getHealth } = require("../controllers/healthController");
 
 const router = Router();
 
+router.use("/dashboard", dashboardRoutes);
 router.use("/courses", courseRoutes);
 router.use("/user", userRoutes);
 router.use("/explanations", explanationsRoutes);
@@ -26,5 +28,6 @@ router.use("/collab", collaborationRoutes);
 router.get("/health", getHealth);
 
 module.exports = router;
+
 
 

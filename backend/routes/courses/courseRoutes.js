@@ -15,10 +15,13 @@ const { generateCourseSchema, generateLessonSchema } = require("../../validation
 const { aiLimiter } = require("../../middlewares/rateLimit");
 
 const router = Router();
+const { courseGenLimiter, lessonEnrichLimiter, practiceLabLimiter } = require("../../middlewares/aiRateLimiters");
+const validateObjectIds = require("../../middlewares/validateObjectIds");
+router.use(validateObjectIds);
 
 router.use(verifyAuth0Token); // Ensure user is authenticated via Auth0
 
-router.post("/generate", aiLimiter, validateRequest(generateCourseSchema), generateCourseContent);
+router.post("/generate", courseGenLimiter, aiLimiter, validateRequest(generateCourseSchema), generateCourseContent);
 router.get("/mine", getMyCourses);
 router.post("/:courseId/chat", aiLimiter, chatAboutCourse);
 
@@ -43,3 +46,4 @@ router.route("/:courseId")
   .delete(deleteCourse);
 
 module.exports = router;
+

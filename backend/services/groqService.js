@@ -111,4 +111,29 @@ async function generateText(messages, maxTokens = 1024, modelName = "llama-3.1-8
   }
 }
 
-module.exports = { generateJson, generateJsonStream, generateText, name: "groq" };
+async function* generateTextStream(messages, maxTokens = 1024, modelName = "llama-3.1-8b-instant") {
+  const apiKey = groqKeys.getKey();
+  const groq = new Groq({ apiKey });
+
+  try {
+    const stream = await groq.chat.completions.create({
+      model: modelName,
+      messages,
+      temperature: 0.7,
+      max_tokens: maxTokens,
+      stream: true,
+    });
+
+    for await (const chunk of stream) {
+      const delta = chunk.choices[0]?.delta?.content;
+      if (delta) yield delta;
+    }
+  } catch (error) {
+    if (error.status === 429 || (error.response && error.response.status === 429)) {
+      groqKeys.markExhausted(apiKey);
+    }
+    throw error;
+  }
+}
+
+module.exports = { generateJson, generateJsonStream, generateText, generateTextStream, name: "groq" };

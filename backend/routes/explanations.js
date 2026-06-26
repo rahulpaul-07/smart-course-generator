@@ -2,6 +2,8 @@
 
 const express = require('express');
 const router = express.Router();
+const validateObjectIds = require("../middlewares/validateObjectIds");
+router.use(validateObjectIds);
 
 // Controllers
 const explanationsController = require('../controllers/explanationsController');

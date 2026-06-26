@@ -75,6 +75,7 @@ module.exports = {
   generateJson,
   generateJsonStream,
   generateText,
+  generateTextStream,
 };
 
 async function generateText(messages, maxTokens = 1024, modelName = "anthropic/claude-3.5-sonnet") {
@@ -90,6 +91,32 @@ async function generateText(messages, maxTokens = 1024, modelName = "anthropic/c
     });
 
     return response.choices[0].message.content || "";
+  } catch (error) {
+    if (error.status === 429) {
+      openrouterKeys.markExhausted(apiKey);
+    }
+    throw error;
+  }
+}
+
+async function* generateTextStream(messages, maxTokens = 1024, modelName = "anthropic/claude-3.5-sonnet") {
+  const { client, apiKey } = getAiClient();
+  if (!client) throw new Error("OpenRouter API key missing");
+
+  try {
+    const stream = await client.chat.completions.create({
+      model: modelName,
+      messages,
+      temperature: 0.7,
+      max_tokens: maxTokens,
+      stream: true,
+    });
+
+    for await (const chunk of stream) {
+      if (chunk.choices[0]?.delta?.content) {
+        yield chunk.choices[0].delta.content;
+      }
+    }
   } catch (error) {
     if (error.status === 429) {
       openrouterKeys.markExhausted(apiKey);

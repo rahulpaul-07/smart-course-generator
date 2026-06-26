@@ -470,4 +470,60 @@ async function generateText(messages, maxTokens = 1024) {
   throw new Error(FRIENDLY_ERROR);
 }
 
-module.exports = { generateJson, generateJsonStream, generateText };
+async function* generateTextStream(messages, maxTokens = 1024) {
+  const chain = getProviderChain();
+  
+  if (chain.length === 0 && !process.env.GEMINI_API_KEY) {
+    const text = messages.some(m => m.content && m.content.toLowerCase().includes("mock interview"))
+      ? "That's an interesting approach. What are the trade-offs of your chosen design?"
+      : "This is a friendly response from your AI tutor! Let's continue working on this lesson together.";
+    const words = text.split(" ");
+    for (const word of words) {
+      await sleep(100);
+      yield word + " ";
+    }
+    return;
+  }
+
+  const activeChain = chain.length > 0 ? chain : [{ provider: gemini, model: "gemini-2.5-flash" }];
+  
+  for (const { provider, model } of activeChain) {
+    for (let attempt = 0; attempt < MAX_RETRIES_PER_PROVIDER; attempt++) {
+      let yieldedChunk = false;
+      try {
+        const stream = await executeWithTimeout(
+          (signal) => provider.generateTextStream(messages, maxTokens, model, signal),
+          REQUEST_TIMEOUT_MS
+        );
+        
+        for await (const chunk of stream) {
+          yieldedChunk = true;
+          yield chunk;
+        }
+        
+        logTelemetry({ provider: provider.name, model, endpoint: 'generateTextStream', status: 'success' });
+        return;
+      } catch (error) {
+        console.error(`[AI Router] generateTextStream ${provider.name} attempt ${attempt + 1} failed:`, error.stack || error);
+        logTelemetry({ provider: provider.name, model, endpoint: 'generateTextStream', status: 'failure', reason: error.message || String(error) });
+        
+        if (yieldedChunk) {
+          console.error(`[AI Router] Stream interrupted midway. Aborting.`);
+          throw new Error(FRIENDLY_ERROR);
+        }
+        if (!shouldRetry(error)) {
+          break;
+        }
+
+        if (attempt < MAX_RETRIES_PER_PROVIDER - 1) {
+          await sleep(getExponentialBackoff(attempt));
+        }
+      }
+    }
+    console.warn(`[AI Router] Exhausted retries for ${provider.name} in stream. Failing over...`);
+  }
+  
+  throw new Error(FRIENDLY_ERROR);
+}
+
+module.exports = { generateJson, generateJsonStream, generateText, generateTextStream };

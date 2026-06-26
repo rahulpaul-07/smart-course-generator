@@ -1,7 +1,12 @@
 import { useEffect, useRef, useState, memo } from 'react';
-import { Bot, Loader2, Send, UserRound, X, Sparkles, MessageSquarePlus, Mic, MicOff } from 'lucide-react';
+import { Bot, Loader2, Send, UserRound, X, Sparkles, MessageSquarePlus, Mic, MicOff, Square, Check, Copy } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import 'katex/dist/katex.min.css';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../../utils/api';
 import { Button } from '@/components/ui/button';
@@ -14,16 +19,80 @@ const SUGGESTIONS = [
   "How does this connect to the previous topic?",
 ];
 
+const CodeBlock = ({ language, value }: { language: string, value: string }) => {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(value);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="relative group my-4 rounded-lg overflow-hidden bg-background/50 border border-border">
+      <div className="flex items-center justify-between px-4 py-2 bg-muted border-b border-border">
+        <span className="text-xs font-mono text-muted-foreground">{language || 'code'}</span>
+        <Button
+          size="sm"
+          variant="ghost"
+          className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground"
+          onClick={handleCopy}
+          aria-label="Copy code"
+        >
+          {copied ? (
+            <>
+              <Check className="h-3 w-3 mr-1 text-green-500" />
+              <span className="text-green-500">Copied!</span>
+            </>
+          ) : (
+            <>
+              <Copy className="h-3 w-3 mr-1" />
+              Copy
+            </>
+          )}
+        </Button>
+      </div>
+      <div className="text-[13px] leading-relaxed overflow-x-auto tab-size-4">
+        <SyntaxHighlighter
+          language={language || 'text'}
+          style={vscDarkPlus}
+          customStyle={{ margin: 0, padding: '1rem', background: 'transparent' }}
+          PreTag="div"
+          tabIndex={0}
+        >
+          {value}
+        </SyntaxHighlighter>
+      </div>
+    </div>
+  );
+};
+
 const AssistantMessage = memo(function AssistantMessage({ content }: { content: string }) {
   return (
-    <div className="min-w-0 text-sm leading-relaxed text-foreground/90 prose prose-invert prose-p:leading-relaxed prose-pre:bg-muted prose-pre:border prose-pre:border-border prose-a:text-primary hover:prose-a:text-primary/80">
+    <div className="min-w-0 text-[15px] leading-relaxed text-foreground/90 prose prose-invert max-w-none 
+      prose-p:leading-relaxed prose-p:my-3 
+      prose-pre:p-0 prose-pre:bg-transparent prose-pre:border-none prose-pre:my-0
+      prose-a:text-primary hover:prose-a:text-primary/80 
+      prose-headings:text-foreground prose-headings:font-semibold prose-headings:mb-3 prose-headings:mt-6
+      prose-ul:my-4 prose-ul:list-disc prose-ul:pl-6
+      prose-ol:my-4 prose-ol:list-decimal prose-ol:pl-6
+      prose-li:my-1.5
+      prose-blockquote:border-l-2 prose-blockquote:border-primary/50 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-muted-foreground
+      prose-hr:my-6 prose-hr:border-border
+      prose-table:w-full prose-table:my-6 prose-th:bg-muted/50 prose-th:p-2 prose-th:border prose-th:border-border prose-th:font-semibold prose-td:p-2 prose-td:border prose-td:border-border
+    ">
       <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
+        remarkPlugins={[remarkGfm, remarkMath]}
+        rehypePlugins={[rehypeKatex]}
         components={{
-          code: ({ children, className }) => {
-            const isBlock = className?.startsWith('language-') || String(children).includes('\n');
+          code: ({ children, className, node, ...props }: any) => {
+            const match = /language-(\w+)/.exec(className || '');
+            const isBlock = match || String(children).includes('\n');
+            if (isBlock) {
+              return <CodeBlock language={match?.[1] || 'text'} value={String(children).replace(/\n$/, '')} />;
+            }
             return (
-              <code className={isBlock ? `${className || ''} text-[13px]` : 'rounded bg-primary/10 px-1.5 py-0.5 font-mono text-[13px] text-primary'}>
+              <code className="rounded bg-primary/10 px-1.5 py-0.5 font-mono text-[13px] text-primary" {...props}>
                 {children}
               </code>
             );
@@ -41,9 +110,39 @@ export default function AIChatPanel({ lessonId, courseId, lessonTitle, isOpen, o
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
   const [isListening, setIsListening] = useState(false);
+  const [hasFetchedHistory, setHasFetchedHistory] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const recognitionRef = useRef<any>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
+
+  const stopGenerating = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+      setSending(false);
+    }
+  };
+
+  useEffect(() => {
+    let mounted = true;
+    if (isOpen && !hasFetchedHistory) {
+      api.get(`/courses/${courseId}/lessons/${lessonId}`)
+        .then(({ data }) => {
+          if (mounted && data.lesson?.aiConversation?.length) {
+            setMessages(data.lesson.aiConversation);
+          }
+          if (mounted) {
+            setHasFetchedHistory(true);
+          }
+        })
+        .catch(() => {
+          // Fallback gracefully on error
+          if (mounted) setHasFetchedHistory(true);
+        });
+    }
+    return () => { mounted = false; };
+  }, [isOpen, courseId, lessonId, hasFetchedHistory]);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
@@ -95,22 +194,85 @@ export default function AIChatPanel({ lessonId, courseId, lessonTitle, isOpen, o
     if (!message || sending) return;
 
     const history = [...messages, { role: 'user', content: message }];
-    setMessages(history);
+    setMessages([...history, { role: 'assistant', content: '' }]);
     setInput('');
     setSending(true);
 
+    abortControllerRef.current = new AbortController();
+
     try {
-      const { data } = await api.post(`/courses/${courseId}/lessons/${lessonId}/chat`, {
-        message,
-        history: messages.slice(-6),
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/courses/${courseId}/lessons/${lessonId}/chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify({ message, history: messages.slice(-6) }),
+        signal: abortControllerRef.current.signal
       });
-      setMessages([...history, {
-        role: 'assistant',
-        content: String(data.reply || '').trim() || 'I could not find an answer for that question.',
-      }]);
-    } catch {
-      setMessages([...history, { role: 'assistant', content: 'Could not answer that question.' }]);
+
+      if (!response.ok || !response.body) {
+        throw new Error('Network response was not ok');
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder('utf-8');
+      let done = false;
+      let streamedContent = '';
+      let buffer = '';
+
+      while (!done) {
+        const { value, done: readerDone } = await reader.read();
+        done = readerDone;
+        if (value) {
+          buffer += decoder.decode(value, { stream: true });
+          const messages = buffer.split('\n\n');
+          // Keep the last incomplete message in the buffer
+          buffer = messages.pop() || '';
+          
+          for (const msg of messages) {
+            const lines = msg.split('\n');
+            for (const line of lines) {
+              if (line.startsWith('data: ')) {
+                try {
+                  const dataStr = line.slice(6);
+                  if (dataStr === '[DONE]') continue;
+                  
+                  const data = JSON.parse(dataStr);
+                  if (data.error) throw new Error(data.error);
+                  if (data.status === 'complete') continue;
+                  
+                  streamedContent += data;
+                  setMessages(prev => {
+                    const newMsgs = [...prev];
+                    newMsgs[newMsgs.length - 1] = { ...newMsgs[newMsgs.length - 1], content: streamedContent };
+                    return newMsgs;
+                  });
+                } catch (e) {
+                  // Ignore valid parse errors that aren't JSON issues
+                  if (e instanceof Error && e.message !== 'Unexpected end of JSON input' && !e.message.includes('Unexpected token')) {
+                    throw e;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      
+      if (!streamedContent.trim()) {
+        throw new Error('Empty response');
+      }
+    } catch (error: any) {
+      if (error.name === 'AbortError') {
+        // User aborted, keep what's completed
+      } else {
+        // Only revert if we got nothing or there was an actual error before streaming
+        setMessages(history); 
+        toast.error(error.message || 'Could not answer that question.');
+      }
     } finally {
+      abortControllerRef.current = null;
       setSending(false);
       setTimeout(() => inputRef.current?.focus(), 50);
     }
@@ -148,8 +310,8 @@ export default function AIChatPanel({ lessonId, courseId, lessonTitle, isOpen, o
         </Button>
       </header>
 
-      <div className="flex-1 space-y-6 overflow-y-auto p-4 scroll-smooth">
-        {!messages.length && (
+      <div className="flex-1 space-y-6 overflow-y-auto p-4 scroll-smooth" aria-live="polite">
+        {!messages.length && hasFetchedHistory && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center justify-center h-full text-center px-4">
             <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mb-4 border border-primary/20">
               <Sparkles className="h-8 w-8 text-primary" />
@@ -202,20 +364,7 @@ export default function AIChatPanel({ lessonId, courseId, lessonTitle, isOpen, o
             </motion.div>
           ))}
 
-          {sending && (
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex items-end gap-2.5">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted border border-border text-primary">
-                <Bot className="h-4 w-4" />
-              </div>
-              <div className="flex items-center gap-2 rounded-2xl rounded-bl-sm border border-border bg-muted/30 px-4 py-3 shadow-sm">
-                <div className="flex gap-1">
-                  <span className="h-1.5 w-1.5 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <span className="h-1.5 w-1.5 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: '150ms' }} />
-                  <span className="h-1.5 w-1.5 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: '300ms' }} />
-                </div>
-              </div>
-            </motion.div>
-          )}
+          {/* Removed typing indicator */}
         </AnimatePresence>
         <div ref={messagesEndRef} />
       </div>
@@ -224,6 +373,7 @@ export default function AIChatPanel({ lessonId, courseId, lessonTitle, isOpen, o
         <div className="relative flex items-end gap-2 rounded-xl border border-border bg-muted/20 p-1 transition-colors focus-within:border-primary/50 focus-within:ring-1 focus-within:ring-primary/50">
           <Textarea
             ref={inputRef}
+            aria-label="Ask a question"
             value={input}
             onChange={(event) => setInput(event.target.value)}
             onKeyDown={handleKeyDown}
@@ -240,15 +390,26 @@ export default function AIChatPanel({ lessonId, courseId, lessonTitle, isOpen, o
           >
             {isListening ? <Mic className="h-4 w-4 animate-pulse" aria-hidden="true" /> : <MicOff className="h-4 w-4" aria-hidden="true" />}
           </Button>
-          <Button
-            size="icon"
-            onClick={() => sendMessage()}
-            disabled={!input.trim() || sending}
-            aria-label="Send message"
-            className="mb-1 mr-1 h-9 w-9 shrink-0 rounded-lg transition-transform active:scale-95"
-          >
-            {sending ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : <Send className="h-4 w-4" aria-hidden="true" />}
-          </Button>
+          {sending ? (
+            <Button
+              size="icon"
+              onClick={stopGenerating}
+              aria-label="Stop generating"
+              className="mb-1 mr-1 h-9 w-9 shrink-0 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-colors"
+            >
+              <Square className="h-4 w-4 fill-current" aria-hidden="true" />
+            </Button>
+          ) : (
+            <Button
+              size="icon"
+              onClick={() => sendMessage()}
+              disabled={!input.trim()}
+              aria-label="Send message"
+              className="mb-1 mr-1 h-9 w-9 shrink-0 rounded-lg transition-transform active:scale-95"
+            >
+              <Send className="h-4 w-4" aria-hidden="true" />
+            </Button>
+          )}
         </div>
         <p className="mt-2 text-center text-[10px] uppercase tracking-wider text-muted-foreground font-medium">
           Press Enter to send, Shift + Enter for new line

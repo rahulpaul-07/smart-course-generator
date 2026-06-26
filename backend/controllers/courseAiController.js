@@ -1,6 +1,6 @@
 const Course = require("../models/Course");
 const { createCourseOutline } = require("../services/courseGeneration");
-const { streamLessonContent, createLessonContent, answerLessonQuestion, createLessonIntro, createLessonMainContent } = require("../services/lessonGeneration");
+const { streamLessonContent, createLessonContent, answerLessonQuestion, answerLessonQuestionStream, createLessonIntro, createLessonMainContent } = require("../services/lessonGeneration");
 const { saveGeneratedCourse } = require("../services/coursePersistence");
 const { getOwnedLesson } = require("../services/lessonAccessService");
 const { findLessonVideos } = require("../services/youtubeService");
@@ -201,7 +201,15 @@ async function generateFlashcards(req, res) {
 async function generatePracticeLab(req, res) {
   try {
     const context = await getOwnedLesson(req.params.lessonId, req.user._id);
+
+    if (context.lesson.practiceLab && context.lesson.practiceLab.title) {
+      return res.json({ lab: context.lesson.practiceLab });
+    }
+
     const lab = await createPracticeLab(context);
+
+    context.lesson.practiceLab = lab;
+    await context.lesson.save();
 
     return res.json({ lab });
   } catch (error) {
@@ -215,15 +223,78 @@ async function chatAboutLesson(req, res) {
     if (!message) return res.status(400).json({ error: "Message is required." });
 
     const context = await getOwnedLesson(req.params.lessonId, req.user._id);
-    const reply = await answerLessonQuestion({
-      ...context,
-      message,
-      history: Array.isArray(req.body?.history) ? req.body.history : [],
+
+    res.writeHead(200, {
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache",
+      Connection: "keep-alive",
+      "X-Accel-Buffering": "no",
     });
 
-    return res.json({ reply });
+    let closed = false;
+    res.on("close", () => { closed = true; });
+
+    function sendEvent(event, data) {
+      if (closed) return;
+      res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
+    }
+
+    if (!context.lesson.aiConversation) {
+      context.lesson.aiConversation = [];
+    }
+
+    const historyForAi = [...context.lesson.aiConversation];
+
+    const stream = await answerLessonQuestionStream({
+      ...context,
+      message,
+      history: historyForAi,
+    });
+
+    let fullReply = "";
+
+    for await (const chunk of stream) {
+      if (closed) break; // Client disconnected
+      if (chunk) {
+        fullReply += chunk;
+        sendEvent("token", chunk);
+      }
+    }
+
+    if (closed) {
+      // If the client disconnected, do not save partial response
+      return;
+    }
+
+    if (!fullReply.trim()) {
+      sendEvent("error", { error: "Invalid AI response." });
+      res.end();
+      return;
+    }
+
+    // Accumulate the full response on the server and save it
+    context.lesson.aiConversation.push({
+      role: 'user',
+      content: message,
+    });
+
+    context.lesson.aiConversation.push({
+      role: 'assistant',
+      content: fullReply.trim(),
+    });
+
+    await context.lesson.save();
+    
+    sendEvent("done", { status: "complete" });
+    res.end();
+
   } catch (error) {
-    return res.status(error.statusCode || 500).json({ error: error.message || "Failed to chat" });
+    if (!res.headersSent) {
+      return res.status(error.statusCode || 500).json({ error: error.message || "Failed to chat" });
+    } else {
+      res.write(`event: error\ndata: ${JSON.stringify({ error: error.message || "Failed to chat" })}\n\n`);
+      res.end();
+    }
   }
 }
 
@@ -363,7 +434,7 @@ async function chatAboutCourse(req, res) {
     const currentLessonId = req.body?.currentLessonId;
     if (!message) return res.status(400).json({ error: "Message is required." });
 
-    const course = await Course.findById(req.params.courseId).populate({
+    const course = await Course.findOne({ _id: req.params.courseId, creator: req.user._id }).populate({
       path: "modules",
       populate: {
         path: "lessons"

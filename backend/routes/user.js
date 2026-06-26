@@ -5,6 +5,8 @@ const { validateRequest } = require("../middlewares/validateRequest");
 const { updateProfileSchema, updateSettingsSchema, finishOnboardingSchema } = require("../validations/userValidation");
 
 const router = express.Router();
+const validateObjectIds = require("../middlewares/validateObjectIds");
+router.use(validateObjectIds);
 
 router.use(verifyAuth0Token);
 

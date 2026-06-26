@@ -123,34 +123,48 @@ async function cloneTemplate(req, res) {
 
   // Find original modules
   const originalModules = await Module.find({ course: originalCourse._id }).lean();
-  const newModuleIds = [];
+  const originalModuleIds = originalModules.map(m => m._id);
 
-  for (const om of originalModules) {
-    const newModule = new Module({
-      course: newCourse._id,
-      title: om.title,
-      description: om.description,
-      order: om.order
-    });
-    await newModule.save();
-    newModuleIds.push(newModule._id);
+  // Bulk fetch all lessons
+  const allOriginalLessons = await Lesson.find({ module: { $in: originalModuleIds } }).lean();
 
-    const originalLessons = await Lesson.find({ module: om._id }).lean();
-    for (const ol of originalLessons) {
-      const newLesson = new Lesson({
-        module: newModule._id,
-        title: ol.title,
-        description: ol.description,
-        order: ol.order,
-        content: ol.content,
-        isEnriched: ol.isEnriched,
-        generationStatus: ol.generationStatus,
-        language: ol.language
-      });
-      await newLesson.save();
-    }
+  // Prepare and insert new modules
+  const modulesToInsert = originalModules.map(om => ({
+    course: newCourse._id,
+    title: om.title,
+    description: om.description,
+    order: om.order
+  }));
+  
+  let insertedModules = [];
+  if (modulesToInsert.length > 0) {
+    insertedModules = await Module.insertMany(modulesToInsert);
   }
 
+  // Create mapping from original module ID to new module ID
+  const moduleIdMap = {};
+  originalModules.forEach((om, idx) => {
+    moduleIdMap[om._id] = insertedModules[idx]._id;
+  });
+
+  // Prepare and insert new lessons
+  const lessonsToInsert = allOriginalLessons.map(ol => ({
+    module: moduleIdMap[ol.module],
+    title: ol.title,
+    description: ol.description,
+    order: ol.order,
+    content: ol.content,
+    isEnriched: ol.isEnriched,
+    generationStatus: ol.generationStatus,
+    language: ol.language
+  }));
+
+  if (lessonsToInsert.length > 0) {
+    await Lesson.insertMany(lessonsToInsert);
+  }
+
+  const newModuleIds = insertedModules.map(m => m._id);
+  
   newCourse.modules = newModuleIds;
   await newCourse.save();
 

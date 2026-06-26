@@ -6,6 +6,8 @@ const { registerSchema, loginSchema, googleLoginSchema, auth0SyncSchema } = requ
 const { authLimiter } = require("../middlewares/rateLimit");
 
 const router = express.Router();
+const validateObjectIds = require("../middlewares/validateObjectIds");
+router.use(validateObjectIds);
 
 router.post("/register", authLimiter, validateRequest(registerSchema), register);
 router.post("/login", authLimiter, validateRequest(loginSchema), login);

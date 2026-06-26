@@ -230,10 +230,10 @@ function RoadmapDetail({ roadmap, onGenerateCourse }) {
         {/* Timeline line */}
         <div className="absolute left-[19px] top-4 bottom-4 w-px bg-gradient-to-b from-brand-500/50 via-cyan-500/30 to-transparent" />
 
-        {(roadmap.weeks || []).map((week) => {
+        {(roadmap.weeks || []).map((week, index) => {
           const isExpanded = expandedWeeks.has(week.weekNumber);
           return (
-            <div key={week.weekNumber} className="relative pl-12">
+            <div key={`${roadmap._id}-${index}`} className="relative pl-12">
               {/* Timeline dot */}
               <div className="absolute left-2.5 top-4 h-4 w-4 rounded-full border-2 border-brand-400 bg-[#0a0d1a] shadow-lg shadow-brand-500/20" />
 
@@ -252,7 +252,7 @@ function RoadmapDetail({ roadmap, onGenerateCourse }) {
                 <AnimatePresence initial={false}>
                   {isExpanded && (
                     <motion.div
-                      key={`content-${week.weekNumber}`}
+                      key={`content-${roadmap._id}-${index}`}
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}

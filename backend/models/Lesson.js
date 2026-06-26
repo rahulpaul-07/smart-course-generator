@@ -25,6 +25,24 @@ const lessonSchema = new mongoose.Schema(
         channel: String
       }],
       default: []
+    },
+    practiceLab: {
+      type: {
+        title: String,
+        brief: String,
+        steps: [String],
+        successCriteria: [String],
+        hint: String,
+      },
+      default: null
+    },
+    aiConversation: {
+      type: [{
+        role: { type: String, enum: ['user', 'assistant'], required: true },
+        content: { type: String, required: true },
+        createdAt: { type: Date, default: Date.now }
+      }],
+      default: []
     }
   },
   { timestamps: true }

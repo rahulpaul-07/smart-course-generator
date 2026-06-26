@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const Roadmap = require("../models/Roadmap");
 const aiRouter = require("../services/aiRouter");
 
@@ -53,8 +54,24 @@ Generate the complete week-by-week roadmap.`;
     const parsedWeeks = result.weeks || result.roadmap?.weeks || result.roadmap || [];
     const parsedSummary = result.summary || result.roadmap?.summary || "";
 
+    if (!Array.isArray(parsedWeeks) || parsedWeeks.length === 0) {
+      return res.status(502).json({ error: "The AI returned an invalid roadmap. Please try again." });
+    }
+
+    for (const w of parsedWeeks) {
+      if (!w.title || typeof w.title !== "string" || !w.title.trim()) {
+        return res.status(502).json({ error: "The AI returned an invalid roadmap. Please try again." });
+      }
+      if (!Array.isArray(w.topics) || w.topics.length === 0) {
+        return res.status(502).json({ error: "The AI returned an invalid roadmap. Please try again." });
+      }
+      if (!w.project || typeof w.project !== "object" || Array.isArray(w.project) || !w.project.title || typeof w.project.title !== "string" || !w.project.title.trim()) {
+        return res.status(502).json({ error: "The AI returned an invalid roadmap. Please try again." });
+      }
+    }
+
     const weeks = (Array.isArray(parsedWeeks) ? parsedWeeks : []).map((w, i) => ({
-      weekNumber: w.weekNumber || i + 1,
+      weekNumber: i + 1,
       title: w.title || `Week ${i + 1}`,
       topics: Array.isArray(w.topics) ? w.topics : [],
       milestones: Array.isArray(w.milestones) ? w.milestones : [],
@@ -101,6 +118,9 @@ async function getMyRoadmaps(req, res) {
  */
 async function getRoadmapById(req, res) {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ error: "Invalid roadmap id." });
+    }
     const roadmap = await Roadmap.findOne({ _id: req.params.id, user: req.user._id }).lean();
     if (!roadmap) return res.status(404).json({ error: "Roadmap not found" });
     return res.json(roadmap);
@@ -115,6 +135,9 @@ async function getRoadmapById(req, res) {
  */
 async function deleteRoadmap(req, res) {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ error: "Invalid roadmap id." });
+    }
     const result = await Roadmap.deleteOne({ _id: req.params.id, user: req.user._id });
     if (result.deletedCount === 0) return res.status(404).json({ error: "Roadmap not found" });
     return res.json({ message: "Roadmap deleted" });

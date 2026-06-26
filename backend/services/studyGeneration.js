@@ -125,7 +125,7 @@ ${requireLessonText(lesson)}
   };
 
   if (!lab.title || !lab.brief || !lab.steps.length || !lab.successCriteria.length) {
-    const error = new Error("AI could not create a complete practice lab. Please try again.");
+    const error = new Error("The AI generated an invalid Practice Lab. Please try again.");
     error.statusCode = 502;
     throw error;
   }

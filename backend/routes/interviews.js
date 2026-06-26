@@ -1,5 +1,8 @@
 const express = require("express");
 const router = express.Router();
+const { interviewGenLimiter } = require("../middlewares/aiRateLimiters");
+const validateObjectIds = require("../middlewares/validateObjectIds");
+router.use(validateObjectIds);
 const { verifyAuth0Token } = require("../middlewares/auth0Auth");
 const {
   generateInterview,
@@ -12,7 +15,7 @@ const {
 
 router.use(verifyAuth0Token);
 
-router.post("/generate", generateInterview);
+router.post("/generate", interviewGenLimiter, generateInterview);
 router.get("/mine", getMyInterviews);
 router.get("/:id", getInterviewById);
 router.post("/:id/submit", submitInterview);

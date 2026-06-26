@@ -1,6 +1,13 @@
+const mongoose = require("mongoose");
 const Lesson = require("../models/Lesson");
 
 async function getOwnedLesson(lessonId, userId) {
+  if (!mongoose.Types.ObjectId.isValid(lessonId)) {
+    const error = new Error("Invalid lesson id.");
+    error.statusCode = 400;
+    throw error;
+  }
+
   const lesson = await Lesson.findById(lessonId).populate({
     path: "module",
     populate: { path: "course" },

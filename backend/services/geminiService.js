@@ -90,4 +90,44 @@ async function generateText(messages, maxTokens = 1024, modelName = "gemini-1.5-
   }
 }
 
-module.exports = { generateJson, generateJsonStream, generateText };
+async function* generateTextStream(messages, maxTokens = 1024, modelName = "gemini-1.5-flash", signal = null) {
+  let systemInstruction = "";
+  const contents = [];
+  
+  for (const msg of messages) {
+    if (msg.role === 'system') {
+      systemInstruction = msg.content;
+    } else {
+      contents.push({
+        role: msg.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: msg.content }]
+      });
+    }
+  }
+
+  const config = {
+    temperature: 0.7,
+    maxOutputTokens: maxTokens,
+  };
+  if (systemInstruction) {
+    config.systemInstruction = systemInstruction;
+  }
+
+  const { client, apiKey } = getAiClient();
+  try {
+    const stream = await client.models.generateContentStream({
+      model: modelName,
+      contents,
+      config
+    });
+
+    for await (const chunk of stream) {
+      if (chunk.text) yield chunk.text;
+    }
+  } catch (error) {
+    if (error.status === 429) geminiKeys.markExhausted(apiKey);
+    throw error;
+  }
+}
+
+module.exports = { generateJson, generateJsonStream, generateText, generateTextStream };
