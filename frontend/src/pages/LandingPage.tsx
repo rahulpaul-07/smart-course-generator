@@ -11,47 +11,119 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 
 // --- Hero Mockup Component ---
-const BrowserMockup = () => (
-  <div className="relative rounded-xl border border-border/40 bg-card/40 backdrop-blur-xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-1000">
-    <div className="flex items-center px-4 py-3 border-b border-border/40 bg-muted/20">
+const ProductPreview = () => (
+  <div className="relative rounded-2xl border border-border/60 bg-background/50 backdrop-blur-2xl shadow-2xl overflow-hidden flex flex-col h-[520px] ring-1 ring-white/10 dark:ring-white/5">
+    {/* Browser-like Header */}
+    <div className="flex items-center justify-between px-4 py-3 border-b border-border/40 bg-muted/20">
       <div className="flex gap-1.5">
-        <div className="h-3 w-3 rounded-full bg-red-500/80" />
+        <div className="h-3 w-3 rounded-full bg-rose-500/80" />
         <div className="h-3 w-3 rounded-full bg-amber-500/80" />
-        <div className="h-3 w-3 rounded-full bg-green-500/80" />
+        <div className="h-3 w-3 rounded-full bg-emerald-500/80" />
       </div>
-      <div className="mx-auto flex h-6 w-2/3 items-center justify-center rounded-md bg-muted/40 text-xs text-muted-foreground font-mono">
-        courseai.pro/dashboard
+      <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs font-medium text-primary">
+          <Sparkles className="h-3.5 w-3.5" />
+          AI Tutor Active
+        </div>
       </div>
     </div>
-    <div className="p-4 sm:p-6 grid gap-4">
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center">
-            <BrainCircuit className="h-5 w-5 text-primary" />
+    
+    {/* Body */}
+    <div className="flex-1 overflow-hidden flex relative">
+      {/* Sidebar */}
+      <div className="w-56 border-r border-border/40 bg-card/30 p-4 space-y-6 hidden sm:block">
+        <div>
+          <div className="flex items-center gap-3 mb-6">
+            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-cyan-400 flex items-center justify-center shadow-inner">
+              <BrainCircuit className="h-4 w-4 text-white" />
+            </div>
+            <div>
+              <h3 className="font-bold text-sm tracking-tight text-foreground">Next.js Architecture</h3>
+              <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">Generating...</p>
+            </div>
           </div>
-          <div>
-            <div className="h-4 w-32 bg-muted rounded mb-1" />
-            <div className="h-3 w-20 bg-muted/60 rounded" />
+          <div className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">Modules</div>
+          <div className="space-y-1">
+            {[
+              { title: "Server Components", active: true, done: true },
+              { title: "Data Fetching", active: false, done: false },
+              { title: "Streaming & Suspense", active: false, done: false }
+            ].map((m, i) => (
+              <div key={i} className={`flex items-center gap-2.5 text-sm p-2 rounded-lg transition-colors ${m.active ? 'bg-primary/15 text-primary font-semibold' : 'text-muted-foreground hover:bg-muted/50'}`}>
+                {m.done ? <CheckCircle2 className="h-4 w-4" /> : <div className="h-4 w-4 rounded-full border border-current opacity-40" />}
+                {m.title}
+              </div>
+            ))}
           </div>
         </div>
-        <div className="h-8 w-24 bg-primary/10 rounded-full" />
-      </div>
-      <div className="grid grid-cols-3 gap-4">
-        {[1, 2, 3].map(i => (
-          <div key={i} className="h-24 rounded-lg bg-muted/30 border border-border/40 p-3">
-            <div className="h-4 w-1/2 bg-muted/80 rounded mb-2" />
-            <div className="h-2 w-full bg-muted/40 rounded mb-1" />
-            <div className="h-2 w-4/5 bg-muted/40 rounded" />
+        
+        <div className="pt-4 border-t border-border/40 space-y-1">
+          <div className="flex items-center justify-between text-sm p-2 rounded-lg text-muted-foreground hover:bg-muted/50 transition-colors">
+            <div className="flex items-center gap-2 font-medium"><FileText className="h-4 w-4" /> Flashcards</div>
+            <span className="text-[10px] font-bold bg-muted text-foreground px-1.5 py-0.5 rounded">24</span>
           </div>
-        ))}
-      </div>
-      <div className="h-32 rounded-lg bg-primary/5 border border-primary/10 mt-2 p-4">
-        <div className="h-4 w-1/3 bg-primary/20 rounded mb-4" />
-        <div className="space-y-2">
-          <div className="h-2 w-full bg-primary/10 rounded" />
-          <div className="h-2 w-full bg-primary/10 rounded" />
-          <div className="h-2 w-3/4 bg-primary/10 rounded" />
+          <div className="flex items-center justify-between text-sm p-2 rounded-lg text-muted-foreground hover:bg-muted/50 transition-colors">
+            <div className="flex items-center gap-2 font-medium"><Code className="h-4 w-4" /> Labs</div>
+            <span className="text-[10px] font-bold bg-muted text-foreground px-1.5 py-0.5 rounded">3</span>
+          </div>
         </div>
+      </div>
+      
+      {/* Main Content Area */}
+      <div className="flex-1 p-6 relative bg-background/30 flex flex-col">
+        {/* Progress */}
+        <div className="mb-6 bg-card/50 backdrop-blur-md rounded-xl p-5 border border-border/50 shadow-sm">
+          <div className="flex justify-between items-end mb-3">
+            <div>
+              <h4 className="font-semibold text-foreground text-sm">Course Generation</h4>
+              <p className="text-xs text-muted-foreground mt-0.5">Synthesizing lessons and practice labs...</p>
+            </div>
+            <span className="text-primary font-bold text-xl">68%</span>
+          </div>
+          <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+            <motion.div 
+              initial={{ width: "0%" }}
+              animate={{ width: "68%" }}
+              transition={{ duration: 1.5, ease: "easeOut" }}
+              className="h-full bg-gradient-to-r from-primary to-cyan-400 relative"
+            >
+              <div className="absolute inset-0 bg-white/20 animate-pulse" />
+            </motion.div>
+          </div>
+        </div>
+
+        {/* Generated content snippet (skeleton) */}
+        <div className="flex-1 space-y-4">
+          <div className="h-8 w-3/4 bg-card/60 rounded-lg border border-border/40" />
+          <div className="space-y-2">
+            <div className="h-4 w-full bg-card/40 rounded border border-border/30" />
+            <div className="h-4 w-5/6 bg-card/40 rounded border border-border/30" />
+            <div className="h-4 w-4/6 bg-card/40 rounded border border-border/30" />
+          </div>
+          
+          <div className="mt-8 grid grid-cols-2 gap-4">
+             <div className="bg-gradient-to-br from-card/60 to-card/20 rounded-xl border border-border/50 p-4 flex flex-col justify-between shadow-sm">
+                <LayoutDashboard className="h-5 w-5 text-muted-foreground mb-4" />
+                <div className="space-y-1.5">
+                  <div className="h-3 w-1/2 bg-muted rounded" />
+                  <div className="h-2 w-1/3 bg-muted/60 rounded" />
+                </div>
+             </div>
+             <div className="bg-gradient-to-br from-amber-500/10 to-transparent rounded-xl border border-amber-500/20 p-4 flex flex-col justify-between shadow-sm relative overflow-hidden">
+                <div className="absolute -right-4 -bottom-4 opacity-10">
+                  <Award className="h-24 w-24 text-amber-500" />
+                </div>
+                <Award className="h-5 w-5 text-amber-500 mb-4" />
+                <div>
+                  <div className="text-sm font-bold text-amber-600 dark:text-amber-400">Certificate</div>
+                  <div className="text-[10px] font-medium text-amber-600/70 dark:text-amber-400/70 uppercase tracking-wider mt-0.5">Ready upon completion</div>
+                </div>
+             </div>
+          </div>
+        </div>
+
+        {/* Floating gradient orb inside preview */}
+        <div className="absolute bottom-[-20%] right-[-10%] h-64 w-64 bg-cyan-400/10 blur-[60px] rounded-full pointer-events-none" />
       </div>
     </div>
   </div>
@@ -97,76 +169,122 @@ export default function LandingPage() {
       <main className="flex-1 overflow-hidden">
         
         {/* 1. Hero Section */}
-        <section className="relative pt-24 pb-32 md:pt-36 md:pb-40">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[800px] bg-[radial-gradient(ellipse_at_top,rgba(124,58,237,0.15),transparent_50%)] pointer-events-none" />
-          <div className="container px-4 md:px-6">
-            <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
-              <div className="flex flex-col justify-center space-y-8 text-center lg:text-left">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5 }}
-                  className="inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-sm font-medium text-primary w-fit mx-auto lg:mx-0 shadow-sm"
-                >
-                  <Sparkles className="mr-2 h-4 w-4" />
-                  Course Generation 2.0 is Live
-                </motion.div>
+        <section className="relative min-h-[calc(100vh-64px)] flex items-center overflow-hidden">
+          
+          {/* ── Layered Background ── */}
+          <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_60%_50%_at_50%_0%,hsl(262_83%_57%/0.15),transparent_70%)]" />
+          <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_50%_40%_at_100%_100%,hsl(191_97%_77%/0.1),transparent_65%)]" />
+          <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_40%_40%_at_0%_100%,hsl(262_83%_57%/0.08),transparent_60%)]" />
+          
+          {/* Subtle grid texture */}
+          <div
+            className="pointer-events-none absolute inset-0 -z-10 opacity-[0.03]"
+            style={{
+              backgroundImage:
+                'linear-gradient(hsl(var(--foreground)) 1px,transparent 1px),linear-gradient(90deg,hsl(var(--foreground)) 1px,transparent 1px)',
+              backgroundSize: '32px 32px',
+            }}
+          />
+          
+          <div className="container px-4 md:px-8 lg:px-12 w-full py-16 lg:py-0">
+            <div className="grid lg:grid-cols-[60%_40%] gap-12 lg:gap-8 items-center min-h-[calc(100vh-64px)]">
+              
+              {/* ────────── LEFT: Marketing 60% ────────── */}
+              <div className="flex flex-col justify-center space-y-8 text-center lg:text-left pt-10 lg:pt-0">
                 
-                <motion.h1
-                  initial={{ opacity: 0, y: 20 }}
+                {/* Badge */}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.1 }}
-                  className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-foreground drop-shadow-sm"
+                  transition={{ duration: 0.25 }}
+                  className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary w-fit mx-auto lg:mx-0 shadow-sm backdrop-blur-sm hover:bg-primary/15 transition-colors"
                 >
-                  Build Complete <br className="hidden lg:block" />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-cyan-400">
-                    AI-Powered Courses
-                  </span> <br className="hidden lg:block" />
+                  <Sparkles className="h-4 w-4" />
+                  ✨ AI-Powered Learning Platform
+                </motion.div>
+
+                {/* Headline */}
+                <motion.h1
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.25, delay: 0.05 }}
+                  className="text-5xl sm:text-6xl lg:text-[72px] font-extrabold tracking-tight text-foreground leading-[1.1] max-w-[700px] mx-auto lg:mx-0"
+                >
+                  Generate Your Next <br className="hidden sm:block" />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-violet-400 to-cyan-400">
+                    AI Course
+                  </span>{' '}
+                  <br className="hidden sm:block" />
                   in Minutes.
                 </motion.h1>
 
+                {/* Description */}
                 <motion.p
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.2 }}
-                  className="max-w-[600px] text-lg md:text-xl text-muted-foreground mx-auto lg:mx-0 font-medium leading-relaxed"
+                  transition={{ duration: 0.25, delay: 0.1 }}
+                  className="max-w-[600px] mx-auto lg:mx-0 text-lg md:text-xl text-muted-foreground leading-relaxed font-medium"
                 >
-                  Transform any topic into a production-ready curriculum. Complete with interactive lessons, practice labs, flashcards, and an AI tutor—instantly generated for you.
+                  CourseAI Pro generates complete personalized courses with interactive lessons, quizzes, practice projects, mock interviews, spaced-repetition flashcards, and verifiable certificates.
                 </motion.p>
 
+                {/* CTAs */}
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.3 }}
+                  transition={{ duration: 0.25, delay: 0.15 }}
                   className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
                 >
-                  <Button asChild size="lg" className="h-14 px-8 rounded-full text-base font-semibold shadow-xl shadow-primary/25 hover:shadow-primary/40 transition-all hover:-translate-y-0.5">
+                  <Button asChild size="lg" className="h-14 px-8 rounded-full text-base font-bold shadow-xl shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all duration-250">
                     <Link to="/signup">
                       Generate Your First Course
                       <ArrowRight className="ml-2 h-5 w-5" />
                     </Link>
                   </Button>
-                  <Button asChild variant="outline" size="lg" className="h-14 px-8 rounded-full text-base font-semibold border-border/60 hover:bg-muted/50 backdrop-blur-sm transition-all">
+                  <Button asChild variant="outline" size="lg" className="h-14 px-8 rounded-full text-base font-bold border-border/60 hover:bg-muted/50 backdrop-blur-sm transition-all duration-250">
                     <Link to="/community">
                       <PlayCircle className="mr-2 h-5 w-5" />
-                      Watch Demo
+                      Explore Demo
                     </Link>
                   </Button>
                 </motion.div>
+
+                {/* Trust Badges */}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.25, delay: 0.2 }}
+                  className="pt-6 flex flex-wrap gap-3 justify-center lg:justify-start"
+                >
+                  {[
+                    { label: 'AI Generated', icon: BrainCircuit },
+                    { label: 'Interactive Lessons', icon: BookOpen },
+                    { label: 'Interview Prep', icon: Code },
+                    { label: 'Certificates', icon: Award },
+                  ].map(({ label, icon: Icon }) => (
+                    <div key={label} className="flex items-center gap-1.5 rounded-full border border-border/50 bg-card/40 px-3 py-1.5 text-xs font-semibold text-muted-foreground backdrop-blur-sm hover:text-foreground transition-colors">
+                      <Icon className="h-3.5 w-3.5" />
+                      {label}
+                    </div>
+                  ))}
+                </motion.div>
               </div>
-              
+
+              {/* ────────── RIGHT: Product Preview 40% ────────── */}
               <motion.div
-                initial={{ opacity: 0, scale: 0.95, rotate: 2 }}
-                animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                transition={{ duration: 0.8, delay: 0.2, type: "spring" }}
-                className="relative mx-auto w-full max-w-[600px] lg:max-w-none perspective-1000"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.25, delay: 0.15 }}
+                className="relative mx-auto w-full max-w-[600px] lg:max-w-none pt-10 lg:pt-0"
               >
-                <div className="absolute -inset-1 rounded-2xl bg-gradient-to-tr from-primary to-cyan-400 opacity-20 blur-2xl" />
-                <BrowserMockup />
+                <div className="absolute -inset-4 rounded-3xl bg-gradient-to-tr from-primary/20 via-transparent to-cyan-400/15 opacity-60 blur-3xl -z-10" />
+                <ProductPreview />
               </motion.div>
+
             </div>
           </div>
         </section>
+
 
         {/* 2. Trusted Features */}
         <section className="py-24 bg-muted/20 border-y border-border/40 relative">
