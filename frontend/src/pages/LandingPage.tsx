@@ -248,7 +248,12 @@ export default function LandingPage() {
                   
                   <div className="relative text-center space-y-4">
                     <div className="inline-flex h-20 w-20 items-center justify-center rounded-2xl bg-primary/10 text-primary shadow-inner mb-4">
-                      {showcaseTabs.find(t => t.id === activeTab)?.icon({ className: "h-10 w-10" })}
+                      {(() => {
+                        const tab = showcaseTabs.find(t => t.id === activeTab);
+                        if (!tab) return null;
+                        const Icon = tab.icon;
+                        return <Icon className="h-10 w-10" />;
+                      })()}
                     </div>
                     <h3 className="text-2xl font-bold">{activeTab} Interface</h3>
                     <p className="text-muted-foreground max-w-sm mx-auto">
