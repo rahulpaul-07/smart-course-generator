@@ -43,10 +43,10 @@ export default function LessonCompletion({ course, courseId, lesson, onLessonUpd
           ? <CheckCircle2 className="mt-0.5 h-6 w-6 text-emerald-400" />
           : <Circle className="mt-0.5 h-6 w-6 text-brand-400" />}
         <div>
-          <h2 className="relative font-display text-xl font-bold text-white">
+          <h2 className="relative font-display text-xl font-bold text-foreground">
             {lesson.completedAt ? 'Lesson complete' : 'Finished this lesson?'}
           </h2>
-          <p className="mt-1 text-sm text-slate-400">
+          <p className="mt-1 text-sm text-muted-foreground">
             {lesson.completedAt
               ? certificateUnlocked
                 ? 'You completed the whole course. Your certificate is ready.'

@@ -59,7 +59,7 @@ export default function AiAgentsPage() {
 
   const renderResult = () => {
     if (!result) return (
-      <div className="flex flex-col items-center justify-center py-12 text-slate-500">
+      <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
         <Bot className="h-12 w-12 mb-4 opacity-50" />
         <p>Configure the agent above and click Run to see AI insights.</p>
       </div>
@@ -74,13 +74,13 @@ export default function AiAgentsPage() {
     if (activeTab === 'reviewer') {
       return (
         <div className="space-y-6 animate-enter">
-          <div className="flex items-center gap-4 border-b border-white/5 pb-4">
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-500 text-2xl font-bold text-white shadow-lg">
+          <div className="flex items-center gap-4 border-b border-border/ pb-4">
+            <div className="flex h-16 w-16 items-center justify-center rounded-2xl -white shadow-lg">
               {result.rating}
             </div>
             <div>
-              <h3 className="text-xl font-bold text-white">Course Rating</h3>
-              <p className="text-sm text-slate-400">Overall AI Assessment Score</p>
+              <h3 className="text-xl font-bold text-foreground">Course Rating</h3>
+              <p className="text-sm text-muted-foreground">Overall AI Assessment Score</p>
             </div>
           </div>
           
@@ -131,20 +131,20 @@ export default function AiAgentsPage() {
       return (
         <div className="space-y-6 animate-enter">
           <div className="rounded-xl border border-brand-500/20 bg-brand-500/10 p-6 text-center">
-            <h3 className="text-2xl font-display font-bold text-white mb-2">{result.greeting}</h3>
+            <h3 className="text-2xl font-display font-bold text-foreground mb-2">{result.greeting}</h3>
             <p className="text-brand-200">{result.encouragement}</p>
           </div>
           
-          <div className="rounded-xl bg-slate-800/50 border border-white/5 p-5">
-            <h4 className="font-bold text-white mb-2">AI Analysis</h4>
-            <p className="text-sm text-slate-300">{result.analysis}</p>
+          <div className="rounded-xl bg-card/50 border border-border/ p-5">
+            <h4 className="font-bold text-foreground mb-2">AI Analysis</h4>
+            <p className="text-sm text-foreground/90">{result.analysis}</p>
           </div>
 
-          <div className="rounded-xl bg-slate-800/50 border border-white/5 p-5">
-            <h4 className="font-bold text-white mb-4">Actionable Advice</h4>
+          <div className="rounded-xl bg-card/50 border border-border/ p-5">
+            <h4 className="font-bold text-foreground mb-4">Actionable Advice</h4>
             <ul className="space-y-3">
               {result.actionableAdvice?.map((a: string, i: number) => (
-                <li key={i} className="flex items-start gap-3 rounded-lg bg-white/5 p-3 text-sm text-slate-200">
+                <li key={i} className="flex items-start gap-3 rounded-lg bg-foreground/10 p-3 text-sm text-foreground">
                   <Target className="h-4 w-4 shrink-0 text-brand-400 mt-0.5" />
                   {a}
                 </li>
@@ -158,22 +158,22 @@ export default function AiAgentsPage() {
     if (activeTab === 'planner') {
       return (
         <div className="space-y-6 animate-enter">
-          <h3 className="text-xl font-bold text-white flex items-center gap-2">
+          <h3 className="text-xl font-bold text-foreground flex items-center gap-2">
             <Map className="h-5 w-5 text-indigo-400" /> {result.planName || "Revision Plan"}
           </h3>
           <div className="space-y-3">
             {result.schedule?.map((item: any, i: number) => (
-              <div key={i} className="flex items-center justify-between rounded-xl border border-white/5 bg-slate-800/50 p-4">
+              <div key={i} className="flex items-center justify-between rounded-xl border border-border/ bg-card/50 p-4">
                 <div className="flex items-center gap-4">
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-500/20 font-bold text-indigo-400">
                     {item.day?.substring(0,3)}
                   </div>
                   <div>
-                    <p className="font-bold text-white">{item.topic}</p>
-                    <p className="text-xs text-slate-400">{item.day}</p>
+                    <p className="font-bold text-foreground">{item.topic}</p>
+                    <p className="text-xs text-muted-foreground">{item.day}</p>
                   </div>
                 </div>
-                <div className="rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-slate-300">
+                <div className="rounded-full bg-foreground/10 px-3 py-1 text-xs font-medium text-foreground/90">
                   {item.method}
                 </div>
               </div>
@@ -186,15 +186,15 @@ export default function AiAgentsPage() {
     if (activeTab === 'recommend') {
       return (
         <div className="space-y-4 animate-enter">
-          <h3 className="text-xl font-bold text-white mb-6">Recommended For You</h3>
+          <h3 className="text-xl font-bold text-foreground mb-6">Recommended For You</h3>
           {result.recommendations?.map((rec: any, i: number) => (
-            <div key={i} className="flex gap-4 rounded-xl border border-white/5 bg-slate-800/50 p-5 transition hover:bg-slate-800">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-brand-400 to-indigo-500 text-white shadow-lg">
+            <div key={i} className="flex gap-4 rounded-xl border border-border/ bg-card/50 p-5 transition hover:bg-card">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl -white shadow-lg">
                 <Star className="h-6 w-6" />
               </div>
               <div>
-                <h4 className="font-bold text-white text-lg">{rec.topic}</h4>
-                <p className="text-sm text-slate-400 mt-1">{rec.reason}</p>
+                <h4 className="font-bold text-foreground text-lg">{rec.topic}</h4>
+                <p className="text-sm text-muted-foreground mt-1">{rec.reason}</p>
               </div>
             </div>
           ))}
@@ -202,7 +202,7 @@ export default function AiAgentsPage() {
       );
     }
 
-    return <pre className="whitespace-pre-wrap text-xs text-slate-400">{JSON.stringify(result, null, 2)}</pre>;
+    return <pre className="whitespace-pre-wrap text-xs text-muted-foreground">{JSON.stringify(result, null, 2)}</pre>;
   };
 
   return (
@@ -210,7 +210,7 @@ export default function AiAgentsPage() {
       <section className="mb-10">
         <p className="eyebrow"><Bot className="h-3.5 w-3.5" /> Multi-Agent System</p>
         <h1 className="gradient-text mt-3 font-display text-3xl font-extrabold">AI Assistant Hub</h1>
-        <p className="mt-2 text-sm text-slate-400">Leverage specialized AI agents to accelerate your learning journey.</p>
+        <p className="mt-2 text-sm text-muted-foreground">Leverage specialized AI agents to accelerate your learning journey.</p>
       </section>
 
       <div className="grid gap-8 lg:grid-cols-[280px_1fr]">
@@ -225,15 +225,15 @@ export default function AiAgentsPage() {
                 onClick={() => { setActiveTab(tab.id); setResult(null); }}
                 className={`w-full flex items-start gap-4 rounded-xl p-4 text-left transition-all ${
                   isActive
-                    ? 'bg-brand-500/10 border border-brand-500/30 text-white shadow-lg'
-                    : 'bg-slate-900/50 border border-transparent text-slate-400 hover:bg-slate-800 hover:text-slate-200'
+                    ? 'bg-brand-500/10 border border-brand-500/30 text-foreground shadow-lg'
+                    : 'bg-background/50 border border-transparent text-muted-foreground hover:bg-card hover:text-foreground'
                 }`}
               >
-                <div className={`mt-0.5 rounded-lg p-2 ${isActive ? 'bg-brand-500 text-white' : 'bg-white/5'}`}>
+                <div className={`mt-0.5 rounded-lg p-2 ${isActive ? 'bg-brand-500 text-foreground' : 'bg-foreground/10'}`}>
                   <Icon className="h-4 w-4" />
                 </div>
                 <div>
-                  <h3 className={`font-bold ${isActive ? 'text-brand-300' : 'text-slate-300'}`}>{tab.label}</h3>
+                  <h3 className={`font-bold ${isActive ? 'text-brand-300' : 'text-foreground/90'}`}>{tab.label}</h3>
                   <p className="mt-1 text-xs opacity-70 leading-relaxed">{tab.desc}</p>
                 </div>
               </button>
@@ -242,32 +242,32 @@ export default function AiAgentsPage() {
         </div>
 
         {/* Main Content Area */}
-        <div className="glass-card flex flex-col rounded-2xl overflow-hidden border border-white/5">
+        <div className="glass-card flex flex-col rounded-2xl overflow-hidden border border-border/">
           {/* Agent Header & Inputs */}
-          <div className="border-b border-white/5 bg-white/[0.02] p-6">
+          <div className="border-b border-border/ bg-foreground/10 p-6">
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
               <div className="flex-1">
-                <h2 className="text-xl font-bold text-white capitalize">{tabs.find(t => t.id === activeTab)?.label}</h2>
+                <h2 className="text-xl font-bold text-foreground capitalize">{tabs.find(t => t.id === activeTab)?.label}</h2>
                 
                 {/* Inputs based on active tab */}
                 <div className="mt-4">
                   {activeTab === 'reviewer' && (
                     <div className="space-y-2">
-                      <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Select Course to Review</label>
+                      <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Select Course to Review</label>
                       <select 
-                        className="w-full rounded-xl border border-white/10 bg-slate-900 px-4 py-2.5 text-sm text-white outline-none focus:border-brand-500"
+                        className="w-full rounded-xl border border-border/ bg-background px-4 py-2.5 text-sm text-foreground outline-none focus:border-brand-500"
                         value={selectedCourse}
                         onChange={(e) => setSelectedCourse(e.target.value)}
                       >
-                        {courses.map(c => <option key={c._id} value={c._id} className="bg-slate-900 text-white">{c.title}</option>)}
+                        {courses.map(c => <option key={c._id} value={c._id} className="bg-background text-foreground">{c.title}</option>)}
                       </select>
                     </div>
                   )}
                   {activeTab === 'planner' && (
                     <div className="space-y-2">
-                      <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Upcoming Goals (comma separated)</label>
+                      <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Upcoming Goals (comma separated)</label>
                       <input 
-                        className="w-full rounded-xl border border-white/10 bg-slate-900 px-4 py-2.5 text-sm text-white outline-none focus:border-brand-500"
+                        className="w-full rounded-xl border border-border/ bg-background px-4 py-2.5 text-sm text-foreground outline-none focus:border-brand-500"
                         placeholder="e.g. Pass interview next week, Build fullstack app"
                         value={goalsInput}
                         onChange={e => setGoalsInput(e.target.value)}
@@ -276,9 +276,9 @@ export default function AiAgentsPage() {
                   )}
                   {activeTab === 'recommend' && (
                     <div className="space-y-2">
-                      <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Specific Interests (comma separated)</label>
+                      <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Specific Interests (comma separated)</label>
                       <input 
-                        className="w-full rounded-xl border border-white/10 bg-slate-900 px-4 py-2.5 text-sm text-white outline-none focus:border-brand-500"
+                        className="w-full rounded-xl border border-border/ bg-background px-4 py-2.5 text-sm text-foreground outline-none focus:border-brand-500"
                         placeholder="e.g. Machine Learning, System Design"
                         value={interestsInput}
                         onChange={e => setInterestsInput(e.target.value)}
@@ -286,7 +286,7 @@ export default function AiAgentsPage() {
                     </div>
                   )}
                   {activeTab === 'coach' && (
-                    <p className="text-sm text-slate-400">The learning coach will analyze your recent quiz scores, activity streaks, and completed modules automatically.</p>
+                    <p className="text-sm text-muted-foreground">The learning coach will analyze your recent quiz scores, activity streaks, and completed modules automatically.</p>
                   )}
                 </div>
               </div>
@@ -294,7 +294,7 @@ export default function AiAgentsPage() {
               <button
                 onClick={handleRunAgent}
                 disabled={loading || (activeTab === 'reviewer' && !selectedCourse)}
-                className="flex items-center gap-2 rounded-xl bg-brand-600 px-6 py-3 text-sm font-bold text-white transition-all hover:bg-brand-500 disabled:opacity-50 shadow-lg shadow-brand-500/20 shrink-0"
+                className="flex items-center gap-2 rounded-xl bg-brand-600 px-6 py-3 text-sm font-bold text-foreground transition-all hover:bg-brand-500 disabled:opacity-50 shadow-lg shadow-brand-500/20 shrink-0"
               >
                 {loading ? <LoadingSpinner size="sm" /> : <Bot className="h-4 w-4" />}
                 Run {activeTab}
@@ -303,9 +303,9 @@ export default function AiAgentsPage() {
           </div>
 
           {/* Results Area */}
-          <div className="p-6 bg-slate-900/20 min-h-[400px]">
+          <div className="p-6 bg-background/20 min-h-[400px]">
             {loading ? (
-              <div className="flex h-full flex-col items-center justify-center text-slate-400 py-20">
+              <div className="flex h-full flex-col items-center justify-center text-muted-foreground py-20">
                 <LoadingSpinner size="lg" />
                 <p className="mt-4 text-sm font-medium animate-pulse">AI is analyzing context and generating insights...</p>
               </div>

@@ -9,7 +9,7 @@ export default function LoadingSpinner({ text = 'Loading...', small = false, siz
 
   return (
     <div 
-      className="flex min-h-48 flex-col items-center justify-center gap-4 p-12 text-slate-400"
+      className="flex min-h-48 flex-col items-center justify-center gap-4 p-12 text-muted-foreground"
       aria-live="polite"
       aria-busy="true"
     >

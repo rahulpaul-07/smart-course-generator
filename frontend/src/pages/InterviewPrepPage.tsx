@@ -299,7 +299,7 @@ export default function InterviewPrepPage() {
           <div className="flex items-center justify-between p-4 border-b border-border/50 bg-card/50">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary to-cyan-500 flex items-center justify-center shadow-lg shadow-primary/20">
-                <Brain className="h-5 w-5 text-white" />
+                <Brain className="h-5 w-5 text-foreground" />
               </div>
               <div>
                 <h3 className="font-bold text-sm text-foreground leading-tight">AI Interview Coach</h3>
@@ -400,7 +400,7 @@ function MCQSection({ prep, onUpdate }: any) {
                     disabled={submitted}
                     className={`group flex w-full items-start gap-4 rounded-xl border p-4 text-left text-sm transition-all duration-200 ${cls} ${!submitted && 'hover:shadow-md'}`}
                   >
-                    <span className={`shrink-0 flex h-6 w-6 items-center justify-center rounded-full border text-[11px] font-bold ${isSelected && !submitted ? 'bg-primary border-primary text-primary-foreground' : 'border-border/80 text-muted-foreground'} ${isCorrect ? 'bg-emerald-500 border-emerald-500 text-white' : ''} ${isWrong ? 'bg-destructive border-destructive text-white' : ''}`}>
+                    <span className={`shrink-0 flex h-6 w-6 items-center justify-center rounded-full border text-[11px] font-bold ${isSelected && !submitted ? 'bg-primary border-primary text-primary-foreground' : 'border-border/80 text-muted-foreground'} ${isCorrect ? 'bg-emerald-500 border-emerald-500 text-foreground' : ''} ${isWrong ? 'bg-destructive border-destructive text-foreground' : ''}`}>
                       {String.fromCharCode(65 + oi)}
                     </span>
                     <span className="pt-0.5 flex-1 font-medium leading-relaxed">{opt}</span>
@@ -563,7 +563,7 @@ function CodingSection({ prep }: any) {
             
             {q.starterCode && (
               <div className="rounded-xl overflow-hidden border border-border shadow-inner">
-                <div className="bg-[#1e1e1e] px-4 py-2 text-xs font-mono text-muted-foreground border-b border-white/10">Starter Code</div>
+                <div className="bg-[#1e1e1e] px-4 py-2 text-xs font-mono text-muted-foreground border-b border-border/">Starter Code</div>
                 <SyntaxHighlighter language="javascript" style={vscDarkPlus} customStyle={{ margin: 0, background: '#1e1e1e' }}>
                   {q.starterCode}
                 </SyntaxHighlighter>
@@ -605,7 +605,7 @@ function CodingSection({ prep }: any) {
                 <p className="text-sm text-foreground/80 leading-relaxed mb-4">{q.feedback}</p>
                 {q.idealSolution && (
                   <div className="rounded-xl overflow-hidden border border-border shadow-inner mt-4">
-                    <div className="bg-[#1e1e1e] px-4 py-2 text-xs font-mono text-emerald-400 border-b border-white/10">Ideal Solution</div>
+                    <div className="bg-[#1e1e1e] px-4 py-2 text-xs font-mono text-emerald-400 border-b border-border/">Ideal Solution</div>
                     <SyntaxHighlighter language="javascript" style={vscDarkPlus} customStyle={{ margin: 0, background: '#1e1e1e' }}>
                       {q.idealSolution}
                     </SyntaxHighlighter>
@@ -630,9 +630,9 @@ const CodeBlock = ({ language, value }: { language: string, value: string }) => 
   };
   return (
     <div className="relative group my-3 rounded-lg overflow-hidden bg-[#1e1e1e] border border-border/50">
-      <div className="flex items-center justify-between px-3 py-1.5 bg-black/40 border-b border-white/10">
+      <div className="flex items-center justify-between px-3 py-1.5 bg-black/40 border-b border-border/">
         <span className="text-[10px] font-mono text-muted-foreground uppercase">{language || 'code'}</span>
-        <button onClick={handleCopy} className="text-muted-foreground hover:text-white transition-colors">
+        <button onClick={handleCopy} className="text-muted-foreground hover:text-foreground transition-colors">
           {copied ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3" />}
         </button>
       </div>
@@ -834,7 +834,7 @@ function ResultsSection({ prep }: any) {
     <div className="space-y-8 animate-enter pb-16">
       <div className="text-center space-y-4 mb-12">
         <div className="inline-flex items-center justify-center h-20 w-20 rounded-full bg-gradient-to-br from-primary to-cyan-500 shadow-xl shadow-primary/20 mb-2">
-          <Trophy className="h-10 w-10 text-white" />
+          <Trophy className="h-10 w-10 text-foreground" />
         </div>
         <h2 className="text-4xl font-extrabold font-serif tracking-tight text-foreground">Interview Assessment</h2>
         <p className="text-lg text-muted-foreground">Comprehensive evaluation and feedback</p>

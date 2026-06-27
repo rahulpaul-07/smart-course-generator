@@ -78,7 +78,7 @@ function HinglishAudioExplanation({ lessonText, initialText = "" }) {
           Hinglish Audio Explanation
         </h3>
 
-        <p className="mt-1 text-sm text-slate-600">
+        <p className="mt-1 text-sm text-muted-foreground">
           Generate a friendly Hinglish audio explanation for this lesson.
         </p>
       </div>
@@ -87,7 +87,7 @@ function HinglishAudioExplanation({ lessonText, initialText = "" }) {
         type="button"
         onClick={handleGenerateAudio}
         disabled={isGenerating}
-        className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+        className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-foreground hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
       >
         {isGenerating ? "Preparing..." : "Generate Hinglish Explanation"}
       </button>
@@ -99,7 +99,7 @@ function HinglishAudioExplanation({ lessonText, initialText = "" }) {
       )}
 
       {hinglishText && (
-        <div className="mt-4 rounded-lg bg-white p-4">
+        <div className="mt-4 rounded-lg bg-card p-4">
           <p className="text-sm font-semibold text-slate-900">
             Hinglish Explanation
           </p>
@@ -111,7 +111,7 @@ function HinglishAudioExplanation({ lessonText, initialText = "" }) {
       )}
 
       {audioUrl && (
-        <div className="mt-4 rounded-lg bg-white p-4">
+        <div className="mt-4 rounded-lg bg-card p-4">
           <audio controls src={audioUrl} className="w-full">
             Your browser does not support audio playback.
           </audio>

@@ -35,24 +35,24 @@ export default function SharedCoursePage() {
       <div className="page-shell max-w-xl py-24 text-center animate-enter">
         <div className="surface-card p-10">
           <BookOpen className="mx-auto h-9 w-9 text-brand-300" />
-          <h1 className="mt-5 font-display text-2xl font-bold text-white">Course unavailable</h1>
-          <p className="mt-2 text-sm text-slate-400">This course is private or the shared link is no longer active.</p>
+          <h1 className="mt-5 font-display text-2xl font-bold text-foreground">Course unavailable</h1>
+          <p className="mt-2 text-sm text-muted-foreground">This course is private or the shared link is no longer active.</p>
         </div>
       </div>
     );
   }
 
   return (
-    <main className="min-h-screen text-slate-200">
-      <header className="sticky top-0 z-20 border-b border-white/[0.07] bg-[#070916]/80 px-4 py-4 backdrop-blur-2xl lg:px-8">
+    <main className="min-h-screen text-foreground">
+      <header className="sticky top-0 z-20 border-b border-border bg-background/80 px-4 py-4 backdrop-blur-2xl lg:px-8">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
-            <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-violet-500 to-cyan-400 text-white shadow-lg shadow-brand-500/20">
+            <span className="grid h-9 w-9 place-items-center rounded-xl -white shadow-lg shadow-brand-500/20">
               <BookOpen className="h-4 w-4" />
             </span>
             <div>
-              <p className="font-display text-sm font-bold text-white">Course<span className="text-brand-300">AI</span></p>
-              <p className="text-[10px] uppercase tracking-[0.18em] text-slate-600">Shared learning path</p>
+              <p className="font-display text-sm font-bold text-foreground">Course<span className="text-brand-300">AI</span></p>
+              <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Shared learning path</p>
             </div>
           </div>
           <span className="flex items-center gap-1.5 rounded-full border border-cyan-400/15 bg-cyan-400/[0.07] px-3 py-1.5 text-xs text-cyan-200">
@@ -66,12 +66,12 @@ export default function SharedCoursePage() {
         <aside className="surface-card h-fit p-5 animate-enter lg:sticky lg:top-28">
           <p className="eyebrow"><Sparkles className="h-3.5 w-3.5" /> Explore course</p>
           <h1 className="gradient-text mt-4 font-display text-2xl font-extrabold leading-tight">{course.title}</h1>
-          {course.description && <p className="mt-3 text-sm leading-relaxed text-slate-400">{course.description}</p>}
+          {course.description && <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{course.description}</p>}
 
           <div className="mt-8 space-y-5">
             {course.modules?.map((moduleDoc, moduleIndex) => (
               <section key={moduleDoc._id}>
-                <h2 className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-600">
+                <h2 className="text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
                   {moduleIndex + 1}. {moduleDoc.title}
                 </h2>
                 <div className="mt-2 space-y-1">
@@ -83,8 +83,8 @@ export default function SharedCoursePage() {
                       onClick={() => setSelectedLesson(lesson)}
                       className={`group flex w-full items-center gap-2 rounded-xl border px-3 py-2.5 text-left text-sm transition ${
                         lesson._id === selectedLesson?._id
-                          ? 'border-brand-400/25 bg-brand-500/10 text-white'
-                          : 'border-transparent text-slate-500 hover:border-white/[0.06] hover:bg-white/[0.03] hover:text-slate-300 disabled:opacity-40'
+                          ? 'border-brand-400/25 bg-brand-500/10 text-foreground'
+                          : 'border-transparent text-muted-foreground hover:border-border hover:bg-foreground/10 hover:text-foreground/90 disabled:opacity-40'
                       }`}
                     >
                       <ChevronRight className="h-3 w-3 transition group-hover:translate-x-0.5" />
@@ -109,7 +109,7 @@ export default function SharedCoursePage() {
               <LessonRenderer content={selectedLesson.content} />
             </>
           ) : (
-            <div className="py-20 text-center text-slate-500">
+            <div className="py-20 text-center text-muted-foreground">
               <BookOpen className="mx-auto h-8 w-8" />
               <p className="mt-4">This course does not have a generated lesson yet.</p>
             </div>

@@ -45,15 +45,15 @@ export function GoogleIcon() {
 
 function LearningStudio() {
   return (
-    <div className="auth-workspace relative mt-9 max-w-2xl overflow-hidden rounded-3xl border border-white/10 bg-[#070a17]/85 shadow-[0_30px_100px_rgba(0,0,0,0.45)] backdrop-blur-xl">
-      <div className="flex items-center justify-between gap-3 border-b border-white/[0.07] bg-white/[0.025] px-4 py-3">
+    <div className="auth-workspace relative mt-9 max-w-2xl overflow-hidden rounded-3xl border border-border bg-card/90 shadow-[0_30px_100px_rgba(0,0,0,0.25)] backdrop-blur-xl">
+      <div className="flex items-center justify-between gap-3 border-b border-border bg-foreground/10 px-4 py-3">
         <div className="flex items-center gap-2">
-          <span className="grid h-7 w-7 place-items-center rounded-lg bg-gradient-to-br from-brand-500 to-cyan-400 text-white">
+          <span className="grid h-7 w-7 place-items-center rounded-lg -white">
             <WandSparkles className="h-3.5 w-3.5" />
           </span>
           <div>
-            <p className="text-[10px] font-bold text-slate-300">AI Learning Studio</p>
-            <p className="text-[8px] uppercase tracking-[0.16em] text-slate-600">Designing your course</p>
+            <p className="text-[10px] font-bold text-foreground/90">AI Learning Studio</p>
+            <p className="text-[8px] uppercase tracking-[0.16em] text-muted-foreground">Designing your course</p>
           </div>
         </div>
         <span className="auth-live-badge rounded-full border border-emerald-400/15 bg-emerald-400/10 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-emerald-300">
@@ -62,12 +62,12 @@ function LearningStudio() {
       </div>
 
       <div className="grid lg:grid-cols-[1.12fr_0.88fr]">
-        <div className="border-b border-white/[0.07] p-4 lg:border-b-0 lg:border-r">
-          <p className="mb-2 text-[9px] font-bold uppercase tracking-[0.18em] text-slate-600">Learning goal</p>
+        <div className="border-b border-border p-4 lg:border-b-0 lg:border-r">
+          <p className="mb-2 text-[9px] font-bold uppercase tracking-[0.18em] text-muted-foreground">Learning goal</p>
           <div className="rounded-xl border border-brand-400/20 bg-brand-500/[0.07] p-3">
             <div className="flex gap-2">
               <Sparkles className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand-300" />
-              <p className="auth-prompt-text font-mono text-[10px] leading-5 text-slate-300">
+              <p className="auth-prompt-text font-mono text-[10px] leading-5 text-foreground/90">
                 Teach me a practical skill from beginner to confident, with clear lessons and a real project.
               </p>
             </div>
@@ -77,15 +77,15 @@ function LearningStudio() {
             {COURSE_IDEAS.map(({ icon: Icon, label, color }, index) => (
               <div
                 key={label}
-                className="auth-idea-card flex items-center gap-3 rounded-xl border border-white/[0.07] bg-white/[0.025] p-2.5"
+                className="auth-idea-card flex items-center gap-3 rounded-xl border border-border bg-foreground/10 p-2.5"
                 style={{ animationDelay: `${0.7 + index * 0.45}s` }}
               >
                 <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-lg border ${color}`}>
                   <Icon className="h-3.5 w-3.5" />
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block truncate text-[10px] font-semibold text-slate-300">{label}</span>
-                  <span className="mt-0.5 block text-[8px] text-slate-600">Personalized path ready</span>
+                  <span className="block truncate text-[10px] font-semibold text-foreground/90">{label}</span>
+                  <span className="mt-0.5 block text-[8px] text-muted-foreground">Personalized path ready</span>
                 </span>
                 <Check className="h-3.5 w-3.5 text-emerald-400" />
               </div>
@@ -96,7 +96,7 @@ function LearningStudio() {
             {['Lessons', 'Practice', 'AI tutor', 'Certificate'].map((item, index) => (
               <span
                 key={item}
-                className="auth-feature-chip flex-1 rounded-lg border border-white/[0.06] bg-white/[0.025] px-2 py-1.5 text-center text-[8px] font-semibold text-slate-500"
+                className="auth-feature-chip flex-1 rounded-lg border border-border bg-foreground/10 px-2 py-1.5 text-center text-[8px] font-semibold text-muted-foreground"
                 style={{ animationDelay: `${index * 0.35}s` }}
               >
                 {item}
@@ -109,9 +109,9 @@ function LearningStudio() {
           <div className="flex items-center justify-between gap-3">
             <div>
               <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-brand-300">Your course</p>
-              <h3 className="mt-1 font-display text-xs font-bold text-white">A path built around you</h3>
+              <h3 className="mt-1 font-display text-xs font-bold text-foreground">A path built around you</h3>
             </div>
-            <div className="relative grid h-11 w-11 place-items-center rounded-full bg-white/[0.035]">
+            <div className="relative grid h-11 w-11 place-items-center rounded-full bg-foreground/10">
               <svg viewBox="0 0 40 40" className="absolute inset-0 -rotate-90">
                 <circle cx="20" cy="20" r="17" fill="none" stroke="rgba(255,255,255,.06)" strokeWidth="3" />
                 <circle className="auth-progress-ring" cx="20" cy="20" r="17" fill="none" stroke="url(#authProgress)" strokeWidth="3" strokeLinecap="round" />
@@ -133,7 +133,7 @@ function LearningStudio() {
                 className={`auth-module-row flex items-center gap-2.5 rounded-xl border px-2.5 py-2.5 ${
                   step.active
                     ? 'border-brand-400/25 bg-brand-500/10'
-                    : 'border-transparent bg-white/[0.025]'
+                    : 'border-transparent bg-foreground/10'
                 }`}
                 style={{ animationDelay: `${0.4 + index * 0.38}s` }}
               >
@@ -141,14 +141,14 @@ function LearningStudio() {
                   step.complete
                     ? 'bg-emerald-400/10 text-emerald-300'
                     : step.active
-                      ? 'bg-brand-500 text-white shadow-lg shadow-brand-500/20'
-                      : 'bg-white/[0.04] text-slate-600'
+                      ? 'bg-brand-500 text-foreground shadow-lg shadow-brand-500/20'
+                      : 'bg-foreground/10 text-muted-foreground'
                 }`}>
                   {step.complete ? <Check className="h-3 w-3" /> : index + 1}
                 </span>
                 <span className="min-w-0">
-                  <span className="block truncate text-[10px] font-semibold text-slate-300">{step.label}</span>
-                  <span className="block text-[8px] text-slate-600">{step.detail}</span>
+                  <span className="block truncate text-[10px] font-semibold text-foreground/90">{step.label}</span>
+                  <span className="block text-[8px] text-muted-foreground">{step.detail}</span>
                 </span>
               </div>
             ))}
@@ -160,8 +160,8 @@ function LearningStudio() {
                 <BrainCircuit className="h-3.5 w-3.5" />
               </span>
               <div>
-                <p className="text-[9px] font-bold text-slate-300">AI tutor included</p>
-                <p className="mt-0.5 text-[8px] text-slate-600">Ask questions at every step</p>
+                <p className="text-[9px] font-bold text-foreground/90">AI tutor included</p>
+                <p className="mt-0.5 text-[8px] text-muted-foreground">Ask questions at every step</p>
               </div>
             </div>
           </div>
@@ -179,15 +179,15 @@ export default function AuthLayout({
   eyebrow,
 }) {
   return (
-    <main className="auth-stage relative min-h-screen overflow-x-hidden text-slate-200 lg:grid lg:grid-cols-[minmax(0,1.12fr)_minmax(450px,0.88fr)]">
+    <main className="auth-stage relative min-h-screen overflow-x-hidden text-foreground lg:grid lg:grid-cols-[minmax(0,1.12fr)_minmax(450px,0.88fr)]">
       <div className="auth-aurora auth-aurora-one pointer-events-none absolute" />
       <div className="auth-aurora auth-aurora-two pointer-events-none absolute" />
       <div className="auth-particles pointer-events-none absolute inset-0" />
 
-      <section className="relative hidden min-h-screen overflow-hidden border-r border-white/[0.06] p-10 lg:flex lg:flex-col xl:p-14">
+      <section className="relative hidden min-h-screen overflow-hidden border-r border-border p-10 lg:flex lg:flex-col xl:p-14">
         <div className="auth-circuit pointer-events-none absolute inset-0 opacity-50" />
 
-        <Link to="/" className="relative z-20 flex w-fit items-center gap-3 text-white">
+        <Link to="/" className="relative z-20 flex w-fit items-center gap-3 text-foreground">
           <span className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-brand-500 to-cyan-400 shadow-lg shadow-brand-500/20">
             <BookOpen className="h-5 w-5" />
           </span>
@@ -202,7 +202,7 @@ export default function AuthLayout({
           <h2 className="gradient-text max-w-2xl font-display text-5xl font-extrabold leading-[1.04] tracking-[-0.055em] xl:text-6xl">
             Turn any curiosity into real capability.
           </h2>
-          <p className="mt-5 max-w-xl text-sm leading-7 text-slate-400 xl:text-base">
+          <p className="mt-5 max-w-xl text-sm leading-7 text-muted-foreground xl:text-base">
             CourseAI creates a complete learning journey for your goal, with clear lessons, hands-on practice, helpful videos, quizzes, and an AI tutor.
           </p>
 
@@ -210,7 +210,7 @@ export default function AuthLayout({
             {TOPICS.map(({ icon: Icon, label }, index) => (
               <span
                 key={label}
-                className="auth-topic-chip inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-[10px] font-semibold text-slate-500"
+                className="auth-topic-chip inline-flex items-center gap-1.5 rounded-full border border-border bg-foreground/10 px-3 py-1.5 text-[10px] font-semibold text-muted-foreground"
                 style={{ animationDelay: `${index * 0.35}s` }}
               >
                 <Icon className="h-3 w-3 text-brand-300" />
@@ -222,7 +222,7 @@ export default function AuthLayout({
           <LearningStudio />
         </div>
 
-        <div className="relative z-10 flex items-center gap-5 text-[10px] font-bold uppercase tracking-[0.16em] text-slate-600">
+        <div className="relative z-10 flex items-center gap-5 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
           <span>Any topic</span>
           <span className="h-1 w-1 rounded-full bg-brand-400" />
           <span>Your pace</span>
@@ -234,31 +234,31 @@ export default function AuthLayout({
       <section className="relative flex min-h-screen items-center justify-center px-4 py-8 sm:px-8 lg:px-10">
         <div className="auth-circuit pointer-events-none absolute inset-0 opacity-20 lg:hidden" />
         <div className="w-full max-w-md animate-enter-delay">
-          <Link to="/" className="mb-8 flex w-fit items-center gap-2.5 text-white lg:hidden">
+          <Link to="/" className="mb-8 flex w-fit items-center gap-2.5 text-foreground lg:hidden">
             <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-brand-500 to-cyan-400 shadow-lg shadow-brand-500/20">
               <BookOpen className="h-4 w-4" />
             </span>
             <span className="font-display font-bold tracking-tight">Course<span className="text-brand-300">AI</span></span>
           </Link>
 
-          <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-[linear-gradient(145deg,rgba(18,23,42,0.91),rgba(8,11,25,0.84))] p-6 shadow-[0_30px_100px_rgba(0,0,0,0.4)] backdrop-blur-2xl sm:p-8">
+          <div className="relative overflow-hidden rounded-3xl border border-border bg-card/95 p-6 shadow-[0_30px_100px_rgba(0,0,0,0.15)] backdrop-blur-2xl sm:p-8">
             <div className="pointer-events-none absolute -right-20 -top-24 h-48 w-48 rounded-full bg-brand-500/10 blur-3xl" />
             <div className="relative mb-7">
               <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-brand-300">{eyebrow}</p>
-              <h1 className="font-display text-3xl font-bold tracking-tight text-white">{title}</h1>
-              <p className="mt-2.5 text-sm leading-6 text-slate-400">{description}</p>
+              <h1 className="font-display text-3xl font-bold tracking-tight text-foreground">{title}</h1>
+              <p className="mt-2.5 text-sm leading-6 text-muted-foreground">{description}</p>
             </div>
 
             <div className="relative">{children}</div>
 
-            <div className="relative mt-7 border-t border-white/5 pt-6 text-center text-sm text-slate-400">
+            <div className="relative mt-7 border-t border-border/ pt-6 text-center text-sm text-muted-foreground">
               {footer}
             </div>
           </div>
 
           <Link
             to="/"
-            className="mx-auto mt-6 flex w-fit items-center gap-1.5 text-xs font-medium text-slate-500 transition hover:text-slate-300"
+            className="mx-auto mt-6 flex w-fit items-center gap-1.5 text-xs font-medium text-muted-foreground transition hover:text-foreground/90"
           >
             Explore CourseAI
             <ArrowRight className="h-3.5 w-3.5" />

@@ -155,7 +155,7 @@ export function TopNavigation() {
                         "group flex items-center gap-3 rounded-md px-3 py-3 text-sm font-medium transition-all",
                         isActive
                           ? "bg-primary/10 text-primary"
-                          : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
+                          : "text-muted-foreground hover:bg-foreground/10 hover:text-foreground"
                       )}
                     >
                       <item.icon className={cn("h-5 w-5 shrink-0", isActive ? "text-primary" : "text-muted-foreground")} />
@@ -169,7 +169,7 @@ export function TopNavigation() {
                 <Link
                   to="/settings"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 rounded-md px-3 py-3 text-sm font-medium text-muted-foreground hover:bg-white/5 hover:text-foreground transition-all"
+                  className="flex items-center gap-3 rounded-md px-3 py-3 text-sm font-medium text-muted-foreground hover:bg-foreground/10 hover:text-foreground transition-all"
                 >
                   <Settings className="h-5 w-5 shrink-0" />
                   Settings

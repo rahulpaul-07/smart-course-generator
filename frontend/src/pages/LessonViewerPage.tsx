@@ -255,7 +255,7 @@ export default function LessonViewerPage() {
   if (!lesson) {
     return (
       <div className="px-4 lg:px-8 py-12 text-center">
-        <p className="text-slate-400 text-lg">Lesson not found in this course.</p>
+        <p className="text-muted-foreground text-lg">Lesson not found in this course.</p>
         <button onClick={() => navigate(`/course/${courseId}`)} className="btn-secondary mt-4">
           <ArrowLeft className="w-4 h-4" />
           Back to course

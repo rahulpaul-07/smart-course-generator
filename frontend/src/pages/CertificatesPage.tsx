@@ -30,12 +30,12 @@ export default function CertificatesPage() {
       />
 
       {certificates.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-24 text-center glass-card rounded-2xl border-dashed border-2 border-slate-700/50 mt-8">
+        <div className="flex flex-col items-center justify-center py-24 text-center glass-card rounded-2xl border-dashed border-2 border-border/50/50 mt-8">
           <div className="mb-4 rounded-full bg-amber-500/10 p-4 ring-1 ring-amber-500/20">
             <Award className="h-8 w-8 text-amber-500" />
           </div>
-          <h3 className="mb-2 text-xl font-bold text-white">No certificates yet</h3>
-          <p className="mb-6 max-w-sm text-sm text-slate-400">Complete a final test to earn one and prove your skills.</p>
+          <h3 className="mb-2 text-xl font-bold text-foreground">No certificates yet</h3>
+          <p className="mb-6 max-w-sm text-sm text-muted-foreground">Complete a final test to earn one and prove your skills.</p>
           <button onClick={() => navigate('/dashboard')} className="btn-primary">
             <ArrowRight className="mr-2 h-4 w-4" /> Go to Courses
           </button>
@@ -45,7 +45,7 @@ export default function CertificatesPage() {
           {certificates.map((cert: any) => (
             <div key={cert._id} className="glass-card p-6 rounded-2xl flex flex-col items-center text-center">
               <Award className="h-12 w-12 text-amber-500 mb-4" />
-              <h3 className="font-bold text-white mb-2">{cert.courseTitle || 'Course Certificate'}</h3>
+              <h3 className="font-bold text-foreground mb-2">{cert.courseTitle || 'Course Certificate'}</h3>
               <button 
                 onClick={() => navigate(`/certificate/${cert.certificateId}`)}
                 className="btn-secondary w-full mt-4"

@@ -131,17 +131,17 @@ select:focus-visible {
 }
 
 ::-webkit-scrollbar-track {
-  background: #070916;
+  background: hsl(var(--background));
 }
 
 ::-webkit-scrollbar-thumb {
-  border: 3px solid #070916;
+  border: 3px solid hsl(var(--background));
   border-radius: 999px;
-  background: #29304a;
+  background: hsl(var(--border));
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #465170;
+  background: hsl(var(--muted-foreground) / 0.5);
 }
 
 @layer components {
@@ -153,15 +153,15 @@ select:focus-visible {
   }
 
   .surface-card {
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid hsl(var(--border));
     border-radius: 0.75rem;
-    background: #000000;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    background: hsl(var(--card));
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   }
 
   .glass-card {
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid hsl(var(--border) / 0.6);
+    background: hsl(var(--card) / 0.6);
     backdrop-filter: blur(12px);
   }
 
@@ -169,7 +169,7 @@ select:focus-visible {
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
-    color: #a5b4fc;
+    color: hsl(var(--primary));
     font-size: 0.7rem;
     font-weight: 700;
     letter-spacing: 0.18em;
@@ -178,7 +178,7 @@ select:focus-visible {
 
   .gradient-text {
     color: transparent;
-    background: linear-gradient(180deg, #ffffff 0%, #a1a1aa 100%);
+    background: linear-gradient(180deg, hsl(var(--foreground)) 0%, hsl(var(--muted-foreground)) 100%);
     background-clip: text;
     -webkit-background-clip: text;
   }
@@ -207,25 +207,25 @@ select:focus-visible {
 
   .btn-primary {
     border: 1px solid transparent;
-    background: #ededed;
-    color: #000000;
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
   }
 
   .btn-primary:hover {
-    background: #ffffff;
-    box-shadow: 0 0 12px rgba(255, 255, 255, 0.3);
+    background: hsl(var(--primary) / 0.9);
+    box-shadow: 0 0 12px hsl(var(--primary) / 0.3);
   }
 
   .btn-secondary {
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: #000000;
-    color: #ededed;
+    border: 1px solid hsl(var(--border));
+    background: hsl(var(--card));
+    color: hsl(var(--foreground));
   }
 
   .btn-secondary:hover {
-    border-color: rgba(255, 255, 255, 0.2);
-    background: rgba(255, 255, 255, 0.05);
-    color: #ffffff;
+    border-color: hsl(var(--border));
+    background: hsl(var(--muted));
+    color: hsl(var(--foreground));
   }
 
   .btn-primary:disabled,
@@ -244,21 +244,21 @@ select:focus-visible {
     border: 1px solid transparent;
     border-radius: 0.375rem;
     background: transparent;
-    color: #a1a1aa;
+    color: hsl(var(--muted-foreground));
     transition: all 150ms ease;
   }
 
   .icon-button:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: #ededed;
+    background: hsl(var(--muted));
+    color: hsl(var(--foreground));
   }
 
   .input-field {
     width: 100%;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid hsl(var(--border));
     border-radius: 0.375rem;
-    background: #000000;
-    color: #ededed;
+    background: hsl(var(--input));
+    color: hsl(var(--foreground));
     padding: 0.5rem 0.75rem;
     font-size: 0.875rem;
     outline: none;
@@ -266,12 +266,12 @@ select:focus-visible {
   }
 
   .input-field::placeholder {
-    color: #71717a;
+    color: hsl(var(--muted-foreground));
   }
 
   .input-field:focus {
-    border-color: rgba(255, 255, 255, 0.3);
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.3);
+    border-color: hsl(var(--ring));
+    box-shadow: 0 0 0 1px hsl(var(--ring) / 0.4);
   }
 
   .animate-enter {
@@ -358,9 +358,9 @@ select:focus-visible {
 
 .auth-stage {
   background:
-    radial-gradient(circle at 15% 12%, rgba(79, 70, 229, 0.16), transparent 26rem),
-    radial-gradient(circle at 78% 85%, rgba(6, 182, 212, 0.1), transparent 28rem),
-    linear-gradient(145deg, #050713, #070a18 55%, #050713);
+    radial-gradient(circle at 15% 12%, hsl(var(--primary) / 0.12), transparent 26rem),
+    radial-gradient(circle at 78% 85%, rgba(6, 182, 212, 0.08), transparent 28rem),
+    hsl(var(--background));
 }
 
 .auth-circuit {

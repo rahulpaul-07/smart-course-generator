@@ -86,7 +86,7 @@ export default function RoadmapPage() {
         <h1 className="gradient-text mt-3 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
           Learning Roadmaps
         </h1>
-        <p className="mt-2 max-w-2xl text-sm text-slate-400">
+        <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
           Define your goal, timeline, and skill level. Our AI builds a complete week-by-week learning plan with milestones and projects.
         </p>
       </section>
@@ -98,42 +98,42 @@ export default function RoadmapPage() {
         </button>
       ) : (
         <form onSubmit={generateRoadmap} className="glass-card mb-8 rounded-2xl p-6 animate-enter-delay">
-          <h3 className="mb-4 font-display text-lg font-bold text-white">Configure Your Roadmap</h3>
+          <h3 className="mb-4 font-display text-lg font-bold text-foreground">Configure Your Roadmap</h3>
           <div className="grid gap-4 sm:grid-cols-3">
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-slate-400">Learning Goal</label>
+              <label className="mb-1.5 block text-xs font-medium text-muted-foreground">Learning Goal</label>
               <input
                 value={form.goal}
                 onChange={(e) => setForm({ ...form, goal: e.target.value })}
                 placeholder="e.g. Full-Stack Web Development"
-                className="w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-2.5 text-sm text-white outline-none transition focus:border-brand-400/50"
+                className="w-full rounded-xl border border-border bg-foreground/10 px-4 py-2.5 text-sm text-foreground outline-none transition focus:border-brand-400/50"
                 maxLength={300}
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-slate-400">Duration</label>
+              <label className="mb-1.5 block text-xs font-medium text-muted-foreground">Duration</label>
               <select
                 value={form.duration}
                 onChange={(e) => setForm({ ...form, duration: e.target.value })}
-                className="w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-2.5 text-sm text-white outline-none transition focus:border-brand-400/50"
+                className="w-full rounded-xl border border-border bg-foreground/10 px-4 py-2.5 text-sm text-foreground outline-none transition focus:border-brand-400/50"
               >
-                <option value="2 weeks" className="bg-slate-900 text-white">2 Weeks</option>
-                <option value="4 weeks" className="bg-slate-900 text-white">4 Weeks</option>
-                <option value="6 weeks" className="bg-slate-900 text-white">6 Weeks</option>
-                <option value="8 weeks" className="bg-slate-900 text-white">8 Weeks</option>
-                <option value="12 weeks" className="bg-slate-900 text-white">12 Weeks</option>
+                <option value="2 weeks" className="bg-background text-foreground">2 Weeks</option>
+                <option value="4 weeks" className="bg-background text-foreground">4 Weeks</option>
+                <option value="6 weeks" className="bg-background text-foreground">6 Weeks</option>
+                <option value="8 weeks" className="bg-background text-foreground">8 Weeks</option>
+                <option value="12 weeks" className="bg-background text-foreground">12 Weeks</option>
               </select>
             </div>
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-slate-400">Skill Level</label>
+              <label className="mb-1.5 block text-xs font-medium text-muted-foreground">Skill Level</label>
               <select
                 value={form.skillLevel}
                 onChange={(e) => setForm({ ...form, skillLevel: e.target.value })}
-                className="w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-2.5 text-sm text-white outline-none transition focus:border-brand-400/50"
+                className="w-full rounded-xl border border-border bg-foreground/10 px-4 py-2.5 text-sm text-foreground outline-none transition focus:border-brand-400/50"
               >
-                <option value="beginner" className="bg-slate-900 text-white">Beginner</option>
-                <option value="intermediate" className="bg-slate-900 text-white">Intermediate</option>
-                <option value="advanced" className="bg-slate-900 text-white">Advanced</option>
+                <option value="beginner" className="bg-background text-foreground">Beginner</option>
+                <option value="intermediate" className="bg-background text-foreground">Intermediate</option>
+                <option value="advanced" className="bg-background text-foreground">Advanced</option>
               </select>
             </div>
           </div>
@@ -149,7 +149,7 @@ export default function RoadmapPage() {
       <div className="grid gap-6 lg:grid-cols-[300px_1fr]">
         {/* Sidebar: Saved Roadmaps */}
         <aside className="animate-enter-delay">
-          <h3 className="mb-3 text-xs font-medium uppercase tracking-wider text-slate-500">Saved Roadmaps</h3>
+          <h3 className="mb-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">Saved Roadmaps</h3>
           <div className="space-y-2">
             {roadmaps.map((r) => (
               <div
@@ -159,12 +159,12 @@ export default function RoadmapPage() {
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-medium text-white">{r.goal}</p>
-                    <p className="mt-0.5 text-xs text-slate-500">{r.duration} · {r.skillLevel}</p>
+                    <p className="truncate text-sm font-medium text-foreground">{r.goal}</p>
+                    <p className="mt-0.5 text-xs text-muted-foreground">{r.duration} · {r.skillLevel}</p>
                   </div>
                   <button
                     onClick={(e) => { e.stopPropagation(); deleteRoadmap(r._id); }}
-                    className="shrink-0 text-slate-600 opacity-0 transition hover:text-rose-400 group-hover:opacity-100"
+                    className="shrink-0 text-muted-foreground opacity-0 transition hover:text-rose-400 group-hover:opacity-100"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
                   </button>
@@ -172,7 +172,7 @@ export default function RoadmapPage() {
               </div>
             ))}
             {roadmaps.length === 0 && (
-              <div className="py-6 text-center text-slate-500">
+              <div className="py-6 text-center text-muted-foreground">
                 <Map className="h-8 w-8 mx-auto mb-2 opacity-20" />
                 <p className="text-sm font-medium">No roadmaps yet</p>
                 <p className="text-xs mt-1">Create one to map your journey</p>
@@ -186,12 +186,12 @@ export default function RoadmapPage() {
           {activeRoadmap ? (
             <RoadmapDetail roadmap={activeRoadmap} onGenerateCourse={generateCourseFromTopic} />
           ) : (
-            <div className="glass-card flex flex-col items-center justify-center rounded-2xl py-24 text-center border-dashed border-2 border-slate-700/50">
-              <div className="h-16 w-16 bg-slate-800/50 rounded-full flex items-center justify-center mb-4">
-                <Map className="h-8 w-8 text-slate-400" />
+            <div className="glass-card flex flex-col items-center justify-center rounded-2xl py-24 text-center border-dashed border-2 border-border/50/50">
+              <div className="h-16 w-16 bg-card/50 rounded-full flex items-center justify-center mb-4">
+                <Map className="h-8 w-8 text-muted-foreground" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-2">Build Your Path</h3>
-              <p className="text-sm text-slate-400 max-w-sm mb-6">Select a saved roadmap from the sidebar, or generate a new one to guide your learning.</p>
+              <h3 className="text-xl font-bold text-foreground mb-2">Build Your Path</h3>
+              <p className="text-sm text-muted-foreground max-w-sm mb-6">Select a saved roadmap from the sidebar, or generate a new one to guide your learning.</p>
               {!showForm && (
                 <button onClick={() => setShowForm(true)} className="btn-primary">
                   <Plus className="h-4 w-4 mr-2" /> Create Roadmap
@@ -219,11 +219,11 @@ function RoadmapDetail({ roadmap, onGenerateCourse }) {
   return (
     <div className="animate-enter">
       <div className="mb-6">
-        <h2 className="font-display text-2xl font-bold text-white">{roadmap.goal}</h2>
-        <p className="mt-1 text-sm text-slate-400">
+        <h2 className="font-display text-2xl font-bold text-foreground">{roadmap.goal}</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
           {roadmap.duration} · {roadmap.skillLevel}
         </p>
-        {roadmap.summary && <p className="mt-3 text-sm leading-relaxed text-slate-300">{roadmap.summary}</p>}
+        {roadmap.summary && <p className="mt-3 text-sm leading-relaxed text-foreground/90">{roadmap.summary}</p>}
       </div>
 
       <div className="relative space-y-4">
@@ -235,7 +235,7 @@ function RoadmapDetail({ roadmap, onGenerateCourse }) {
           return (
             <div key={`${roadmap._id}-${index}`} className="relative pl-12">
               {/* Timeline dot */}
-              <div className="absolute left-2.5 top-4 h-4 w-4 rounded-full border-2 border-brand-400 bg-[#0a0d1a] shadow-lg shadow-brand-500/20" />
+              <div className="absolute left-2.5 top-4 h-4 w-4 rounded-full border-2 border-primary bg-background shadow-lg shadow-primary/20" />
 
               <div className="glass-card overflow-hidden rounded-2xl transition hover:border-brand-400/20">
                 <button
@@ -244,9 +244,9 @@ function RoadmapDetail({ roadmap, onGenerateCourse }) {
                 >
                   <div>
                     <p className="text-xs font-medium text-brand-300">Week {week.weekNumber}</p>
-                    <h3 className="mt-0.5 font-display text-base font-bold text-white">{week.title}</h3>
+                    <h3 className="mt-0.5 font-display text-base font-bold text-foreground">{week.title}</h3>
                   </div>
-                  {isExpanded ? <ChevronDown className="h-4 w-4 text-slate-500" /> : <ChevronRight className="h-4 w-4 text-slate-500" />}
+                  {isExpanded ? <ChevronDown className="h-4 w-4 text-muted-foreground" /> : <ChevronRight className="h-4 w-4 text-muted-foreground" />}
                 </button>
 
                 <AnimatePresence initial={false}>
@@ -259,17 +259,17 @@ function RoadmapDetail({ roadmap, onGenerateCourse }) {
                       transition={{ duration: 0.3, ease: 'easeInOut' }}
                       className="overflow-hidden"
                     >
-                      <div className="border-t border-white/[0.06] p-4 pt-3 space-y-4">
+                      <div className="border-t border-border p-4 pt-3 space-y-4">
                         {/* Topics */}
                         {week.topics?.length > 0 && (
                           <div>
-                            <p className="mb-2 text-xs font-medium uppercase tracking-wider text-slate-500">Topics</p>
+                            <p className="mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">Topics</p>
                             <div className="flex flex-wrap gap-2">
                               {week.topics.map((topic, i) => (
                                 <button
                                   key={i}
                                   onClick={() => onGenerateCourse(topic)}
-                                  className="group/topic flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-xs text-slate-300 transition hover:border-brand-400/30 hover:bg-brand-500/10 hover:text-white"
+                                  className="group/topic flex items-center gap-1.5 rounded-full border border-border bg-foreground/10 px-3 py-1.5 text-xs text-foreground/90 transition hover:border-brand-400/30 hover:bg-brand-500/10 hover:text-foreground"
                                   title={`Generate a course on "${topic}"`}
                                 >
                                   <BookOpen className="h-3 w-3 opacity-50 transition group-hover/topic:opacity-100" />
@@ -283,10 +283,10 @@ function RoadmapDetail({ roadmap, onGenerateCourse }) {
                         {/* Milestones */}
                         {week.milestones?.length > 0 && (
                           <div>
-                            <p className="mb-2 text-xs font-medium uppercase tracking-wider text-slate-500">Milestones</p>
+                            <p className="mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">Milestones</p>
                             <ul className="space-y-1.5">
                               {week.milestones.map((m, i) => (
-                                <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
+                                <li key={i} className="flex items-start gap-2 text-sm text-foreground/90">
                                   <Flag className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-400" />
                                   {m}
                                 </li>
@@ -301,9 +301,9 @@ function RoadmapDetail({ roadmap, onGenerateCourse }) {
                             <p className="flex items-center gap-1.5 text-xs font-medium text-amber-300">
                               <Rocket className="h-3.5 w-3.5" /> Weekly Project
                             </p>
-                            <p className="mt-1 text-sm font-medium text-white">{week.project.title}</p>
+                            <p className="mt-1 text-sm font-medium text-foreground">{week.project.title}</p>
                             {week.project.description && (
-                              <p className="mt-1 text-xs leading-relaxed text-slate-400">{week.project.description}</p>
+                              <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{week.project.description}</p>
                             )}
                             <button
                               onClick={() => onGenerateCourse(week.project.title)}

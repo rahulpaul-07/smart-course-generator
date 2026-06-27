@@ -90,7 +90,7 @@ export default function PromptForm({ onSubmit, isLoading = false }: { onSubmit: 
               )}
             </span>
             {/* Hover highlight effect */}
-            {!isLoading && <div className="absolute inset-0 bg-white/20 translate-y-full transition-transform group-hover:translate-y-0" />}
+            {!isLoading && <div className="absolute inset-0 bg-foreground/10 translate-y-full transition-transform group-hover:translate-y-0" />}
           </Button>
         </div>
       </form>

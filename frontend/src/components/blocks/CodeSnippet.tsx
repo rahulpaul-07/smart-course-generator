@@ -46,7 +46,7 @@ export default function CodeSnippet({ block }: { block: any }) {
       viewport={{ once: true }}
       className="my-8 overflow-hidden rounded-xl border border-border/50 bg-[#0d1117] shadow-xl"
     >
-      <div className="flex items-center justify-between border-b border-white/10 bg-[#161b22] px-4 py-2">
+      <div className="flex items-center justify-between border-b border-border/ bg-[#161b22] px-4 py-2">
         <div className="flex items-center gap-4">
           <div className="flex gap-1.5 hidden sm:flex">
             <div className="h-3 w-3 rounded-full bg-rose-500/80" />
@@ -63,7 +63,7 @@ export default function CodeSnippet({ block }: { block: any }) {
                   "px-3 py-1 text-xs font-medium uppercase tracking-wider rounded-md transition-colors",
                   selectedLang === lang
                     ? "bg-brand-500/20 text-brand-300 border border-brand-500/30"
-                    : "text-muted-foreground hover:bg-white/5 border border-transparent"
+                    : "text-muted-foreground hover:bg-foreground/10 border border-transparent"
                 )}
               >
                 {lang === 'cpp' ? 'C++' : lang}
@@ -78,7 +78,7 @@ export default function CodeSnippet({ block }: { block: any }) {
             "flex items-center gap-1.5 px-2 py-1.5 rounded-md transition-colors text-xs font-medium",
             copied 
               ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30" 
-              : "hover:bg-white/10 text-muted-foreground hover:text-foreground border border-transparent"
+              : "hover:bg-foreground/10 text-muted-foreground hover:text-foreground border border-transparent"
           )}
           title="Copy code"
         >
@@ -109,7 +109,7 @@ export default function CodeSnippet({ block }: { block: any }) {
               <div className="inline-block min-w-full">
                 {tokens.map((line, i) => (
                   <div key={i} {...getLineProps({ line, key: i })} className="table-row">
-                    <span className="table-cell select-none pr-5 text-right text-slate-600 font-mono text-[13px] w-[1%]">
+                    <span className="table-cell select-none pr-5 text-right text-muted-foreground font-mono text-[13px] w-[1%]">
                       {i + 1}
                     </span>
                     <span className="table-cell font-mono">

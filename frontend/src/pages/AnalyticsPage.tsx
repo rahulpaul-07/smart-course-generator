@@ -19,7 +19,7 @@ export default function AnalyticsPage() {
   }, []);
 
   if (loading) return <div className="page-shell py-20"><LoadingSpinner text="Loading analytics..." /></div>;
-  if (!data) return <div className="page-shell py-20 text-center text-slate-400">Failed to load analytics.</div>;
+  if (!data) return <div className="page-shell py-20 text-center text-muted-foreground">Failed to load analytics.</div>;
 
   // Prepare chart data
   const chartData = data.courseStats.map(c => ({
@@ -37,7 +37,7 @@ export default function AnalyticsPage() {
             <h1 className="gradient-text mt-3 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
               Your Learning Journey
             </h1>
-            <p className="mt-2 text-sm text-slate-400">Track your progress, identify strengths, and improve weak areas.</p>
+            <p className="mt-2 text-sm text-muted-foreground">Track your progress, identify strengths, and improve weak areas.</p>
           </div>
           <button
             onClick={() => {
@@ -55,7 +55,7 @@ export default function AnalyticsPage() {
               a.download = 'learning-analytics.csv';
               a.click();
             }}
-            className="flex items-center gap-2 rounded-xl bg-white/5 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-white/10 border border-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+            className="flex items-center gap-2 rounded-xl bg-foreground/10 px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-foreground/10 border border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
             Export CSV
           </button>
@@ -75,7 +75,7 @@ export default function AnalyticsPage() {
       {/* Charts Section */}
       {chartData.length > 0 && (
         <section className="mb-10 animate-enter-delay">
-          <h2 className="mb-4 flex items-center gap-2 font-display text-xl font-bold text-white">
+          <h2 className="mb-4 flex items-center gap-2 font-display text-xl font-bold text-foreground">
             <BarChart3 className="h-5 w-5 text-indigo-400" /> Completion by Course
           </h2>
           <div className="glass-card rounded-2xl p-6 h-[300px]">
@@ -104,7 +104,7 @@ export default function AnalyticsPage() {
 
       {/* Course Progress */}
       <section className="mb-10 animate-enter-delay">
-        <h2 className="mb-4 flex items-center gap-2 font-display text-xl font-bold text-white">
+        <h2 className="mb-4 flex items-center gap-2 font-display text-xl font-bold text-foreground">
           <Target className="h-5 w-5 text-brand-300" /> Course Progress
         </h2>
         <div className="space-y-3">
@@ -112,15 +112,15 @@ export default function AnalyticsPage() {
             <div key={course._id} className="glass-card rounded-2xl p-4">
               <div className="flex items-center justify-between gap-4">
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium text-white">{course.title}</p>
-                  <p className="mt-1 text-xs text-slate-500">
+                  <p className="truncate text-sm font-medium text-foreground">{course.title}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">
                     {course.completedLessons}/{course.totalLessons} lessons
                     {course.hasCertificate && <span className="ml-2 text-amber-400">🏆 Certified</span>}
                   </p>
                 </div>
                 <span className="text-sm font-bold text-brand-300">{course.completionPct}%</span>
               </div>
-              <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/[0.06]">
+              <div className="mt-3 h-2 overflow-hidden rounded-full bg-foreground/10">
                 <div
                   className="h-full rounded-full bg-gradient-to-r from-brand-500 to-cyan-400 transition-all duration-700"
                   style={{ width: `${course.completionPct}%` }}
@@ -129,12 +129,12 @@ export default function AnalyticsPage() {
             </div>
           ))}
           {data.courseStats.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-16 text-center glass-card rounded-2xl border-dashed border-2 border-slate-700/50">
+            <div className="flex flex-col items-center justify-center py-16 text-center glass-card rounded-2xl border-dashed border-2 border-border/50/50">
               <div className="mb-4 rounded-full bg-brand-500/10 p-4 ring-1 ring-brand-500/20">
                 <BookOpen className="h-8 w-8 text-brand-400" />
               </div>
-              <h3 className="mb-2 text-xl font-bold text-white">No Learning Data Yet</h3>
-              <p className="mb-6 max-w-sm text-sm text-slate-400">Generate your first course to start tracking your XP, streaks, and completion rates.</p>
+              <h3 className="mb-2 text-xl font-bold text-foreground">No Learning Data Yet</h3>
+              <p className="mb-6 max-w-sm text-sm text-muted-foreground">Generate your first course to start tracking your XP, streaks, and completion rates.</p>
               <button onClick={() => navigate('/dashboard')} className="btn-primary">
                 <PlusCircle className="mr-2 h-4 w-4" /> Start Learning
               </button>
@@ -145,7 +145,7 @@ export default function AnalyticsPage() {
 
       {/* Activity Calendar */}
       <section className="mb-10 animate-enter-delay">
-        <h2 className="mb-4 flex items-center gap-2 font-display text-xl font-bold text-white">
+        <h2 className="mb-4 flex items-center gap-2 font-display text-xl font-bold text-foreground">
           <Flame className="h-5 w-5 text-orange-400" /> Activity Calendar
         </h2>
         <div className="glass-card rounded-2xl p-5">
@@ -156,7 +156,7 @@ export default function AnalyticsPage() {
       {/* Strong & Weak Topics */}
       <div className="grid gap-6 lg:grid-cols-2">
         <section className="animate-enter-delay">
-          <h2 className="mb-4 flex items-center gap-2 font-display text-xl font-bold text-white">
+          <h2 className="mb-4 flex items-center gap-2 font-display text-xl font-bold text-foreground">
             <TrendingUp className="h-5 w-5 text-emerald-400" /> Strong Topics
           </h2>
           <div className="space-y-2">
@@ -166,21 +166,21 @@ export default function AnalyticsPage() {
                   {t.score}/5
                 </span>
                 <div className="min-w-0">
-                  <p className="truncate text-sm text-white">{t.lesson}</p>
-                  <p className="truncate text-xs text-slate-500">{t.course}</p>
+                  <p className="truncate text-sm text-foreground">{t.lesson}</p>
+                  <p className="truncate text-xs text-muted-foreground">{t.course}</p>
                 </div>
               </div>
             )) : (
               <div className="flex flex-col items-center justify-center py-10 text-center glass-card rounded-2xl">
-                <Brain className="mb-3 h-8 w-8 text-slate-500 opacity-50" />
-                <p className="text-sm text-slate-400">Complete quizzes to discover your strengths.</p>
+                <Brain className="mb-3 h-8 w-8 text-muted-foreground opacity-50" />
+                <p className="text-sm text-muted-foreground">Complete quizzes to discover your strengths.</p>
               </div>
             )}
           </div>
         </section>
 
         <section className="animate-enter-delay">
-          <h2 className="mb-4 flex items-center gap-2 font-display text-xl font-bold text-white">
+          <h2 className="mb-4 flex items-center gap-2 font-display text-xl font-bold text-foreground">
             <TrendingDown className="h-5 w-5 text-rose-400" /> Needs Improvement
           </h2>
           <div className="space-y-2">
@@ -190,14 +190,14 @@ export default function AnalyticsPage() {
                   {t.score}/5
                 </span>
                 <div className="min-w-0">
-                  <p className="truncate text-sm text-white">{t.lesson}</p>
-                  <p className="truncate text-xs text-slate-500">{t.course}</p>
+                  <p className="truncate text-sm text-foreground">{t.lesson}</p>
+                  <p className="truncate text-xs text-muted-foreground">{t.course}</p>
                 </div>
               </div>
             )) : (
               <div className="flex flex-col items-center justify-center py-10 text-center glass-card rounded-2xl">
-                <Trophy className="mb-3 h-8 w-8 text-slate-500 opacity-50" />
-                <p className="text-sm text-slate-400">No weak areas detected. Keep going!</p>
+                <Trophy className="mb-3 h-8 w-8 text-muted-foreground opacity-50" />
+                <p className="text-sm text-muted-foreground">No weak areas detected. Keep going!</p>
               </div>
             )}
           </div>
@@ -211,10 +211,10 @@ function StatCard({ icon: Icon, label, value, color }) {
   return (
     <div className="glass-card group rounded-2xl p-4 transition duration-300 hover:-translate-y-1 hover:border-brand-400/25">
       <span className={`grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br ${color} shadow-lg`}>
-        <Icon className="h-5 w-5 text-white" />
+        <Icon className="h-5 w-5 text-foreground" />
       </span>
-      <p className="mt-4 font-display text-2xl font-bold text-white">{value}</p>
-      <p className="mt-1 text-xs text-slate-500">{label}</p>
+      <p className="mt-4 font-display text-2xl font-bold text-foreground">{value}</p>
+      <p className="mt-1 text-xs text-muted-foreground">{label}</p>
     </div>
   );
 }
@@ -253,18 +253,18 @@ function ActivityGrid({ activityHistory }) {
     <div className="flex gap-3 overflow-x-auto pb-2">
       <div className="flex shrink-0 flex-col gap-[3px] pt-5">
         {dayLabels.map((label, i) => (
-          <div key={i} className="flex h-[14px] items-center text-[10px] text-slate-600">{i % 2 === 1 ? label : ''}</div>
+          <div key={i} className="flex h-[14px] items-center text-[10px] text-muted-foreground">{i % 2 === 1 ? label : ''}</div>
         ))}
       </div>
       {weeks.map((week, wi) => (
         <div key={wi} className="flex flex-col gap-[3px]">
           {wi === 0 && (
-            <div className="mb-0.5 text-center text-[9px] text-slate-600">
+            <div className="mb-0.5 text-center text-[9px] text-muted-foreground">
               {new Date(week[0].date).toLocaleDateString('en', { month: 'short' })}
             </div>
           )}
           {wi > 0 && new Date(week[0].date).getDate() <= 7 && (
-            <div className="mb-0.5 text-center text-[9px] text-slate-600">
+            <div className="mb-0.5 text-center text-[9px] text-muted-foreground">
               {new Date(week[0].date).toLocaleDateString('en', { month: 'short' })}
             </div>
           )}
@@ -280,7 +280,7 @@ function ActivityGrid({ activityHistory }) {
               className={`h-[14px] w-[14px] rounded-[3px] transition-colors ${
                 day.active
                   ? 'bg-emerald-500 shadow-sm shadow-emerald-500/30'
-                  : 'bg-white/[0.04] hover:bg-white/[0.08]'
+                  : 'bg-foreground/10 hover:bg-foreground/10'
               }`}
               title={`${day.date}${day.active ? ' — Active' : ''}`}
             />

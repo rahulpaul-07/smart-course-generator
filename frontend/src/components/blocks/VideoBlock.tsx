@@ -30,7 +30,7 @@ export default function VideoBlock({ block }) {
         href={url.href}
         target="_blank"
         rel="noreferrer"
-        className="surface-card block p-5 text-brand-300 transition hover:border-brand-400/30 hover:text-white"
+        className="surface-card block p-5 text-brand-300 transition hover:border-brand-400/30 hover:text-foreground"
       >
         {title}
       </a>
@@ -38,7 +38,7 @@ export default function VideoBlock({ block }) {
   }
 
   return (
-    <div className="my-7 overflow-hidden rounded-2xl border border-white/[0.09] bg-[#070914] shadow-2xl shadow-black/20">
+    <div className="my-7 overflow-hidden rounded-2xl border border-border bg-card shadow-2xl shadow-black/10">
       <iframe
         className="aspect-video w-full"
         src={isSearch ? `https://www.youtube.com/embed?listType=search&list=${searchQuery}` : `https://www.youtube.com/embed/${id}`}
@@ -46,7 +46,7 @@ export default function VideoBlock({ block }) {
         loading="lazy"
         allowFullScreen
       />
-      <p className="border-t border-white/[0.07] px-4 py-3 text-sm font-medium text-slate-300">{title}</p>
+      <p className="border-t border-border px-4 py-3 text-sm font-medium text-foreground/90">{title}</p>
     </div>
   );
 }

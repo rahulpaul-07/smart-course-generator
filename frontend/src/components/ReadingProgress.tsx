@@ -40,7 +40,7 @@ export default function ReadingProgress({ containerRef }) {
   if (!visible) return null;
 
   return (
-    <div className="fixed left-0 right-0 top-[4.5rem] z-40 h-0.5 bg-white/[0.04]">
+    <div className="fixed left-0 right-0 top-[4.5rem] z-40 h-0.5 bg-foreground/10">
       <div
         className="h-full origin-left bg-gradient-to-r from-violet-500 via-brand-400 to-cyan-400 shadow-[0_0_12px_rgba(99,102,241,0.7)]"
         style={{ transform: `scaleX(${progress})` }}

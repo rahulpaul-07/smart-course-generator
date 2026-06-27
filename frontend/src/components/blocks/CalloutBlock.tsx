@@ -10,7 +10,7 @@ export default function CalloutBlock({ block }) {
         {block.title && (
           <p className="mb-1 font-display text-sm font-bold text-indigo-200">{block.title}</p>
         )}
-        <p className="text-sm leading-7 text-slate-300">{block.text}</p>
+        <p className="text-sm leading-7 text-foreground/90">{block.text}</p>
       </div>
     </div>
   );

@@ -129,7 +129,7 @@ export default function LessonAudioPlayer({ lesson }) {
 
   if (!supported) {
     return (
-      <section className="surface-card mb-8 p-5 text-sm text-slate-400">
+      <section className="surface-card mb-8 p-5 text-sm text-muted-foreground">
         Audio lessons are not supported by this browser. Open the lesson in a browser with speech synthesis support.
       </section>
     );
@@ -147,10 +147,10 @@ export default function LessonAudioPlayer({ lesson }) {
             <AudioLines className={`h-5 w-5 ${status === 'playing' ? 'animate-pulse' : ''}`} />
           </span>
           <div>
-            <h2 className="font-display text-base font-bold text-white">
+            <h2 className="font-display text-base font-bold text-foreground">
               {status === 'playing' ? `Playing in ${language}` : `Listen in ${language}`}
             </h2>
-            <p className="mt-0.5 text-xs text-slate-500">
+            <p className="mt-0.5 text-xs text-muted-foreground">
               {progress}% complete
             </p>
           </div>
@@ -181,7 +181,7 @@ export default function LessonAudioPlayer({ lesson }) {
         </div>
       </div>
 
-      <div className="relative mt-4 h-1.5 overflow-hidden rounded-full bg-white/[0.06]">
+      <div className="relative mt-4 h-1.5 overflow-hidden rounded-full bg-foreground/10">
         <div
           className="h-full rounded-full bg-gradient-to-r from-violet-500 via-brand-400 to-cyan-400 transition-all duration-300"
           style={{ width: `${progress}%` }}

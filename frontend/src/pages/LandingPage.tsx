@@ -116,7 +116,7 @@ export default function LandingPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.1 }}
-                  className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-white via-white to-white/60 drop-shadow-sm"
+                  className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-foreground drop-shadow-sm"
                 >
                   Build Complete <br className="hidden lg:block" />
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-cyan-400">

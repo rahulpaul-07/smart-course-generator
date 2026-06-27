@@ -261,7 +261,7 @@ export default function CertificatePage() {
                   
                   {/* Left: QR Code & Issue Date */}
                   <div className="flex flex-col items-start gap-4">
-                    <div className="w-12 h-12 md:w-20 md:h-20 bg-white p-1 md:p-1.5 border border-[#E0E0E0] shadow-sm flex items-center justify-center">
+                    <div className="w-12 h-12 md:w-20 md:h-20 bg-card p-1 md:p-1.5 border border-[#E0E0E0] shadow-sm flex items-center justify-center">
                       <QrCode className="w-full h-full text-[#333]" />
                     </div>
                     <div className="text-left">

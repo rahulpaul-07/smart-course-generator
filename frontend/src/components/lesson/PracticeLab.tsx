@@ -65,19 +65,19 @@ export default function PracticeLab({ lessonId, courseId, embedded = false }: { 
         <CardHeader className="bg-cyan-500/5 border-b border-border/50 pb-6">
           <div className="flex items-start justify-between gap-4">
             <div className="w-full">
-              <div className="h-6 w-32 animate-pulse rounded bg-slate-800 mb-3" />
-              <div className="h-8 w-2/3 animate-pulse rounded bg-slate-800" />
+              <div className="h-6 w-32 animate-pulse rounded bg-card mb-3" />
+              <div className="h-8 w-2/3 animate-pulse rounded bg-card" />
             </div>
           </div>
-          <div className="mt-4 h-4 w-full animate-pulse rounded bg-slate-800" />
-          <div className="mt-2 h-4 w-5/6 animate-pulse rounded bg-slate-800" />
+          <div className="mt-4 h-4 w-full animate-pulse rounded bg-card" />
+          <div className="mt-2 h-4 w-5/6 animate-pulse rounded bg-card" />
         </CardHeader>
         <CardContent className="pt-6 space-y-8">
           <div>
-            <div className="h-6 w-48 animate-pulse rounded bg-slate-800 mb-4" />
+            <div className="h-6 w-48 animate-pulse rounded bg-card mb-4" />
             <div className="space-y-3">
-              <div className="h-12 w-full animate-pulse rounded-xl bg-slate-800" />
-              <div className="h-12 w-full animate-pulse rounded-xl bg-slate-800" />
+              <div className="h-12 w-full animate-pulse rounded-xl bg-card" />
+              <div className="h-12 w-full animate-pulse rounded-xl bg-card" />
             </div>
           </div>
         </CardContent>
@@ -97,7 +97,7 @@ export default function PracticeLab({ lessonId, courseId, embedded = false }: { 
             Generate a realistic mini-project or hands-on challenge to apply what you've learned.
           </p>
           {error && <p className="mb-4 text-sm font-medium text-destructive">{error}</p>}
-          <Button aria-label="Create Practice Lab" disabled={loading} onClick={() => generateLab()} size="lg" className="w-full sm:w-auto bg-cyan-600 hover:bg-cyan-700 text-white">
+          <Button aria-label="Create Practice Lab" disabled={loading} onClick={() => generateLab()} size="lg" className="w-full sm:w-auto bg-cyan-600 hover:bg-cyan-700 text-foreground">
             {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <FlaskConical className="mr-2 h-4 w-4" />}
             {loading ? 'Designing Lab...' : 'Create Practice Lab'}
           </Button>
