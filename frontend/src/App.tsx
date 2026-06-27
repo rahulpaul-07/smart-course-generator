@@ -40,6 +40,7 @@ const PublicProfilePage = withSuspense(lazy(() => import('./pages/PublicProfileP
 const CommunityTemplatesPage = withSuspense(lazy(() => import('./pages/CommunityTemplatesPage')));
 const LeaderboardPage = withSuspense(lazy(() => import('./pages/LeaderboardPage')));
 const SettingsPage = withSuspense(lazy(() => import('./pages/SettingsPage')));
+const CoursesPage = withSuspense(lazy(() => import('./pages/CoursesPage')));
 
 function GuestRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, loading } = useAuth();
@@ -84,6 +85,7 @@ export default function App() {
         {/* Protected Routes */}
         <Route path="/onboarding" element={<ProtectedRoute><OnboardingPage /></ProtectedRoute>} />
         <Route path="/dashboard" element={<DashboardPage><HomePage /></DashboardPage>} />
+        <Route path="/courses" element={<DashboardPage><CoursesPage /></DashboardPage>} />
         <Route path="/course/:id" element={<DashboardPage><CourseOverviewPage /></DashboardPage>} />
         <Route path="/course/:id/certificate" element={<DashboardPage><CertificatePage /></DashboardPage>} />
         <Route path="/certificate/:id" element={<CertificatePage />} />

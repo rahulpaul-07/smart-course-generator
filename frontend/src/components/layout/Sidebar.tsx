@@ -13,7 +13,7 @@ interface NavItem {
 
 export const navItems: NavItem[] = [
   { name: "Dashboard", href: "/dashboard", icon: Home },
-  { name: "My Courses", href: "/dashboard", icon: BookOpen },
+  { name: "My Courses", href: "/courses", icon: BookOpen },
   { name: "Explore", href: "/community", icon: Compass },
   { name: "Certificates", href: "/certificates", icon: Award },
   { name: "Roadmaps", href: "/roadmaps", icon: Layers },

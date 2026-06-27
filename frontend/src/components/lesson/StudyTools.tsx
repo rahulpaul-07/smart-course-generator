@@ -1,18 +1,7 @@
-import {
-  Bookmark,
-  Brain,
-  Check,
-  FlaskConical,
-  Layers3,
-  Loader2,
-  MessageCircle,
-  NotebookPen,
-  Play,
-  Printer,
-  Save,
-} from 'lucide-react';
 import { useState } from 'react';
+import { Bookmark, Check, FlaskConical, Layers3, Loader2, MessageCircle, NotebookPen, Play, Save, ChevronDown, ChevronUp } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { motion, AnimatePresence } from 'framer-motion';
 import api from '../../utils/api';
 import FlashcardDeck from './FlashcardDeck';
 import PracticeLab from './PracticeLab';
@@ -26,32 +15,35 @@ function ToolCard({
   onClick,
   status,
   title,
-}) {
+}: any) {
   return (
     <button
       type="button"
       disabled={disabled}
       onClick={onClick}
       aria-pressed={active}
-      className={`group relative flex min-h-40 flex-col overflow-hidden rounded-2xl border p-4 text-left transition-all duration-300 ${
+      className={`group relative flex w-full flex-col overflow-hidden rounded-xl border p-4 text-left transition-all duration-200 ${
         active
-          ? 'border-brand-400/45 bg-gradient-to-br from-brand-500/20 to-cyan-400/[0.05] shadow-lg shadow-brand-950/20'
-          : 'border-white/[0.075] bg-white/[0.025] hover:-translate-y-1 hover:border-brand-400/25 hover:bg-brand-500/[0.07]'
+          ? 'border-primary bg-primary/10 shadow-md shadow-primary/10'
+          : 'border-border/50 bg-card/40 hover:bg-card hover:border-border hover:shadow-sm'
       } disabled:cursor-not-allowed disabled:opacity-60`}
     >
-      <span className={`flex h-11 w-11 items-center justify-center rounded-xl border transition ${
-        active
-          ? 'border-brand-300/30 bg-brand-500 text-white shadow-lg shadow-brand-500/25'
-          : 'border-white/[0.08] bg-white/[0.04] text-slate-300 group-hover:border-brand-400/20 group-hover:bg-brand-500/10 group-hover:text-brand-200'
-      }`}
-      >
-        <Icon className="h-5 w-5" />
-      </span>
-      <span className="mt-4 flex w-full items-center justify-between gap-2">
-        <span className="font-medium text-white">{title}</span>
-        {status && <span className="text-xs text-brand-300">{status}</span>}
-      </span>
-      <span className="mt-1 text-xs leading-relaxed text-slate-500">{description}</span>
+      <div className="flex items-start gap-4">
+        <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border transition-colors ${
+          active
+            ? 'border-primary bg-primary text-primary-foreground'
+            : 'border-border bg-muted text-muted-foreground group-hover:text-foreground group-hover:border-border'
+        }`}>
+          <Icon className="h-5 w-5" />
+        </span>
+        <div className="flex-1 min-w-0 pt-0.5">
+          <div className="flex items-center justify-between gap-2">
+            <span className={`font-semibold text-sm ${active ? 'text-primary' : 'text-foreground'}`}>{title}</span>
+            {status && <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground bg-muted px-2 py-0.5 rounded-full">{status}</span>}
+          </div>
+          <span className="mt-1 block text-xs leading-relaxed text-muted-foreground line-clamp-2">{description}</span>
+        </div>
+      </div>
     </button>
   );
 }
@@ -63,15 +55,14 @@ export default function StudyTools({
   onAddVideos,
   onLessonUpdate,
   onToggleChat,
-}) {
+}: any) {
   const [activeTool, setActiveTool] = useState('');
   const [notes, setNotes] = useState(lesson.notes || '');
   const [saving, setSaving] = useState(false);
   const videoCount = lesson.videos?.length || 0;
 
-  async function updateProgress(changes, successMessage) {
+  async function updateProgress(changes: any, successMessage?: string) {
     setSaving(true);
-
     try {
       const { data } = await api.patch(`/courses/lessons/${lesson._id}/progress`, changes);
       onLessonUpdate(data);
@@ -83,120 +74,125 @@ export default function StudyTools({
     }
   }
 
-  function toggleTool(tool) {
+  function toggleTool(tool: string) {
     setActiveTool((current) => current === tool ? '' : tool);
   }
 
   return (
-    <section className="surface-card mt-14 overflow-hidden">
-      <div className="relative overflow-hidden border-b border-white/[0.07] bg-gradient-to-r from-brand-500/10 via-transparent to-cyan-400/[0.04] px-5 py-7 sm:px-7">
-        <div className="pointer-events-none absolute -right-16 -top-20 h-48 w-48 rounded-full bg-brand-500/15 blur-3xl" />
-        <p className="eyebrow">Keep learning</p>
-        <h2 className="relative mt-2 font-display text-2xl font-bold text-white">Your lesson toolkit</h2>
-        <p className="mt-2 max-w-2xl text-sm text-slate-400">
-          Review the ideas, test your understanding, or get help without leaving this lesson.
+    <aside className="h-full flex flex-col py-6 px-4">
+      <div className="mb-6">
+        <p className="text-[11px] font-bold uppercase tracking-wider text-primary mb-1">Study Toolkit</p>
+        <h2 className="font-serif text-2xl font-bold text-foreground">Lesson Tools</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Interactive tools to master this topic.
         </p>
       </div>
 
-      <div className="p-5 sm:p-7">
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          <ToolCard
-            icon={Play}
-            title="Add videos"
-            description="Find helpful videos and add them to the lesson."
-            status={addingVideos ? 'Finding...' : videoCount ? `${videoCount} added` : ''}
-            disabled={addingVideos}
-            onClick={onAddVideos}
-          />
-          <ToolCard
-            icon={Layers3}
-            title="Flashcards"
-            description="Turn key concepts into a quick review deck."
-            active={activeTool === 'flashcards'}
-            onClick={() => toggleTool('flashcards')}
-          />
+      <div className="flex flex-col gap-3 flex-1 overflow-y-auto pr-1 pb-20 lg:pb-0 scrollbar-none">
+        <ToolCard
+          icon={MessageCircle}
+          title="AI Tutor"
+          description="Discuss this lesson, ask questions, or request simpler explanations."
+          status={chatOpen ? 'Open' : ''}
+          active={chatOpen}
+          onClick={onToggleChat}
+        />
+        
+        <ToolCard
+          icon={Layers3}
+          title="Flashcards"
+          description="Test your memory with an AI-generated deck."
+          active={activeTool === 'flashcards'}
+          onClick={() => toggleTool('flashcards')}
+        />
+        <AnimatePresence>
+          {activeTool === 'flashcards' && (
+            <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+              <div className="rounded-xl border border-border bg-card/50 p-4 mb-2 shadow-inner">
+                <FlashcardDeck lessonId={lesson._id} courseId={lesson.course} embedded />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-          <ToolCard
-            icon={MessageCircle}
-            title="Ask AI"
-            description="Ask follow-up questions about this lesson."
-            status={chatOpen ? 'Open' : ''}
-            active={chatOpen}
-            onClick={onToggleChat}
-          />
-          <ToolCard
-            icon={NotebookPen}
-            title="My notes"
-            description="Capture examples, questions, and takeaways."
-            status={lesson.notes ? 'Saved' : ''}
-            active={activeTool === 'notes'}
-            onClick={() => toggleTool('notes')}
-          />
-          <ToolCard
-            icon={FlaskConical}
-            title="Practice lab"
-            description="Apply the lesson in a realistic mini project."
-            active={activeTool === 'lab'}
-            onClick={() => toggleTool('lab')}
-          />
-        </div>
+        <ToolCard
+          icon={FlaskConical}
+          title="Practice Lab"
+          description="Apply your knowledge with a hands-on coding lab or exercise."
+          active={activeTool === 'lab'}
+          onClick={() => toggleTool('lab')}
+        />
+        <AnimatePresence>
+          {activeTool === 'lab' && (
+            <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+              <div className="rounded-xl border border-border bg-card/50 p-4 mb-2 shadow-inner">
+                <PracticeLab lessonId={lesson._id} courseId={lesson.course} embedded />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-        {activeTool && (
-          <div className="mt-6 rounded-2xl border border-white/[0.08] bg-black/15 p-4 sm:p-6">
-            {activeTool === 'notes' && (
-              <>
-                <div className="flex flex-wrap items-start justify-between gap-4">
-                  <div>
-                    <h3 className="font-medium text-white">Private lesson notes</h3>
-                    <p className="mt-1 text-xs text-slate-500">
-                      These notes stay private and are never included in shared course links.
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    disabled={saving}
-                    onClick={() => updateProgress({ notes }, 'Notes saved')}
-                    className="btn-primary"
-                  >
-                    {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-                    {saving ? 'Saving...' : 'Save notes'}
-                  </button>
-                </div>
+        <ToolCard
+          icon={NotebookPen}
+          title="My Notes"
+          description="Save private notes, formulas, or takeaways."
+          status={lesson.notes ? 'Saved' : ''}
+          active={activeTool === 'notes'}
+          onClick={() => toggleTool('notes')}
+        />
+        <AnimatePresence>
+          {activeTool === 'notes' && (
+            <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+              <div className="rounded-xl border border-border bg-card/50 p-4 mb-2 shadow-inner flex flex-col gap-3">
                 <textarea
                   value={notes}
                   onChange={(event) => setNotes(event.target.value)}
                   maxLength={12000}
-                  rows={8}
-                  placeholder="Capture questions, examples, and your own explanation..."
-                  className="input-field mt-4 resize-y"
+                  rows={6}
+                  placeholder="Capture thoughts here..."
+                  className="w-full bg-background border border-border rounded-lg p-3 text-sm focus:ring-1 focus:ring-primary outline-none resize-y"
                 />
-              </>
-            )}
-            {activeTool === 'flashcards' && <FlashcardDeck lessonId={lesson._id} courseId={lesson.course} embedded />}
+                <button
+                  type="button"
+                  disabled={saving}
+                  onClick={() => updateProgress({ notes }, 'Notes saved')}
+                  className="w-full bg-primary text-primary-foreground py-2 rounded-lg text-sm font-medium hover:bg-primary/90 flex items-center justify-center gap-2"
+                >
+                  {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+                  {saving ? 'Saving...' : 'Save Notes'}
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-            {activeTool === 'lab' && <PracticeLab lessonId={lesson._id} courseId={lesson.course} embedded />}
-          </div>
-        )}
+        <ToolCard
+          icon={Play}
+          title="Add Videos"
+          description="Enrich this lesson with curated YouTube content."
+          status={addingVideos ? 'Finding...' : videoCount ? `${videoCount} added` : ''}
+          disabled={addingVideos}
+          onClick={onAddVideos}
+        />
+      </div>
 
-        <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-white/[0.07] pt-5">
-          <p className="text-xs text-slate-500">Useful lesson actions</p>
-          <div className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              disabled={saving}
-              onClick={() => updateProgress(
-                { bookmarked: !lesson.bookmarked },
-                lesson.bookmarked ? 'Bookmark removed' : 'Lesson bookmarked',
-              )}
-              className={lesson.bookmarked ? 'btn-primary' : 'btn-secondary'}
-            >
-              {lesson.bookmarked ? <Check className="h-4 w-4" /> : <Bookmark className="h-4 w-4" />}
-              {lesson.bookmarked ? 'Bookmarked' : 'Bookmark'}
-            </button>
-            <LessonPDFExporter lesson={lesson} />
-          </div>
+      <div className="mt-auto pt-6 border-t border-border/50 flex flex-col gap-3 shrink-0 hidden lg:flex">
+        <button
+          type="button"
+          disabled={saving}
+          onClick={() => updateProgress(
+            { bookmarked: !lesson.bookmarked },
+            lesson.bookmarked ? 'Bookmark removed' : 'Lesson bookmarked',
+          )}
+          className={`flex items-center justify-center gap-2 w-full py-2.5 rounded-lg text-sm font-medium transition-colors border ${lesson.bookmarked ? 'bg-primary/10 border-primary text-primary' : 'bg-card border-border text-foreground hover:bg-muted'}`}
+        >
+          {lesson.bookmarked ? <Check className="h-4 w-4" /> : <Bookmark className="h-4 w-4" />}
+          {lesson.bookmarked ? 'Bookmarked' : 'Bookmark Lesson'}
+        </button>
+        <div className="w-full flex justify-center">
+          <LessonPDFExporter lesson={lesson} />
         </div>
       </div>
-    </section>
+    </aside>
   );
 }
