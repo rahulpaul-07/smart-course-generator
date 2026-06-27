@@ -44,8 +44,9 @@ const SettingsPage = withSuspense(lazy(() => import('./pages/SettingsPage')));
 function GuestRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, loading } = useAuth();
 
-  if (loading) return <div key="loading" className="flex min-h-screen items-center justify-center"><LoadingSpinner text="Loading..." /></div>;
-  if (isAuthenticated) return <Navigate to="/dashboard" replace />;
+  // If we know the user is authenticated, redirect to dashboard.
+  // Otherwise, render the public content immediately without blocking for auth to load.
+  if (!loading && isAuthenticated) return <Navigate to="/dashboard" replace />;
   return <div key="content" className="w-full h-full">{children}</div>;
 }
 

@@ -86,47 +86,69 @@ export default function HomePage() {
         ) : (
           <div className="grid lg:grid-cols-[1fr_350px] gap-8">
             <div className="space-y-8">
-              {/* Continue Learning Widget */}
+              {/* Generate Course Hero / Continue Learning */}
               {data?.continueLearning ? (
-                <motion.div 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="rounded-3xl border border-primary/20 bg-gradient-to-br from-primary/10 to-primary/5 p-8 relative overflow-hidden"
-                >
-                  <div className="absolute -right-10 -top-10 w-40 h-40 bg-primary/20 blur-3xl rounded-full" />
-                  <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
-                    <div>
-                      <div className="flex items-center gap-2 mb-3">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="rounded-3xl border border-primary/20 bg-gradient-to-br from-primary/10 to-primary/5 p-8 relative overflow-hidden flex flex-col justify-between shadow-lg shadow-primary/5 hover:shadow-xl transition-all"
+                  >
+                    <div className="absolute -right-10 -top-10 w-40 h-40 bg-primary/20 blur-3xl rounded-full" />
+                    <div className="relative z-10">
+                      <div className="flex items-center gap-2 mb-4">
                         <PlayCircle className="h-5 w-5 text-primary" />
-                        <span className="text-sm font-semibold uppercase tracking-wider text-primary">Continue Learning</span>
+                        <span className="text-xs font-bold uppercase tracking-wider text-primary">Jump Back In</span>
                       </div>
-                      <h2 className="text-2xl font-bold text-foreground mb-2 line-clamp-1">{data.continueLearning.title}</h2>
-                      <p className="text-sm text-muted-foreground flex items-center gap-2">
-                        <span className="px-2 py-0.5 rounded-full bg-black/20">{data.continueLearning.type}</span>
-                        <Clock className="h-4 w-4 ml-2" /> Last updated {new Date(data.continueLearning.updatedAt).toLocaleDateString()}
+                      <h2 className="text-2xl font-extrabold text-foreground mb-2 line-clamp-2 leading-tight">{data.continueLearning.title}</h2>
+                      <p className="text-sm text-muted-foreground flex items-center gap-2 mb-6">
+                        <span className="px-2 py-0.5 rounded-full bg-black/20 text-xs font-semibold">{data.continueLearning.type}</span>
+                        <Clock className="h-3.5 w-3.5 ml-2" /> {new Date(data.continueLearning.updatedAt).toLocaleDateString()}
                       </p>
                     </div>
                     <Button 
                       size="lg" 
                       onClick={() => navigate(data.continueLearning.url)}
-                      className="group"
+                      className="group w-full sm:w-auto self-start"
                     >
                       Continue <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                     </Button>
-                  </div>
-                </motion.div>
+                  </motion.div>
+
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                    className="rounded-3xl border border-border/50 bg-card/40 backdrop-blur-sm p-8 relative overflow-hidden flex flex-col justify-center items-center text-center hover:bg-card/60 transition-all border-dashed"
+                  >
+                    <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-4 text-primary">
+                      <Sparkles className="h-6 w-6" />
+                    </div>
+                    <h3 className="text-xl font-bold mb-2">Learn Something New</h3>
+                    <p className="text-muted-foreground text-sm mb-6 max-w-[200px]">Generate a personalized curriculum on any topic instantly.</p>
+                    <Button variant="outline" onClick={() => navigate('/community')} className="w-full sm:w-auto">
+                      Generate Course
+                    </Button>
+                  </motion.div>
+                </div>
               ) : (
                 <motion.div 
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="rounded-3xl border border-border/50 bg-card/60 backdrop-blur-sm p-8 text-center flex flex-col items-center"
+                  className="rounded-3xl border border-primary/20 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent backdrop-blur-md p-10 text-center flex flex-col items-center justify-center min-h-[300px] shadow-2xl shadow-primary/10 relative overflow-hidden"
                 >
-                  <Sparkles className="h-10 w-10 text-primary mb-4" />
-                  <h2 className="text-xl font-bold mb-2">Ready to start learning?</h2>
-                  <p className="text-muted-foreground mb-6">You don't have any active courses yet. Generate one to get started.</p>
-                  <Button onClick={() => navigate('/')}>Create a Course</Button>
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-primary/20 rounded-full blur-[80px] -z-10" />
+                  <div className="h-16 w-16 rounded-2xl bg-primary flex items-center justify-center mb-6 shadow-xl shadow-primary/30">
+                    <Sparkles className="h-8 w-8 text-primary-foreground" />
+                  </div>
+                  <h2 className="text-3xl font-extrabold tracking-tight mb-3 text-foreground drop-shadow-sm">What do you want to learn?</h2>
+                  <p className="text-lg text-muted-foreground mb-8 max-w-md">Your personalized AI-generated curriculum is just one prompt away.</p>
+                  <Button size="lg" className="h-14 px-8 text-base shadow-xl shadow-primary/25 rounded-xl hover:-translate-y-1 transition-all" onClick={() => navigate('/community')}>
+                    Generate Your First Course <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
                 </motion.div>
               )}
+
 
               {/* Analytics Row 1: Streak and Weekly Goal */}
               <div className="grid md:grid-cols-2 gap-6">
