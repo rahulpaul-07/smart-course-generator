@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Loader2 } from 'lucide-react';
+import { SettingsSkeleton } from '../components/dashboard/SettingsSkeleton';
 
 export default function SettingsPage() {
   const { user, login } = useAuth();
@@ -51,7 +52,7 @@ export default function SettingsPage() {
     }
   };
 
-  if (!user) return null;
+  if (!user) return <SettingsSkeleton />;
 
   return (
     <PageContainer>
@@ -106,7 +107,7 @@ export default function SettingsPage() {
 
 
           <div className="flex justify-end">
-            <Button onClick={handleSave} disabled={saving} className="w-full sm:w-auto h-11 rounded-xl font-bold">
+            <Button onClick={handleSave} disabled={saving} className={`w-full sm:w-auto h-11 rounded-xl font-bold ${saving ? 'cursor-progress' : ''}`}>
               {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
               Save Preferences
             </Button>
