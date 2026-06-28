@@ -12,7 +12,9 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card } from '@/components/ui/card';
 import api from '../utils/api';
-import React from 'react';
+import React, { useState } from 'react';
+import toast from 'react-hot-toast';
+import PromptForm from '../components/PromptForm';
 
 // Animated Counter Component
 const CountUp = ({ end, decimals = 0, suffix = "", duration = 1500 }: { end: number, decimals?: number, suffix?: string, duration?: number }) => {
@@ -42,6 +44,21 @@ const CountUp = ({ end, decimals = 0, suffix = "", duration = 1500 }: { end: num
 
 export default function HomePage() {
   const navigate = useNavigate();
+  const [generating, setGenerating] = useState(false);
+
+  async function generateCourse(topic: string) {
+    setGenerating(true);
+    try {
+      const { data } = await api.post('/courses/generate', { prompt: topic });
+      navigate(`/course/${data._id}`);
+      return true;
+    } catch {
+      toast.error('Failed to generate course. Please try again.');
+      return false;
+    } finally {
+      setGenerating(false);
+    }
+  }
 
   const { data, isLoading: loading, isError: error, refetch: fetchDashboard } = useQuery({
     queryKey: ['dashboardSummary'],
@@ -123,7 +140,7 @@ export default function HomePage() {
                 </div>
                 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start pt-4">
-                  <Button size="lg" className="h-12 px-6 rounded-full text-sm font-bold bg-primary hover:bg-primary/90 text-primary-foreground shadow-[0_4px_20px_rgb(0,0,0,0.1)] shadow-primary/20 hover:-translate-y-0.5 transition-all duration-200 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background" onClick={() => navigate('/roadmaps')}>
+                  <Button size="lg" className="h-12 px-6 rounded-full text-sm font-bold bg-primary hover:bg-primary/90 text-primary-foreground shadow-[0_4px_20px_rgb(0,0,0,0.1)] shadow-primary/20 hover:-translate-y-0.5 transition-all duration-200 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background" onClick={() => { document.getElementById('course-generator')?.scrollIntoView({ behavior: 'smooth' }); }}>
                     <Sparkles className="mr-2 h-4 w-4" />
                     Generate New Course
                   </Button>
@@ -177,6 +194,22 @@ export default function HomePage() {
                   </div>
                 </motion.div>
               </div>
+            </motion.section>
+
+            {/* Course Generator Section */}
+            <motion.section 
+              id="course-generator"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.2, delay: 0.05 }}
+              className="scroll-mt-24"
+            >
+              <div className="flex items-center justify-between mb-4 px-2">
+                <h2 className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
+                  <Sparkles className="h-5 w-5 text-primary" /> Generate New Course
+                </h2>
+              </div>
+              <PromptForm onSubmit={generateCourse} isLoading={generating} />
             </motion.section>
 
             {/* 2. Continue Learning */}
