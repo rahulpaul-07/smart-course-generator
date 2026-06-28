@@ -5,18 +5,52 @@ import { collabService } from '../services/collabService';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { EmptyState } from '../components/ui/EmptyState';
 
+import { ErrorState } from '../components/ui/ErrorState';
+import { LeaderboardSkeleton } from '../components/dashboard/LeaderboardSkeleton';
+
 export default function LeaderboardPage() {
   const [leaders, setLeaders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
+  const fetchLeaderboard = () => {
+    setLoading(true);
+    setError(false);
     collabService.getLeaderboard()
-      .then(([data]) => setLeaders((data as any) || []))
+      .then(([data, err]) => {
+        if (err || !data) setError(true);
+        else setLeaders((data as any) || []);
+      })
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    fetchLeaderboard();
   }, []);
 
-  if (loading) return <div className="page-shell py-20"><LoadingSpinner /></div>;
+  if (loading) return <LeaderboardSkeleton />;
+  if (error) return (
+    <div className="page-shell py-20">
+      <ErrorState 
+        title="Unable to load leaderboard" 
+        description="We couldn't retrieve the top learners. Please try again."
+        onRetry={fetchLeaderboard}
+      />
+    </div>
+  );
+
+  if (leaders.length === 0) {
+    return (
+      <div className="page-shell py-20">
+        <EmptyState 
+          icon={Trophy}
+          title="No learners on the board yet"
+          description="Be the first to complete a course and climb the ranks!"
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="page-shell">
