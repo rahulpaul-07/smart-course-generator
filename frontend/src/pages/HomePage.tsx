@@ -16,6 +16,9 @@ import { DashboardContinueLearning } from '../components/dashboard/DashboardCont
 import { DashboardQuickActions } from '../components/dashboard/DashboardQuickActions';
 import { DashboardOverview } from '../components/dashboard/DashboardOverview';
 import { DashboardActivity } from '../components/dashboard/DashboardActivity';
+import { DashboardSkeleton } from '../components/dashboard/DashboardSkeleton';
+import { ErrorState } from '../components/ui/ErrorState';
+import { EmptyState } from '../components/ui/EmptyState';
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -72,21 +75,18 @@ export default function HomePage() {
 
       <PageContainer className="relative z-10 pt-8 pb-24 space-y-8 max-w-7xl mx-auto">
         {loading ? (
-          <div className="space-y-8 animate-pulse">
-            <Skeleton className="h-[300px] w-full rounded-[24px]" />
-            <Skeleton className="h-[120px] w-full rounded-2xl" />
-            <div className="grid lg:grid-cols-[1fr_350px] gap-8">
-              <Skeleton className="h-[400px] w-full rounded-[24px]" />
-              <Skeleton className="h-[400px] w-full rounded-[24px]" />
-            </div>
-          </div>
+          <DashboardSkeleton />
         ) : error ? (
-          <div className="flex flex-col items-center justify-center p-12 bg-card/40 border border-border/30 rounded-2xl backdrop-blur-xl shadow-sm">
-            <Activity className="h-12 w-12 text-rose-500 mb-4" />
-            <h3 className="text-xl font-bold mb-2">Failed to load dashboard</h3>
-            <p className="text-muted-foreground mb-6">There was an error fetching your summary.</p>
-            <Button onClick={fetchDashboard} className="rounded-full">Try Again</Button>
-          </div>
+          <ErrorState 
+            title="Unable to load dashboard" 
+            description="Please check your connection and try again." 
+            onRetry={fetchDashboard} 
+          />
+        ) : !data || Object.keys(data).length === 0 ? (
+          <EmptyState 
+            title="No Dashboard Data" 
+            description="Your dashboard is currently empty. Generate a course to get started!" 
+          />
         ) : (
           <div className="flex flex-col gap-10">
             {/* 1. Hero Banner */}

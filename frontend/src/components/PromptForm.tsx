@@ -73,7 +73,7 @@ export default function PromptForm({ onSubmit, isLoading = false }: { onSubmit: 
           <Button 
             type="submit" 
             disabled={isLoading || !prompt.trim()}
-            className="relative overflow-hidden group"
+            className={`relative overflow-hidden group ${isLoading ? 'cursor-progress' : ''}`}
           >
             <span className="relative z-10 flex items-center">
               {isLoading ? (
