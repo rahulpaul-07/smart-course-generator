@@ -1,3 +1,5 @@
+import { calculatePercentage } from './percentages';
+
 export function courseProgress(course) {
   let totalLessons = 0;
   let completedLessons = 0;
@@ -15,9 +17,7 @@ export function courseProgress(course) {
     }
   }
 
-  const percentage = totalLessons
-    ? Math.round((completedLessons / totalLessons) * 100)
-    : 0;
+  const percentage = calculatePercentage(completedLessons, totalLessons);
 
   return {
     completedLessons,
