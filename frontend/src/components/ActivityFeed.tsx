@@ -3,7 +3,8 @@ import { formatDistanceToNow } from 'date-fns';
 import { Activity, BookOpen, Award, PlusCircle, Trophy } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import api from '../utils/api';
-
+import { EmptyState } from './ui/EmptyState';
+import { Activity as ActivityIcon } from 'lucide-react';
 export default function ActivityFeed() {
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -21,7 +22,13 @@ export default function ActivityFeed() {
   }
 
   if (activities.length === 0) {
-    return <div className="text-center py-8 text-muted-foreground text-sm">No recent activity found.</div>;
+    return (
+      <EmptyState 
+        icon={ActivityIcon}
+        title="No Recent Activity" 
+        description="There is no recent activity to show in your network yet. Check back later."
+      />
+    );
   }
 
   const getIcon = (action) => {

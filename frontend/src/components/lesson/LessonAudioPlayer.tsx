@@ -6,6 +6,7 @@ import {
   Square,
 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { Button } from '../ui/button';
 import {
   extractNarration,
   matchingVoices,
@@ -158,15 +159,15 @@ export default function LessonAudioPlayer({ lesson }) {
 
         <div className="flex items-center gap-2">
           {status === 'playing' ? (
-            <button type="button" onClick={pause} className="btn-primary">
-              <Pause className="h-4 w-4" />
+            <Button type="button" onClick={pause}>
+              <Pause className="h-4 w-4 mr-2" />
               Pause
-            </button>
+            </Button>
           ) : (
-            <button type="button" onClick={play} disabled={noVoice} className="btn-primary">
-              <Play className="h-4 w-4" />
+            <Button type="button" onClick={play} disabled={noVoice}>
+              <Play className="h-4 w-4 mr-2" />
               {status === 'paused' ? 'Resume' : status === 'complete' ? 'Play again' : 'Listen'}
-            </button>
+            </Button>
           )}
           {status !== 'idle' && (
             <button type="button" onClick={() => stop()} className="icon-button" title="Stop audio">

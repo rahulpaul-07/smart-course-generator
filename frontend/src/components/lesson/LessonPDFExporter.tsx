@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Printer } from "lucide-react";
+import { Button } from '../ui/button';
 import { renderToStaticMarkup } from "react-dom/server";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -233,15 +234,15 @@ const LessonPDFExporter = ({ lesson }: { lesson: any }) => {
   };
 
   return (
-    <button
+    <Button
       type="button"
       onClick={handleDownloadPDF}
       disabled={downloading || !lesson}
-      className="btn-secondary"
+      variant="secondary"
     >
-      <Printer className="h-4 w-4" />
+      <Printer className="h-4 w-4 mr-2" />
       {downloading ? "Preparing PDF..." : "Export to PDF"}
-    </button>
+    </Button>
   );
 };
 

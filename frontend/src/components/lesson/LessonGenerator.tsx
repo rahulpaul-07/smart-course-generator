@@ -1,4 +1,5 @@
 import { BookOpen, Languages, Loader2, Sparkles } from 'lucide-react';
+import { Button } from '../ui/button';
 
 export default function LessonGenerator({
   hasContent,
@@ -31,17 +32,16 @@ export default function LessonGenerator({
           </div>
         </div>
         {!isPickerOpen && (
-          <button
+          <Button
             type="button"
             onClick={() => onPickerChange(true)}
             disabled={isGenerating}
-            className="btn-primary"
           >
-            {isGenerating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+            {isGenerating ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Sparkles className="h-4 w-4 mr-2" />}
             {isGenerating
               ? isStreaming ? 'Streaming...' : 'Generating...'
               : hasContent ? 'Regenerate' : 'Generate lesson'}
-          </button>
+          </Button>
         )}
       </div>
       <p className="relative mt-4 text-sm text-muted-foreground">
@@ -107,12 +107,12 @@ export default function LessonGenerator({
           </label>
 
           <div className="flex gap-3 sm:col-span-2">
-            <button type="button" onClick={() => onPickerChange(false)} className="btn-secondary">
+            <Button type="button" onClick={() => onPickerChange(false)} variant="secondary">
               Cancel
-            </button>
-            <button type="button" onClick={onGenerate} disabled={isGenerating} className="btn-primary">
+            </Button>
+            <Button type="button" onClick={onGenerate} disabled={isGenerating}>
               {isGenerating ? 'Generating...' : 'Generate'}
-            </button>
+            </Button>
           </div>
         </div>
       )}

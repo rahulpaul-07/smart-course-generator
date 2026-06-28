@@ -3,6 +3,7 @@ import { Trophy, Flame, Zap, Award } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { EmptyState } from '../components/ui/EmptyState';
 
 export default function LeaderboardPage() {
   const [leaders, setLeaders] = useState([]);
@@ -26,20 +27,20 @@ export default function LeaderboardPage() {
         <p className="mt-2 text-sm text-muted-foreground">Compete with the community and climb the ranks.</p>
       </section>
 
-      <div className="max-w-4xl mx-auto glass-card rounded-2xl overflow-hidden">
-        <div className="p-4 bg-foreground/10 border-b border-border/ grid grid-cols-12 gap-4 text-xs font-bold text-muted-foreground uppercase tracking-wider hidden sm:grid">
+      <div className="max-w-4xl mx-auto glass-card rounded-3xl overflow-hidden shadow-lg border border-border/50">
+        <div className="p-4 bg-foreground/10 border-b border-border/50 grid grid-cols-12 gap-4 text-xs font-bold text-muted-foreground uppercase tracking-wider hidden sm:grid">
           <div className="col-span-2 text-center">Rank</div>
           <div className="col-span-5">Learner</div>
           <div className="col-span-3">Achievements</div>
           <div className="col-span-2 text-right pr-4">Total XP</div>
         </div>
         
-        <div className="divide-y divide-white/5">
-          {leaders.map((user, idx) => (
+        <div className="divide-y divide-border/30">
+          {leaders.map((user: any, idx: number) => (
             <div 
               key={user._id} 
               onClick={() => navigate(`/profile/${user._id}`)}
-              className="p-4 grid grid-cols-1 sm:grid-cols-12 gap-4 items-center hover:bg-foreground/10 transition-colors cursor-pointer group"
+              className="p-4 grid grid-cols-1 sm:grid-cols-12 gap-4 items-center hover:bg-foreground/5 transition-colors cursor-pointer group"
             >
               <div className="col-span-2 flex items-center justify-between sm:justify-center">
                 <span className="sm:hidden text-xs font-bold text-muted-foreground uppercase tracking-wider">Rank</span>
@@ -50,7 +51,7 @@ export default function LeaderboardPage() {
               </div>
               
               <div className="col-span-5 flex items-center gap-3">
-                <div className="h-12 w-12 rounded-full -white font-bold shadow-lg overflow-hidden border border-border/ group-hover:border-brand-400/50 transition-colors">
+                <div className="h-12 w-12 rounded-full font-bold shadow-lg overflow-hidden border border-border/50 group-hover:border-brand-400/50 transition-colors bg-muted flex items-center justify-center text-muted-foreground">
                   {user.avatar ? (
                     <img src={user.avatar} alt="Avatar" className="h-full w-full object-cover" />
                   ) : (
@@ -86,10 +87,17 @@ export default function LeaderboardPage() {
             </div>
           ))}
           {leaders.length === 0 && (
-            <div className="p-12 text-center text-muted-foreground">
-              <Trophy className="h-12 w-12 mx-auto mb-4 opacity-20" />
-              No public profiles found on the leaderboard.<br/>Be the first to join the Hall of Fame!
-            </div>
+            <EmptyState
+              icon={Trophy}
+              title="No Leaders Yet"
+              description="No public profiles found on the leaderboard. Be the first to join the Hall of Fame by generating a course and earning XP!"
+              action={
+                <button onClick={() => navigate('/community')} className="h-10 px-4 py-2 bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center justify-center whitespace-nowrap rounded-xl text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50">
+                  Generate Course
+                </button>
+              }
+              className="border-none shadow-none bg-transparent py-16"
+            />
           )}
         </div>
       </div>

@@ -11,3 +11,7 @@ Object.defineProperty(window, 'IntersectionObserver', {
   configurable: true,
   value: IntersectionObserver,
 });
+
+// Mock scrollIntoView for jsdom
+window.HTMLElement.prototype.scrollIntoView = function() {};
+window.Element.prototype.scrollIntoView = function() {};

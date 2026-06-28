@@ -41,6 +41,7 @@ const CommunityTemplatesPage = withSuspense(lazy(() => import('./pages/Community
 const LeaderboardPage = withSuspense(lazy(() => import('./pages/LeaderboardPage')));
 const SettingsPage = withSuspense(lazy(() => import('./pages/SettingsPage')));
 const CoursesPage = withSuspense(lazy(() => import('./pages/CoursesPage')));
+const NotFoundPage = withSuspense(lazy(() => import('./pages/NotFoundPage')));
 
 function GuestRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, loading } = useAuth();
@@ -67,12 +68,12 @@ export default function App() {
         toastOptions={{
           duration: 3500,
           style: {
-            background: 'rgba(15, 20, 38, 0.92)',
-            border: '1px solid rgba(148, 163, 184, 0.16)',
-            borderRadius: '14px',
-            boxShadow: '0 18px 50px rgba(0, 0, 0, 0.35)',
-            color: '#e2e8f0',
-            backdropFilter: 'blur(16px)',
+            background: 'hsl(var(--card) / 0.9)',
+            border: '1px solid hsl(var(--border) / 0.5)',
+            borderRadius: '16px', // rounded-2xl
+            boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)', // shadow-lg
+            color: 'hsl(var(--foreground))',
+            backdropFilter: 'blur(12px)',
           },
         }}
       />
@@ -105,7 +106,7 @@ export default function App() {
         <Route path="/leaderboard" element={<DashboardPage><LeaderboardPage /></DashboardPage>} />
         <Route path="/settings" element={<DashboardPage><SettingsPage /></DashboardPage>} />
         <Route path="/flashcard-test" element={<FlashcardTestPage />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </ErrorBoundary>
   );

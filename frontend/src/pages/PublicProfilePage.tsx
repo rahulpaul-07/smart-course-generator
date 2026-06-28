@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Trophy, Flame, Clock, BookOpen, Star, Copy, Heart, Zap, Award } from 'lucide-react';
 import api from '../utils/api';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { EmptyState } from '../components/ui/EmptyState';
 
 export default function PublicProfilePage() {
   const { userId } = useParams();
@@ -86,7 +87,12 @@ export default function PublicProfilePage() {
             </h3>
             
             {(!user.achievements || user.achievements.length === 0) ? (
-              <p className="text-sm text-muted-foreground text-center py-6">No achievements unlocked yet.</p>
+              <EmptyState
+                icon={Trophy}
+                title="No Achievements"
+                description="No achievements unlocked yet."
+                className="min-h-[150px] bg-transparent border-none p-2"
+              />
             ) : (
               <div className="space-y-4">
                 {user.achievements.map((ach) => (
@@ -112,10 +118,12 @@ export default function PublicProfilePage() {
           </h3>
           
           {courses.length === 0 ? (
-            <div className="glass-card rounded-2xl p-12 text-center text-muted-foreground">
-              <BookOpen className="h-12 w-12 mx-auto mb-4 opacity-20" />
-              This user hasn't published any courses yet.
-            </div>
+            <EmptyState
+              icon={BookOpen}
+              title="No Courses"
+              description="This user hasn't published any courses yet."
+              className="bg-card/10 border-border/50 min-h-[250px]"
+            />
           ) : (
             <div className="grid sm:grid-cols-2 gap-4">
               {courses.map(course => (

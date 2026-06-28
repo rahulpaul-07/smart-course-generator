@@ -16,7 +16,7 @@ export default function LoadingSpinner({ text = 'Loading...', small = false, siz
       <span className="grid h-12 w-12 place-items-center rounded-2xl border border-brand-400/20 bg-brand-500/10 shadow-lg shadow-brand-950/20">
         <Loader2 className="h-5 w-5 animate-spin text-brand-300" aria-hidden="true" />
       </span>
-      {text && <span className="text-sm">{text}</span>}
+      {text && <span className="text-sm font-medium tracking-wide">{text}</span>}
       <span className="sr-only">Loading</span>
     </div>
   );

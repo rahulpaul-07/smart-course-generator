@@ -2,6 +2,7 @@ import { Copy, Globe2, Loader2, Lock } from 'lucide-react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import api from '../utils/api';
+import { Button } from './ui/button';
 
 export default function ShareCourseButton({ course, onUpdate }) {
   const [saving, setSaving] = useState(false);
@@ -37,33 +38,33 @@ export default function ShareCourseButton({ course, onUpdate }) {
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <button type="button" onClick={toggleSharing} disabled={saving} className={course.isPublic ? 'btn-secondary' : 'btn-primary'}>
-        <ShareIcon className={`h-4 w-4 ${saving ? 'animate-spin' : ''}`} />
+      <Button type="button" onClick={toggleSharing} disabled={saving} variant={course.isPublic ? 'secondary' : 'default'}>
+        <ShareIcon className={`h-4 w-4 mr-2 ${saving ? 'animate-spin' : ''}`} />
         {course.isPublic ? 'Make private' : 'Publish to Community'}
-      </button>
+      </Button>
       {course.isPublic && (
         <>
-          <button type="button" onClick={copyLink} className="btn-secondary" title="Copy Link">
-            <Copy className="h-4 w-4" />
+          <Button type="button" onClick={copyLink} variant="secondary" title="Copy Link">
+            <Copy className="h-4 w-4 mr-2" />
             Copy
-          </button>
+          </Button>
           <a
             href={`https://twitter.com/intent/tweet?text=Check out my new AI-generated course: ${encodeURIComponent(course.title)}!&url=${encodeURIComponent(window.location.origin + '/share/' + course.shareId)}`}
             target="_blank"
             rel="noreferrer"
-            className="btn-secondary px-3"
-            title="Share on Twitter"
           >
-            𝕏
+            <Button variant="secondary" className="px-3" title="Share on Twitter">
+              𝕏
+            </Button>
           </a>
           <a
             href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.origin + '/share/' + course.shareId)}`}
             target="_blank"
             rel="noreferrer"
-            className="btn-secondary px-3"
-            title="Share on LinkedIn"
           >
-            in
+            <Button variant="secondary" className="px-3" title="Share on LinkedIn">
+              in
+            </Button>
           </a>
         </>
       )}

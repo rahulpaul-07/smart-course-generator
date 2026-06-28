@@ -1,5 +1,6 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
 import { AlertTriangle, RefreshCcw } from 'lucide-react';
+import { Button } from './ui/button';
 
 interface Props {
   children?: ReactNode;
@@ -44,13 +45,13 @@ class ErrorBoundary extends Component<Props, State> {
             <p className="text-muted-foreground mb-8 text-sm">
               We encountered an unexpected error while loading this page. This might be a temporary glitch.
             </p>
-            <button 
+            <Button 
               onClick={this.handleReset} 
-              className="w-full btn-primary group flex items-center justify-center gap-2"
+              className="w-full group flex items-center justify-center gap-2"
             >
               <RefreshCcw className="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" />
               Refresh Page
-            </button>
+            </Button>
             {this.state.error && (
               <details className="mt-6 text-left bg-black/40 border border-border/ p-4 rounded-xl text-xs text-destructive overflow-auto backdrop-blur-sm">
                 <summary className="cursor-pointer mb-2 font-semibold text-muted-foreground hover:text-foreground transition-colors">Error Details</summary>

@@ -70,7 +70,7 @@ export default function ProfilePage() {
 
       <div className="grid lg:grid-cols-[1fr_350px] gap-8 mt-8">
         <div className="space-y-6">
-          <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+          <Card className="bg-card/50 backdrop-blur-sm border-border/50 rounded-2xl">
             <CardHeader>
               <CardTitle>Personal Information</CardTitle>
               <CardDescription>Update your photo and personal details.</CardDescription>
@@ -103,6 +103,7 @@ export default function ProfilePage() {
                   <Input 
                     value={profile.name}
                     onChange={e => setProfile({...profile, name: e.target.value})}
+                    className="h-12 rounded-xl"
                   />
                 </div>
 
@@ -112,7 +113,7 @@ export default function ProfilePage() {
                     value={profile.bio}
                     onChange={e => setProfile({...profile, bio: e.target.value})}
                     placeholder="Tell us a little bit about yourself and your learning goals..."
-                    className="min-h-[120px]"
+                    className="min-h-[120px] rounded-xl"
                   />
                   <p className="text-xs text-muted-foreground">
                     Brief description for your profile. URLs are hyperlinked.
@@ -122,7 +123,7 @@ export default function ProfilePage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+          <Card className="bg-card/50 backdrop-blur-sm border-border/50 rounded-2xl">
             <CardHeader>
               <CardTitle>Privacy & Display</CardTitle>
               <CardDescription>Control how others see your profile.</CardDescription>
@@ -144,7 +145,7 @@ export default function ProfilePage() {
           </Card>
 
           <div className="flex justify-end">
-            <Button onClick={handleSave} disabled={saving} className="w-full sm:w-auto">
+            <Button onClick={handleSave} disabled={saving} className="w-full sm:w-auto h-11 rounded-xl font-bold">
               {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
               Save Changes
             </Button>
@@ -152,7 +153,7 @@ export default function ProfilePage() {
         </div>
 
         <div className="space-y-6">
-          <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20">
+          <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20 rounded-2xl">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-primary" />
@@ -174,12 +175,12 @@ export default function ProfilePage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+          <Card className="bg-card/50 backdrop-blur-sm border-border/50 rounded-2xl">
             <CardHeader>
               <CardTitle>Account Stats</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-center justify-between p-3 rounded-lg bg-secondary/50">
+              <div className="flex items-center justify-between p-3 rounded-xl bg-secondary/50">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-blue-500/10 rounded-md text-blue-500">
                     <BookOpen className="w-4 h-4" />
@@ -188,7 +189,7 @@ export default function ProfilePage() {
                 </div>
                 <span className="font-bold text-lg">0</span>
               </div>
-              <div className="flex items-center justify-between p-3 rounded-lg bg-secondary/50">
+              <div className="flex items-center justify-between p-3 rounded-xl bg-secondary/50">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-amber-500/10 rounded-md text-amber-500">
                     <Trophy className="w-4 h-4" />

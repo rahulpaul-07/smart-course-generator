@@ -58,13 +58,13 @@ export function TopNavigation() {
           {/* Search Bar */}
           {isDashboard ? (
             <div className="flex-1 max-w-md hidden sm:flex items-center relative">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input 
                 type="search" 
                 placeholder="Search your courses..." 
                 value={searchQuery}
                 onChange={handleSearchChange}
-                className="w-full pl-9 bg-muted/30 border-transparent focus-visible:bg-background focus-visible:border-primary"
+                leftIcon={<Search className="h-4 w-4" />}
+                className="w-full bg-muted/30 border-transparent focus-visible:bg-background focus-visible:border-primary"
               />
             </div>
           ) : (
@@ -128,7 +128,7 @@ export function TopNavigation() {
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
-              transition={{ type: "spring", bounce: 0, duration: 0.3 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
               className="fixed inset-y-0 left-0 z-50 w-3/4 max-w-sm border-r border-border bg-sidebar p-6 shadow-2xl md:hidden flex flex-col"
             >
               <div className="flex items-center justify-between mb-8">
@@ -152,7 +152,7 @@ export function TopNavigation() {
                       to={item.href}
                       onClick={() => setMobileMenuOpen(false)}
                       className={cn(
-                        "group flex items-center gap-3 rounded-md px-3 py-3 text-sm font-medium transition-all",
+                        "group flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium transition-all duration-200",
                         isActive
                           ? "bg-primary/10 text-primary"
                           : "text-muted-foreground hover:bg-foreground/10 hover:text-foreground"
@@ -169,7 +169,7 @@ export function TopNavigation() {
                 <Link
                   to="/settings"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 rounded-md px-3 py-3 text-sm font-medium text-muted-foreground hover:bg-foreground/10 hover:text-foreground transition-all"
+                  className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium text-muted-foreground hover:bg-foreground/10 hover:text-foreground transition-all"
                 >
                   <Settings className="h-5 w-5 shrink-0" />
                   Settings

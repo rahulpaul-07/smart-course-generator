@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import api from '../../utils/api';
 import { courseProgress, nextIncompleteLesson } from '../../utils/courseProgress';
+import { Button } from '../ui/button';
 
 export default function LessonCompletion({ course, courseId, lesson, onLessonUpdate }) {
   const navigate = useNavigate();
@@ -58,35 +59,33 @@ export default function LessonCompletion({ course, courseId, lesson, onLessonUpd
 
       <div className="mt-5 flex flex-wrap gap-3">
         {!lesson.completedAt && (
-          <button type="button" onClick={() => setCompleted(true)} disabled={saving} className="btn-primary">
-            {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
+          <Button type="button" onClick={() => setCompleted(true)} disabled={saving}>
+            {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <CheckCircle2 className="h-4 w-4 mr-2" />}
             Complete lesson
-          </button>
+          </Button>
         )}
         {lesson.completedAt && certificateUnlocked && (
-          <button
+          <Button
             type="button"
             onClick={() => navigate(`/course/${courseId}/certificate`)}
-            className="btn-primary"
           >
-            <Award className="h-4 w-4" />
+            <Award className="h-4 w-4 mr-2" />
             View certificate
-          </button>
+          </Button>
         )}
         {lesson.completedAt && !certificateUnlocked && nextLesson && (
-          <button
+          <Button
             type="button"
             onClick={() => navigate(`/course/${courseId}/lesson/${nextLesson._id}`)}
-            className="btn-primary"
           >
             Next incomplete lesson
-            <ArrowRight className="h-4 w-4" />
-          </button>
+            <ArrowRight className="h-4 w-4 ml-2" />
+          </Button>
         )}
         {lesson.completedAt && (
-          <button type="button" onClick={() => setCompleted(false)} disabled={saving} className="btn-secondary">
+          <Button type="button" onClick={() => setCompleted(false)} disabled={saving} variant="secondary">
             Mark incomplete
-          </button>
+          </Button>
         )}
       </div>
     </section>

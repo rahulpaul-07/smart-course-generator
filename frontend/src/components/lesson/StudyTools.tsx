@@ -6,6 +6,8 @@ import api from '../../utils/api';
 import FlashcardDeck from './FlashcardDeck';
 import PracticeLab from './PracticeLab';
 import LessonPDFExporter from './LessonPDFExporter';
+import { Button } from '../ui/button';
+import { Textarea } from '../ui/textarea';
 
 function ToolCard({
   active = false,
@@ -144,23 +146,24 @@ export default function StudyTools({
           {activeTool === 'notes' && (
             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
               <div className="rounded-xl border border-border bg-card/50 p-4 mb-2 shadow-inner flex flex-col gap-3">
-                <textarea
+                <Textarea
                   value={notes}
                   onChange={(event) => setNotes(event.target.value)}
                   maxLength={12000}
                   rows={6}
                   placeholder="Capture thoughts here..."
-                  className="w-full bg-background border border-border rounded-lg p-3 text-sm focus:ring-1 focus:ring-primary outline-none resize-y"
+                  className="w-full resize-y"
                 />
-                <button
-                  type="button"
+                <Button
+                  variant="default"
+                  size="lg"
                   disabled={saving}
                   onClick={() => updateProgress({ notes }, 'Notes saved')}
-                  className="w-full bg-primary text-primary-foreground py-2 rounded-lg text-sm font-medium hover:bg-primary/90 flex items-center justify-center gap-2"
+                  className="w-full"
                 >
-                  {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+                  {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
                   {saving ? 'Saving...' : 'Save Notes'}
-                </button>
+                </Button>
               </div>
             </motion.div>
           )}
@@ -184,7 +187,7 @@ export default function StudyTools({
             { bookmarked: !lesson.bookmarked },
             lesson.bookmarked ? 'Bookmark removed' : 'Lesson bookmarked',
           )}
-          className={`flex items-center justify-center gap-2 w-full py-2.5 rounded-lg text-sm font-medium transition-colors border ${lesson.bookmarked ? 'bg-primary/10 border-primary text-primary' : 'bg-card border-border text-foreground hover:bg-muted'}`}
+          className={`flex items-center justify-center gap-2 w-full h-11 rounded-xl text-sm font-medium transition-colors border ${lesson.bookmarked ? 'bg-primary/10 border-primary text-primary' : 'bg-card border-border text-foreground hover:bg-muted'}`}
         >
           {lesson.bookmarked ? <Check className="h-4 w-4" /> : <Bookmark className="h-4 w-4" />}
           {lesson.bookmarked ? 'Bookmarked' : 'Bookmark Lesson'}

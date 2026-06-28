@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
+import React from 'react';
 
-export default function ReadingProgress({ containerRef }) {
+export default function ReadingProgress({ containerRef }: { containerRef: React.RefObject<HTMLElement> }) {
   const [progress, setProgress] = useState(0);
   const [visible, setVisible] = useState(false);
 
@@ -40,10 +42,12 @@ export default function ReadingProgress({ containerRef }) {
   if (!visible) return null;
 
   return (
-    <div className="fixed left-0 right-0 top-[4.5rem] z-40 h-0.5 bg-foreground/10">
-      <div
-        className="h-full origin-left bg-gradient-to-r from-violet-500 via-brand-400 to-cyan-400 shadow-[0_0_12px_rgba(99,102,241,0.7)]"
-        style={{ transform: `scaleX(${progress})` }}
+    <div className="absolute top-0 left-0 right-0 z-50 h-[3px] bg-transparent pointer-events-none">
+      <motion.div
+        className="h-full origin-left bg-primary shadow-[0_0_10px_rgba(var(--primary),0.5)]"
+        initial={{ scaleX: 0 }}
+        animate={{ scaleX: progress }}
+        transition={{ duration: 0.1, ease: 'easeOut' }}
       />
     </div>
   );

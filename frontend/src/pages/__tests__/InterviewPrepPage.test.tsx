@@ -50,7 +50,7 @@ describe('InterviewPrepPage WAI-ARIA Tabs', () => {
     await waitFor(() => expect(screen.getByRole('tablist')).toBeInTheDocument());
 
     const tabs = screen.getAllByRole('tab');
-    expect(tabs).toHaveLength(4);
+    expect(tabs).toHaveLength(3);
 
     // By default MCQ should be selected
     expect(tabs[0]).toHaveAttribute('aria-selected', 'true');
@@ -94,11 +94,11 @@ describe('InterviewPrepPage WAI-ARIA Tabs', () => {
 
     const tablist = screen.getByRole('tablist');
     
-    // Start at index 0 (MCQ). Arrow left should wrap to last tab (Mock).
+    // Start at index 0 (MCQ). Arrow left should wrap to last tab (Coding).
     fireEvent.keyDown(tablist, { key: 'ArrowLeft' });
     
-    const mockTab = screen.getByRole('tab', { name: /Mock/i });
-    expect(mockTab).toHaveAttribute('aria-selected', 'true');
+    const codingTab = screen.getByRole('tab', { name: /Coding/i });
+    expect(codingTab).toHaveAttribute('aria-selected', 'true');
   });
 
   it('5. should navigate with Home key', async () => {
@@ -123,6 +123,6 @@ describe('InterviewPrepPage WAI-ARIA Tabs', () => {
     const tablist = screen.getByRole('tablist');
     fireEvent.keyDown(tablist, { key: 'End' });
     
-    expect(tabs[3]).toHaveAttribute('aria-selected', 'true'); // Goes to Mock
+    expect(tabs[2]).toHaveAttribute('aria-selected', 'true'); // Goes to Coding
   });
 });

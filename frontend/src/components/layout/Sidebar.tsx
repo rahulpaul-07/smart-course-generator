@@ -30,7 +30,7 @@ export function Sidebar() {
       animate={{ 
         width: isSidebarCollapsed ? 80 : 256,
       }}
-      transition={{ duration: 0.3, ease: "easeInOut" }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
       className="hidden flex-col border-r border-border bg-card/80 backdrop-blur-xl h-screen md:flex relative shrink-0 z-50"
     >
       <div className={cn("flex h-16 shrink-0 items-center border-b border-border transition-all duration-300", isSidebarCollapsed ? "px-0 justify-center" : "px-6")}>

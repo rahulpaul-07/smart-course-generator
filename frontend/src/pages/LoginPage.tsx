@@ -102,13 +102,13 @@ export default function LoginPage() {
               Email
             </label>
             <div className="relative">
-              <Mail className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 type="email"
                 placeholder="name@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="pl-9 h-11"
+                className="pl-9 h-12 rounded-xl"
                 required
               />
             </div>
@@ -124,18 +124,18 @@ export default function LoginPage() {
               </Link>
             </div>
             <div className="relative">
-              <LockKeyhole className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+              <LockKeyhole className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="pl-9 pr-9 h-11"
+                className="pl-9 pr-9 h-12 rounded-xl"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-2.5 text-muted-foreground hover:text-foreground transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                 tabIndex={-1}
               >
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -143,7 +143,7 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <Button type="submit" className="w-full h-11 mt-2" disabled={loading}>
+          <Button type="submit" className="w-full h-12 rounded-xl mt-2 font-bold" disabled={loading}>
             {loading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

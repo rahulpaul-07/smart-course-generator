@@ -65,7 +65,7 @@ export default function SettingsPage() {
 
       <div className="max-w-4xl mx-auto mt-8">
         <div className="space-y-6">
-          <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+          <Card className="bg-card/50 backdrop-blur-sm border-border/50 rounded-2xl">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <SettingsIcon className="w-5 h-5" />
@@ -109,7 +109,7 @@ export default function SettingsPage() {
 
 
           <div className="flex justify-end">
-            <Button onClick={handleSave} disabled={saving} className="w-full sm:w-auto">
+            <Button onClick={handleSave} disabled={saving} className="w-full sm:w-auto h-11 rounded-xl font-bold">
               {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
               Save Preferences
             </Button>

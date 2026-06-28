@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import LoadingSpinner from '../components/LoadingSpinner';
 import toast from 'react-hot-toast';
+import { EmptyState } from '../components/ui/EmptyState';
+import { Button } from '../components/ui/button';
 
 export default function CommunityTemplatesPage() {
   const [templates, setTemplates] = useState([]);
@@ -157,16 +159,16 @@ export default function CommunityTemplatesPage() {
         ))}
       </div>
       {templates.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-24 text-center glass-card rounded-2xl border-dashed border-2 border-border/50/50">
-          <div className="mb-4 rounded-full bg-card/50 p-4 ring-1 ring-slate-700/50">
-            <Globe className="h-8 w-8 text-muted-foreground" />
-          </div>
-          <h3 className="mb-2 text-xl font-bold text-foreground">No Community Courses Yet</h3>
-          <p className="mb-6 max-w-sm text-sm text-muted-foreground">Be the first to publish a course and share it with the community!</p>
-          <button onClick={() => navigate('/dashboard')} className="btn-primary">
-            <Plus className="mr-2 h-4 w-4" /> Create Course
-          </button>
-        </div>
+        <EmptyState
+          icon={Globe}
+          title="No Community Courses Yet"
+          description="Be the first to publish a course and share it with the community!"
+          action={
+            <Button onClick={() => navigate('/dashboard')}>
+              Create Course
+            </Button>
+          }
+        />
       )}
     </div>
   );

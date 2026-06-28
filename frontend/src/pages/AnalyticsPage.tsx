@@ -46,7 +46,7 @@ export default function AnalyticsPage() {
                 return '"' + String(val).replace(/"/g, '""') + '"';
               };
               const headers = ['Course', 'Completed Lessons', 'Total Lessons', 'Completion %'].map(escapeCsv);
-              const rows = data.courseStats.map(c => [c.title, c.completedLessons, c.totalLessons, c.completionPct].map(escapeCsv));
+              const rows = data.courseStats.map((c: any) => [c.title, c.completedLessons, c.totalLessons, c.completionPct].map(escapeCsv));
               const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
               const blob = new Blob([csv], { type: 'text/csv' });
               const url = window.URL.createObjectURL(blob);
@@ -55,7 +55,7 @@ export default function AnalyticsPage() {
               a.download = 'learning-analytics.csv';
               a.click();
             }}
-            className="flex items-center gap-2 rounded-xl bg-foreground/10 px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-foreground/10 border border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            className="flex items-center justify-center gap-2 h-10 rounded-xl bg-foreground/10 px-4 text-sm font-bold text-foreground transition-all hover:bg-foreground/15 border border-border shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
             Export CSV
           </button>
@@ -78,7 +78,7 @@ export default function AnalyticsPage() {
           <h2 className="mb-4 flex items-center gap-2 font-display text-xl font-bold text-foreground">
             <BarChart3 className="h-5 w-5 text-indigo-400" /> Completion by Course
           </h2>
-          <div className="glass-card rounded-2xl p-6 h-[300px]">
+          <div className="glass-card rounded-3xl p-6 h-[300px] shadow-lg">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#ffffff15" vertical={false} />
@@ -108,35 +108,35 @@ export default function AnalyticsPage() {
           <Target className="h-5 w-5 text-brand-300" /> Course Progress
         </h2>
         <div className="space-y-3">
-          {data.courseStats.map((course) => (
-            <div key={course._id} className="glass-card rounded-2xl p-4">
+          {data.courseStats.map((course: any) => (
+            <div key={course._id} className="glass-card rounded-2xl p-4 transition-all hover:shadow-md">
               <div className="flex items-center justify-between gap-4">
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium text-foreground">{course.title}</p>
-                  <p className="mt-1 text-xs text-muted-foreground">
+                  <p className="truncate text-sm font-bold text-foreground">{course.title}</p>
+                  <p className="mt-1 text-xs text-muted-foreground font-medium">
                     {course.completedLessons}/{course.totalLessons} lessons
-                    {course.hasCertificate && <span className="ml-2 text-amber-400">🏆 Certified</span>}
+                    {course.hasCertificate && <span className="ml-2 text-amber-500 font-bold tracking-wider">🏆 CERTIFIED</span>}
                   </p>
                 </div>
                 <span className="text-sm font-bold text-brand-300">{course.completionPct}%</span>
               </div>
-              <div className="mt-3 h-2 overflow-hidden rounded-full bg-foreground/10">
+              <div className="mt-3 h-2 overflow-hidden rounded-full bg-foreground/10 border border-border/20">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-brand-500 to-cyan-400 transition-all duration-700"
+                  className="h-full rounded-full bg-gradient-to-r from-brand-500 to-cyan-400 transition-all duration-700 shadow-[0_0_10px_currentColor] opacity-80"
                   style={{ width: `${course.completionPct}%` }}
                 />
               </div>
             </div>
           ))}
           {data.courseStats.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-16 text-center glass-card rounded-2xl border-dashed border-2 border-border/50/50">
-              <div className="mb-4 rounded-full bg-brand-500/10 p-4 ring-1 ring-brand-500/20">
+            <div className="flex flex-col items-center justify-center py-16 text-center glass-card rounded-3xl border-dashed border-2 border-border/50 bg-card/30">
+              <div className="mb-4 rounded-full bg-brand-500/10 p-4 ring-1 ring-brand-500/20 shadow-sm">
                 <BookOpen className="h-8 w-8 text-brand-400" />
               </div>
               <h3 className="mb-2 text-xl font-bold text-foreground">No Learning Data Yet</h3>
-              <p className="mb-6 max-w-sm text-sm text-muted-foreground">Generate your first course to start tracking your XP, streaks, and completion rates.</p>
-              <button onClick={() => navigate('/dashboard')} className="btn-primary">
-                <PlusCircle className="mr-2 h-4 w-4" /> Start Learning
+              <p className="mb-6 max-w-sm text-sm text-muted-foreground font-medium">Generate your first course to start tracking your XP, streaks, and completion rates.</p>
+              <button onClick={() => navigate('/dashboard')} className="flex items-center justify-center gap-2 h-11 px-6 rounded-xl bg-primary text-primary-foreground font-bold hover:bg-primary/90 transition-all shadow-md hover:-translate-y-0.5">
+                <PlusCircle className="h-4 w-4" /> Start Learning
               </button>
             </div>
           )}
@@ -148,7 +148,7 @@ export default function AnalyticsPage() {
         <h2 className="mb-4 flex items-center gap-2 font-display text-xl font-bold text-foreground">
           <Flame className="h-5 w-5 text-orange-400" /> Activity Calendar
         </h2>
-        <div className="glass-card rounded-2xl p-5">
+        <div className="glass-card rounded-3xl p-6 shadow-sm overflow-x-auto">
           <ActivityGrid activityHistory={data.activityHistory} />
         </div>
       </section>
