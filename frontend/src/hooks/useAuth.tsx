@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import toast from 'react-hot-toast';
 import api from '../utils/api';
+import { authService } from '../services/authService';
 
 const AuthContext = createContext(null);
 const hasAuth0Config = !!(import.meta.env.VITE_AUTH0_DOMAIN && import.meta.env.VITE_AUTH0_CLIENT_ID);
