@@ -7,19 +7,26 @@ export function useAIChat(courseId: string, lessonId: string, isOpen: boolean) {
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
   const [hasFetchedHistory, setHasFetchedHistory] = useState(false);
+  const [loadingHistory, setLoadingHistory] = useState(false);
+  const [historyError, setHistoryError] = useState<string | null>(null);
   
   const abortControllerRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     let mounted = true;
     if (isOpen && !hasFetchedHistory) {
+      setLoadingHistory(true);
+      setHistoryError(null);
       lessonService.getLesson(courseId, lessonId)
-        .then(([data]) => {
-          if (mounted && data && (data as any).lesson?.aiConversation?.length) {
-            setMessages((data as any).lesson.aiConversation);
-          }
+        .then(([data, err]) => {
           if (mounted) {
+            if (err) {
+              setHistoryError(err);
+            } else if (data && (data as any).lesson?.aiConversation?.length) {
+              setMessages((data as any).lesson.aiConversation);
+            }
             setHasFetchedHistory(true);
+            setLoadingHistory(false);
           }
         });
     }
@@ -135,6 +142,8 @@ export function useAIChat(courseId: string, lessonId: string, isOpen: boolean) {
     setInput,
     sending,
     hasFetchedHistory,
+    loadingHistory,
+    historyError,
     sendMessage,
     stopGenerating,
     clearChat

@@ -28,7 +28,7 @@ function ToolCard({
         active
           ? 'border-primary bg-primary/10 shadow-md shadow-primary/10'
           : 'border-border/30 bg-card hover:bg-accent/50 hover:border-border/30 hover:shadow-sm'
-      } disabled:cursor-not-allowed disabled:opacity-60`}
+      } disabled:opacity-60 ${disabled ? 'cursor-progress' : 'cursor-pointer'}`}
     >
       <div className="flex items-start gap-4">
         <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border transition-colors ${
@@ -161,7 +161,7 @@ const StudyTools = React.memo(({
                   size="lg"
                   disabled={saving}
                   onClick={() => updateProgress({ notes }, 'Notes saved')}
-                  className="w-full"
+                  className={`w-full ${saving ? 'cursor-progress' : ''}`}
                 >
                   {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
                   {saving ? 'Saving...' : 'Save Notes'}
@@ -189,9 +189,9 @@ const StudyTools = React.memo(({
             { bookmarked: !lesson.bookmarked },
             lesson.bookmarked ? 'Bookmark removed' : 'Lesson bookmarked',
           )}
-          className={`flex items-center justify-center gap-2 w-full h-11 rounded-xl text-sm font-medium transition-colors border ${lesson.bookmarked ? 'bg-primary/10 border-primary text-primary' : 'bg-card border-border text-foreground hover:bg-muted'}`}
+          className={`flex items-center justify-center gap-2 w-full h-11 rounded-xl text-sm font-medium transition-colors border ${lesson.bookmarked ? 'bg-primary/10 border-primary text-primary' : 'bg-card border-border text-foreground hover:bg-muted'} ${saving ? 'cursor-progress opacity-60' : ''}`}
         >
-          {lesson.bookmarked ? <Check className="h-4 w-4" /> : <Bookmark className="h-4 w-4" />}
+          {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : lesson.bookmarked ? <Check className="h-4 w-4" /> : <Bookmark className="h-4 w-4" />}
           {lesson.bookmarked ? 'Bookmarked' : 'Bookmark Lesson'}
         </button>
         <div className="w-full flex justify-center">

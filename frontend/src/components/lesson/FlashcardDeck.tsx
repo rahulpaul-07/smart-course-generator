@@ -63,7 +63,7 @@ const FlashcardDeck = React.memo(({ lessonId, courseId, embedded = false }: { le
             Turn this lesson into an interactive review deck. Great for memorizing key concepts.
           </p>
           {error && <p className="mb-4 text-sm font-medium text-destructive">{error}</p>}
-          <Button variant="outline" onClick={generateFlashcards} disabled={loading} size="lg" className="w-full sm:w-auto">
+          <Button variant="outline" onClick={generateFlashcards} disabled={loading} size="lg" className={`w-full sm:w-auto ${loading ? 'cursor-progress' : ''}`}>
             {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Layers3 className="mr-2 h-4 w-4" />}
             {loading ? 'Creating Deck...' : 'Generate Flashcards'}
           </Button>

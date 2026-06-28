@@ -8,6 +8,8 @@ import { ChatHeader } from '../chat/ChatHeader';
 import { ChatMessageList } from '../chat/ChatMessageList';
 import { ChatComposer } from '../chat/ChatComposer';
 import { SuggestedPrompts } from '../chat/SuggestedPrompts';
+import { Skeleton } from '../ui/skeleton';
+import { ErrorState } from '../ui/ErrorState';
 
 export default function AIChatPanel({ lessonId, courseId, lessonTitle, isOpen, onClose }: { lessonId: string, courseId: string, lessonTitle: string, isOpen: boolean, onClose: () => void }) {
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -19,6 +21,8 @@ export default function AIChatPanel({ lessonId, courseId, lessonTitle, isOpen, o
     setInput,
     sending,
     hasFetchedHistory,
+    loadingHistory,
+    historyError,
     sendMessage,
     stopGenerating,
     clearChat
@@ -55,24 +59,38 @@ export default function AIChatPanel({ lessonId, courseId, lessonTitle, isOpen, o
         className="flex-1 space-y-6 overflow-y-auto p-5 scroll-smooth relative" 
         aria-live="polite"
       >
-        {!messages.length && hasFetchedHistory && (
-          <SuggestedPrompts onSelect={(text) => {
-            setInput(text);
-            sendMessage(text, scrollToBottom, inputRef);
-          }} />
-        )}
+        {loadingHistory ? (
+          <div className="space-y-4 pt-4">
+            <Skeleton className="h-20 w-3/4 rounded-xl" />
+            <Skeleton className="h-16 w-3/4 rounded-xl ml-auto" />
+            <Skeleton className="h-24 w-3/4 rounded-xl" />
+          </div>
+        ) : historyError ? (
+          <div className="pt-4">
+            <ErrorState title="Failed to load chat history" description="Please try reopening the chat." />
+          </div>
+        ) : (
+          <>
+            {!messages.length && hasFetchedHistory && (
+              <SuggestedPrompts onSelect={(text) => {
+                setInput(text);
+                sendMessage(text, scrollToBottom, inputRef);
+              }} />
+            )}
 
-        <ChatMessageList 
-          messages={messages} 
-          sending={sending} 
-          onRegenerate={(index) => {
-            const previousMessages = messages.slice(0, index);
-            setMessages(previousMessages);
-            sendMessage(messages[index - 1].content, scrollToBottom, inputRef);
-          }} 
-        />
+            <ChatMessageList 
+              messages={messages} 
+              sending={sending} 
+              onRegenerate={(index) => {
+                const previousMessages = messages.slice(0, index);
+                setMessages(previousMessages);
+                sendMessage(messages[index - 1].content, scrollToBottom, inputRef);
+              }} 
+            />
+          </>
+        )}
         
-        <div ref={messagesEndRef} className="h-2" />
+        <div ref={messagesEndRef} className="h-px w-full" />
       </div>
 
       {showScrollBottom && (

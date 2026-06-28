@@ -95,7 +95,7 @@ const PracticeLab = React.memo(({ lessonId, courseId, embedded = false }: { less
             Generate a realistic mini-project or hands-on challenge to apply what you've learned.
           </p>
           {error && <p className="mb-4 text-sm font-medium text-destructive">{error}</p>}
-          <Button aria-label="Create Practice Lab" disabled={loading} onClick={() => generateLab()} size="lg" className="w-full sm:w-auto bg-cyan-600 hover:bg-cyan-700 text-foreground">
+          <Button aria-label="Create Practice Lab" disabled={loading} onClick={() => generateLab()} size="lg" className={`w-full sm:w-auto bg-cyan-600 hover:bg-cyan-700 text-foreground ${loading ? 'cursor-progress' : ''}`}>
             {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <FlaskConical className="mr-2 h-4 w-4" />}
             {loading ? 'Designing Lab...' : 'Create Practice Lab'}
           </Button>

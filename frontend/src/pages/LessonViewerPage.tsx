@@ -3,6 +3,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, BookOpen } from 'lucide-react';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { Button } from '../components/ui/button';
+import { ErrorState } from '../components/ui/ErrorState';
+import { EmptyState } from '../components/ui/EmptyState';
+import { LessonViewerSkeleton } from '../components/lesson/LessonViewerSkeleton';
 
 import { useFocusMode } from '../hooks/useFocusMode';
 import { useLessonNavigation } from '../hooks/useLessonNavigation';
@@ -23,7 +26,9 @@ export default function LessonViewerPage() {
   const { 
     course, 
     lesson, 
-    loading, 
+    loading,
+    error,
+    refetch,
     prevLesson, 
     nextLesson, 
     updateCurrentLesson,
@@ -48,26 +53,58 @@ export default function LessonViewerPage() {
   } = useLessonProgress(courseId, lessonId, updateCurrentLesson, setLesson);
 
   if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-        <LoadingSpinner text="Loading lesson workspace..." />
-      </div>
-    );
+    return <LessonViewerSkeleton />;
   }
 
-  if (!lesson) {
+  if (error || !lesson) {
     return (
-      <div className="px-4 lg:px-8 py-24 flex flex-col items-center justify-center text-center">
-        <div className="h-20 w-20 bg-muted/50 rounded-full flex items-center justify-center mb-6">
-          <BookOpen className="h-10 w-10 text-muted-foreground/50" />
+      <LessonLayout
+        isFocusMode={isFocusMode}
+        course={course}
+        courseId={courseId}
+        lessonId={lessonId}
+        lessonTitle={lesson?.title || 'Lesson'}
+        lessonContent={[]}
+        hasContent={false}
+        generating={false}
+        addingVideos={false}
+        showChat={showChat}
+        setShowChat={setShowChat}
+        lessonScrollRef={lessonScrollRef}
+        addVideos={() => {}}
+        updateCurrentLesson={updateCurrentLesson}
+        onNavigateBack={() => navigate(`/course/${courseId}`)}
+        onSelectLesson={(id) => navigate(`/course/${courseId}/lesson/${id}`)}
+      >
+        <LessonHeader 
+          courseId={courseId}
+          course={course}
+          lesson={lesson}
+          prevLesson={prevLesson}
+          nextLesson={nextLesson}
+          isFocusMode={isFocusMode}
+          setIsFocusMode={setIsFocusMode}
+        />
+        <div className="py-24 px-4 max-w-4xl mx-auto w-full">
+          {error ? (
+            <ErrorState
+              title="Unable to load lesson"
+              description="We couldn't load this lesson. Please try again."
+              onRetry={refetch}
+            />
+          ) : (
+            <EmptyState
+              title="Lesson not found"
+              description="The lesson you are looking for does not exist in this course."
+              action={
+                <Button size="lg" className="rounded-xl shadow-sm" onClick={() => navigate(`/course/${courseId}`)}>
+                  Back to Course Overview
+                </Button>
+              }
+            />
+          )}
         </div>
-        <h2 className="text-2xl font-bold text-foreground mb-3">Lesson not found</h2>
-        <p className="text-muted-foreground text-lg max-w-md">The lesson you are looking for does not exist in this course.</p>
-        <Button variant="secondary" onClick={() => navigate(`/course/${courseId}`)} className="mt-8 gap-2">
-          <ArrowLeft className="w-4 h-4" />
-          Back to Course Overview
-        </Button>
-      </div>
+      </LessonLayout>
     );
   }
 

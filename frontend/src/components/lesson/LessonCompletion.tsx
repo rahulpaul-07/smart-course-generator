@@ -56,7 +56,7 @@ const LessonCompletion = React.memo(({ course, courseId, lesson, onLessonUpdate 
 
       <div className="mt-5 flex flex-wrap gap-3">
         {!lesson.completedAt && (
-          <Button type="button" onClick={() => setCompleted(true)} disabled={saving}>
+          <Button type="button" onClick={() => setCompleted(true)} disabled={saving} className={saving ? 'cursor-progress' : ''}>
             {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <CheckCircle2 className="h-4 w-4 mr-2" />}
             Complete lesson
           </Button>
@@ -80,7 +80,8 @@ const LessonCompletion = React.memo(({ course, courseId, lesson, onLessonUpdate 
           </Button>
         )}
         {lesson.completedAt && (
-          <Button type="button" onClick={() => setCompleted(false)} disabled={saving} variant="secondary">
+          <Button type="button" onClick={() => setCompleted(false)} disabled={saving} variant="secondary" className={saving ? 'cursor-progress' : ''}>
+            {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
             Mark incomplete
           </Button>
         )}

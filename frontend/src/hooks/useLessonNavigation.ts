@@ -6,6 +6,7 @@ export function useLessonNavigation(courseId: string | undefined, lessonId: stri
   const [lesson, setLesson] = useState<any>(null);
   const [course, setCourse] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const updateCurrentLesson = useCallback((updatedLesson: any) => {
     setLesson(updatedLesson);
@@ -23,40 +24,64 @@ export function useLessonNavigation(courseId: string | undefined, lessonId: stri
     });
   }, []);
 
+  const fetchLesson = useCallback(async (abortController?: AbortController) => {
+    setLoading(true);
+    setError(null);
+    const controller = abortController || new AbortController();
+    
+    const [data, err] = await lessonService.getLesson(courseId!, lessonId!, {
+      signal: controller.signal
+    });
+    
+    if (data) {
+      setCourse((data as any).course);
+      setLesson((data as any).lesson);
+
+      lessonService.updateProgress(lessonId!, { opened: true }, { signal: controller.signal })
+        .then(([updatedLesson]) => {
+          if (updatedLesson) updateCurrentLesson(updatedLesson);
+        }).catch(() => {});
+    } else if (err && err !== 'CanceledError' && err !== 'AbortError') {
+      setError(err);
+    }
+    
+    setLoading(false);
+  }, [courseId, lessonId, updateCurrentLesson]);
+
   useEffect(() => {
     let cancelled = false;
     const abortController = new AbortController();
 
-    async function loadLesson() {
-      setLoading(true);
-      const [data, error] = await lessonService.getLesson(courseId!, lessonId!, {
-        signal: abortController.signal
-      });
-      
-      if (!cancelled && data) {
-        setCourse((data as any).course);
-        setLesson((data as any).lesson);
-
-        lessonService.updateProgress(lessonId!, { opened: true }, { signal: abortController.signal })
-          .then(([updatedLesson]) => {
-            if (!cancelled && updatedLesson) updateCurrentLesson(updatedLesson);
-          });
-      } else if (!cancelled && error && error !== 'CanceledError' && error !== 'AbortError') {
-        // toast already handled by handleApi
-      }
-      
-      if (!cancelled) setLoading(false);
-    }
-
     if (courseId && lessonId) {
-      loadLesson();
+      setLoading(true);
+      setError(null);
+      
+      lessonService.getLesson(courseId, lessonId, {
+        signal: abortController.signal
+      }).then(([data, err]) => {
+        if (cancelled) return;
+        
+        if (data) {
+          setCourse((data as any).course);
+          setLesson((data as any).lesson);
+
+          lessonService.updateProgress(lessonId, { opened: true }, { signal: abortController.signal })
+            .then(([updatedLesson]) => {
+              if (!cancelled && updatedLesson) updateCurrentLesson(updatedLesson);
+            }).catch(() => {});
+        } else if (err && err !== 'CanceledError' && err !== 'AbortError') {
+          setError(err);
+        }
+        
+        setLoading(false);
+      });
     }
 
     return () => {
       cancelled = true;
       abortController.abort();
     };
-  }, [courseId, lessonId]);
+  }, [courseId, lessonId, updateCurrentLesson]);
 
   const allLessons = course?.modules?.flatMap((m: any) => m.lessons) || [];
   const currentLessonIndex = allLessons.findIndex((l: any) => l._id === lessonId);
@@ -67,6 +92,8 @@ export function useLessonNavigation(courseId: string | undefined, lessonId: stri
     course,
     lesson,
     loading,
+    error,
+    refetch: fetchLesson,
     prevLesson,
     nextLesson,
     updateCurrentLesson,

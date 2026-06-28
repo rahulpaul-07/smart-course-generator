@@ -36,6 +36,7 @@ export default function LessonGenerator({
             type="button"
             onClick={() => onPickerChange(true)}
             disabled={isGenerating}
+            className={isGenerating ? 'cursor-progress' : ''}
           >
             {isGenerating ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Sparkles className="h-4 w-4 mr-2" />}
             {isGenerating
