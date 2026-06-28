@@ -7,9 +7,13 @@ import toast from 'react-hot-toast';
 import { EmptyState } from '../components/ui/EmptyState';
 import { Button } from '../components/ui/button';
 
+import { ErrorState } from '../components/ui/ErrorState';
+import { CommunitySkeleton } from '../components/courses/CommunitySkeleton';
+
 export default function CommunityTemplatesPage() {
   const [templates, setTemplates] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [cloningId, setCloningId] = useState(null);
   const navigate = useNavigate();
 
@@ -18,8 +22,13 @@ export default function CommunityTemplatesPage() {
   }, []);
 
   const fetchTemplates = () => {
+    setLoading(true);
+    setError(false);
     collabService.getTemplates()
-      .then(([data]) => setTemplates((data as any) || []))
+      .then(([data, err]) => {
+        if (err || !data) setError(true);
+        else setTemplates((data as any) || []);
+      })
       .finally(() => setLoading(false));
   };
 
@@ -61,7 +70,17 @@ export default function CommunityTemplatesPage() {
     }
   };
 
-  if (loading) return <div className="page-shell py-20"><LoadingSpinner /></div>;
+  if (loading) return <CommunitySkeleton />;
+  
+  if (error) return (
+    <div className="page-shell py-20">
+      <ErrorState 
+        title="Unable to load community templates" 
+        description="We couldn't retrieve the marketplace courses. Please try again."
+        onRetry={fetchTemplates}
+      />
+    </div>
+  );
 
   return (
     <div className="page-shell">
@@ -140,7 +159,7 @@ export default function CommunityTemplatesPage() {
             <button
               onClick={() => handleClone(template._id)}
               disabled={cloningId === template._id}
-              className="w-full flex items-center justify-center gap-2 rounded-xl bg-brand-500/10 px-4 py-2.5 text-sm font-semibold text-brand-300 transition hover:bg-brand-500/20 disabled:opacity-50"
+              className={`w-full flex items-center justify-center gap-2 rounded-xl bg-brand-500/10 px-4 py-2.5 text-sm font-semibold text-brand-300 transition hover:bg-brand-500/20 disabled:opacity-50 ${cloningId === template._id ? 'cursor-progress' : ''}`}
             >
               {cloningId === template._id ? (
                 <LoadingSpinner text="Cloning..." size="sm" />
