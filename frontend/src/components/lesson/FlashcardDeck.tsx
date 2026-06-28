@@ -1,10 +1,12 @@
 import { ArrowLeft, ArrowRight, Layers3, Loader2, RefreshCw, Undo2 } from 'lucide-react';
-import { useState } from 'react';
-import api from '../../utils/api';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { lessonService } from '../../services/lessonService';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import { calculatePercentage } from '../../utils/percentages';
 
-export default function FlashcardDeck({ lessonId, courseId, embedded = false }: { lessonId: string, courseId: string, embedded?: boolean }) {
+const FlashcardDeck = React.memo(({ lessonId, courseId, embedded = false }: { lessonId: string, courseId: string, embedded?: boolean }) => {
   const [flashcards, setFlashcards] = useState<any[]>([]);
   const [index, setIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
@@ -16,16 +18,16 @@ export default function FlashcardDeck({ lessonId, courseId, embedded = false }: 
     setLoading(true);
     setError('');
 
-    try {
-      const { data } = await api.post(`/courses/${courseId}/lessons/${lessonId}/flashcards`);
+    const [data, fetchError] = await lessonService.generateFlashcards(courseId, lessonId);
+    setLoading(false);
+
+    if (fetchError) {
+      setError(fetchError);
+    } else if (data) {
       setFlashcards(data.flashcards);
       setSessionDeck([...data.flashcards]);
       setIndex(0);
       setShowAnswer(false);
-    } catch (requestError: any) {
-      setError(requestError.response?.data?.error || 'Could not generate flashcards.');
-    } finally {
-      setLoading(false);
     }
   }
 
@@ -71,7 +73,7 @@ export default function FlashcardDeck({ lessonId, courseId, embedded = false }: 
   }
 
   const card = sessionDeck[index] || flashcards[index];
-  const progress = ((index + 1) / sessionDeck.length) * 100;
+  const progress = calculatePercentage(index + 1, sessionDeck.length);
 
   return (
     <div className={embedded ? '' : 'rounded-2xl border border-border bg-card p-6 shadow-sm'}>
@@ -79,7 +81,7 @@ export default function FlashcardDeck({ lessonId, courseId, embedded = false }: 
         <div className="flex-1">
           <div className="flex justify-between text-xs font-medium text-muted-foreground mb-2">
             <span>Card {index + 1} of {sessionDeck.length}</span>
-            <span>{Math.round(progress)}%</span>
+            <span>{progress}%</span>
           </div>
           <Progress value={progress} className="h-2" />
         </div>
@@ -187,4 +189,6 @@ export default function FlashcardDeck({ lessonId, courseId, embedded = false }: 
       )}
     </div>
   );
-}
+});
+
+export default FlashcardDeck;

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Globe, Heart, Copy, Star, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import api from '../utils/api';
+import { collabService } from '../services/collabService';
 import LoadingSpinner from '../components/LoadingSpinner';
 import toast from 'react-hot-toast';
 import { EmptyState } from '../components/ui/EmptyState';
@@ -18,9 +18,8 @@ export default function CommunityTemplatesPage() {
   }, []);
 
   const fetchTemplates = () => {
-    api.get('/collab/templates')
-      .then(res => setTemplates(res.data))
-      .catch(console.error)
+    collabService.getTemplates()
+      .then(([data]) => setTemplates((data as any) || []))
       .finally(() => setLoading(false));
   };
 
@@ -31,15 +30,12 @@ export default function CommunityTemplatesPage() {
         ? { ...t, upvotesCount: (t.upvotesCount || 0) + 1, hasUpvoted: true } 
         : t
     ));
-    try {
-      const res = await api.post(`/collab/templates/${courseId}/upvote`);
-      // Sync with server if successful
+    const [data, error] = await collabService.upvoteTemplate(courseId);
+    if (data) {
       setTemplates(prev => prev.map(t => 
-        t._id === courseId ? { ...t, upvotesCount: res.data.upvotesCount } : t
+        t._id === courseId ? { ...t, upvotesCount: (data as any).upvotesCount } : t
       ));
-    } catch (e) { 
-      // Revert on failure
-      toast.error('Failed to upvote');
+    } else if (error) {
       setTemplates(prev => prev.map(t => 
         t._id === courseId 
           ? { ...t, upvotesCount: Math.max(0, (t.upvotesCount || 1) - 1), hasUpvoted: false } 
@@ -49,19 +45,18 @@ export default function CommunityTemplatesPage() {
   };
 
   const handleRate = async (courseId, rating) => {
-    try {
-      const res = await api.post(`/collab/templates/${courseId}/rate`, { rating });
-      setTemplates(templates.map(t => t._id === courseId ? { ...t, averageRating: res.data.averageRating } : t));
-    } catch (e) { console.error(e); }
+    const [data] = await collabService.rateTemplate(courseId, rating);
+    if (data) {
+      setTemplates(templates.map(t => t._id === courseId ? { ...t, averageRating: (data as any).averageRating } : t));
+    }
   };
 
   const handleClone = async (courseId) => {
     setCloningId(courseId);
-    try {
-      const res = await api.post(`/collab/templates/${courseId}/clone`);
-      navigate(`/course/${res.data.courseId}`);
-    } catch (e) {
-      console.error(e);
+    const [data] = await collabService.cloneTemplate(courseId);
+    if (data) {
+      navigate(`/course/${(data as any).courseId}`);
+    } else {
       setCloningId(null);
     }
   };

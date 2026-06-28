@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { GoogleLogin } from '@react-oauth/google';
 import AuthLayout, { GoogleIcon } from '../components/AuthLayout';
 import { useAuth } from '../hooks/useAuth';
-import api from '../utils/api';
+import { authService } from '../services/authService';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -39,14 +39,11 @@ export default function LoginPage() {
     }
     setLoading(true);
 
-    try {
-      const { data } = await api.post('/auth/login', { email, password });
+    const [data] = await authService.login({ email, password });
+    if (data) {
       login(data);
-    } catch (error: any) {
-      toast.error(error.response?.data?.error || 'Invalid credentials. Please try again.');
-    } finally {
-      setLoading(false);
     }
+    setLoading(false);
   }
 
   return (

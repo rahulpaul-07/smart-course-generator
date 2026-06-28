@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { GoogleLogin } from '@react-oauth/google';
 import AuthLayout, { GoogleIcon } from '../components/AuthLayout';
 import { useAuth } from '../hooks/useAuth';
-import api from '../utils/api';
+import { authService } from '../services/authService';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -46,15 +46,12 @@ export default function SignupPage() {
     
     setLoading(true);
 
-    try {
-      const { data } = await api.post('/auth/register', { name, email, password });
+    const [data] = await authService.register({ name, email, password });
+    if (data) {
       login(data);
       navigate('/dashboard');
-    } catch (error: any) {
-      toast.error(error.response?.data?.error || 'Failed to create account. Email might be in use.');
-    } finally {
-      setLoading(false);
     }
+    setLoading(false);
   }
 
   return (

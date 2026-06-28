@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Settings as SettingsIcon, Bell, Moon, Sun, Monitor, Shield, Key } from 'lucide-react';
 import toast from 'react-hot-toast';
-import api from '../utils/api';
+import { userService } from '../services/userService';
 import { useAuth } from '../hooks/useAuth';
 import { PageContainer } from '../components/layout/PageContainer';
 import { SectionHeader } from '../components/ui/SectionHeader';
@@ -27,15 +27,12 @@ export default function SettingsPage() {
 
   const handleSave = async () => {
     setSaving(true);
-    try {
-      const { data } = await api.put('/user/settings', settings);
+    const [data, error] = await userService.updateSettings(settings);
+    setSaving(false);
+
+    if (!error && data) {
       login({ ...user, ...data });
       toast.success('Settings updated successfully');
-    } catch (e) {
-      toast.error('Failed to update settings');
-      console.error(e);
-    } finally {
-      setSaving(false);
     }
   };
 

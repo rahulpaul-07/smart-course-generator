@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { formatDistanceToNow } from 'date-fns';
+import { formatTimeDistance } from '../utils/dates';
 import { Activity, BookOpen, Award, PlusCircle, Trophy } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import api from '../utils/api';
+import { collabService } from '../services/collabService';
 import { EmptyState } from './ui/EmptyState';
 import { Activity as ActivityIcon } from 'lucide-react';
 export default function ActivityFeed() {
@@ -11,9 +11,10 @@ export default function ActivityFeed() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    api.get('/collab/activity')
-      .then(res => setActivities(res.data))
-      .catch(console.error)
+    collabService.getActivity()
+      .then(([data]) => {
+        if (data) setActivities(data as any);
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -77,7 +78,7 @@ export default function ActivityFeed() {
                 <span className="capitalize">{activity.action.split('_').join(' ').toLowerCase()}</span>
               </span>
               <span>•</span>
-              <span className="uppercase tracking-wider text-[10px]">{formatDistanceToNow(new Date(activity.createdAt), { addSuffix: true })}</span>
+              <span className="uppercase tracking-wider text-[10px]">{formatTimeDistance(activity.createdAt)}</span>
               
               {activity.xpEarned > 0 && (
                 <>

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Code, Database, BrainCircuit, Globe, Palette, Calculator, CheckCircle2, ChevronRight, Loader2, Sparkles } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
-import api from '../utils/api';
+import { userService } from '../services/userService';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import toast from 'react-hot-toast';
@@ -44,19 +44,16 @@ export default function OnboardingPage() {
     }
 
     setLoading(true);
-    try {
-      const { data } = await api.put('/user/onboarding', {
-        skillLevel,
-        learningInterests: interests,
-      });
-      // Update local user state
+    const [data, error] = await userService.updateOnboarding({
+      skillLevel,
+      learningInterests: interests,
+    });
+    setLoading(false);
+
+    if (!error && data) {
       login({ ...user, ...data });
       toast.success('Profile setup complete!');
       navigate('/dashboard');
-    } catch (error) {
-      toast.error('Failed to complete onboarding.');
-    } finally {
-      setLoading(false);
     }
   };
 

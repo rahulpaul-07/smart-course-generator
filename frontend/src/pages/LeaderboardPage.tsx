@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Trophy, Flame, Zap, Award } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import api from '../utils/api';
+import { collabService } from '../services/collabService';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { EmptyState } from '../components/ui/EmptyState';
 
@@ -11,9 +11,8 @@ export default function LeaderboardPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    api.get('/collab/leaderboard')
-      .then(res => setLeaders(res.data))
-      .catch(console.error)
+    collabService.getLeaderboard()
+      .then(([data]) => setLeaders((data as any) || []))
       .finally(() => setLoading(false));
   }, []);
 

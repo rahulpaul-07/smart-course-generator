@@ -1,4 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext } from 'react';
+import { useLocalStorage } from '../hooks/useStorage';
+import { STORAGE_KEYS } from '../utils/constants';
 
 interface LayoutContextType {
   isSidebarCollapsed: boolean;
@@ -9,15 +11,7 @@ interface LayoutContextType {
 const LayoutContext = createContext<LayoutContextType | undefined>(undefined);
 
 export function LayoutProvider({ children }: { children: React.ReactNode }) {
-  // Load initial state from localStorage, default to false (expanded)
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
-    const saved = localStorage.getItem('sidebarCollapsed');
-    return saved ? JSON.parse(saved) : false;
-  });
-
-  useEffect(() => {
-    localStorage.setItem('sidebarCollapsed', JSON.stringify(isSidebarCollapsed));
-  }, [isSidebarCollapsed]);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useLocalStorage<boolean>(STORAGE_KEYS.SIDEBAR_COLLAPSED, false);
 
   const toggleSidebar = () => setIsSidebarCollapsed(prev => !prev);
   const setSidebarCollapsed = (collapsed: boolean) => setIsSidebarCollapsed(collapsed);

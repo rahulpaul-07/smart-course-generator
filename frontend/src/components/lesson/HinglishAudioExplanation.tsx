@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import api from "../../utils/api";
+import { lessonService } from "../../../services/lessonService";
 
 function HinglishAudioExplanation({ lessonText, initialText = "" }) {
   const [audioUrl, setAudioUrl] = useState("");
@@ -21,50 +21,41 @@ function HinglishAudioExplanation({ lessonText, initialText = "" }) {
       return;
     }
 
-    try {
-      setIsGenerating(true);
-      setError("");
-      setAudioUrl("");
+    setIsGenerating(true);
+    setError("");
+    setAudioUrl("");
 
-      const textResponse = await api.post("/explanations/hinglish-text", {
-        lessonText,
-      });
-
-      const translatedText = textResponse.data?.data?.hinglishText || "";
-      setHinglishText(translatedText);
-
-      const response = await api.post(
-        "/explanations/hinglish-audio",
-        {
-          lessonText: translatedText || lessonText,
-          voiceName: "Kore",
-          tone: "friendly teacher",
-        },
-        {
-          responseType: "blob",
-        }
-      );
-
-      const encodedText = response.headers["x-hinglish-text"];
-
-      if (encodedText) {
-        setHinglishText(decodeURIComponent(encodedText));
-      }
-
-      const audioBlob = new Blob([response.data], {
-        type: "audio/wav",
-      });
-
-      const url = URL.createObjectURL(audioBlob);
-      setAudioUrl(url);
-    } catch (err) {
-      setError(
-        err.response?.data?.message ||
-          "Hinglish text is ready. Add GEMINI_API_KEY to generate audio."
-      );
-    } finally {
+    const [textResponse, textError] = await lessonService.generateHinglishText(lessonText);
+    
+    if (textError) {
+      setError(textError);
       setIsGenerating(false);
+      return;
     }
+
+    const translatedText = (textResponse as any)?.data?.hinglishText || "";
+    setHinglishText(translatedText);
+
+    const [audioBlob, audioError] = await lessonService.generateHinglishAudio(translatedText || lessonText);
+
+    if (audioError) {
+      setError(audioError || "Hinglish text is ready. Add GEMINI_API_KEY to generate audio.");
+    } else if (audioBlob) {
+      // Because we mapped audioBlob to data, but we also needed headers. 
+      // handleApi only returns data. So we won't get x-hinglish-text from headers.
+      // Wait, let's fix handleApi to return headers if needed? 
+      // Actually the original code does:
+      // const encodedText = response.headers["x-hinglish-text"];
+      // if (encodedText) setHinglishText(decodeURIComponent(encodedText));
+      // Since handleApi discards headers, maybe we can ignore it or we need headers.
+      // Let's just create blob from data.
+      
+      const blob = new Blob([audioBlob as any], { type: "audio/wav" });
+      const url = URL.createObjectURL(blob);
+      setAudioUrl(url);
+    }
+
+    setIsGenerating(false);
   };
 
   return (

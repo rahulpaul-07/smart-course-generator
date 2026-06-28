@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Trophy, Flame, Clock, BookOpen, Star, Copy, Heart, Zap, Award } from 'lucide-react';
-import api from '../utils/api';
+import { collabService } from '../services/collabService';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { EmptyState } from '../components/ui/EmptyState';
 
@@ -13,9 +13,11 @@ export default function PublicProfilePage() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    api.get(`/collab/profile/${userId}`)
-      .then(res => setProfileData(res.data))
-      .catch(err => setError(err.response?.data?.error || 'Failed to load profile'))
+    collabService.getPublicProfile(userId!)
+      .then(([data, fetchError]) => {
+        if (fetchError) setError(fetchError);
+        else setProfileData(data as any);
+      })
       .finally(() => setLoading(false));
   }, [userId]);
 

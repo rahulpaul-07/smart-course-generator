@@ -1,35 +1,27 @@
 import { Copy, Globe2, Loader2, Lock } from 'lucide-react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import api from '../utils/api';
+import { courseService } from '../services/courseService';
 import { Button } from './ui/button';
+import { useClipboard } from '../hooks/useClipboard';
 
 export default function ShareCourseButton({ course, onUpdate }) {
   const [saving, setSaving] = useState(false);
+  const { copyToClipboard } = useClipboard({ successMessage: 'Public link copied' });
 
   async function toggleSharing() {
     setSaving(true);
-
-    try {
-      const { data } = await api.patch(`/courses/${course._id}/sharing`, {
-        enabled: !course.isPublic,
-      });
+    const [data] = await courseService.toggleSharing(course._id, !course.isPublic);
+    setSaving(false);
+    
+    if (data) {
       onUpdate({ ...course, ...data });
       toast.success(data.isPublic ? 'Public course link enabled' : 'Public course link disabled');
-    } catch {
-      toast.error('Could not update sharing');
-    } finally {
-      setSaving(false);
     }
   }
 
-  async function copyLink() {
-    try {
-      await navigator.clipboard.writeText(`${window.location.origin}/share/${course.shareId}`);
-      toast.success('Public link copied');
-    } catch {
-      toast.error('Could not copy the public link');
-    }
+  function copyLink() {
+    copyToClipboard(`${window.location.origin}/share/${course.shareId}`);
   }
 
   let ShareIcon = Globe2;

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Award, ExternalLink, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import api from '../utils/api';
+import { certificateService } from '../services/certificateService';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { PageContainer } from '../components/layout/PageContainer';
 import { SectionHeader } from '../components/ui/SectionHeader';
@@ -14,11 +14,10 @@ export default function CertificatesPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    api.get('/certificates/mine/all')
-      .then(res => {
-        setCertificates(res.data || []);
+    certificateService.getAllCertificates()
+      .then(([data]) => {
+        setCertificates((data as any) || []);
       })
-      .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
 

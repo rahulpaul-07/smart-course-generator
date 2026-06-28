@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import LoadingSpinner from '../components/LoadingSpinner';
 import LessonAudioPlayer from '../components/lesson/LessonAudioPlayer';
 import LessonRenderer from '../components/lesson/LessonRenderer';
-import api from '../utils/api';
+import { courseService } from '../services/courseService';
 
 export default function SharedCoursePage() {
   const { shareId } = useParams();
@@ -13,19 +13,22 @@ export default function SharedCoursePage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get(`/public/courses/${shareId}`)
-      .then(({ data }) => {
-        setCourse(data);
+    courseService.getSharedCourse(shareId!)
+      .then(([data, fetchError]) => {
+        if (fetchError || !data) {
+          setCourse(null);
+          return;
+        }
+        setCourse(data as any);
 
-        for (const moduleDoc of data.modules || []) {
-          const lesson = moduleDoc.lessons?.find((item) => item.isEnriched);
+        for (const moduleDoc of (data as any).modules || []) {
+          const lesson = moduleDoc.lessons?.find((item: any) => item.isEnriched);
           if (lesson) {
             setSelectedLesson(lesson);
             break;
           }
         }
       })
-      .catch(() => setCourse(null))
       .finally(() => setLoading(false));
   }, [shareId]);
 

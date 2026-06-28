@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BarChart3, BookOpen, Brain, Clock, Flame, Target, TrendingDown, TrendingUp, Trophy, Zap, PlusCircle } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
-import api from '../utils/api';
+import { analyticsService } from '../services/analyticsService';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ActivityGrid from '../components/ActivityGrid';
 
@@ -12,9 +12,8 @@ export default function AnalyticsPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    api.get('/analytics/dashboard')
-      .then(({ data: d }) => setData(d))
-      .catch(() => setData(null))
+    analyticsService.getDashboard()
+      .then(([data, error]) => setData(error ? null : (data as any)))
       .finally(() => setLoading(false));
   }, []);
 

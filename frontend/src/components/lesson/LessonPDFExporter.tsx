@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Printer } from "lucide-react";
 import { Button } from '../ui/button';
 import { renderToStaticMarkup } from "react-dom/server";
@@ -159,7 +159,7 @@ const PDFDocument = ({ lesson }: { lesson: any }) => {
   );
 };
 
-const LessonPDFExporter = ({ lesson }: { lesson: any }) => {
+const LessonPDFExporter = React.memo(({ lesson, courseTitle = "Course" }: any) => {
   const [downloading, setDownloading] = useState(false);
 
   const handleDownloadPDF = async () => {
@@ -244,6 +244,6 @@ const LessonPDFExporter = ({ lesson }: { lesson: any }) => {
       {downloading ? "Preparing PDF..." : "Export to PDF"}
     </Button>
   );
-};
+});
 
 export default LessonPDFExporter;

@@ -3,9 +3,10 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Highlight, themes } from 'prism-react-renderer';
 import clsx from 'clsx';
+import { useClipboard } from '../../hooks/useClipboard';
 
 export default function CodeSnippet({ block }: { block: any }) {
-  const [copied, setCopied] = useState(false);
+  const { hasCopied, copyToClipboard } = useClipboard({ successMessage: '' });
 
   const availableLanguages = block.codes
     ? Object.entries(block.codes)
@@ -19,10 +20,8 @@ export default function CodeSnippet({ block }: { block: any }) {
     ? block.codes[selectedLang]
     : block.code || '') as string;
 
-  const handleCopy = async () => {
-    await navigator.clipboard.writeText(currentCode);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  const handleCopy = () => {
+    copyToClipboard(currentCode);
   };
 
   const getPrismLanguage = (lang: string) => {
@@ -76,13 +75,13 @@ export default function CodeSnippet({ block }: { block: any }) {
           onClick={handleCopy}
           className={clsx(
             "flex items-center gap-1.5 px-2 py-1.5 rounded-md transition-colors text-xs font-medium",
-            copied 
+            hasCopied 
               ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30" 
               : "hover:bg-foreground/10 text-muted-foreground hover:text-foreground border border-transparent"
           )}
           title="Copy code"
         >
-          {copied ? (
+          {hasCopied ? (
             <>
               <Check size={14} className="text-emerald-400" />
               <span>Copied</span>

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { User, Save, Camera, Mail, Sparkles, Loader2, BookOpen, Trophy } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
-import api from '../utils/api';
+import { userService } from '../services/userService';
 import { useAuth } from '../hooks/useAuth';
 import { PageContainer } from '../components/layout/PageContainer';
 import { SectionHeader } from '../components/ui/SectionHeader';
@@ -41,21 +41,18 @@ export default function ProfilePage() {
 
   const handleSave = async () => {
     setSaving(true);
-    try {
-      const { data } = await api.put('/user/profile', {
-        name: profile.name,
-        bio: profile.bio,
-        isProfilePublic: profile.isProfilePublic,
-        skillLevel: profile.skillLevel,
-        learningInterests: profile.learningInterests,
-      });
+    const [data, error] = await userService.updateProfile({
+      name: profile.name,
+      bio: profile.bio,
+      isProfilePublic: profile.isProfilePublic,
+      skillLevel: profile.skillLevel,
+      learningInterests: profile.learningInterests,
+    });
+    setSaving(false);
+
+    if (!error && data) {
       login({ ...user, ...data });
       toast.success('Profile updated successfully');
-    } catch (e) {
-      toast.error('Failed to update profile');
-      console.error(e);
-    } finally {
-      setSaving(false);
     }
   };
 

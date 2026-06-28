@@ -5,6 +5,7 @@ import {
   RotateCcw,
   Square,
 } from 'lucide-react';
+import { calculatePercentage } from '../../utils/percentages';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '../ui/button';
 import {
@@ -40,9 +41,7 @@ export default function LessonAudioPlayer({ lesson }) {
   const completedChunks = status === 'complete'
     ? speechQueue.length
     : currentChunk + Number(status === 'playing' || status === 'paused');
-  const progress = speechQueue.length
-    ? Math.round((completedChunks / speechQueue.length) * 100)
-    : 0;
+  const progress = calculatePercentage(completedChunks, speechQueue.length);
 
   useEffect(() => {
     if (!supported) return undefined;

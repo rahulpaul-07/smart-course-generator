@@ -1,12 +1,12 @@
 import { ArrowRight, Award, CheckCircle2, Circle, Loader2 } from 'lucide-react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import api from '../../utils/api';
+import { lessonService } from '../../services/lessonService';
 import { courseProgress, nextIncompleteLesson } from '../../utils/courseProgress';
 import { Button } from '../ui/button';
 
-export default function LessonCompletion({ course, courseId, lesson, onLessonUpdate }) {
+const LessonCompletion = React.memo(({ course, courseId, lesson, onLessonUpdate }: any) => {
   const navigate = useNavigate();
   const [saving, setSaving] = useState(false);
   const progress = courseProgress(course);
@@ -15,19 +15,16 @@ export default function LessonCompletion({ course, courseId, lesson, onLessonUpd
 
   async function setCompleted(completed) {
     setSaving(true);
-
-    try {
-      const { data } = await api.patch(`/courses/lessons/${lesson._id}/progress`, { completed });
+    const [data] = await lessonService.updateProgress(lesson._id, { completed });
+    setSaving(false);
+    
+    if (data) {
       onLessonUpdate(data);
 
       const unlocksCertificate = completed
         && !lesson.completedAt
         && progress.remainingLessons === 1;
       toast.success(unlocksCertificate ? 'Certificate unlocked!' : completed ? 'Lesson completed' : 'Lesson marked incomplete');
-    } catch {
-      toast.error('Could not update lesson completion');
-    } finally {
-      setSaving(false);
     }
   }
 
@@ -90,4 +87,6 @@ export default function LessonCompletion({ course, courseId, lesson, onLessonUpd
       </div>
     </section>
   );
-}
+});
+
+export default LessonCompletion;

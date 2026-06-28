@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Bookmark, Check, FlaskConical, Layers3, Loader2, MessageCircle, NotebookPen, Play, Save, ChevronDown, ChevronUp } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -50,14 +50,16 @@ function ToolCard({
   );
 }
 
-export default function StudyTools({
+const StudyTools = React.memo(({
   addingVideos,
   chatOpen,
+  courseId,
   lesson,
+  lessonId,
   onAddVideos,
   onLessonUpdate,
   onToggleChat,
-}: any) {
+}: any) => {
   const [activeTool, setActiveTool] = useState('');
   const [notes, setNotes] = useState(lesson.notes || '');
   const [saving, setSaving] = useState(false);
@@ -198,4 +200,6 @@ export default function StudyTools({
       </div>
     </aside>
   );
-}
+});
+
+export default StudyTools;

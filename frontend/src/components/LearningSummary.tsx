@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { courseProgress, mostRecentLesson } from '../utils/courseProgress';
 import { useAuth } from '../hooks/useAuth';
+import { calculatePercentage } from '../utils/percentages';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -32,7 +33,7 @@ export default function LearningSummary({ courses }: { courses: any[] }) {
     }
   }
 
-  const completion = totalLessons ? Math.round((completedLessons / totalLessons) * 100) : 0;
+  const completion = calculatePercentage(completedLessons, totalLessons);
   const completedCourses = courses.filter((course) => courseProgress(course).percentage === 100).length;
 
   const { user } = useAuth();

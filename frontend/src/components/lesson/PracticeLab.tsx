@@ -1,12 +1,12 @@
 import { Check, FlaskConical, Loader2, RefreshCw, TerminalSquare, AlertCircle } from 'lucide-react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import api from '../../utils/api';
+import { lessonService } from '../../services/lessonService';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
-export default function PracticeLab({ lessonId, courseId, embedded = false }: { lessonId: string, courseId: string, embedded?: boolean }) {
+const PracticeLab = React.memo(({ lessonId, courseId, embedded = false }: { lessonId: string, courseId: string, embedded?: boolean }) => {
   const [lab, setLab] = useState<any>(null);
   const [initialLoading, setInitialLoading] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -20,10 +20,9 @@ export default function PracticeLab({ lessonId, courseId, embedded = false }: { 
     async function fetchInitialLab() {
       if (!mounted) return;
       try {
-        const { data } = await api.post(`/courses/${courseId}/lessons/${lessonId}/lab`);
-        if (mounted) setLab(data.lab);
-      } catch (err: any) {
-        if (mounted) setError(err.response?.data?.error || 'Could not load practice lab.');
+        const [data, fetchError] = await lessonService.generateLab(courseId, lessonId);
+        if (mounted && fetchError) setError(fetchError);
+        if (mounted && data) setLab((data as any).lab);
       } finally {
         if (mounted) setInitialLoading(false);
       }
@@ -44,18 +43,17 @@ export default function PracticeLab({ lessonId, courseId, embedded = false }: { 
     setShowHint(false);
     setShowSuccess(false);
 
-    try {
-      const endpoint = `/courses/${courseId}/lessons/${lessonId}/lab${forceRegenerate ? '?force=true' : ''}`;
-      const { data } = await api.post(endpoint);
-      setLab(data.lab);
+    const [data, fetchError] = await lessonService.generateLab(courseId, lessonId, forceRegenerate);
+    setLoading(false);
+
+    if (fetchError) {
+      setError(fetchError);
+    } else if (data) {
+      setLab((data as any).lab);
       if (forceRegenerate) {
         setShowSuccess(true);
         setTimeout(() => setShowSuccess(false), 3000);
       }
-    } catch (requestError: any) {
-      setError(requestError.response?.data?.error || 'Could not create a practice lab.');
-    } finally {
-      setLoading(false);
     }
   }
 
@@ -206,4 +204,6 @@ export default function PracticeLab({ lessonId, courseId, embedded = false }: { 
       </CardContent>
     </Card>
   );
-}
+});
+
+export default PracticeLab;
