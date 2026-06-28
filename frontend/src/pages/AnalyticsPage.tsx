@@ -6,19 +6,61 @@ import { analyticsService } from '../services/analyticsService';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ActivityGrid from '../components/ActivityGrid';
 
+import { Button } from '../components/ui/button';
+import { AnalyticsSkeleton } from '../components/dashboard/AnalyticsSkeleton';
+import { ErrorState } from '../components/ui/ErrorState';
+import { EmptyState } from '../components/ui/EmptyState';
+import { Loader2 } from 'lucide-react';
+
 export default function AnalyticsPage() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [exportingCsv, setExportingCsv] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
+  const fetchAnalytics = () => {
+    setLoading(true);
+    setError(false);
     analyticsService.getDashboard()
-      .then(([data, error]) => setData(error ? null : (data as any)))
+      .then(([resData, err]) => {
+        if (err || !resData) {
+          setError(true);
+          setData(null);
+        } else {
+          setData(resData as any);
+        }
+      })
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    fetchAnalytics();
   }, []);
 
-  if (loading) return <div className="page-shell py-20"><LoadingSpinner text="Loading analytics..." /></div>;
-  if (!data) return <div className="page-shell py-20 text-center text-muted-foreground">Failed to load analytics.</div>;
+  if (loading) return <AnalyticsSkeleton />;
+  if (error || !data) return (
+    <div className="page-shell py-20">
+      <ErrorState 
+        title="Unable to load analytics" 
+        description="We couldn't retrieve your learning data at this time." 
+        onRetry={fetchAnalytics} 
+      />
+    </div>
+  );
+
+  if (data.courseStats.length === 0) {
+    return (
+      <div className="page-shell py-20">
+        <EmptyState 
+          icon={BarChart3}
+          title="No analytics yet"
+          description="Start learning and completing lessons to see your progress here."
+          action={<Button onClick={() => navigate('/dashboard')}>Explore Courses</Button>}
+        />
+      </div>
+    );
+  }
 
   // Prepare chart data
   const chartData = data.courseStats.map(c => ({
@@ -39,23 +81,34 @@ export default function AnalyticsPage() {
             <p className="mt-2 text-sm text-muted-foreground">Track your progress, identify strengths, and improve weak areas.</p>
           </div>
           <Button
-            onClick={() => {
-              const escapeCsv = (val: any) => {
-                if (val === null || val === undefined) return '""';
-                return '"' + String(val).replace(/"/g, '""') + '"';
-              };
-              const headers = ['Course', 'Completed Lessons', 'Total Lessons', 'Completion %'].map(escapeCsv);
-              const rows = data.courseStats.map((c: any) => [c.title, c.completedLessons, c.totalLessons, c.completionPct].map(escapeCsv));
-              const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
-              const blob = new Blob([csv], { type: 'text/csv' });
-              const url = window.URL.createObjectURL(blob);
-              const a = document.createElement('a');
-              a.href = url;
-              a.download = 'learning-analytics.csv';
-              a.click();
+            disabled={exportingCsv}
+            className={`shadow-sm ${exportingCsv ? 'cursor-progress' : ''}`}
+            onClick={async () => {
+              setExportingCsv(true);
+              try {
+                // Add a small synthetic delay if needed to show the button state, but the user requested no artificial delays.
+                // However, since it's synchronous CSV generation, it might happen instantly.
+                // We'll wrap in a Promise to allow React to render the disabled state briefly if it takes time.
+                await new Promise(resolve => setTimeout(resolve, 0));
+                const escapeCsv = (val: any) => {
+                  if (val === null || val === undefined) return '""';
+                  return '"' + String(val).replace(/"/g, '""') + '"';
+                };
+                const headers = ['Course', 'Completed Lessons', 'Total Lessons', 'Completion %'].map(escapeCsv);
+                const rows = data.courseStats.map((c: any) => [c.title, c.completedLessons, c.totalLessons, c.completionPct].map(escapeCsv));
+                const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'learning-analytics.csv';
+                a.click();
+              } finally {
+                setExportingCsv(false);
+              }
             }}
           >
-            Export CSV
+            {exportingCsv ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Exporting...</> : 'Export CSV'}
           </Button>
         </div>
 
