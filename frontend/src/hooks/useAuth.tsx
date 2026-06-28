@@ -30,13 +30,15 @@ export function AuthProvider({ children }) {
   const auth0SyncStarted = useRef(false);
 
   useEffect(() => {
-    api.get('/auth/me')
-      .then(({ data }) => setUser(data))
-      .catch(() => {
+    authService.getMe().then(([data, error]) => {
+      if (error) {
         setUser(null);
         localStorage.removeItem('token');
-      })
-      .finally(() => setLoadingSession(false));
+      } else {
+        setUser(data as any);
+      }
+      setLoadingSession(false);
+    });
 
     const handleUnauthorized = () => {
       setUser(null);
@@ -90,15 +92,21 @@ export function AuthProvider({ children }) {
     setSyncingAuth0(true);
 
     getAccessTokenSilently()
-      .then((token) => api.post('/auth/auth0-sync', {}, {
-        headers: { Authorization: `Bearer ${token}` },
-      }))
-      .then(({ data }) => setUser(data))
-      .catch((error) => {
-        auth0SyncStarted.current = false;
-        toast.error(error.response?.data?.error || 'Could not finish Google login');
-      })
-      .finally(() => setSyncingAuth0(false));
+      .then(async (token) => {
+        // Just setting the token on api defaults won't work perfectly for this specific request if it wasn't intercepted, 
+        // but api interceptor pulls from localStorage. Auth0 provides a different token.
+        // We'll need to keep this one api.post to pass the headers explicitly, OR update authService to accept a token.
+        // Let's use api.post here for this exceptional case to avoid changing the method signature of authService.auth0Sync.
+        try {
+          const { data } = await api.post('/auth/auth0-sync', {}, { headers: { Authorization: `Bearer ${token}` } });
+          setUser(data);
+        } catch (error: any) {
+          toast.error(error.response?.data?.error || 'Could not finish Google login');
+        } finally {
+          setSyncingAuth0(false);
+          auth0SyncStarted.current = false;
+        }
+      });
   }, [getAccessTokenSilently, hasAuth0Session, loadingSession, user]);
 
   async function getToken() {
@@ -113,7 +121,7 @@ export function AuthProvider({ children }) {
   }
 
   async function logout() {
-    await api.post('/auth/logout').catch(() => {});
+    await authService.logout();
     setUser(null);
     localStorage.removeItem('token');
 
@@ -134,17 +142,14 @@ export function AuthProvider({ children }) {
       }
     },
     loginWithGoogle: async (googleToken) => {
-      try {
-        const { data } = await api.post('/auth/google', { token: googleToken });
-        setUser(data);
-        if (data?.token) {
-          localStorage.setItem('token', data.token);
-        }
-        return data;
-      } catch (error) {
-        toast.error(error.response?.data?.error || 'Google login failed');
-        throw error;
+      const [data, error] = await authService.googleLogin(googleToken);
+      if (error) throw new Error(error);
+      
+      setUser(data as any);
+      if ((data as any)?.token) {
+        localStorage.setItem('token', (data as any).token);
       }
+      return data;
     },
     logout,
     getToken,
