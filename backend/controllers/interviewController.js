@@ -43,7 +43,7 @@ const validateInterviewPack = async (result) => {
 async function generateInterview(req, res) {
   try {
     const rawTopic = String(req.body.topic || "");
-    const topic = rawTopic.replace(/[^\w\s\.\,\-\+]/gi, '').trim().slice(0, 300);
+    const topic = rawTopic.replace(/[^\w\s.,+-]/gi, '').trim().slice(0, 300);
 
     if (!topic) {
       return res.status(400).json({ error: "Topic is required." });

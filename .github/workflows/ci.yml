@@ -4,9 +4,25 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - "**/*.md"
+      - "LICENSE"
+      - ".gitignore"
+
   pull_request:
     branches:
       - main
+    paths-ignore:
+      - "**/*.md"
+      - "LICENSE"
+      - ".gitignore"
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
 
 jobs:
   frontend-ci:
@@ -23,8 +39,8 @@ jobs:
       - name: Setup Node.js (LTS)
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: 20
+          cache: npm
           cache-dependency-path: './frontend/package-lock.json'
 
       - name: Install Dependencies
@@ -32,8 +48,9 @@ jobs:
 
       - name: Run Linter
         run: npm run lint
-        
-      # Note: TypeScript type checking script is missing from frontend/package.json. Skipping instead of inventing a command.
+
+      - name: Type Check
+        run: npm run typecheck
 
       - name: Run Unit Tests
         run: npm run test
@@ -55,17 +72,12 @@ jobs:
       - name: Setup Node.js (LTS)
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: 20
+          cache: npm
           cache-dependency-path: './backend/package-lock.json'
 
       - name: Install Dependencies
         run: npm ci
         
-      # Note: Linting script is missing from backend/package.json. Skipping instead of inventing a command.
-      # Note: TypeScript type checking script is missing from backend/package.json. Skipping instead of inventing a command.
-
       - name: Run Unit Tests
         run: npm run test
-        
-      # Note: Production build script is not present (or applicable) for the backend. Skipping.

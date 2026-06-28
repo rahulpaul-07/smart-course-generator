@@ -338,7 +338,7 @@ async function generateJson(systemPrompt, userPrompt, maxTokens = 4096, validato
   if (chain.length === 0 && !process.env.GEMINI_API_KEY) {
     const mockResult = getMockResponse(systemPrompt, userPrompt);
     if (validator) {
-      try { await validator(mockResult); } catch (err) {}
+      try { await validator(mockResult); } catch (err) { /* ignore validator error for mock */ }
     }
     return mockResult;
   }
@@ -413,7 +413,7 @@ async function* generateJsonStream(systemPrompt, userPrompt, maxTokens = 4096) {
         
         if (yieldedChunk) {
           console.error(`[AI Router] Stream interrupted midway. Aborting.`);
-          throw new Error(FRIENDLY_ERROR);
+          throw new Error(FRIENDLY_ERROR, { cause: error });
         }
         if (!shouldRetry(error)) {
           break;
@@ -509,7 +509,7 @@ async function* generateTextStream(messages, maxTokens = 1024) {
         
         if (yieldedChunk) {
           console.error(`[AI Router] Stream interrupted midway. Aborting.`);
-          throw new Error(FRIENDLY_ERROR);
+          throw new Error(FRIENDLY_ERROR, { cause: error });
         }
         if (!shouldRetry(error)) {
           break;

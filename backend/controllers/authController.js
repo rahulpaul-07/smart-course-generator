@@ -124,7 +124,7 @@ async function googleLogin(req, res) {
     payload = ticket.getPayload();
   } catch (verifyError) {
     res.status(401);
-    throw new Error("Invalid Google token");
+    throw new Error("Invalid Google token", { cause: verifyError });
   }
 
   const { sub: googleId, email, name, picture } = payload;
