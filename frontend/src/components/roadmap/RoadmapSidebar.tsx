@@ -16,7 +16,7 @@ export function RoadmapSidebar({ roadmaps, viewRoadmap, deleteRoadmap }: Roadmap
         {roadmaps.map((r) => (
           <div
             key={r._id}
-            className="group cursor-pointer rounded-2xl border border-border/50 bg-card/30 p-4 transition-all hover:bg-card hover:border-primary/40 hover:shadow-lg flex flex-col justify-between min-h-[120px]"
+            className="group cursor-pointer rounded-2xl border border-border/30 bg-card/30 p-4 transition-all hover:bg-card hover:border-primary/40 hover:shadow-lg flex flex-col justify-between min-h-[120px]"
             onClick={() => viewRoadmap(r._id)}
           >
             <div className="flex items-start justify-between gap-2">
@@ -39,7 +39,7 @@ export function RoadmapSidebar({ roadmaps, viewRoadmap, deleteRoadmap }: Roadmap
             icon={Layers}
             title="No blueprints yet"
             description="Create your first roadmap."
-            className="min-h-[160px] p-6 bg-card/10 border-border/60"
+            className="min-h-[160px] p-6 bg-card/10 border-border/30"
           />
         )}
       </div>

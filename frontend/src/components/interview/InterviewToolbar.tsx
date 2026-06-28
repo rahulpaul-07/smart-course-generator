@@ -10,7 +10,7 @@ interface InterviewToolbarProps {
 
 export function InterviewToolbar({ activePrep, setActivePrep, formattedTime, setIsMobileCoachOpen }: InterviewToolbarProps) {
   return (
-    <div className="lg:hidden sticky top-0 z-20 w-full bg-background/80 backdrop-blur-xl border-b border-border/50 px-4 py-3 flex items-center justify-between shadow-sm">
+    <div className="lg:hidden sticky top-0 z-20 w-full bg-background/80 backdrop-blur-xl border-b border-border/30 px-4 py-3 flex items-center justify-between shadow-sm">
       <div className="flex items-center gap-3 min-w-0">
         <button onClick={() => setActivePrep(null)} className="text-muted-foreground hover:text-foreground transition-colors">
           <ArrowLeft className="h-5 w-5" />

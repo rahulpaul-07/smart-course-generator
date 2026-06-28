@@ -38,7 +38,7 @@ export default function VideoBlock({ block }) {
   }
 
   return (
-    <div className="my-7 overflow-hidden rounded-2xl border border-border bg-card shadow-2xl shadow-black/10">
+    <div className="my-7 overflow-hidden rounded-2xl border border-border bg-card shadow-lg shadow-black/10">
       <iframe
         className="aspect-video w-full"
         src={isSearch ? `https://www.youtube.com/embed?listType=search&list=${searchQuery}` : `https://www.youtube.com/embed/${id}`}

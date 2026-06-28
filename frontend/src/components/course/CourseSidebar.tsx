@@ -15,7 +15,7 @@ interface CourseSidebarProps {
 
 export function CourseSidebar({ skills, difficulty, estimatedHours, course, progress, nextLessonId, courseId }: CourseSidebarProps) {
   return (
-    <div className="space-y-8 sticky top-24">
+    <div className="space-y-6 sticky top-24">
       <SkillSection skills={skills} />
       <CourseStats difficulty={difficulty} estimatedHours={estimatedHours} course={course} />
       <CourseActions progress={progress} nextLessonId={nextLessonId} courseId={courseId} />

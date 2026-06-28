@@ -34,12 +34,12 @@ export function RoadmapWeekCard({
       </div>
 
       {/* Expandable Card */}
-      <div className={`rounded-3xl border-2 transition-all duration-300 overflow-hidden ${
+      <div className={`rounded-2xl border-2 transition-all duration-300 overflow-hidden ${
         isCurrent 
           ? 'border-primary/40 bg-card/60 shadow-lg shadow-primary/5 ring-1 ring-primary/10' 
           : isCompleted 
-            ? 'border-border/40 bg-muted/20 opacity-80' 
-            : 'border-border/60 bg-card/30 hover:border-primary/30 hover:bg-card/50'
+            ? 'border-border/30 bg-muted/20 opacity-80' 
+            : 'border-border/30 bg-card/30 hover:border-primary/30 hover:bg-card/50'
       }`}>
         
         <button
@@ -85,7 +85,7 @@ export function RoadmapWeekCard({
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.3, ease: 'easeOut' }}
-              className="overflow-hidden bg-background/50 border-t border-border/50"
+              className="overflow-hidden bg-background/50 border-t border-border/30"
             >
               <div className="p-6 space-y-8">
                 
@@ -100,7 +100,7 @@ export function RoadmapWeekCard({
                         <button
                           key={i}
                           onClick={() => onGenerateCourse(topic)}
-                          className="group flex items-center gap-2 rounded-xl border border-border/60 bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-all hover:border-primary/50 hover:bg-primary/5 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                          className="group flex items-center gap-2 rounded-xl border border-border/30 bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-all hover:border-primary/50 hover:bg-primary/5 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                           title={`Generate a course on "${topic}"`}
                         >
                           <span className="w-1.5 h-1.5 rounded-full bg-primary/40 group-hover:bg-primary transition-colors" />

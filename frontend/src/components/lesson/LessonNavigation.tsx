@@ -12,7 +12,7 @@ export function LessonNavigation({ courseId, prevLesson, nextLesson }: LessonNav
   const navigate = useNavigate();
 
   return (
-    <div className="hidden sm:flex items-center gap-1 border border-border/50 rounded-xl p-1 bg-muted/20">
+    <div className="hidden sm:flex items-center gap-1 border border-border/30 rounded-xl p-1 bg-muted/20">
       <button 
         onClick={() => prevLesson && navigate(`/course/${courseId}/lesson/${prevLesson._id}`)}
         disabled={!prevLesson}

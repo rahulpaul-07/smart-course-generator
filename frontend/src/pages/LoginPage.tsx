@@ -60,7 +60,7 @@ export default function LoginPage() {
         </>
       )}
     >
-      <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 relative">
+      <div className="animate-in fade-in slide-in-from-bottom-2 duration-200 relative">
         {loading && (
           <div className="absolute inset-0 z-10 flex flex-col items-center justify-center rounded-xl bg-background/50 backdrop-blur-[2px]">
             <Loader2 className="h-8 w-8 animate-spin text-primary mb-4 shadow-lg" />

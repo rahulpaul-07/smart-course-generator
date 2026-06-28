@@ -87,7 +87,7 @@ export function LessonLayout({
             animate={{ opacity: 1, width: 'auto', x: 0 }}
             exit={{ opacity: 0, width: 0, x: 50 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="hidden lg:block h-full border-l border-border/40 bg-card/20 backdrop-blur-3xl overflow-y-auto min-w-[340px]"
+            className="hidden lg:block h-full border-l border-border/30 bg-card overflow-y-auto min-w-[340px]"
           >
             {hasContent && !generating ? (
               <Suspense fallback={<div className="flex items-center justify-center h-full"><LoadingSpinner text="Loading study tools..." /></div>}>
@@ -105,8 +105,8 @@ export function LessonLayout({
                 <div className="h-16 w-16 bg-muted rounded-full flex items-center justify-center mb-6 shadow-inner">
                   <Sparkles className="h-7 w-7 text-muted-foreground/50" />
                 </div>
-                <h3 className="text-lg font-bold text-foreground mb-2">Study Tools</h3>
-                <p className="text-sm font-medium text-muted-foreground">Generate the lesson first to unlock interactive study tools like flashcards and quizzes.</p>
+                <h3 className="text-lg font-semibold text-foreground mb-2">Study Tools</h3>
+                <p className="text-sm text-muted-foreground">Generate the lesson first to unlock interactive study tools like flashcards and quizzes.</p>
               </div>
             )}
           </motion.div>
@@ -115,7 +115,7 @@ export function LessonLayout({
 
       {/* Mobile Study Tools Slide-over */}
       {!isFocusMode && hasContent && !generating && (
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-background/90 backdrop-blur-2xl border-t border-border/50 p-4 max-h-[60vh] overflow-y-auto shadow-[0_-8px_30px_rgb(0,0,0,0.12)]">
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-background border-t border-border/30 p-4 max-h-[60vh] overflow-y-auto shadow-md">
           <Suspense fallback={<div className="p-4 flex justify-center"><LoadingSpinner /></div>}>
             <StudyTools 
               lesson={{ title: lessonTitle, content: lessonContent, ...course?.modules?.flatMap((m: any) => m.lessons)?.find((l: any) => l._id === lessonId) }} 

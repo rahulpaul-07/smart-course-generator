@@ -45,7 +45,7 @@ export function GoogleIcon() {
 
 function LearningStudio() {
   return (
-    <div className="auth-workspace relative mt-9 max-w-2xl overflow-hidden rounded-3xl border border-border bg-card/90 shadow-[0_30px_100px_rgba(0,0,0,0.25)] backdrop-blur-xl">
+    <div className="auth-workspace relative mt-9 max-w-2xl overflow-hidden rounded-2xl border border-border bg-card/90 shadow-lg backdrop-blur-xl">
       <div className="flex items-center justify-between gap-3 border-b border-border bg-foreground/10 px-4 py-3">
         <div className="flex items-center gap-2">
           <span className="grid h-7 w-7 place-items-center rounded-lg -white">
@@ -241,7 +241,7 @@ export default function AuthLayout({
             <span className="font-display font-bold tracking-tight">Course<span className="text-brand-300">AI</span></span>
           </Link>
 
-          <div className="relative overflow-hidden rounded-3xl border border-border bg-card/95 p-6 shadow-[0_30px_100px_rgba(0,0,0,0.15)] backdrop-blur-2xl sm:p-8">
+          <div className="relative overflow-hidden rounded-2xl border border-border bg-card/95 p-6 shadow-lg backdrop-blur-2xl sm:p-8">
             <div className="pointer-events-none absolute -right-20 -top-24 h-48 w-48 rounded-full bg-brand-500/10 blur-3xl" />
             <div className="relative mb-7">
               <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-brand-300">{eyebrow}</p>

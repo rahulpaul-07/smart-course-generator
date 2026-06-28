@@ -9,8 +9,8 @@ export default function NotFoundPage() {
     <div className="min-h-screen flex items-center justify-center bg-background text-foreground relative overflow-hidden p-6">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
       
-      <div className="relative z-10 text-center max-w-lg mx-auto p-12 bg-card/40 backdrop-blur-xl border border-border/40 shadow-2xl rounded-3xl flex flex-col items-center">
-        <div className="h-24 w-24 bg-primary/10 rounded-3xl flex items-center justify-center mb-8 shadow-inner ring-1 ring-primary/20">
+      <div className="relative z-10 text-center max-w-lg mx-auto p-12 bg-card/40 backdrop-blur-xl border border-border/30 shadow-lg rounded-2xl flex flex-col items-center">
+        <div className="h-24 w-24 bg-primary/10 rounded-2xl flex items-center justify-center mb-8 shadow-inner ring-1 ring-primary/20">
           <FileQuestion className="h-12 w-12 text-primary opacity-90" />
         </div>
         
@@ -21,7 +21,7 @@ export default function NotFoundPage() {
           We couldn't find the page you were looking for. It might have been moved, deleted, or perhaps the URL is incorrect.
         </p>
         
-        <Button size="lg" className="h-12 px-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto" onClick={() => navigate("/")}>
+        <Button size="lg" className="h-12 px-8 rounded-full shadow-lg hover:shadow-md transition-all duration-300 w-full sm:w-auto" onClick={() => navigate("/")}>
           <Home className="mr-2 w-5 h-5" />
           Back to Home
         </Button>

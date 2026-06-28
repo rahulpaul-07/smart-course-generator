@@ -12,8 +12,8 @@ export default function CourseCard({ course, onDelete, index = 0 }: { course: an
   const progress = courseProgress(course);
 
   return (
-    <Card className="group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10">
-      <div className="pointer-events-none absolute -right-16 -top-16 h-36 w-36 rounded-full bg-primary/10 blur-3xl transition duration-500 group-hover:bg-primary/20" />
+    <Card className="group relative overflow-hidden transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md cursor-pointer">
+      <div className="pointer-events-none absolute -right-16 -top-16 h-36 w-36 rounded-full bg-primary/10 blur-3xl transition duration-200 group-hover:bg-primary/20" />
       
       <CardContent className="p-6">
         <div className="flex items-start justify-between gap-4">

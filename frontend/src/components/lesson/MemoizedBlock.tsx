@@ -23,7 +23,7 @@ export const MemoizedBlock = memo(({ block, index }: { block: any, index: number
           className={`font-extrabold text-foreground tracking-tight scroll-mt-24 ${
             block.level === 3
               ? 'mt-10 mb-4 text-2xl font-sans'
-              : 'mt-16 mb-6 pb-4 border-b border-border/40 text-3xl md:text-4xl font-serif'
+              : 'mt-16 mb-6 pb-4 border-b border-border/30 text-3xl md:text-4xl font-serif'
           }`}
         >
           {block.text}

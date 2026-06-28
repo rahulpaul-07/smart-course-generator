@@ -62,7 +62,7 @@ export default function SettingsPage() {
 
       <div className="max-w-4xl mx-auto mt-8">
         <div className="space-y-6">
-          <Card className="bg-card/50 backdrop-blur-sm border-border/50 rounded-2xl">
+          <Card className="bg-card/50 backdrop-blur-sm border-border/30 rounded-2xl">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <SettingsIcon className="w-5 h-5" />
@@ -75,7 +75,7 @@ export default function SettingsPage() {
                 <button
                   onClick={() => handleThemeChange('light')}
                   className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all ${
-                    settings.theme === 'light' ? 'border-primary bg-primary/5' : 'border-border/50 hover:border-primary/50'
+                    settings.theme === 'light' ? 'border-primary bg-primary/5' : 'border-border/30 hover:border-primary/50'
                   }`}
                 >
                   <Sun className="w-6 h-6 mb-2" />
@@ -84,7 +84,7 @@ export default function SettingsPage() {
                 <button
                   onClick={() => handleThemeChange('dark')}
                   className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all ${
-                    settings.theme === 'dark' ? 'border-primary bg-primary/5' : 'border-border/50 hover:border-primary/50'
+                    settings.theme === 'dark' ? 'border-primary bg-primary/5' : 'border-border/30 hover:border-primary/50'
                   }`}
                 >
                   <Moon className="w-6 h-6 mb-2" />
@@ -93,7 +93,7 @@ export default function SettingsPage() {
                 <button
                   onClick={() => handleThemeChange('system')}
                   className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all ${
-                    settings.theme === 'system' ? 'border-primary bg-primary/5' : 'border-border/50 hover:border-primary/50'
+                    settings.theme === 'system' ? 'border-primary bg-primary/5' : 'border-border/30 hover:border-primary/50'
                   }`}
                 >
                   <Monitor className="w-6 h-6 mb-2" />

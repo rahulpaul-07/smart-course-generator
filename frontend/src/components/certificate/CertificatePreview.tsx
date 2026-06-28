@@ -9,7 +9,7 @@ interface CertificatePreviewProps {
 
 export function CertificatePreview({ certificate, certificateRef, issueDate }: CertificatePreviewProps) {
   return (
-    <div className="relative p-2 sm:p-4 md:p-6 bg-gradient-to-br from-border/50 to-background rounded-[2rem] shadow-2xl flex justify-center items-center">
+    <div className="relative p-2 sm:p-4 md:p-6 bg-gradient-to-br from-border/50 to-background rounded-[2rem] shadow-lg flex justify-center items-center">
       <div 
         ref={certificateRef}
         className="relative w-full max-w-[900px] aspect-[1.414/1] bg-[#FAFAFA] text-[#111] overflow-hidden flex flex-col border-[1px] border-[#E0E0E0] shadow-sm"
@@ -86,7 +86,7 @@ export function CertificatePreview({ certificate, certificateRef, issueDate }: C
 
             {/* Center: Gold Seal */}
             <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 flex flex-col items-center opacity-95">
-              <div className="w-20 h-20 md:w-32 md:h-32 rounded-full border-[3px] border-[#C5A866] bg-gradient-to-br from-[#F3E7C9] via-[#C5A866] to-[#997A35] shadow-2xl flex items-center justify-center relative overflow-hidden">
+              <div className="w-20 h-20 md:w-32 md:h-32 rounded-full border-[3px] border-[#C5A866] bg-gradient-to-br from-[#F3E7C9] via-[#C5A866] to-[#997A35] shadow-lg flex items-center justify-center relative overflow-hidden">
                 <div className="w-[85%] h-[85%] rounded-full border-[2px] border-dashed border-[#FFF]/60 flex flex-col items-center justify-center">
                   <Award className="h-6 w-6 md:h-10 md:w-10 text-[#FFF] opacity-90 mb-1" />
                   <span className="text-[6px] md:text-[9px] font-bold text-[#FFF] tracking-[0.2em] uppercase">Verified</span>

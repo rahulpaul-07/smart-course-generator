@@ -126,12 +126,12 @@ export default function FinalTestPage() {
               key="result"
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              className="mt-10 p-10 bg-card border border-border rounded-3xl text-center relative overflow-hidden shadow-2xl"
+              className="mt-10 p-10 bg-card border border-border rounded-2xl text-center relative overflow-hidden shadow-lg"
             >
               <div className={`absolute inset-0 opacity-20 pointer-events-none ${result.passed ? 'bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-500/40 via-background to-background' : 'bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-500/40 via-background to-background'}`} />
               
               <div className="relative z-10 flex flex-col items-center">
-                <div className={`w-28 h-28 rounded-full flex items-center justify-center mb-8 border-4 shadow-2xl ${
+                <div className={`w-28 h-28 rounded-full flex items-center justify-center mb-8 border-4 shadow-lg ${
                   result.passed 
                     ? 'bg-card border-emerald-500/50 text-emerald-500 shadow-[0_0_40px_rgba(16,185,129,0.3)]' 
                     : 'bg-card border-amber-500/50 text-amber-500 shadow-[0_0_40px_rgba(245,158,11,0.3)]'
@@ -191,7 +191,7 @@ export default function FinalTestPage() {
                   const selectedAns = answers[qIdx];
 
                   return (
-                    <Card key={qIdx} className="overflow-hidden border-border/50 shadow-md">
+                    <Card key={qIdx} className="overflow-hidden border-border/30 shadow-md">
                       <CardContent className="p-6 sm:p-8">
                         <h3 className="text-xl font-bold text-foreground mb-6 flex gap-4 leading-relaxed">
                           <span className="text-primary shrink-0">{qIdx + 1}.</span> 
@@ -231,7 +231,7 @@ export default function FinalTestPage() {
                   onClick={handleSubmit}
                   disabled={submitting}
                   size="lg"
-                  className="h-14 px-10 text-lg rounded-xl shadow-xl shadow-primary/20"
+                  className="h-14 px-10 text-lg rounded-xl shadow-md shadow-primary/20"
                 >
                   {submitting ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <CheckCircle2 className="w-5 h-5 mr-2" />}
                   {submitting ? 'Submitting...' : 'Submit Final Test'}

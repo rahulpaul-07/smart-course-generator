@@ -49,7 +49,7 @@ class ErrorBoundary extends Component<Props, State> {
               onClick={this.handleReset} 
               className="w-full group flex items-center justify-center gap-2"
             >
-              <RefreshCcw className="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" />
+              <RefreshCcw className="w-4 h-4 group-hover:rotate-180 transition-transform duration-200" />
               Refresh Page
             </Button>
             {this.state.error && (

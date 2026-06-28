@@ -158,12 +158,12 @@ export default function LessonAudioPlayer({ lesson }) {
 
         <div className="flex items-center gap-2">
           {status === 'playing' ? (
-            <Button type="button" onClick={pause}>
+            <Button variant="outline" type="button" onClick={pause}>
               <Pause className="h-4 w-4 mr-2" />
               Pause
             </Button>
           ) : (
-            <Button type="button" onClick={play} disabled={noVoice}>
+            <Button variant="outline" type="button" onClick={play} disabled={noVoice}>
               <Play className="h-4 w-4 mr-2" />
               {status === 'paused' ? 'Resume' : status === 'complete' ? 'Play again' : 'Listen'}
             </Button>

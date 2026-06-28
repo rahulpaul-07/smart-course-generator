@@ -15,7 +15,7 @@ interface MCQWorkspaceProps {
 export function MCQWorkspace({ prep, mcqAnswers, setMcqAnswers, submitted, submitting, submitAssessment }: MCQWorkspaceProps) {
   return (
     <div className="space-y-8">
-      <div className="mb-10 pb-6 border-b border-border/40">
+      <div className="mb-10 pb-6 border-b border-border/30">
         <h2 className="text-3xl font-extrabold font-serif tracking-tight text-foreground mb-2">Multiple Choice</h2>
         <p className="text-muted-foreground font-medium">Select the best answer for each question.</p>
       </div>
@@ -23,7 +23,7 @@ export function MCQWorkspace({ prep, mcqAnswers, setMcqAnswers, submitted, submi
       {prep.mcqs?.map((q: any, i: number) => {
         const userAns = submitted ? q.userAnswer : mcqAnswers[i];
         return (
-          <div key={i} className="rounded-3xl border border-border/60 bg-card/20 backdrop-blur-md p-8 shadow-sm transition-all hover:shadow-md">
+          <div key={i} className="rounded-2xl border border-border/30 bg-card/20 backdrop-blur-md p-8 shadow-sm transition-all hover:shadow-md">
             <p className="mb-6 text-[15px] font-semibold text-foreground leading-relaxed flex items-start gap-4">
               <span className="shrink-0 flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10 text-primary text-sm mt-0.5">
                 {i + 1}
@@ -36,7 +36,7 @@ export function MCQWorkspace({ prep, mcqAnswers, setMcqAnswers, submitted, submi
                 let isCorrect = submitted && oi === q.correctAnswer;
                 let isWrong = submitted && oi === userAns && oi !== q.correctAnswer;
                 
-                let cls = 'border-border/50 bg-background hover:border-primary/40 hover:bg-muted/50 text-foreground';
+                let cls = 'border-border/30 bg-background hover:border-primary/40 hover:bg-muted/50 text-foreground';
                 if (submitted) {
                   if (isCorrect) cls = 'border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-medium';
                   else if (isWrong) cls = 'border-destructive bg-destructive/10 text-destructive font-medium';
@@ -52,7 +52,7 @@ export function MCQWorkspace({ prep, mcqAnswers, setMcqAnswers, submitted, submi
                     disabled={submitted}
                     className={`group relative flex w-full items-start gap-4 rounded-xl border p-4 text-left text-[14px] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${cls}`}
                   >
-                    <span className={`shrink-0 flex h-6 w-6 items-center justify-center rounded-full border text-[11px] font-bold transition-colors ${isSelected && !submitted ? 'bg-primary border-primary text-primary-foreground' : 'border-border/80 text-muted-foreground'} ${isCorrect ? 'bg-emerald-500 border-emerald-500 text-background' : ''} ${isWrong ? 'bg-destructive border-destructive text-background' : ''}`}>
+                    <span className={`shrink-0 flex h-6 w-6 items-center justify-center rounded-full border text-[11px] font-bold transition-colors ${isSelected && !submitted ? 'bg-primary border-primary text-primary-foreground' : 'border-border/30 text-muted-foreground'} ${isCorrect ? 'bg-emerald-500 border-emerald-500 text-background' : ''} ${isWrong ? 'bg-destructive border-destructive text-background' : ''}`}>
                       {String.fromCharCode(65 + oi)}
                     </span>
                     <span className="pt-0.5 flex-1 leading-relaxed">{opt}</span>
@@ -73,7 +73,7 @@ export function MCQWorkspace({ prep, mcqAnswers, setMcqAnswers, submitted, submi
       })}
       
       {!submitted && prep.mcqs?.length > 0 && (
-        <div className="pt-8 border-t border-border/40 sticky bottom-0 z-10 bg-background/95 backdrop-blur-xl pb-8 flex justify-end">
+        <div className="pt-8 border-t border-border/30 sticky bottom-0 z-10 bg-background/95 backdrop-blur-xl pb-8 flex justify-end">
           <button onClick={submitAssessment} disabled={submitting} className="h-12 bg-foreground text-background px-8 rounded-xl font-bold hover:bg-foreground/90 transition-all flex items-center justify-center gap-2 shadow-lg disabled:opacity-70">
             {submitting ? <><LoadingSpinner small /> Evaluating...</> : <><Award className="h-5 w-5" /> Submit Assessment</>}
           </button>

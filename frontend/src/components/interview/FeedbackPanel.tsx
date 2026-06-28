@@ -18,7 +18,7 @@ const CodeBlock = ({ language, value }: { language: string, value: string }) => 
     setTimeout(() => setCopied(false), 2000);
   };
   return (
-    <div className="relative group my-4 rounded-xl overflow-hidden bg-[#0D0D0D] border border-border/40 shadow-xl">
+    <div className="relative group my-4 rounded-xl overflow-hidden bg-[#0D0D0D] border border-border/30 shadow-md">
       <div className="flex items-center justify-between px-4 py-2 bg-[#1a1a1a] border-b border-white/5">
         <span className="text-[10px] font-mono font-bold text-muted-foreground uppercase tracking-widest">{language || 'code'}</span>
         <button onClick={handleCopy} className="text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded">
@@ -64,7 +64,7 @@ export function FeedbackPanel({ prep }: FeedbackPanelProps) {
               <div className={`max-w-[88%] rounded-2xl px-4 py-3 text-[14px] leading-relaxed shadow-sm ${
                 msg.role === 'candidate'
                   ? 'rounded-br-sm bg-foreground text-background font-medium'
-                  : 'rounded-tl-sm bg-card border border-border/60 text-foreground/90'
+                  : 'rounded-tl-sm bg-card border border-border/30 text-foreground/90'
               }`}>
                 {msg.role === 'candidate' ? (
                   msg.content
@@ -94,7 +94,7 @@ export function FeedbackPanel({ prep }: FeedbackPanelProps) {
         
         {sending && chat[chat.length-1]?.role !== 'interviewer' && (
           <div className="flex justify-start">
-            <div className="bg-card border border-border/50 rounded-2xl rounded-tl-sm px-4 py-3.5 shadow-sm flex gap-1.5 items-center h-[46px]">
+            <div className="bg-card border border-border/30 rounded-2xl rounded-tl-sm px-4 py-3.5 shadow-sm flex gap-1.5 items-center h-[46px]">
               <span className="w-1.5 h-1.5 bg-primary/70 rounded-full animate-bounce" />
               <span className="w-1.5 h-1.5 bg-primary/70 rounded-full animate-bounce" style={{ animationDelay: '0.15s' }} />
               <span className="w-1.5 h-1.5 bg-primary/70 rounded-full animate-bounce" style={{ animationDelay: '0.3s' }} />
@@ -104,14 +104,14 @@ export function FeedbackPanel({ prep }: FeedbackPanelProps) {
         <div ref={messagesEndRef} className="h-4" />
       </div>
 
-      <div className="p-4 border-t border-border/40 bg-card/80 backdrop-blur-xl">
+      <div className="p-4 border-t border-border/30 bg-card/80 backdrop-blur-xl">
         <form onSubmit={sendMessage} className="relative flex items-end gap-2">
           {sending ? (
             <button type="button" onClick={stopGenerating} className="w-full h-12 flex items-center justify-center gap-2 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive font-bold text-sm transition-colors hover:bg-destructive/20 shadow-sm">
               <XCircle className="h-4 w-4" /> Stop Generation
             </button>
           ) : (
-            <div className="relative flex-1 flex items-end bg-background border border-border/60 rounded-xl shadow-sm focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary/50 transition-all">
+            <div className="relative flex-1 flex items-end bg-background border border-border/30 rounded-xl shadow-sm focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary/50 transition-all">
               <textarea
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}

@@ -27,7 +27,7 @@ function ToolCard({
       className={`group relative flex w-full flex-col overflow-hidden rounded-xl border p-4 text-left transition-all duration-200 ${
         active
           ? 'border-primary bg-primary/10 shadow-md shadow-primary/10'
-          : 'border-border/50 bg-card/40 hover:bg-card hover:border-border hover:shadow-sm'
+          : 'border-border/30 bg-card hover:bg-accent/50 hover:border-border/30 hover:shadow-sm'
       } disabled:cursor-not-allowed disabled:opacity-60`}
     >
       <div className="flex items-start gap-4">
@@ -83,16 +83,16 @@ const StudyTools = React.memo(({
   }
 
   return (
-    <aside className="h-full flex flex-col py-6 px-4">
-      <div className="mb-6">
-        <p className="text-[11px] font-bold uppercase tracking-wider text-primary mb-1">Study Toolkit</p>
-        <h2 className="font-serif text-2xl font-bold text-foreground">Lesson Tools</h2>
+    <aside className="h-full flex flex-col py-8 px-6">
+      <div className="mb-8">
+        <p className="text-xs font-semibold text-primary mb-1">Study Toolkit</p>
+        <h2 className="text-xl font-semibold text-foreground">Lesson Tools</h2>
         <p className="mt-1 text-sm text-muted-foreground">
           Interactive tools to master this topic.
         </p>
       </div>
 
-      <div className="flex flex-col gap-3 flex-1 overflow-y-auto pr-1 pb-20 lg:pb-0 scrollbar-none">
+      <div className="flex flex-col gap-4 flex-1 overflow-y-auto pr-1 pb-20 lg:pb-0 scrollbar-none">
         <ToolCard
           icon={MessageCircle}
           title="AI Tutor"
@@ -181,7 +181,7 @@ const StudyTools = React.memo(({
         />
       </div>
 
-      <div className="mt-auto pt-6 border-t border-border/50 flex flex-col gap-3 shrink-0 hidden lg:flex">
+      <div className="mt-auto pt-6 border-t border-border/30 flex flex-col gap-3 shrink-0 hidden lg:flex">
         <button
           type="button"
           disabled={saving}

@@ -41,7 +41,7 @@ export function QuestionNavigator({ activeTab, setActiveTab, status }: QuestionN
 
   return (
     <div 
-      className="lg:hidden flex gap-2 overflow-x-auto pb-4 mb-6 scrollbar-none border-b border-border/50"
+      className="lg:hidden flex gap-2 overflow-x-auto pb-4 mb-6 scrollbar-none border-b border-border/30"
     >
       {tabs.map((tab, i) => {
         const isSelected = activeTab === tab.key;
@@ -52,7 +52,7 @@ export function QuestionNavigator({ activeTab, setActiveTab, status }: QuestionN
             className={`shrink-0 flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-colors ${
               isSelected 
                 ? 'bg-primary text-primary-foreground shadow-sm' 
-                : 'bg-card border border-border/50 text-muted-foreground hover:text-foreground'
+                : 'bg-card border border-border/30 text-muted-foreground hover:text-foreground'
             }`}
           >
             <tab.icon className="h-3.5 w-3.5" /> {tab.label}

@@ -34,7 +34,7 @@ export function LandingHero() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.25 }}
-              className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary w-fit mx-auto lg:mx-0 shadow-sm backdrop-blur-sm hover:bg-primary/15 transition-colors"
+              className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-xs text-primary w-fit mx-auto lg:mx-0 shadow-sm backdrop-blur-sm hover:bg-primary/15 transition-colors"
             >
               <Sparkles className="h-4 w-4" />
               ✨ AI-Powered Learning Platform
@@ -45,7 +45,7 @@ export function LandingHero() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.25, delay: 0.05 }}
-              className="text-5xl sm:text-6xl lg:text-[72px] font-extrabold tracking-tight text-foreground leading-[1.1] max-w-[700px] mx-auto lg:mx-0"
+              className="text-5xl font-bold tracking-tight text-foreground leading-[1.1] max-w-[700px] mx-auto lg:mx-0"
             >
               Generate Your Next <br className="hidden sm:block" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-violet-400 to-cyan-400">
@@ -60,7 +60,7 @@ export function LandingHero() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.25, delay: 0.1 }}
-              className="max-w-[600px] mx-auto lg:mx-0 text-lg md:text-xl text-muted-foreground leading-relaxed font-medium"
+              className="max-w-[600px] mx-auto lg:mx-0 text-muted-foreground leading-7"
             >
               CourseAI Pro generates complete personalized courses with interactive lessons, quizzes, practice projects, mock interviews, spaced-repetition flashcards, and verifiable certificates.
             </motion.p>
@@ -72,15 +72,15 @@ export function LandingHero() {
               transition={{ duration: 0.2, delay: 0.15 }}
               className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
             >
-              <Button asChild size="lg" className="h-12 px-8 rounded-xl text-base font-bold bg-primary hover:bg-primary/90 text-primary-foreground shadow-[0_8px_30px_rgb(0,0,0,0.12)] shadow-primary/20 hover:shadow-[0_8px_30px_rgb(0,0,0,0.2)] hover:shadow-primary/30 hover:-translate-y-0.5 transition-all duration-200 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background ring-1 ring-inset ring-white/20">
+              <Button asChild size="lg" className="h-12 px-8 rounded-xl text-base font-semibold bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background">
                 <Link to="/signup">
                   Generate Your First Course
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  <ArrowRight className="ml-2 h-6 w-6" />
                 </Link>
               </Button>
-              <Button asChild variant="outline" size="lg" className="h-12 px-8 rounded-xl text-base font-bold border border-border/50 hover:bg-muted/50 backdrop-blur-sm transition-all duration-200 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background hover:-translate-y-0.5 hover:shadow-sm">
+              <Button asChild variant="ghost" size="lg" className="h-12 px-8 rounded-xl text-base font-semibold border border-border/30 hover:bg-muted/50 backdrop-blur-sm transition-all duration-200 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background hover:-translate-y-0.5 hover:shadow-sm">
                 <Link to="/community">
-                  <PlayCircle className="mr-2 h-5 w-5" />
+                  <PlayCircle className="mr-2 h-6 w-6" />
                   Explore Demo
                 </Link>
               </Button>
@@ -98,10 +98,10 @@ export function LandingHero() {
                 { label: 'Interactive Lessons', icon: BookOpen },
                 { label: 'Interview Prep', icon: Code },
                 { label: 'Certificates', icon: Award },
-              ].map(({ label, icon: Icon }) => (
-                <div key={label} className="flex items-center gap-1.5 rounded-full border border-border/50 bg-card/40 px-3 py-1.5 text-xs font-semibold text-muted-foreground backdrop-blur-sm hover:text-foreground transition-colors">
-                  <Icon className="h-3.5 w-3.5" />
-                  {label}
+              ].map((badge, i) => (
+                <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-muted/50 border border-border/30 text-xs text-muted-foreground">
+                  <badge.icon className="h-4 w-4 text-primary" />
+                  {badge.label}
                 </div>
               ))}
             </motion.div>
@@ -114,7 +114,7 @@ export function LandingHero() {
             transition={{ duration: 0.2, delay: 0.15 }}
             className="relative mx-auto w-full max-w-[600px] lg:max-w-none pt-10 lg:pt-0"
           >
-            <div className="absolute -inset-4 rounded-3xl bg-gradient-to-tr from-primary/20 via-transparent to-cyan-400/15 opacity-60 blur-3xl -z-10" />
+            <div className="absolute -inset-4 rounded-2xl bg-gradient-to-tr from-primary/20 via-transparent to-cyan-400/15 opacity-60 blur-3xl -z-10" />
             <ProductPreview />
           </motion.div>
 

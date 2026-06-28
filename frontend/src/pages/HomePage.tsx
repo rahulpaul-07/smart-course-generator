@@ -81,7 +81,7 @@ export default function HomePage() {
             </div>
           </div>
         ) : error ? (
-          <div className="flex flex-col items-center justify-center p-12 bg-card/40 border border-border/40 rounded-3xl backdrop-blur-xl shadow-sm">
+          <div className="flex flex-col items-center justify-center p-12 bg-card/40 border border-border/30 rounded-2xl backdrop-blur-xl shadow-sm">
             <Activity className="h-12 w-12 text-rose-500 mb-4" />
             <h3 className="text-xl font-bold mb-2">Failed to load dashboard</h3>
             <p className="text-muted-foreground mb-6">There was an error fetching your summary.</p>
@@ -100,8 +100,8 @@ export default function HomePage() {
               transition={{ duration: 0.2, delay: 0.05 }}
               className="scroll-mt-24"
             >
-              <div className="flex items-center justify-between mb-4 px-2">
-                <h2 className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
+              <div className="flex items-center justify-between mb-6 px-2">
+                <h2 className="text-xl font-semibold text-foreground flex items-center gap-3">
                   <Sparkles className="h-5 w-5 text-primary" /> Generate New Course
                 </h2>
               </div>

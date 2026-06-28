@@ -29,7 +29,7 @@ const LessonCompletion = React.memo(({ course, courseId, lesson, onLessonUpdate 
   }
 
   return (
-    <section className={`relative mt-10 overflow-hidden rounded-2xl border p-6 shadow-xl shadow-black/10 ${
+    <section className={`relative mt-10 overflow-hidden rounded-2xl border p-6 shadow-md shadow-black/10 ${
       lesson.completedAt
         ? 'border-emerald-500/30 bg-gradient-to-br from-emerald-500/15 to-slate-950/60'
         : 'border-brand-500/25 bg-gradient-to-br from-brand-500/12 to-slate-950/60'

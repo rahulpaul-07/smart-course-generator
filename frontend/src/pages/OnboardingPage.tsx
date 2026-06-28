@@ -78,7 +78,7 @@ export default function OnboardingPage() {
           </div>
         </div>
 
-        <Card className="p-8 border-border/50 bg-card/60 backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden relative">
+        <Card className="p-8 border-border/30 bg-card/60 backdrop-blur-xl shadow-lg rounded-2xl overflow-hidden relative">
           
           {/* Progress Bar */}
           <div className="absolute top-0 left-0 right-0 h-1 bg-secondary">
@@ -114,7 +114,7 @@ export default function OnboardingPage() {
                         className={`p-4 rounded-xl border-2 text-left transition-all duration-200 ${
                           skillLevel === level.id 
                             ? 'border-primary bg-primary/5 shadow-md shadow-primary/5' 
-                            : 'border-border/50 hover:border-primary/50 hover:bg-secondary/50'
+                            : 'border-border/30 hover:border-primary/50 hover:bg-secondary/50'
                         }`}
                       >
                         <div className="flex justify-between items-center mb-1">
@@ -157,7 +157,7 @@ export default function OnboardingPage() {
                         className={`p-4 rounded-xl border-2 flex flex-col items-center justify-center gap-3 transition-all duration-200 ${
                           isSelected 
                             ? 'border-primary bg-primary/10 shadow-md shadow-primary/10' 
-                            : 'border-border/50 hover:border-primary/50 hover:bg-secondary/50'
+                            : 'border-border/30 hover:border-primary/50 hover:bg-secondary/50'
                         }`}
                       >
                         <Icon className={`w-8 h-8 ${isSelected ? 'text-primary' : 'text-muted-foreground'}`} />

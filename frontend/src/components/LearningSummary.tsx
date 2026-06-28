@@ -78,7 +78,7 @@ export default function LearningSummary({ courses }: { courses: any[] }) {
             )}
 
             {bookmarkedLessons.length > 0 && (
-              <div className="mt-6 border-t border-border/50 pt-4">
+              <div className="mt-6 border-t border-border/30 pt-4">
                 <p className="text-xs font-medium text-muted-foreground mb-3 uppercase tracking-wider">Bookmarks</p>
                 <div className="flex flex-wrap gap-2">
                   {bookmarkedLessons.slice(0, 3).map((lesson) => (

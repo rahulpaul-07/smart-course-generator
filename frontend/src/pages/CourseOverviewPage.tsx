@@ -31,7 +31,7 @@ export default function CourseOverviewPage() {
     return (
       <PageContainer className="pt-8 pb-24 max-w-6xl mx-auto space-y-8">
         <Skeleton className="w-40 h-10 rounded-lg mb-4" />
-        <Skeleton className="w-full h-[400px] rounded-[32px]" />
+        <Skeleton className="w-full h-[400px] rounded-2xl" />
         <div className="grid md:grid-cols-[1fr_320px] gap-8 mt-12">
           <div className="space-y-6">
             <Skeleton className="w-64 h-10 rounded-lg" />
@@ -49,7 +49,7 @@ export default function CourseOverviewPage() {
   if (!course) return (
     <PageContainer>
       <div className="py-24 text-center flex flex-col items-center max-w-md mx-auto">
-        <div className="h-20 w-20 bg-muted border border-border/50 rounded-3xl flex items-center justify-center mb-6 shadow-sm">
+        <div className="h-20 w-20 bg-muted border border-border/30 rounded-2xl flex items-center justify-center mb-6 shadow-sm">
           <BookOpen className="h-10 w-10 text-muted-foreground/60" />
         </div>
         <h2 className="text-3xl font-extrabold tracking-tight mb-3">Course not found</h2>
@@ -89,7 +89,7 @@ export default function CourseOverviewPage() {
         />
 
         <div className="grid lg:grid-cols-[1fr_320px] xl:grid-cols-[1fr_360px] gap-8 lg:gap-12 items-start">
-          <div className="space-y-12">
+          <div className="space-y-10">
             <CurriculumTimeline course={course} courseId={id} />
 
             <motion.section

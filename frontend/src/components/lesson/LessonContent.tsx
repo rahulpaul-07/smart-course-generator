@@ -50,20 +50,20 @@ export function LessonContent({
   return (
     <article data-reading-content className={`mx-auto w-full transition-all duration-300 px-5 py-12 lg:py-16 ${isFocusMode ? 'max-w-[900px]' : 'max-w-[820px] lg:px-12'}`}>
       <header className="mb-14">
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-foreground leading-[1.15] mb-8 font-serif drop-shadow-sm">
+        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground mb-8">
           {lesson.title}
         </h1>
-        <div className="flex flex-wrap items-center gap-3 border-b border-border/40 pb-8">
+        <div className="flex flex-wrap items-center gap-3 border-b border-border/30 pb-8">
           {lesson.completedAt && (
-            <span className="flex items-center gap-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 text-xs font-bold text-emerald-500 uppercase tracking-widest shadow-sm">
+            <span className="flex items-center gap-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 text-xs font-medium text-emerald-500 shadow-sm">
               <CheckCircle2 className="w-3.5 h-3.5" /> Completed
             </span>
           )}
-          <span className="flex items-center gap-1.5 rounded-lg bg-primary/10 border border-primary/20 px-3 py-1.5 text-xs font-bold text-primary uppercase tracking-widest shadow-sm">
+          <span className="flex items-center gap-1.5 rounded-lg bg-primary/10 border border-primary/20 px-3 py-1.5 text-xs font-medium text-primary shadow-sm">
             <LayoutTemplate className="w-3.5 h-3.5" /> {lesson.language || 'English'}
           </span>
-          <span className="flex items-center gap-1.5 rounded-lg bg-muted border border-border px-3 py-1.5 text-xs font-bold text-muted-foreground uppercase tracking-widest shadow-sm">
-            <Sparkles className="w-3.5 h-3.5 text-cyan-500" /> AI Generated
+          <span className="flex items-center gap-1.5 rounded-lg bg-muted border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground shadow-sm">
+            <Sparkles className="w-3.5 h-3.5 text-primary" /> AI Generated
           </span>
         </div>
       </header>
@@ -94,7 +94,7 @@ export function LessonContent({
           <h3 className="text-xl font-bold text-amber-500 mb-2">Connection Lost</h3>
           <p className="text-muted-foreground font-medium mb-6">The AI stream was disconnected. The backend may have finished saving the lesson.</p>
           <div className="flex gap-4">
-            <button onClick={() => window.location.reload()} className="bg-background border border-border/50 text-foreground px-6 py-2.5 rounded-xl font-bold shadow-sm hover:shadow-md transition-all">Reload Page</button>
+            <button onClick={() => window.location.reload()} className="bg-background border border-border/30 text-foreground px-6 py-2.5 rounded-xl font-bold shadow-sm hover:shadow-md transition-all">Reload Page</button>
             <button onClick={onGenerate} className="bg-primary text-primary-foreground px-6 py-2.5 rounded-xl font-bold shadow-sm hover:shadow-md hover:bg-primary/90 transition-all">Regenerate Lesson</button>
           </div>
         </div>
@@ -109,14 +109,14 @@ export function LessonContent({
       )}
 
       <Suspense fallback={<div className="py-32 flex flex-col items-center justify-center gap-4"><LoadingSpinner text="Rendering premium content..." /></div>}>
-        <div className="mt-8">
+        <div className="mt-8 [&_pre]:!p-6 [&_.my-8]:!my-10 [&_.my-8]:!shadow-sm [&_.my-8]:!border-border/30 [&_.bg-\[\#161b22\]]:!py-3 [&_.bg-\[\#161b22\]]:!px-5 [&_ul]:!pl-6 [&_ul]:!list-disc [&_ul]:!mb-6 [&_ol]:!pl-6 [&_ol]:!list-decimal [&_ol]:!mb-6 [&_li]:!mb-2 [&_blockquote]:!border-l-4 [&_blockquote]:!border-primary/40 [&_blockquote]:!pl-5 [&_blockquote]:!py-1 [&_blockquote]:!italic [&_blockquote]:!text-muted-foreground [&_blockquote]:!bg-muted/10 [&_blockquote]:!rounded-r-lg [&_blockquote]:!mb-6 [&_table]:!w-full [&_table]:!mb-8 [&_table]:!border-collapse [&_table]:!text-sm [&_th]:!bg-muted/30 [&_th]:!p-3 [&_th]:!font-semibold [&_th]:!text-left [&_th]:!border [&_th]:!border-border/30 [&_td]:!p-3 [&_td]:!border [&_td]:!border-border/30">
           <LessonRenderer content={lesson.content} isStreaming={generating} />
         </div>
       </Suspense>
 
       {lesson.videos && lesson.videos.length > 0 && (
-        <div className="mt-20 pt-12 border-t border-border/40">
-          <h2 className="text-3xl font-bold text-foreground mb-8 flex items-center gap-3 font-serif">
+        <div className="mt-20 pt-12 border-t border-border/30">
+          <h2 className="text-xl font-semibold tracking-tight text-foreground mb-8 flex items-center gap-3">
             Recommended Videos
           </h2>
           <div className="grid sm:grid-cols-2 gap-6">
@@ -128,8 +128,8 @@ export function LessonContent({
       )}
 
       {!hasContent && !generating && streamStatus !== 'error' && (
-        <div className="flex flex-col items-center justify-center py-24 text-center rounded-3xl border-2 border-dashed border-border/60 bg-card/10 backdrop-blur-sm mt-12 shadow-sm">
-          <div className="h-24 w-24 bg-muted border border-border/50 rounded-[2rem] flex items-center justify-center mb-6 shadow-inner">
+        <div className="flex flex-col items-center justify-center py-24 text-center rounded-2xl border-2 border-dashed border-border/30 bg-card/10 backdrop-blur-sm mt-12 shadow-sm">
+          <div className="h-24 w-24 bg-muted border border-border/30 rounded-[2rem] flex items-center justify-center mb-6 shadow-inner">
             <BookOpen className="h-10 w-10 text-muted-foreground/60" />
           </div>
           <h3 className="text-2xl font-bold text-foreground mb-3 font-serif">Ready to Learn?</h3>
@@ -138,7 +138,7 @@ export function LessonContent({
       )}
 
       {hasContent && !generating && course && (
-        <div className="mt-20 pt-12 border-t border-border/40">
+        <div className="mt-20 pt-12 border-t border-border/30">
           <LessonCompletion course={course} courseId={courseId} lesson={lesson} onLessonUpdate={updateCurrentLesson} />
         </div>
       )}

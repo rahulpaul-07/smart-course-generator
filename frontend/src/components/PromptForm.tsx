@@ -24,7 +24,7 @@ export default function PromptForm({ onSubmit, isLoading = false }: { onSubmit: 
   }
 
   return (
-    <Card className={`relative overflow-hidden transition-all duration-500 bg-card/60 backdrop-blur ${isFocused ? 'ring-2 ring-primary/50 shadow-lg shadow-primary/20' : 'hover:border-primary/30'}`}>
+    <Card className={`relative overflow-hidden transition-all duration-200 bg-card/60 backdrop-blur ${isFocused ? 'ring-2 ring-primary/50 shadow-lg shadow-primary/20' : 'hover:border-primary/30'}`}>
       <form onSubmit={handleSubmit} className="flex flex-col">
         <div className="block p-4 sm:p-6 pb-2 relative">
           <label htmlFor="course-prompt" className="sr-only">What course do you want to create?</label>
@@ -62,7 +62,7 @@ export default function PromptForm({ onSubmit, isLoading = false }: { onSubmit: 
           </AnimatePresence>
         </div>
 
-        <div className="flex items-center justify-between gap-4 border-t border-border/50 bg-muted/20 px-4 py-3 sm:px-6">
+        <div className="flex items-center justify-between gap-4 border-t border-border/30 bg-muted/20 px-4 py-3 sm:px-6">
           <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
             <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
               <Sparkles className="h-3.5 w-3.5 text-primary" />
@@ -110,7 +110,7 @@ export default function PromptForm({ onSubmit, isLoading = false }: { onSubmit: 
             <div className="flex flex-col items-center gap-5 relative z-10">
               <div className="relative">
                 <div className="absolute inset-0 rounded-full blur-xl bg-primary/40 animate-pulse" />
-                <div className="h-14 w-14 rounded-2xl bg-card border border-primary/20 flex items-center justify-center shadow-2xl relative z-10 animate-float">
+                <div className="h-14 w-14 rounded-2xl bg-card border border-primary/20 flex items-center justify-center shadow-lg relative z-10 animate-float">
                   <Wand2 className="h-6 w-6 text-primary animate-pulse" />
                 </div>
               </div>

@@ -41,13 +41,13 @@ export function InterviewSidebar({ activePrep, activeTab, setActiveTab, setActiv
   };
 
   return (
-    <aside className="w-80 border-r border-border/40 bg-card/30 backdrop-blur-xl flex flex-col hidden lg:flex relative z-10 shadow-[4px_0_24px_rgb(0,0,0,0.02)]">
-      <div className="p-6 border-b border-border/50">
+    <aside className="w-80 border-r border-border/30 bg-card/30 backdrop-blur-xl flex flex-col hidden lg:flex relative z-10 shadow-[4px_0_24px_rgb(0,0,0,0.02)]">
+      <div className="p-6 border-b border-border/30">
         <button onClick={() => setActivePrep(null)} className="flex items-center gap-2 text-[13px] font-bold uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors mb-6 w-fit bg-muted/50 px-3 py-1.5 rounded-lg hover:bg-muted">
           <ArrowLeft className="h-4 w-4" /> Exit Session
         </button>
         <h2 className="font-serif text-xl font-bold tracking-tight text-foreground line-clamp-2">{activePrep.topic}</h2>
-        <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/50 px-3 py-1 text-xs font-semibold text-muted-foreground shadow-sm">
+        <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-border/30 bg-background/50 px-3 py-1 text-xs font-semibold text-muted-foreground shadow-sm">
           <div className={`h-2 w-2 rounded-full ${activePrep.status === 'pending' ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'}`} />
           {activePrep.status === 'pending' ? 'In Progress' : 'Completed'}
         </div>
@@ -80,7 +80,7 @@ export function InterviewSidebar({ activePrep, activeTab, setActiveTab, setActiv
           );
         })}
       </nav>
-      <div className="p-4 border-t border-border/50 bg-background/50 backdrop-blur-md">
+      <div className="p-4 border-t border-border/30 bg-background/50 backdrop-blur-md">
         <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 flex items-start gap-3 relative overflow-hidden group">
           <div className="absolute inset-0 bg-primary/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
           <MessageSquare className="h-5 w-5 text-primary shrink-0 relative z-10" />

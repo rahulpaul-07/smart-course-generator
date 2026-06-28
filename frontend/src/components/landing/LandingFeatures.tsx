@@ -8,7 +8,7 @@ export function LandingFeatures() {
   return (
     <>
       {/* 1. Trusted Technology */}
-      <section className="py-12 border-y border-border/40 bg-muted/10 relative overflow-hidden">
+      <section className="py-12 border-y border-border/30 bg-muted/10 relative overflow-hidden">
         <div className="container px-4 md:px-6">
           <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground mb-8">Powered by industry-leading technology</p>
           <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12 opacity-60">
@@ -40,12 +40,12 @@ export function LandingFeatures() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.2, delay: i * 0.05 }}
-                className="p-6 rounded-2xl bg-card/40 border border-border/40 backdrop-blur-xl shadow-sm hover:-translate-y-1 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:hover:shadow-[0_8px_30px_rgb(0,0,0,0.1)] hover:border-border/80 transition-all duration-200 flex flex-col items-center justify-center text-center group"
+                className="p-6 h-full rounded-2xl bg-card border border-border/30 shadow-sm hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 flex flex-col items-center justify-center text-center group"
               >
-                <div className="text-3xl font-extrabold text-foreground mb-2 group-hover:text-primary transition-colors">
+                <div className="text-3xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
                   <CountUp end={metric.value} decimals={metric.decimals} suffix={metric.suffix} />
                 </div>
-                <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider leading-relaxed">{metric.label}</div>
+                <div className="text-xs text-muted-foreground">{metric.label}</div>
               </motion.div>
             ))}
           </div>
@@ -53,11 +53,11 @@ export function LandingFeatures() {
       </section>
 
       {/* 3. Why CourseAI */}
-      <section className="py-24 bg-muted/20 border-y border-border/40">
+      <section className="py-24 bg-muted/20 border-y border-border/30">
         <div className="container px-4 md:px-6">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4 text-foreground">Why CourseAI Pro?</h2>
-            <p className="text-lg text-muted-foreground">Everything you need to master complex subjects, unified in one premium platform.</p>
+            <h2 className="text-3xl font-bold tracking-tight mb-4 text-foreground">Why CourseAI Pro?</h2>
+            <p className="text-muted-foreground leading-7">Everything you need to master complex subjects, unified in one premium platform.</p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -77,12 +77,12 @@ export function LandingFeatures() {
                 transition={{ duration: 0.2, delay: i * 0.05 }}
                 className="group relative"
               >
-                <Card className="relative p-8 h-full bg-card/40 backdrop-blur-xl border border-border/40 hover:bg-card hover:border-border/80 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:hover:shadow-[0_8px_30px_rgb(0,0,0,0.1)] transition-all duration-200 hover:-translate-y-1">
-                  <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center mb-6 text-primary group-hover:scale-105 group-hover:from-primary group-hover:to-primary/80 group-hover:text-primary-foreground transition-all duration-200 shadow-sm ring-1 ring-primary/10 group-hover:ring-primary/30">
-                    <feature.icon className="h-6 w-6" />
+                <Card className="relative p-6 h-full bg-card border border-border/30 shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-0.5">
+                  <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center mb-6 text-primary group-hover:from-primary group-hover:to-primary/80 group-hover:text-primary-foreground transition-all duration-200 shadow-sm ring-1 ring-primary/10 group-hover:ring-primary/30">
+                    <feature.icon className="h-5 w-5" />
                   </div>
-                  <h3 className="text-xl font-bold mb-3 tracking-tight text-foreground">{feature.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{feature.desc}</p>
+                  <h3 className="text-lg font-semibold mb-3 tracking-tight text-foreground">{feature.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-7">{feature.desc}</p>
                 </Card>
               </motion.div>
             ))}
@@ -94,7 +94,7 @@ export function LandingFeatures() {
       <section className="py-24 relative overflow-hidden">
         <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl -z-10" />
         <div className="container px-4 md:px-6">
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-center mb-16 text-foreground">The Learning Journey</h2>
+          <h2 className="text-3xl font-bold tracking-tight text-center mb-16 text-foreground">The Learning Journey</h2>
           
           <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 max-w-5xl mx-auto">
             {[
@@ -113,11 +113,11 @@ export function LandingFeatures() {
                   transition={{ duration: 0.2, delay: i * 0.1 }}
                   className="flex flex-col items-center gap-4"
                 >
-                  <div className="h-16 w-16 rounded-2xl bg-card border border-border/40 shadow-[0_4px_20px_rgb(0,0,0,0.03)] flex items-center justify-center relative group hover:border-border/80 hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:-translate-y-1 transition-all duration-200">
+                  <div className="h-16 w-16 rounded-2xl bg-card border border-border/30 shadow-sm flex items-center justify-center relative group hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
                     <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-                    <step.icon className="h-7 w-7 text-foreground group-hover:text-primary transition-colors duration-200 relative z-10" />
+                    <step.icon className="h-5 w-5 text-foreground group-hover:text-primary transition-colors duration-200 relative z-10" />
                   </div>
-                  <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider text-center">{step.title}</span>
+                  <span className="text-xs text-muted-foreground text-center font-medium">{step.title}</span>
                 </motion.div>
                 {i < arr.length - 1 && (
                   <motion.div

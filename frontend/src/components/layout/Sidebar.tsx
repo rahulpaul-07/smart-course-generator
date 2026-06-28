@@ -80,7 +80,7 @@ export function Sidebar() {
                     className="absolute left-0 top-1 bottom-1 w-1 bg-primary rounded-r-full" 
                   />
                 )}
-                <item.icon className={cn("h-5 w-5 shrink-0 transition-all duration-200", isActive ? "text-primary scale-110" : "text-muted-foreground group-hover:text-foreground group-hover:scale-110")} aria-hidden="true" />
+                <item.icon className={cn("h-5 w-5 shrink-0 transition-all duration-200", isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground")} aria-hidden="true" />
                 {!isSidebarCollapsed && (
                   <span className="truncate">{item.name}</span>
                 )}
@@ -90,7 +90,7 @@ export function Sidebar() {
         </div>
       </div>
       
-      <div className="p-3 border-t border-border/50 space-y-2">
+      <div className="p-3 border-t border-border/30 space-y-2">
         <Link
           to="/settings"
           className={cn(
@@ -109,7 +109,7 @@ export function Sidebar() {
               className="absolute left-0 top-1 bottom-1 w-1 bg-primary rounded-r-full" 
             />
           )}
-          <Settings className={cn("h-5 w-5 shrink-0 transition-all duration-200", location.pathname.startsWith("/settings") ? "text-primary scale-110" : "text-muted-foreground group-hover:text-foreground group-hover:scale-110")} aria-hidden="true" />
+          <Settings className={cn("h-5 w-5 shrink-0 transition-all duration-200", location.pathname.startsWith("/settings") ? "text-primary" : "text-muted-foreground group-hover:text-foreground")} aria-hidden="true" />
           {!isSidebarCollapsed && <span>Settings</span>}
         </Link>
         
@@ -122,9 +122,9 @@ export function Sidebar() {
           title={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
         >
           {isSidebarCollapsed ? (
-            <ChevronRight className="h-5 w-5 shrink-0 transition-transform group-hover:scale-110" />
+            <ChevronRight className="h-5 w-5 shrink-0 transition-transform" />
           ) : (
-            <ChevronLeft className="h-5 w-5 shrink-0 transition-transform group-hover:scale-110" />
+            <ChevronLeft className="h-5 w-5 shrink-0 transition-transform" />
           )}
           {!isSidebarCollapsed && <span>Collapse</span>}
         </button>

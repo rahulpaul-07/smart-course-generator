@@ -31,7 +31,7 @@ export function SuggestedPrompts({ onSelect }: SuggestedPromptsProps) {
           <button
             key={i}
             onClick={() => onSelect(s)}
-            className="w-full text-left px-5 py-3 rounded-xl border border-border/50 bg-muted/20 text-[13px] font-medium text-foreground hover:bg-primary/5 hover:border-primary/30 hover:text-primary transition-all duration-200 shadow-sm"
+            className="w-full text-left px-5 py-3 rounded-xl border border-border/30 bg-muted/20 text-[13px] font-medium text-foreground hover:bg-primary/5 hover:border-primary/30 hover:text-primary transition-all duration-200 shadow-sm"
           >
             {s}
           </button>

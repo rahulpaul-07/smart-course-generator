@@ -129,7 +129,7 @@ export function TopNavigation() {
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ duration: 0.2, ease: "easeOut" }}
-              className="fixed inset-y-0 left-0 z-50 w-3/4 max-w-sm border-r border-border bg-sidebar p-6 shadow-2xl md:hidden flex flex-col"
+              className="fixed inset-y-0 left-0 z-50 w-3/4 max-w-sm border-r border-border bg-sidebar p-6 shadow-lg md:hidden flex flex-col"
             >
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-2 font-bold text-lg text-primary tracking-tight">
@@ -165,7 +165,7 @@ export function TopNavigation() {
                 })}
               </div>
 
-              <div className="mt-auto pt-6 border-t border-border/50">
+              <div className="mt-auto pt-6 border-t border-border/30">
                 <Link
                   to="/settings"
                   onClick={() => setMobileMenuOpen(false)}

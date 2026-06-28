@@ -33,7 +33,7 @@ export function CourseFilters({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2, delay: 0.05 }}
-      className="rounded-2xl border border-border/40 bg-card/40 backdrop-blur-2xl p-4 shadow-sm flex flex-col xl:flex-row gap-4 items-center justify-between sticky top-20 z-30"
+      className="rounded-2xl border border-border/30 bg-card/40 backdrop-blur-2xl p-4 shadow-sm flex flex-col xl:flex-row gap-4 items-center justify-between sticky top-20 z-30"
     >
       {/* Search */}
       <div className="relative w-full xl:w-[320px] shrink-0 group">
@@ -42,7 +42,7 @@ export function CourseFilters({
           placeholder="Search your courses..." 
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full pl-10 h-11 rounded-xl bg-background/60 border-border/50 focus-visible:ring-2 focus-visible:ring-primary shadow-inner font-medium placeholder:text-muted-foreground/70 transition-all duration-200 hover:border-border/80"
+          className="w-full pl-10 h-11 rounded-xl bg-background/60 border-border/30 focus-visible:ring-2 focus-visible:ring-primary shadow-inner font-medium placeholder:text-muted-foreground/70 transition-all duration-200 hover:border-border/30"
           aria-label="Search courses"
         />
       </div>
@@ -57,7 +57,7 @@ export function CourseFilters({
               className={`px-3.5 py-2 text-[13px] font-bold rounded-lg transition-all duration-200 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
                 filter === f 
                   ? 'bg-foreground text-background shadow-sm' 
-                  : 'bg-transparent border border-border/40 text-muted-foreground hover:text-foreground hover:bg-muted/50 hover:border-border/80'
+                  : 'bg-transparent border border-border/30 text-muted-foreground hover:text-foreground hover:bg-muted/50 hover:border-border/30'
               }`}
               aria-pressed={filter === f}
             >
@@ -66,9 +66,9 @@ export function CourseFilters({
           ))}
         </div>
 
-        <div className="flex items-center justify-between w-full md:w-auto gap-3 shrink-0 border-t border-border/40 md:border-t-0 md:border-l md:pl-4 pt-4 md:pt-0">
+        <div className="flex items-center justify-between w-full md:w-auto gap-3 shrink-0 border-t border-border/30 md:border-t-0 md:border-l md:pl-4 pt-4 md:pt-0">
           {/* Sort Dropdown */}
-          <div className="relative flex items-center gap-2 border border-border/50 rounded-lg bg-background/60 px-3 h-10 hover:border-border/80 transition-colors duration-200 focus-within:ring-2 focus-within:ring-primary focus-within:border-primary">
+          <div className="relative flex items-center gap-2 border border-border/30 rounded-lg bg-background/60 px-3 h-10 hover:border-border/30 transition-colors duration-200 focus-within:ring-2 focus-within:ring-primary focus-within:border-primary">
             <Filter className="h-4 w-4 text-muted-foreground shrink-0" />
             <select 
               className="bg-transparent text-[13px] font-bold text-foreground outline-none border-none focus:ring-0 cursor-pointer w-full appearance-none pr-6"
@@ -84,7 +84,7 @@ export function CourseFilters({
           </div>
 
           {/* View Toggles */}
-          <div className="flex bg-background/60 border border-border/50 rounded-lg p-1 shrink-0">
+          <div className="flex bg-background/60 border border-border/30 rounded-lg p-1 shrink-0">
             <button 
               onClick={() => onViewChange('grid')}
               className={`p-1.5 rounded-[5px] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${viewMode === 'grid' ? 'bg-card shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}

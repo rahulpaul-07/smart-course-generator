@@ -67,7 +67,7 @@ export default function ProfilePage() {
 
       <div className="grid lg:grid-cols-[1fr_350px] gap-8 mt-8">
         <div className="space-y-6">
-          <Card className="bg-card/50 backdrop-blur-sm border-border/50 rounded-2xl">
+          <Card className="bg-card/50 backdrop-blur-sm border-border/30 rounded-2xl">
             <CardHeader>
               <CardTitle>Personal Information</CardTitle>
               <CardDescription>Update your photo and personal details.</CardDescription>
@@ -75,7 +75,7 @@ export default function ProfilePage() {
             <CardContent className="space-y-6">
               <div className="flex items-center gap-6">
                 <div className="relative group">
-                  <Avatar className="h-24 w-24 ring-4 ring-background shadow-xl">
+                  <Avatar className="h-24 w-24 ring-4 ring-background shadow-md">
                     <AvatarImage src={profile.avatar} />
                     <AvatarFallback className="bg-primary/10 text-primary text-2xl font-semibold">
                       {profile.name?.charAt(0)?.toUpperCase() || <User />}
@@ -94,7 +94,7 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              <div className="space-y-4 pt-4 border-t border-border/50">
+              <div className="space-y-4 pt-4 border-t border-border/30">
                 <div className="grid gap-2">
                   <label className="text-sm font-medium">Display Name</label>
                   <Input 
@@ -120,7 +120,7 @@ export default function ProfilePage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-card/50 backdrop-blur-sm border-border/50 rounded-2xl">
+          <Card className="bg-card/50 backdrop-blur-sm border-border/30 rounded-2xl">
             <CardHeader>
               <CardTitle>Privacy & Display</CardTitle>
               <CardDescription>Control how others see your profile.</CardDescription>
@@ -172,7 +172,7 @@ export default function ProfilePage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-card/50 backdrop-blur-sm border-border/50 rounded-2xl">
+          <Card className="bg-card/50 backdrop-blur-sm border-border/30 rounded-2xl">
             <CardHeader>
               <CardTitle>Account Stats</CardTitle>
             </CardHeader>

@@ -2,6 +2,7 @@ import React from 'react';
 import { Bot } from 'lucide-react';
 import LoadingSpinner from '../LoadingSpinner';
 import { tabs } from './AgentSidebar';
+import { Button } from '@/components/ui/button';
 
 interface AgentHeaderInputsProps {
   activeTab: string;
@@ -75,14 +76,14 @@ export function AgentHeaderInputs({
           </div>
         </div>
 
-        <button
+        <Button
           onClick={handleRunAgent}
           disabled={loading || (activeTab === 'reviewer' && !selectedCourse)}
-          className="flex items-center gap-2 rounded-xl bg-brand-600 px-6 py-3 text-sm font-bold text-foreground transition-all hover:bg-brand-500 disabled:opacity-50 shadow-lg shadow-brand-500/20 shrink-0"
+          className="flex items-center gap-2 h-11 px-6 rounded-xl font-bold shadow-lg shrink-0"
         >
-          {loading ? <LoadingSpinner size="sm" /> : <Bot className="h-4 w-4" />}
+          {loading ? <LoadingSpinner size="sm" /> : <Bot className="h-4 w-4 mr-2" />}
           Run {activeTab}
-        </button>
+        </Button>
       </div>
     </div>
   );

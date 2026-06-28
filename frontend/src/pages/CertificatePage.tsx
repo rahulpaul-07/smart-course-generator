@@ -48,14 +48,14 @@ export default function CertificatePage() {
   if (error || !certificate) {
     return (
       <div className="flex flex-col min-h-[80vh] items-center justify-center p-6 text-center bg-background">
-        <div className="h-32 w-32 rounded-3xl bg-destructive/10 flex items-center justify-center mb-8 border border-destructive/20 shadow-inner">
+        <div className="h-32 w-32 rounded-2xl bg-destructive/10 flex items-center justify-center mb-8 border border-destructive/20 shadow-inner">
           <ShieldCheck className="w-16 h-16 text-destructive opacity-80" />
         </div>
         <h2 className="text-4xl font-extrabold text-foreground mb-4 font-serif">Invalid Credential</h2>
         <p className="text-[15px] text-muted-foreground font-medium mb-10 max-w-md leading-relaxed">
           This verification link is invalid, expired, or the certificate could not be found in our secure registry.
         </p>
-        <Button onClick={() => navigate('/')} className="h-12 px-10 rounded-xl bg-foreground text-background font-bold hover:bg-foreground/90 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1">
+        <Button onClick={() => navigate('/')} className="h-12 px-10 rounded-xl bg-foreground text-background font-bold hover:bg-foreground/90 transition-all shadow-md hover:shadow-lg hover:-translate-y-1">
           Return to Dashboard
         </Button>
       </div>
@@ -135,7 +135,7 @@ export default function CertificatePage() {
               View Roadmaps
             </Button>
           </div>
-          <div className="bg-card/40 backdrop-blur-md border border-border/60 rounded-[1.5rem] p-8 shadow-lg text-center">
+          <div className="bg-card/40 backdrop-blur-md border border-border/30 rounded-2xl p-8 shadow-lg text-center">
             <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
               <Target className="w-8 h-8 text-primary opacity-80" />
             </div>
@@ -143,7 +143,7 @@ export default function CertificatePage() {
             <p className="text-[14px] font-medium text-muted-foreground mb-6 max-w-md mx-auto">
               Your AI tutor is ready to build your next custom course. Continue expanding your skills based on your recent achievement.
             </p>
-            <Button onClick={() => navigate('/')} className="h-12 px-8 rounded-xl bg-foreground text-background font-bold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all">
+            <Button onClick={() => navigate('/')} className="h-12 px-8 rounded-xl bg-foreground text-background font-bold shadow-lg hover:shadow-md hover:-translate-y-0.5 transition-all">
               Generate Next Course
             </Button>
           </div>

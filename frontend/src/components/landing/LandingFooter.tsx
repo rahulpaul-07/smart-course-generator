@@ -18,22 +18,22 @@ export function LandingFooter() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.2 }}
-            className="max-w-4xl mx-auto bg-card/40 backdrop-blur-xl border border-border/40 p-12 md:p-16 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] relative overflow-hidden"
+            className="max-w-4xl mx-auto bg-card/40 backdrop-blur-xl border border-border/30 p-12 md:p-16 rounded-2xl shadow-md relative overflow-hidden"
           >
             <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6 text-foreground drop-shadow-sm relative z-10">
+            <h2 className="text-5xl font-bold tracking-tight mb-6 text-foreground drop-shadow-sm relative z-10">
               Ready to Start Learning Smarter?
             </h2>
-            <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-xl mx-auto font-medium relative z-10">
+            <p className="text-muted-foreground leading-7 mb-10 max-w-xl mx-auto relative z-10">
               Join thousands of learners generating personalized education instantly.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center relative z-10">
-              <Button asChild size="lg" className="h-12 px-8 rounded-xl text-base font-bold bg-primary hover:bg-primary/90 text-primary-foreground shadow-[0_8px_30px_rgb(0,0,0,0.12)] shadow-primary/20 hover:shadow-[0_8px_30px_rgb(0,0,0,0.2)] hover:shadow-primary/30 hover:-translate-y-0.5 transition-all duration-200 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background ring-1 ring-inset ring-white/20 w-full sm:w-auto">
+              <Button asChild size="lg" className="h-12 px-8 rounded-xl text-base font-semibold bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background w-full sm:w-auto">
                 <Link to="/signup">
                   Generate Your First Course
                 </Link>
               </Button>
-              <Button asChild variant="outline" size="lg" className="h-12 px-8 rounded-xl text-base font-bold border border-border/50 hover:bg-muted/50 backdrop-blur-sm transition-all duration-200 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background hover:-translate-y-0.5 hover:shadow-sm w-full sm:w-auto">
+              <Button asChild variant="ghost" size="lg" className="h-12 px-8 rounded-xl text-base font-semibold border border-border/30 hover:bg-muted/50 backdrop-blur-sm transition-all duration-200 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background hover:-translate-y-0.5 hover:shadow-sm w-full sm:w-auto">
                 <Link to="/community">
                   View Demo
                 </Link>
@@ -44,7 +44,7 @@ export function LandingFooter() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border/40 bg-background pt-16 pb-8">
+      <footer className="border-t border-border/30 bg-background pt-16 pb-8">
         <div className="container px-4 md:px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-16">
             <div className="col-span-2 lg:col-span-2">
@@ -89,7 +89,7 @@ export function LandingFooter() {
             </div>
           </div>
           
-          <div className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-border/40 text-sm text-muted-foreground">
+          <div className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-border/30 text-sm text-muted-foreground">
             <p>© {new Date().getFullYear()} CourseAI Pro. All rights reserved.</p>
             <div className="flex items-center gap-2 mt-4 md:mt-0">
               <span className="flex h-2 w-2 rounded-full bg-green-500 animate-pulse" />

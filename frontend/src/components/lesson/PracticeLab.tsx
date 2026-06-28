@@ -60,7 +60,7 @@ const PracticeLab = React.memo(({ lessonId, courseId, embedded = false }: { less
   if (initialLoading) {
     return (
       <Card className={`overflow-hidden border-cyan-500/20 ${embedded ? 'border-none shadow-none bg-transparent' : ''}`}>
-        <CardHeader className="bg-cyan-500/5 border-b border-border/50 pb-6">
+        <CardHeader className="bg-cyan-500/5 border-b border-border/30 pb-6">
           <div className="flex items-start justify-between gap-4">
             <div className="w-full">
               <div className="h-6 w-32 animate-pulse rounded bg-card mb-3" />
@@ -106,7 +106,7 @@ const PracticeLab = React.memo(({ lessonId, courseId, embedded = false }: { less
 
   return (
     <Card className={`overflow-hidden border-cyan-500/20 ${embedded ? 'border-none shadow-none bg-transparent' : ''}`}>
-      <CardHeader className="bg-cyan-500/5 border-b border-border/50 pb-6">
+      <CardHeader className="bg-cyan-500/5 border-b border-border/30 pb-6">
         <div className="flex items-start justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-3">
@@ -180,7 +180,7 @@ const PracticeLab = React.memo(({ lessonId, courseId, embedded = false }: { less
           </ul>
         </div>
 
-        <div className="pt-4 border-t border-border/50">
+        <div className="pt-4 border-t border-border/30">
           <Button variant="outline" onClick={() => setShowHint(!showHint)} className="w-full sm:w-auto">
             <AlertCircle className="mr-2 h-4 w-4" />
             {showHint ? 'Hide Hint' : 'Need a hint?'}

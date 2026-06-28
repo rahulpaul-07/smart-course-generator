@@ -91,7 +91,7 @@ export default function CommunityTemplatesPage() {
                 <button 
                   key={star} 
                   onClick={() => handleRate(template._id, star)}
-                  className="focus:outline-none transition-transform hover:scale-125"
+                  className="focus:outline-none transition-transform"
                 >
                   <Star 
                     className={`h-3.5 w-3.5 ${(template.averageRating || 0) >= star ? 'text-yellow-400 fill-yellow-400' : 'text-muted-foreground'}`} 

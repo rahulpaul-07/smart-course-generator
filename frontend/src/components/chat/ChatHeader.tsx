@@ -11,7 +11,7 @@ interface ChatHeaderProps {
 
 export function ChatHeader({ lessonTitle, hasMessages, onClearChat, onClose }: ChatHeaderProps) {
   return (
-    <header className="flex flex-shrink-0 items-center justify-between gap-3 border-b border-border/40 bg-card/50 backdrop-blur-xl px-5 py-4 z-10">
+    <header className="flex flex-shrink-0 items-center justify-between gap-3 border-b border-border/30 bg-card/50 backdrop-blur-xl px-5 py-4 z-10">
       <div className="flex min-w-0 items-center gap-3">
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
           <Bot className="h-5 w-5" />

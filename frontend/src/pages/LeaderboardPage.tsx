@@ -26,8 +26,8 @@ export default function LeaderboardPage() {
         <p className="mt-2 text-sm text-muted-foreground">Compete with the community and climb the ranks.</p>
       </section>
 
-      <div className="max-w-4xl mx-auto glass-card rounded-3xl overflow-hidden shadow-lg border border-border/50">
-        <div className="p-4 bg-foreground/10 border-b border-border/50 grid grid-cols-12 gap-4 text-xs font-bold text-muted-foreground uppercase tracking-wider hidden sm:grid">
+      <div className="max-w-4xl mx-auto glass-card rounded-2xl overflow-hidden shadow-lg border border-border/30">
+        <div className="p-4 bg-foreground/10 border-b border-border/30 grid grid-cols-12 gap-4 text-xs font-bold text-muted-foreground uppercase tracking-wider hidden sm:grid">
           <div className="col-span-2 text-center">Rank</div>
           <div className="col-span-5">Learner</div>
           <div className="col-span-3">Achievements</div>
@@ -43,14 +43,14 @@ export default function LeaderboardPage() {
             >
               <div className="col-span-2 flex items-center justify-between sm:justify-center">
                 <span className="sm:hidden text-xs font-bold text-muted-foreground uppercase tracking-wider">Rank</span>
-                {idx === 0 ? <Trophy className="h-8 w-8 text-yellow-400 drop-shadow-[0_0_15px_rgba(250,204,21,0.5)] transform group-hover:scale-110 transition-transform" /> :
-                 idx === 1 ? <Trophy className="h-7 w-7 text-foreground/90 drop-shadow-md transform group-hover:scale-110 transition-transform" /> :
-                 idx === 2 ? <Trophy className="h-6 w-6 text-amber-600 drop-shadow-md transform group-hover:scale-110 transition-transform" /> :
+                {idx === 0 ? <Trophy className="h-8 w-8 text-yellow-400 drop-shadow-[0_0_15px_rgba(250,204,21,0.5)]" /> :
+                 idx === 1 ? <Trophy className="h-7 w-7 text-foreground/90 drop-shadow-md" /> :
+                 idx === 2 ? <Trophy className="h-6 w-6 text-amber-600 drop-shadow-md" /> :
                  <span className="font-display font-bold text-lg text-muted-foreground">#{idx + 1}</span>}
               </div>
               
               <div className="col-span-5 flex items-center gap-3">
-                <div className="h-12 w-12 rounded-full font-bold shadow-lg overflow-hidden border border-border/50 group-hover:border-brand-400/50 transition-colors bg-muted flex items-center justify-center text-muted-foreground">
+                <div className="h-12 w-12 rounded-full font-bold shadow-lg overflow-hidden border border-border/30 group-hover:border-brand-400/50 transition-colors bg-muted flex items-center justify-center text-muted-foreground">
                   {user.avatar ? (
                     <img src={user.avatar} alt="Avatar" className="h-full w-full object-cover" />
                   ) : (

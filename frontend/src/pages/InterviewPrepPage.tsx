@@ -102,9 +102,9 @@ export default function InterviewPrepPage() {
         </div>
       </main>
 
-      <aside className={`fixed inset-y-0 right-0 z-50 w-full sm:w-[400px] lg:static lg:w-[400px] lg:flex flex-col border-l border-border/50 bg-card/20 backdrop-blur-3xl transition-transform duration-300 ${isMobileCoachOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'}`}>
-        <div className="h-full flex flex-col shadow-2xl lg:shadow-none bg-background lg:bg-transparent">
-          <div className="flex items-center justify-between px-6 py-5 border-b border-border/50 bg-card/50 backdrop-blur-md">
+      <aside className={`fixed inset-y-0 right-0 z-50 w-full sm:w-[400px] lg:static lg:w-[400px] lg:flex flex-col border-l border-border/30 bg-card/20 backdrop-blur-3xl transition-transform duration-300 ${isMobileCoachOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'}`}>
+        <div className="h-full flex flex-col shadow-lg lg:shadow-none bg-background lg:bg-transparent">
+          <div className="flex items-center justify-between px-6 py-5 border-b border-border/30 bg-card/50 backdrop-blur-md">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary to-cyan-500 flex items-center justify-center shadow-lg shadow-primary/20">
                 <Brain className="h-5 w-5 text-primary-foreground" />

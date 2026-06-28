@@ -12,7 +12,7 @@ export default function LandingPage() {
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground selection:bg-primary/30 font-sans">
       {/* Navbar */}
-      <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/60 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
+      <header className="sticky top-0 z-50 w-full border-b border-border/30 bg-background/60 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
         <div className="container px-4 md:px-8 lg:px-12 flex h-16 items-center justify-between mx-auto">
           <div className="flex items-center gap-2 font-bold text-xl tracking-tight">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary shadow-lg shadow-primary/20">

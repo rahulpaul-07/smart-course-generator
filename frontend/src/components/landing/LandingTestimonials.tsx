@@ -5,13 +5,13 @@ import { Card } from '@/components/ui/card';
 
 export function LandingTestimonials() {
   return (
-    <section className="py-24 bg-muted/20 border-y border-border/40">
+    <section className="py-24 bg-muted/20 border-y border-border/30">
       <div className="container px-4 md:px-6">
         <div className="text-center mb-16">
-          <div className="inline-block rounded-full bg-primary/10 border border-primary/20 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-primary mb-4 shadow-sm backdrop-blur-sm">
+          <div className="inline-block rounded-full bg-primary/10 border border-primary/20 px-3 py-1 text-xs font-medium text-primary mb-4 shadow-sm backdrop-blur-sm">
             Demo Feedback
           </div>
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-foreground">Loved by professionals</h2>
+          <h2 className="text-3xl font-bold tracking-tight text-foreground">Loved by professionals</h2>
         </div>
 
         <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
@@ -27,19 +27,19 @@ export function LandingTestimonials() {
               viewport={{ once: true }}
               transition={{ duration: 0.2, delay: i * 0.1 }}
             >
-              <Card className="p-8 bg-card/40 backdrop-blur-xl border border-border/40 shadow-[0_4px_20px_rgb(0,0,0,0.02)] flex flex-col justify-between h-full hover:shadow-[0_8px_30px_rgb(0,0,0,0.05)] dark:hover:shadow-[0_8px_30px_rgb(0,0,0,0.1)] hover:-translate-y-1 hover:border-border/80 transition-all duration-200">
+              <Card className="p-8 bg-card border border-border/30 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between h-full">
                 <div className="mb-8">
                   <div className="flex gap-1 mb-5">
                     {[1,2,3,4,5].map(star => <Sparkles key={star} className="h-4 w-4 fill-amber-500 text-amber-500" />)}
                   </div>
-                  <p className="text-foreground text-[15px] leading-relaxed font-medium">"{t.quote}"</p>
+                  <p className="text-muted-foreground leading-7">"{t.quote}"</p>
                 </div>
-                <div className="flex items-center gap-4 pt-5 border-t border-border/40 mt-auto">
+                <div className="flex items-center gap-4 pt-5 border-t border-border/30 mt-auto">
                   <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary/20 to-cyan-400/20 flex items-center justify-center font-bold text-foreground ring-1 ring-border shadow-sm">
                     {t.name.charAt(0)}
                   </div>
                   <div>
-                    <div className="font-bold text-sm text-foreground">{t.name}</div>
+                    <div className="text-sm font-semibold text-foreground">{t.name}</div>
                     <div className="text-xs text-muted-foreground">{t.role}</div>
                   </div>
                 </div>

@@ -31,7 +31,7 @@ export function CourseList({
     return (
       <div className={viewMode === 'grid' ? 'grid md:grid-cols-2 xl:grid-cols-3 gap-6' : 'flex flex-col gap-4'}>
         {[1, 2, 3, 4, 5, 6].map((n) => (
-          <Skeleton key={n} className={`rounded-2xl border border-border/40 ${viewMode === 'grid' ? 'h-[420px]' : 'h-48'}`} />
+          <Skeleton key={n} className={`rounded-2xl border border-border/30 ${viewMode === 'grid' ? 'h-[420px]' : 'h-48'}`} />
         ))}
       </div>
     );
@@ -42,7 +42,7 @@ export function CourseList({
       <motion.div 
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="flex flex-col items-center justify-center p-12 lg:p-20 bg-card/20 border border-border/40 rounded-[32px] backdrop-blur-xl text-center shadow-sm"
+        className="flex flex-col items-center justify-center p-12 lg:p-20 bg-card/20 border border-border/30 rounded-2xl backdrop-blur-xl text-center shadow-sm"
       >
         <div className="h-16 w-16 bg-rose-500/10 rounded-2xl flex items-center justify-center mb-6 border border-rose-500/20">
           <AlertCircle className="h-8 w-8 text-rose-500" />
@@ -63,11 +63,11 @@ export function CourseList({
       <motion.div 
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="flex flex-col items-center justify-center p-12 lg:p-24 bg-card/20 border border-dashed border-border/60 rounded-[32px] backdrop-blur-sm text-center relative overflow-hidden"
+        className="flex flex-col items-center justify-center p-12 lg:p-24 bg-card/20 border border-dashed border-border/30 rounded-2xl backdrop-blur-sm text-center relative overflow-hidden"
       >
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-primary/5 rounded-full blur-[80px] pointer-events-none" />
         
-        <div className="relative z-10 h-24 w-24 bg-background/50 backdrop-blur-xl rounded-3xl flex items-center justify-center mb-8 border border-border/40 shadow-sm shadow-primary/5">
+        <div className="relative z-10 h-24 w-24 bg-background/50 backdrop-blur-xl rounded-2xl flex items-center justify-center mb-8 border border-border/30 shadow-sm shadow-primary/5">
           <BookOpen className="h-10 w-10 text-muted-foreground/60" />
           <Sparkles className="h-5 w-5 text-primary absolute -top-2 -right-2" />
         </div>

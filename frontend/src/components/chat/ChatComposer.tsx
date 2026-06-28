@@ -78,8 +78,8 @@ export function ChatComposer({
   }
 
   return (
-    <div className="p-4 pt-2 border-t border-border/40 bg-card/50 backdrop-blur-xl">
-      <div className="relative flex items-end gap-2 rounded-2xl border border-border/60 bg-background p-1.5 shadow-sm transition-all duration-200 focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/20">
+    <div className="p-4 pt-2 border-t border-border/30 bg-card/50 backdrop-blur-xl">
+      <div className="relative flex items-end gap-2 rounded-2xl border border-border/30 bg-background p-1.5 shadow-sm transition-all duration-200 focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/20">
         <textarea
           ref={inputRef}
           aria-label="Ask a question"

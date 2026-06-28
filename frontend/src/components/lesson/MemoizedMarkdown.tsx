@@ -41,8 +41,8 @@ export const MemoizedMarkdown = memo(({ text }: { text: string }) => (
       prose-pre:max-w-full 
       prose-pre:bg-[#0D0D0D] 
       prose-pre:border 
-      prose-pre:border-border/40 
-      prose-pre:shadow-2xl 
+      prose-pre:border-border/30 
+      prose-pre:shadow-lg 
       prose-pre:rounded-2xl
       prose-pre:my-8
       prose-pre:p-5
@@ -56,11 +56,11 @@ export const MemoizedMarkdown = memo(({ text }: { text: string }) => (
       prose-th:bg-muted/30
       prose-th:p-4
       prose-th:border
-      prose-th:border-border/50
+      prose-th:border-border/30
       prose-th:text-left
       prose-td:p-4
       prose-td:border
-      prose-td:border-border/50
+      prose-td:border-border/30
       
       /* Blockquotes */
       prose-blockquote:border-l-4 
@@ -82,7 +82,7 @@ export const MemoizedMarkdown = memo(({ text }: { text: string }) => (
       prose-img:shadow-[0_8px_30px_rgb(0,0,0,0.12)] 
       prose-img:my-12
       prose-img:border
-      prose-img:border-border/40
+      prose-img:border-border/30
       prose-img:w-full
       prose-img:object-cover
       

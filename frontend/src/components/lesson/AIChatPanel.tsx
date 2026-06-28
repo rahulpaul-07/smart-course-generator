@@ -40,7 +40,7 @@ export default function AIChatPanel({ lessonId, courseId, lessonTitle, isOpen, o
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: '100%', opacity: 0 }}
       transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-      className="fixed bottom-0 right-0 top-[4.5rem] z-50 flex w-full max-w-md flex-col border-l border-border/50 bg-background shadow-2xl"
+      className="fixed bottom-0 right-0 top-[4.5rem] z-50 flex w-full max-w-md flex-col border-l border-border/30 bg-background shadow-lg"
     >
       <ChatHeader 
         lessonTitle={lessonTitle}

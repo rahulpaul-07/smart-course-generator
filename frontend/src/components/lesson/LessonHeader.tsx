@@ -26,7 +26,7 @@ export function LessonHeader({
   const navigate = useNavigate();
 
   return (
-    <div className="sticky top-0 z-20 w-full bg-background/90 backdrop-blur-2xl border-b border-border/50 shadow-sm transition-all">
+    <div className="sticky top-0 z-20 w-full bg-background/90 backdrop-blur-2xl border-b border-border/30 shadow-sm transition-all">
       <div className={`mx-auto flex items-center justify-between px-6 py-3 min-h-[64px] ${isFocusMode ? 'max-w-[900px]' : ''}`}>
         
         <div className="flex items-center min-w-0 pr-4">
@@ -41,14 +41,14 @@ export function LessonHeader({
           )}
           
           <div className="flex flex-col justify-center min-w-0">
-            <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/80 mb-0.5">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground mb-0.5">
               <span className="truncate max-w-[120px] sm:max-w-[200px] hover:text-foreground cursor-pointer transition-colors" onClick={() => navigate(`/course/${courseId}`)}>{course?.title}</span>
               <ChevronRight className="w-3 h-3 shrink-0" />
               <span className="shrink-0 flex items-center gap-1.5 text-primary">
                 <Clock className="w-3 h-3" /> ~15m
               </span>
             </div>
-            <h1 className="text-sm sm:text-base font-bold text-foreground truncate">{lesson.title}</h1>
+            <h1 className="text-base font-semibold text-foreground truncate">{lesson.title}</h1>
           </div>
         </div>
 

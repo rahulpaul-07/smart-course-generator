@@ -22,12 +22,12 @@ export function CourseActions({ progress, nextLessonId, courseId }: CourseAction
       transition={{ duration: 0.2, delay: 0.3 }}
     >
       <Button 
-        size="lg" 
-        className="w-full h-12 rounded-xl shadow-[0_4px_20px_rgb(0,0,0,0.1)] shadow-primary/20 hover:-translate-y-0.5 transition-all duration-200 active:scale-[0.98] bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-base" 
+        variant="outline"
+        className="w-full h-10 rounded-lg shadow-sm border border-border/30 hover:bg-muted/50 hover:-translate-y-0.5 transition-all duration-200 font-semibold text-sm" 
         onClick={() => nextLessonId && navigate(`/course/${courseId}/lesson/${nextLessonId}`)}
       >
         {progress.percentage === 0 ? 'Start Learning' : 'Continue Learning'}
-        <PlayCircle className="ml-2 h-5 w-5" />
+        <PlayCircle className="ml-2 h-4 w-4" />
       </Button>
     </motion.section>
   );

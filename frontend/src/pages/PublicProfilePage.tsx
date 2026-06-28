@@ -47,7 +47,7 @@ export default function PublicProfilePage() {
         <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-r from-brand-500/20 to-cyan-500/20"></div>
         
         <div className="relative flex flex-col md:flex-row items-center md:items-start gap-6 mt-12">
-          <div className="h-32 w-32 rounded-full bg-card border-4 border-border flex items-center justify-center text-4xl text-foreground font-bold shadow-2xl overflow-hidden shrink-0">
+          <div className="h-32 w-32 rounded-full bg-card border-4 border-border flex items-center justify-center text-4xl text-foreground font-bold shadow-lg overflow-hidden shrink-0">
             {user.avatar ? (
               <img src={user.avatar} alt={user.name} className="h-full w-full object-cover" />
             ) : (
@@ -124,7 +124,7 @@ export default function PublicProfilePage() {
               icon={BookOpen}
               title="No Courses"
               description="This user hasn't published any courses yet."
-              className="bg-card/10 border-border/50 min-h-[250px]"
+              className="bg-card/10 border-border/30 min-h-[250px]"
             />
           ) : (
             <div className="grid sm:grid-cols-2 gap-4">
