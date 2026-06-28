@@ -13,6 +13,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
+import { ProfileSkeleton } from '../components/dashboard/ProfileSkeleton';
 
 export default function ProfilePage() {
   const { user, login } = useAuth();
@@ -56,7 +57,7 @@ export default function ProfilePage() {
     }
   };
 
-  if (!user) return null;
+  if (!user) return <ProfileSkeleton />;
 
   return (
     <PageContainer>
@@ -142,7 +143,7 @@ export default function ProfilePage() {
           </Card>
 
           <div className="flex justify-end">
-            <Button onClick={handleSave} disabled={saving} className="w-full sm:w-auto h-11 rounded-xl font-bold">
+            <Button onClick={handleSave} disabled={saving} className={`w-full sm:w-auto h-11 rounded-xl font-bold ${saving ? 'cursor-progress' : ''}`}>
               {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
               Save Changes
             </Button>
