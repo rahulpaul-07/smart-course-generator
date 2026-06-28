@@ -164,7 +164,7 @@ export default function CommunityTemplatesPage() {
           title="No Community Courses Yet"
           description="Be the first to publish a course and share it with the community!"
           action={
-            <Button onClick={() => navigate('/dashboard')}>
+            <Button onClick={() => navigate('/roadmaps')}>
               Create Course
             </Button>
           }

@@ -92,7 +92,7 @@ export default function LeaderboardPage() {
               title="No Leaders Yet"
               description="No public profiles found on the leaderboard. Be the first to join the Hall of Fame by generating a course and earning XP!"
               action={
-                <button onClick={() => navigate('/community')} className="h-10 px-4 py-2 bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center justify-center whitespace-nowrap rounded-xl text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50">
+                <button onClick={() => navigate('/roadmaps')} className="h-10 px-4 py-2 bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center justify-center whitespace-nowrap rounded-xl text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50">
                   Generate Course
                 </button>
               }

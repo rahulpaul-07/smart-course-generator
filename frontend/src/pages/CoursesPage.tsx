@@ -169,7 +169,7 @@ export default function CoursesPage() {
             <p className="text-base md:text-lg text-muted-foreground font-medium">Manage and continue your AI-generated learning journeys.</p>
           </div>
           
-          <Button size="lg" className="rounded-xl shadow-[0_4px_20px_rgb(0,0,0,0.1)] shadow-primary/20 hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 w-full md:w-auto shrink-0 bg-primary hover:bg-primary/90 font-bold" onClick={() => navigate('/community')}>
+          <Button size="lg" className="rounded-xl shadow-[0_4px_20px_rgb(0,0,0,0.1)] shadow-primary/20 hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 w-full md:w-auto shrink-0 bg-primary hover:bg-primary/90 font-bold" onClick={() => navigate('/roadmaps')}>
             Generate New Course <Sparkles className="ml-2 h-4 w-4" />
           </Button>
         </motion.div>
@@ -303,7 +303,7 @@ export default function CoursesPage() {
                 Clear All Filters
               </Button>
             ) : (
-              <Button size="lg" className="rounded-xl shadow-[0_4px_20px_rgb(0,0,0,0.1)] shadow-primary/20 hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 bg-primary hover:bg-primary/90 font-bold px-8 h-12 relative z-10" onClick={() => navigate('/community')}>
+              <Button size="lg" className="rounded-xl shadow-[0_4px_20px_rgb(0,0,0,0.1)] shadow-primary/20 hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 bg-primary hover:bg-primary/90 font-bold px-8 h-12 relative z-10" onClick={() => navigate('/roadmaps')}>
                 Generate Your First Course <ArrowUpRight className="ml-2 h-5 w-5" />
               </Button>
             )}

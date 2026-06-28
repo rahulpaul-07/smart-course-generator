@@ -60,7 +60,7 @@ export default function HomePage() {
   ];
 
   const quickActions = [
-    { label: "Generate Course", icon: Sparkles, url: "/community", desc: "Instantly create a new curriculum", color: "from-primary/20 to-primary/5", text: "text-primary", border: "group-hover:border-primary/50" },
+    { label: "Generate Course", icon: Sparkles, url: "/roadmaps", desc: "Instantly create a new curriculum", color: "from-primary/20 to-primary/5", text: "text-primary", border: "group-hover:border-primary/50" },
     { label: "Generate Roadmap", icon: Map, url: "/roadmaps", desc: "Plan your learning path", color: "from-blue-500/20 to-blue-500/5", text: "text-blue-500", border: "group-hover:border-blue-500/50" },
     { label: "Interview Prep", icon: Brain, url: "/interview", desc: "Practice with AI voice", color: "from-rose-500/20 to-rose-500/5", text: "text-rose-500", border: "group-hover:border-rose-500/50" },
     { label: "AI Tutor", icon: MessageSquare, url: "/ai-agents", desc: "Get unstuck instantly", color: "from-amber-500/20 to-amber-500/5", text: "text-amber-500", border: "group-hover:border-amber-500/50" },
@@ -123,7 +123,7 @@ export default function HomePage() {
                 </div>
                 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start pt-4">
-                  <Button size="lg" className="h-12 px-6 rounded-full text-sm font-bold bg-primary hover:bg-primary/90 text-primary-foreground shadow-[0_4px_20px_rgb(0,0,0,0.1)] shadow-primary/20 hover:-translate-y-0.5 transition-all duration-200 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background" onClick={() => navigate('/community')}>
+                  <Button size="lg" className="h-12 px-6 rounded-full text-sm font-bold bg-primary hover:bg-primary/90 text-primary-foreground shadow-[0_4px_20px_rgb(0,0,0,0.1)] shadow-primary/20 hover:-translate-y-0.5 transition-all duration-200 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background" onClick={() => navigate('/roadmaps')}>
                     <Sparkles className="mr-2 h-4 w-4" />
                     Generate New Course
                   </Button>
