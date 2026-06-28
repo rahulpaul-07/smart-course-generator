@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, BrainCircuit, BookOpen, Code, Award, ArrowRight, FileText, Map } from 'lucide-react';
+import { Sparkles, BrainCircuit, BookOpen, Code, Award, ArrowRight, FileText, Map, MessageSquare } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { CountUp } from '@/components/ui/CountUp';
 
