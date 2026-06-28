@@ -47,7 +47,7 @@ export function InterviewHeader({
               className="flex-1 h-12 bg-transparent px-5 text-[15px] font-medium text-foreground outline-none placeholder:text-muted-foreground"
               maxLength={100}
             />
-            <button type="submit" disabled={generating} className="h-12 bg-primary text-primary-foreground px-8 rounded-xl font-bold hover:bg-primary/90 transition-all duration-150 flex items-center justify-center gap-2 whitespace-nowrap shadow-md disabled:opacity-70 disabled:cursor-not-allowed">
+            <button type="submit" disabled={generating} className={`h-12 bg-primary text-primary-foreground px-8 rounded-xl font-bold hover:bg-primary/90 transition-all duration-150 flex items-center justify-center gap-2 whitespace-nowrap shadow-md ${generating ? 'opacity-70 cursor-progress' : ''}`}>
               {generating ? <><LoadingSpinner small /> Preparing...</> : <><Sparkles className="h-4 w-4" /> Generate Mock</>}
             </button>
           </div>
@@ -86,6 +86,14 @@ export function InterviewHeader({
                   title="No interview sessions yet"
                   description="Generate your first mock interview above to start practicing."
                   className="min-h-[250px] bg-card/10 border-border/30"
+                  action={
+                    <button 
+                      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} 
+                      className="h-10 px-4 bg-primary text-primary-foreground font-bold rounded-lg hover:bg-primary/90 transition-colors shadow-sm"
+                    >
+                      Start Interview
+                    </button>
+                  }
                 />
               </div>
             )}

@@ -9,6 +9,8 @@ import 'katex/dist/katex.min.css';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useInterviewProgress } from '../../hooks/useInterviewProgress';
+import { Skeleton, SkeletonAvatar, SkeletonText } from '../ui/skeleton';
+import { ErrorState } from '../ui/ErrorState';
 
 const CodeBlock = ({ language, value }: { language: string, value: string }) => {
   const [copied, setCopied] = React.useState(false);
@@ -44,8 +46,10 @@ export function FeedbackPanel({ prep }: FeedbackPanelProps) {
     setMessage,
     sending,
     chat,
+    chatError,
     messagesEndRef,
     sendMessage,
+    retryMessage,
     stopGenerating
   } = useInterviewProgress(prep);
 
@@ -98,6 +102,18 @@ export function FeedbackPanel({ prep }: FeedbackPanelProps) {
               <span className="w-1.5 h-1.5 bg-primary/70 rounded-full animate-bounce" />
               <span className="w-1.5 h-1.5 bg-primary/70 rounded-full animate-bounce" style={{ animationDelay: '0.15s' }} />
               <span className="w-1.5 h-1.5 bg-primary/70 rounded-full animate-bounce" style={{ animationDelay: '0.3s' }} />
+            </div>
+          </div>
+        )}
+        
+        {chatError && (
+          <div className="flex justify-center mt-4">
+            <div className="bg-destructive/10 border border-destructive/20 text-destructive p-4 rounded-xl flex flex-col items-center gap-2 max-w-sm text-center">
+              <ErrorState 
+                title="Message failed to send" 
+                description="Check your connection." 
+                onRetry={retryMessage}
+              />
             </div>
           </div>
         )}

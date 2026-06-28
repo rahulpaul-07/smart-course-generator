@@ -15,10 +15,14 @@ import { TheoryWorkspace } from '../components/interview/TheoryWorkspace';
 import { CodingWorkspace } from '../components/interview/CodingWorkspace';
 import { ResultsDashboard } from '../components/interview/ResultsDashboard';
 import { FeedbackPanel } from '../components/interview/FeedbackPanel';
+import { InterviewPrepSkeleton } from '../components/interview/InterviewPrepSkeleton';
+import { ErrorState } from '../components/ui/ErrorState';
 
 export default function InterviewPrepPage() {
   const {
     preps,
+    loading,
+    error,
     generating,
     topic,
     setTopic,
@@ -30,11 +34,28 @@ export default function InterviewPrepPage() {
     setIsMobileCoachOpen,
     generate,
     viewPrep,
-    deletePrep
+    deletePrep,
+    refetch
   } = useInterviewSession();
 
   const { elapsedTime, formatTime } = useInterviewTimer(activePrep);
   const { readiness, strengths, weaknesses, aiRec } = useInterviewResults(activePrep);
+
+  if (loading) {
+    return <InterviewPrepSkeleton />;
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background p-6 lg:p-12 flex items-center justify-center">
+        <ErrorState
+          title="Unable to load interview data"
+          description="Please try again."
+          onRetry={refetch}
+        />
+      </div>
+    );
+  }
 
   if (!activePrep) {
     return (

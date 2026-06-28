@@ -74,7 +74,7 @@ export function MCQWorkspace({ prep, mcqAnswers, setMcqAnswers, submitted, submi
       
       {!submitted && prep.mcqs?.length > 0 && (
         <div className="pt-8 border-t border-border/30 sticky bottom-0 z-10 bg-background/95 backdrop-blur-xl pb-8 flex justify-end">
-          <button onClick={submitAssessment} disabled={submitting} className="h-12 bg-foreground text-background px-8 rounded-xl font-bold hover:bg-foreground/90 transition-all flex items-center justify-center gap-2 shadow-lg disabled:opacity-70">
+          <button onClick={submitAssessment} disabled={submitting} className={`h-12 bg-foreground text-background px-8 rounded-xl font-bold hover:bg-foreground/90 transition-all flex items-center justify-center gap-2 shadow-lg ${submitting ? 'cursor-progress opacity-70' : ''}`}>
             {submitting ? <><LoadingSpinner small /> Evaluating...</> : <><Award className="h-5 w-5" /> Submit Assessment</>}
           </button>
         </div>

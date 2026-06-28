@@ -91,6 +91,7 @@ export function useInterviewSession() {
     setIsMobileCoachOpen,
     generate,
     viewPrep,
-    deletePrep
+    deletePrep,
+    refetch: loadPreps
   };
 }

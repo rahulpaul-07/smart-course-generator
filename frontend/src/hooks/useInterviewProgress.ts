@@ -5,6 +5,7 @@ import { useSessionStorage } from './useStorage';
 export function useInterviewProgress(prep: any) {
   const [message, setMessage] = useState('');
   const [sending, setSending] = useState(false);
+  const [chatError, setChatError] = useState(false);
   const [chat, setChat] = useSessionStorage<any[]>(
     `interview_mock_${prep?._id}`,
     () => {
@@ -22,9 +23,10 @@ export function useInterviewProgress(prep: any) {
 
   useEffect(() => {
     if (prep) {
+      setChatError(false);
       setTimeout(scrollToBottom, 50);
     }
-  }, [chat, prep?._id]);
+  }, [prep?._id]);
 
   async function sendMessage(e?: any) {
     e?.preventDefault();
@@ -35,6 +37,7 @@ export function useInterviewProgress(prep: any) {
     const newChat = [...chat, { role: 'candidate', content: text }];
     setChat(newChat);
     setSending(true);
+    setChatError(false);
     
     const controller = new AbortController();
     setAbortController(controller);
@@ -88,6 +91,7 @@ export function useInterviewProgress(prep: any) {
     } catch (err: any) {
       if (err.name !== 'AbortError') {
         toast.error('Failed to send message');
+        setChatError(true);
         setChat(prev => {
           const last = prev[prev.length - 1];
           if (last.role === 'interviewer' && !last.content) return prev.slice(0, -1);
@@ -104,13 +108,25 @@ export function useInterviewProgress(prep: any) {
     if (abortController) abortController.abort();
   }
 
+  function retryMessage() {
+    if (chatError && chat.length > 0 && chat[chat.length - 1].role === 'candidate') {
+      const lastMessage = chat[chat.length - 1].content;
+      setChat(prev => prev.slice(0, -1));
+      setMessage(lastMessage);
+      setChatError(false);
+      setTimeout(() => sendMessage(), 0);
+    }
+  }
+
   return {
     message,
     setMessage,
     sending,
     chat,
+    chatError,
     messagesEndRef,
     sendMessage,
+    retryMessage,
     stopGenerating
   };
 }
