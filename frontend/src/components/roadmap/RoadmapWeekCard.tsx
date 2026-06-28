@@ -9,14 +9,23 @@ interface RoadmapWeekCardProps {
   isExpanded: boolean;
   isCompleted: boolean;
   isCurrent: boolean;
+  isSaving?: boolean;
   toggleWeek: (num: number) => void;
   toggleCompletion: (e: any, num: number) => void;
   onGenerateCourse: (topic: string) => void;
 }
 
 export function RoadmapWeekCard({
-  roadmap, week, index, isExpanded, isCompleted, isCurrent, toggleWeek, toggleCompletion, onGenerateCourse
+  roadmap, week, index, isExpanded, isCompleted, isCurrent, isSaving, toggleWeek, toggleCompletion, onGenerateCourse
 }: RoadmapWeekCardProps) {
+  const [generatingTopic, setGeneratingTopic] = React.useState<string | null>(null);
+
+  const handleGenerateCourse = async (topic: string) => {
+    setGeneratingTopic(topic);
+    await onGenerateCourse(topic);
+    setGeneratingTopic(null);
+  };
+
   return (
     <div className="relative pl-20">
       
@@ -63,12 +72,14 @@ export function RoadmapWeekCard({
           <div className="flex items-center gap-4 shrink-0">
             <button 
               onClick={(e) => toggleCompletion(e, week.weekNumber)}
+              disabled={isSaving}
               className={`h-9 px-3 rounded-lg text-xs font-bold transition-colors border shadow-sm flex items-center gap-2 ${
                 isCompleted 
                   ? 'bg-background border-border text-muted-foreground hover:bg-muted' 
                   : 'bg-background border-border text-foreground hover:border-primary/50 hover:text-primary'
-              }`}
+              } ${isSaving ? 'cursor-progress opacity-70' : ''}`}
             >
+              {isSaving ? <Loader2 className="h-3 w-3 animate-spin" /> : null}
               {isCompleted ? 'Completed' : 'Mark Complete'}
             </button>
             <div className={`h-8 w-8 rounded-full flex items-center justify-center transition-transform duration-300 ${isExpanded ? 'bg-muted rotate-180' : 'hover:bg-muted'}`}>
@@ -96,18 +107,26 @@ export function RoadmapWeekCard({
                       <BookOpen className="h-4 w-4 text-primary" /> Key Topics
                     </h4>
                     <div className="flex flex-wrap gap-2.5">
-                      {week.topics.map((topic: string, i: number) => (
-                        <button
-                          key={i}
-                          onClick={() => onGenerateCourse(topic)}
-                          className="group flex items-center gap-2 rounded-xl border border-border/30 bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-all hover:border-primary/50 hover:bg-primary/5 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                          title={`Generate a course on "${topic}"`}
-                        >
-                          <span className="w-1.5 h-1.5 rounded-full bg-primary/40 group-hover:bg-primary transition-colors" />
-                          {topic}
-                          <ChevronRight className="h-3 w-3 opacity-0 -ml-1 text-primary group-hover:opacity-100 group-hover:ml-0 transition-all duration-300" />
-                        </button>
-                      ))}
+                      {week.topics.map((topic: string, i: number) => {
+                        const isGenerating = generatingTopic === topic;
+                        return (
+                          <button
+                            key={i}
+                            disabled={isGenerating}
+                            onClick={() => handleGenerateCourse(topic)}
+                            className={`group flex items-center gap-2 rounded-xl border border-border/30 bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-all hover:border-primary/50 hover:bg-primary/5 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${isGenerating ? 'cursor-progress opacity-70' : ''}`}
+                            title={`Generate a course on "${topic}"`}
+                          >
+                            {isGenerating ? (
+                              <Loader2 className="h-3 w-3 animate-spin text-primary" />
+                            ) : (
+                              <span className="w-1.5 h-1.5 rounded-full bg-primary/40 group-hover:bg-primary transition-colors" />
+                            )}
+                            {topic}
+                            {!isGenerating && <ChevronRight className="h-3 w-3 opacity-0 -ml-1 text-primary group-hover:opacity-100 group-hover:ml-0 transition-all duration-300" />}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 )}
@@ -143,10 +162,15 @@ export function RoadmapWeekCard({
                         </p>
                       )}
                       <button
-                        onClick={() => onGenerateCourse(week.project.title)}
-                        className="mt-auto flex items-center justify-center gap-2 w-full h-10 rounded-xl bg-background border border-amber-500/30 text-[13px] font-bold text-amber-600 dark:text-amber-500 hover:bg-amber-500/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+                        disabled={generatingTopic === week.project.title}
+                        onClick={() => handleGenerateCourse(week.project.title)}
+                        className={`mt-auto flex items-center justify-center gap-2 w-full h-10 rounded-xl bg-background border border-amber-500/30 text-[13px] font-bold text-amber-600 dark:text-amber-500 hover:bg-amber-500/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 ${generatingTopic === week.project.title ? 'cursor-progress opacity-70' : ''}`}
                       >
-                        Build Project <ArrowRight className="h-3.5 w-3.5" />
+                        {generatingTopic === week.project.title ? (
+                          <><Loader2 className="h-3.5 w-3.5 animate-spin" /> Preparing...</>
+                        ) : (
+                          <>Build Project <ArrowRight className="h-3.5 w-3.5" /></>
+                        )}
                       </button>
                     </div>
                   )}

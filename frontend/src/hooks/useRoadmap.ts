@@ -8,6 +8,7 @@ import { useSessionStorage } from './useStorage';
 export function useRoadmap() {
   const [roadmaps, setRoadmaps] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [generating, setGenerating] = useState(false);
   
   const [activeRoadmap, setActiveRoadmap] = useSessionStorage<any>('roadmap_active', null);
@@ -19,7 +20,10 @@ export function useRoadmap() {
   }, []);
 
   async function loadRoadmaps() {
-    const [data] = await roadmapService.getMyRoadmaps();
+    setLoading(true);
+    setError('');
+    const [data, err] = await roadmapService.getMyRoadmaps();
+    if (err) setError(err);
     if (data) setRoadmaps(data);
     setLoading(false);
   }
@@ -64,12 +68,14 @@ export function useRoadmap() {
   return {
     roadmaps,
     loading,
+    error,
     generating,
     activeRoadmap,
     setActiveRoadmap,
     generateRoadmap,
     viewRoadmap,
     deleteRoadmap,
-    generateCourseFromTopic
+    generateCourseFromTopic,
+    refetch: loadRoadmaps
   };
 }

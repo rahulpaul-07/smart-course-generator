@@ -8,19 +8,24 @@ import { RoadmapSidebar } from '../components/roadmap/RoadmapSidebar';
 import { RoadmapTimeline } from '../components/roadmap/RoadmapTimeline';
 import { RoadmapStats } from '../components/roadmap/RoadmapStats';
 import { RoadmapActions } from '../components/roadmap/RoadmapActions';
+import { RoadmapSkeleton } from '../components/roadmap/RoadmapSkeleton';
 import { Button } from '@/components/ui/button';
+import { ErrorState } from '@/components/ui/ErrorState';
+import { EmptyState } from '@/components/ui/EmptyState';
 
 export default function RoadmapPage() {
   const {
     roadmaps,
     loading,
+    error,
     generating,
     activeRoadmap,
     setActiveRoadmap,
     generateRoadmap,
     viewRoadmap,
     deleteRoadmap,
-    generateCourseFromTopic
+    generateCourseFromTopic,
+    refetch
   } = useRoadmap();
   
   const [showForm, setShowForm] = useState(false);
@@ -32,7 +37,45 @@ export default function RoadmapPage() {
     if (success) setShowForm(false);
   };
 
-  if (loading) return <div className="min-h-[80vh] flex items-center justify-center"><LoadingSpinner text="Loading roadmaps..." /></div>;
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/30 px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary border border-primary/20 shadow-sm">
+              <Map className="h-4 w-4" />
+            </div>
+            <h1 className="font-bold text-foreground tracking-tight text-lg">Career Roadmaps</h1>
+          </div>
+        </header>
+        <main className="p-6 lg:p-10 max-w-7xl mx-auto w-full space-y-10">
+          <RoadmapSkeleton />
+        </main>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background">
+        <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/30 px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary border border-primary/20 shadow-sm">
+              <Map className="h-4 w-4" />
+            </div>
+            <h1 className="font-bold text-foreground tracking-tight text-lg">Career Roadmaps</h1>
+          </div>
+        </header>
+        <main className="p-6 lg:p-10 max-w-7xl mx-auto w-full space-y-10 flex items-center justify-center min-h-[60vh]">
+          <ErrorState 
+            title="Unable to load roadmap" 
+            description="We couldn't load your roadmap. Please try again." 
+            onRetry={refetch} 
+          />
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -111,7 +154,7 @@ export default function RoadmapPage() {
                   </div>
                 </div>
                 <div className="mt-8 flex gap-3">
-                  <Button type="submit" disabled={generating} className="h-12 px-8 rounded-xl font-bold shadow-lg">
+                  <Button type="submit" disabled={generating} className={`h-12 px-8 rounded-xl font-bold shadow-lg ${generating ? 'cursor-progress' : ''}`}>
                     {generating ? <><LoadingSpinner small /> Architecting Roadmap...</> : <><Sparkles className="h-4 w-4 mr-2" /> Generate Roadmap</>}
                   </Button>
                   <Button variant="ghost" type="button" onClick={() => setShowForm(false)} className="h-12 px-6 rounded-xl font-bold">
@@ -127,19 +170,31 @@ export default function RoadmapPage() {
           <div className="grid lg:grid-cols-4 gap-8">
             <RoadmapSidebar roadmaps={roadmaps} viewRoadmap={viewRoadmap} deleteRoadmap={deleteRoadmap} />
             <div className="lg:col-span-3">
-              <div className="h-full min-h-[400px] border border-border/30 rounded-2xl bg-card/10 flex flex-col items-center justify-center text-center p-10 relative overflow-hidden">
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/5 via-background to-background pointer-events-none" />
-                <div className="h-24 w-24 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20 flex items-center justify-center mb-6 shadow-lg z-10">
-                  <Map className="h-10 w-10 text-primary" />
+              {roadmaps.length === 0 && !showForm ? (
+                <EmptyState
+                  icon={Map}
+                  title="No Roadmaps Yet"
+                  description="Choose an existing roadmap from the sidebar or generate a new tailored learning path to accelerate your career."
+                  action={{
+                    label: "Generate Roadmap",
+                    onClick: () => setShowForm(true)
+                  }}
+                />
+              ) : (
+                <div className="h-full min-h-[400px] border border-border/30 rounded-2xl bg-card/10 flex flex-col items-center justify-center text-center p-10 relative overflow-hidden">
+                  <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/5 via-background to-background pointer-events-none" />
+                  <div className="h-24 w-24 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20 flex items-center justify-center mb-6 shadow-lg z-10">
+                    <Map className="h-10 w-10 text-primary" />
+                  </div>
+                  <h2 className="font-serif text-3xl font-extrabold text-foreground mb-3 z-10">Select a Roadmap</h2>
+                  <p className="text-[15px] text-muted-foreground font-medium max-w-md z-10 mb-8">Choose an existing roadmap from the sidebar or generate a new tailored learning path to accelerate your career.</p>
+                  {!showForm && (
+                    <Button onClick={() => setShowForm(true)} className="h-12 px-8 rounded-xl font-bold shadow-lg z-10">
+                      <Plus className="h-4 w-4 mr-2" /> Create Roadmap
+                    </Button>
+                  )}
                 </div>
-                <h2 className="font-serif text-3xl font-extrabold text-foreground mb-3 z-10">Select a Roadmap</h2>
-                <p className="text-[15px] text-muted-foreground font-medium max-w-md z-10 mb-8">Choose an existing roadmap from the sidebar or generate a new tailored learning path to accelerate your career.</p>
-                {!showForm && (
-                  <Button onClick={() => setShowForm(true)} className="h-12 px-8 rounded-xl font-bold shadow-lg z-10">
-                    <Plus className="h-4 w-4 mr-2" /> Create Roadmap
-                  </Button>
-                )}
-              </div>
+              )}
             </div>
           </div>
         ) : (

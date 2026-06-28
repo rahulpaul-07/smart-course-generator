@@ -8,7 +8,7 @@ interface RoadmapTimelineProps {
 }
 
 export function RoadmapTimeline({ roadmap, onGenerateCourse }: RoadmapTimelineProps) {
-  const { expandedWeeks, completedWeeks, toggleWeek, toggleCompletion } = useRoadmapProgress(new Set([1]));
+  const { expandedWeeks, completedWeeks, savingWeeks, toggleWeek, toggleCompletion } = useRoadmapProgress(new Set([1]));
   const weeks = roadmap.weeks || [];
 
   return (
@@ -20,6 +20,7 @@ export function RoadmapTimeline({ roadmap, onGenerateCourse }: RoadmapTimelinePr
         {weeks.map((week: any, index: number) => {
           const isExpanded = expandedWeeks.has(week.weekNumber);
           const isCompleted = completedWeeks.has(week.weekNumber);
+          const isSaving = savingWeeks.has(week.weekNumber);
           const isCurrent = !isCompleted && (index === 0 || completedWeeks.has(weeks[index - 1]?.weekNumber));
           
           return (
@@ -31,6 +32,7 @@ export function RoadmapTimeline({ roadmap, onGenerateCourse }: RoadmapTimelinePr
               isExpanded={isExpanded}
               isCompleted={isCompleted}
               isCurrent={isCurrent}
+              isSaving={isSaving}
               toggleWeek={toggleWeek}
               toggleCompletion={toggleCompletion}
               onGenerateCourse={onGenerateCourse}
