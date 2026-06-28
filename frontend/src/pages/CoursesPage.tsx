@@ -21,7 +21,7 @@ export default function CoursesPage() {
   const [sortBy, setSortBy] = useState('Recently Opened');
   const [viewMode, setViewMode] = useLocalStorage<'grid' | 'list'>(STORAGE_KEYS.COURSE_VIEW_PREFERENCE, 'grid');
 
-  const { data: courses, isLoading, isError } = useQuery({
+  const { data: courses, isLoading, isError, refetch } = useQuery({
     queryKey: ['myCourses'],
     queryFn: async () => {
       const [res, err] = await courseService.getMyCourses();
@@ -95,6 +95,7 @@ export default function CoursesPage() {
         <CourseList 
           isLoading={isLoading}
           isError={isError}
+          onRetry={refetch}
           courses={sortedAndFilteredCourses}
           viewMode={viewMode}
           searchQuery={searchQuery}

@@ -8,24 +8,34 @@ import { calculateEstimatedHours } from '../utils/durations';
 export function useCourseProgress(id: string | undefined) {
   const [course, setCourse] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const fetchCourse = () => {
     let active = true;
+    setLoading(true);
+    setError(null);
     
-    courseService.getCourse(id).then(([data]) => {
-      if (active && data) {
+    courseService.getCourse(id).then(([data, err]) => {
+      if (!active) return;
+      if (err) {
+        setError(err);
+      } else if (data) {
         setCourse(data);
       }
-      if (active) setLoading(false);
+      setLoading(false);
     });
 
     return () => {
       active = false;
     };
+  };
+
+  useEffect(() => {
+    return fetchCourse();
   }, [id]);
 
-  if (!course) {
-    return { course, loading, progress: null, estimatedHours: 0, difficulty: '', skills: [], nextLessonId: null, setCourse };
+  if (!course && !loading) {
+    return { course, loading, error, progress: null, estimatedHours: 0, difficulty: '', skills: [], nextLessonId: null, setCourse, refetch: fetchCourse };
   }
 
   const progress = courseProgress(course);
@@ -58,6 +68,8 @@ export function useCourseProgress(id: string | undefined) {
   return {
     course,
     loading,
+    error,
+    refetch: fetchCourse,
     progress,
     estimatedHours,
     difficulty,

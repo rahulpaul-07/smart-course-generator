@@ -11,6 +11,9 @@ import { useCourseProgress } from '../hooks/useCourseProgress';
 import { CourseHero } from '../components/course/CourseHero';
 import { CurriculumTimeline } from '../components/course/CurriculumTimeline';
 import { CourseSidebar } from '../components/course/CourseSidebar';
+import { CourseOverviewSkeleton } from '../components/course/CourseOverviewSkeleton';
+import { ErrorState } from '../components/ui/ErrorState';
+import { EmptyState } from '../components/ui/EmptyState';
 
 export default function CourseOverviewPage() {
   const { id } = useParams();
@@ -24,40 +27,62 @@ export default function CourseOverviewPage() {
     difficulty,
     skills,
     nextLessonId,
-    setCourse
+    setCourse,
+    error,
+    refetch
   } = useCourseProgress(id);
 
   if (loading) {
-    return (
-      <PageContainer className="pt-8 pb-24 max-w-6xl mx-auto space-y-8">
-        <Skeleton className="w-40 h-10 rounded-lg mb-4" />
-        <Skeleton className="w-full h-[400px] rounded-2xl" />
-        <div className="grid md:grid-cols-[1fr_320px] gap-8 mt-12">
-          <div className="space-y-6">
-            <Skeleton className="w-64 h-10 rounded-lg" />
-            <Skeleton className="w-full h-24 rounded-2xl" />
-            <Skeleton className="w-full h-[500px] rounded-[24px]" />
-          </div>
-          <div className="space-y-6">
-            <Skeleton className="w-full h-[300px] rounded-[24px]" />
-          </div>
-        </div>
-      </PageContainer>
-    );
+    return <CourseOverviewSkeleton />;
   }
   
-  if (!course) return (
-    <PageContainer>
-      <div className="py-24 text-center flex flex-col items-center max-w-md mx-auto">
-        <div className="h-20 w-20 bg-muted border border-border/30 rounded-2xl flex items-center justify-center mb-6 shadow-sm">
-          <BookOpen className="h-10 w-10 text-muted-foreground/60" />
-        </div>
-        <h2 className="text-3xl font-extrabold tracking-tight mb-3">Course not found</h2>
-        <p className="text-muted-foreground font-medium mb-8 leading-relaxed">The course you are looking for does not exist or was deleted. Please check your library.</p>
-        <Button size="lg" className="rounded-xl shadow-sm" onClick={() => navigate('/courses')}>Return to Library</Button>
+  if (error) {
+    return (
+      <div className="relative min-h-screen bg-background text-foreground font-sans selection:bg-primary/20 selection:text-primary pb-24">
+        <PageContainer className="relative z-10 pt-6 max-w-7xl mx-auto">
+          <Button
+            variant="ghost" 
+            onClick={() => navigate('/courses')} 
+            className="flex items-center gap-2 text-sm font-bold text-muted-foreground hover:text-foreground mb-6 -ml-4"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to Library
+          </Button>
+          <ErrorState 
+            title="Unable to load course" 
+            description="We couldn't load this course. Please try again." 
+            onRetry={refetch} 
+          />
+        </PageContainer>
       </div>
-    </PageContainer>
-  );
+    );
+  }
+
+  if (!course || !course.modules || course.modules.length === 0) {
+    return (
+      <div className="relative min-h-screen bg-background text-foreground font-sans selection:bg-primary/20 selection:text-primary pb-24">
+        <PageContainer className="relative z-10 pt-6 max-w-7xl mx-auto">
+          <Button
+            variant="ghost" 
+            onClick={() => navigate('/courses')} 
+            className="flex items-center gap-2 text-sm font-bold text-muted-foreground hover:text-foreground mb-6 -ml-4"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to Library
+          </Button>
+          <EmptyState
+            title="Course not found"
+            description="This course has no content or does not exist."
+            action={
+              <Button size="lg" className="rounded-xl shadow-sm" onClick={() => navigate('/courses')}>
+                Return to Library
+              </Button>
+            }
+          />
+        </PageContainer>
+      </div>
+    );
+  }
 
   return (
     <div className="relative min-h-screen bg-background text-foreground font-sans selection:bg-primary/20 selection:text-primary pb-24">
