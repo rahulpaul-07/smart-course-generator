@@ -4,6 +4,8 @@ import { useAiAgents } from '../hooks/useAiAgents';
 import { AgentSidebar } from '../components/agents/AgentSidebar';
 import { AgentHeaderInputs } from '../components/agents/AgentHeaderInputs';
 import { AgentResultView } from '../components/agents/AgentResultView';
+import { AgentsSkeleton } from '../components/agents/AgentsSkeleton';
+import { ErrorState } from '../components/ui/ErrorState';
 
 export default function AiAgentsPage() {
   const {
@@ -49,12 +51,17 @@ export default function AiAgentsPage() {
 
           <div className="p-6 bg-background/20 min-h-[400px]">
             {loading ? (
-              <div className="flex h-full flex-col items-center justify-center text-muted-foreground py-20">
-                <LoadingSpinner size="lg" />
-                <p className="mt-4 text-sm font-medium animate-pulse">AI is analyzing context and generating insights...</p>
+              <AgentsSkeleton />
+            ) : result?.error ? (
+              <div className="py-12">
+                <ErrorState 
+                  title="Agent execution failed" 
+                  description={result.error || "The AI encountered an issue. Please try again."}
+                  onRetry={handleRunAgent}
+                />
               </div>
             ) : (
-              <AgentResultView activeTab={activeTab} result={result} />
+              <AgentResultView activeTab={activeTab} result={result} onRun={handleRunAgent} />
             )}
           </div>
         </div>

@@ -79,7 +79,7 @@ export function AgentHeaderInputs({
         <Button
           onClick={handleRunAgent}
           disabled={loading || (activeTab === 'reviewer' && !selectedCourse)}
-          className="flex items-center gap-2 h-11 px-6 rounded-xl font-bold shadow-lg shrink-0"
+          className={`flex items-center gap-2 h-11 px-6 rounded-xl font-bold shadow-lg shrink-0 ${loading ? 'cursor-progress' : ''}`}
         >
           {loading ? <LoadingSpinner size="sm" /> : <Bot className="h-4 w-4 mr-2" />}
           Run {activeTab}

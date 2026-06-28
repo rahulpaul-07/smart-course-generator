@@ -1,22 +1,29 @@
 import React from 'react';
 import { Bot, CheckCircle2, Target, Lightbulb, ArrowRight, Map, Star } from 'lucide-react';
+import { EmptyState } from '../ui/EmptyState';
 
 interface AgentResultViewProps {
   activeTab: string;
   result: any;
+  onRun?: () => void;
 }
 
-export function AgentResultView({ activeTab, result }: AgentResultViewProps) {
+export function AgentResultView({ activeTab, result, onRun }: AgentResultViewProps) {
   if (!result) return (
-    <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
-      <Bot className="h-12 w-12 mb-4 opacity-50" />
-      <p>Configure the agent above and click Run to see AI insights.</p>
-    </div>
-  );
-
-  if (result.error) return (
-    <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-red-400">
-      {result.error}
+    <div className="py-12">
+      <EmptyState
+        icon={Bot}
+        title="Ready for Analysis"
+        description="Configure the agent above and click Run to see AI insights."
+        action={
+          <button 
+            onClick={onRun}
+            className="h-10 px-4 bg-primary text-primary-foreground font-bold rounded-lg hover:bg-primary/90 transition-colors shadow-sm"
+          >
+            Run Agent
+          </button>
+        }
+      />
     </div>
   );
 
