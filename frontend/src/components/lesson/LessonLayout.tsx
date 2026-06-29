@@ -81,36 +81,24 @@ export function LessonLayout({
 
       {/* Right Sidebar (Study Tools) */}
       <AnimatePresence>
-        {!isFocusMode && (
+        {!isFocusMode && hasContent && !generating && (
           <motion.div 
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="hidden lg:block h-full border-l border-border/40 bg-muted/20 overflow-y-auto w-[340px] xl:w-[380px] shrink-0"
+            className="hidden lg:block h-full border-l border-border/30 bg-card overflow-y-auto w-[340px] xl:w-[380px] shrink-0"
           >
-            {hasContent && !generating ? (
-              <Suspense fallback={<div className="flex items-center justify-center h-full"><LoadingSpinner text="Loading study tools..." /></div>}>
-                <StudyTools 
-                  lesson={{ title: lessonTitle, content: lessonContent, ...course?.modules?.flatMap((m: any) => m.lessons)?.find((l: any) => l._id === lessonId) }} 
-                  addingVideos={addingVideos} 
-                  chatOpen={showChat} 
-                  onAddVideos={addVideos} 
-                  onLessonUpdate={updateCurrentLesson} 
-                  onToggleChat={() => setShowChat((v) => !v)} 
-                />
-              </Suspense>
-            ) : (
-              <div className="flex flex-col items-center justify-center h-full p-10 text-center">
-                <div className="h-20 w-20 bg-background border border-border/50 rounded-3xl flex items-center justify-center mb-6 shadow-sm rotate-3">
-                  <Sparkles className="h-8 w-8 text-brand-400/80 -rotate-3" />
-                </div>
-                <h3 className="text-xl font-bold text-foreground mb-3 font-display">Study Tools</h3>
-                <p className="text-sm font-medium text-muted-foreground leading-relaxed">
-                  Generate the lesson first to unlock interactive study tools like flashcards and practice quizzes.
-                </p>
-              </div>
-            )}
+            <Suspense fallback={<div className="flex items-center justify-center h-full"><LoadingSpinner text="Loading study tools..." /></div>}>
+              <StudyTools 
+                lesson={{ title: lessonTitle, content: lessonContent, ...course?.modules?.flatMap((m: any) => m.lessons)?.find((l: any) => l._id === lessonId) }} 
+                addingVideos={addingVideos} 
+                chatOpen={showChat} 
+                onAddVideos={addVideos} 
+                onLessonUpdate={updateCurrentLesson} 
+                onToggleChat={() => setShowChat((v) => !v)} 
+              />
+            </Suspense>
           </motion.div>
         )}
       </AnimatePresence>
