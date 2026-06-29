@@ -124,8 +124,10 @@ export function useLessonProgress(courseId: string | undefined, lessonId: string
 
       if (!streamFinished) streamInterrupted = true;
       if (streamInterrupted) throw new Error('STREAM_INTERRUPTED');
-      if (count > 0) setStreamStatus('success');
-      else {
+      if (count > 0) {
+        setStreamStatus('success');
+        addVideos(); // Auto-embed videos for seamless UX
+      } else {
         toast.error('No content was generated. Please try again.');
         setStreamStatus('error');
       }
