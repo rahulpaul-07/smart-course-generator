@@ -54,9 +54,9 @@ export function LessonLayout({
       <AnimatePresence>
         {!isFocusMode && course && (
           <motion.div 
-            initial={{ opacity: 0, width: 0, x: -50 }}
-            animate={{ opacity: 1, width: 'auto', x: 0 }}
-            exit={{ opacity: 0, width: 0, x: -50 }}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
             className="hidden lg:block h-full"
           >
@@ -83,11 +83,11 @@ export function LessonLayout({
       <AnimatePresence>
         {!isFocusMode && (
           <motion.div 
-            initial={{ opacity: 0, width: 0, x: 50 }}
-            animate={{ opacity: 1, width: 'auto', x: 0 }}
-            exit={{ opacity: 0, width: 0, x: 50 }}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 20 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="hidden lg:block h-full border-l border-border/40 bg-muted/20 overflow-y-auto min-w-[340px]"
+            className="hidden lg:block h-full border-l border-border/40 bg-muted/20 overflow-y-auto w-[340px] xl:w-[380px] shrink-0"
           >
             {hasContent && !generating ? (
               <Suspense fallback={<div className="flex items-center justify-center h-full"><LoadingSpinner text="Loading study tools..." /></div>}>
