@@ -145,7 +145,7 @@ export function CurriculumTimeline({ course, courseId }: { course: any, courseId
         </h2>
       </div>
       <div className="space-y-4">
-        {course.modules?.map((moduleDoc: any, moduleIndex: number) => (
+        {course?.modules?.map((moduleDoc: any, moduleIndex: number) => (
           <ModuleCard key={moduleDoc._id} moduleDoc={moduleDoc} moduleIndex={moduleIndex} courseId={courseId || ''} />
         ))}
       </div>

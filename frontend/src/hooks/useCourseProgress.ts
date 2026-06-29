@@ -34,7 +34,9 @@ export function useCourseProgress(id: string | undefined) {
     return fetchCourse();
   }, [id]);
 
-  if (!course && !loading) {
+  console.log("course", course);
+
+  if (!course) {
     return { course, loading, error, progress: null, estimatedHours: 0, difficulty: '', skills: [], nextLessonId: null, setCourse, refetch: fetchCourse };
   }
 
@@ -45,8 +47,9 @@ export function useCourseProgress(id: string | undefined) {
   
   const difficulty = course.difficulty || 'Intermediate';
 
+  const title = course.title || '';
   const skills = [
-    { name: course.title.split(' ')[0] || 'Fundamentals', icon: Code2 },
+    { name: title.split(' ')[0] || 'Fundamentals', icon: Code2 },
     { name: 'System Design', icon: Layers3 },
     { name: 'Best Practices', icon: Shield },
     { name: 'Problem Solving', icon: Brain },
@@ -54,15 +57,16 @@ export function useCourseProgress(id: string | undefined) {
   ].slice(0, Math.max(3, Math.min(5, Math.ceil(totalLessons / 3))));
 
   let nextLessonId = null;
-  for (const mod of (course.modules || [])) {
+  const modules = course?.modules ?? [];
+  for (const mod of modules) {
     const uncompleted = mod.lessons?.find((l: any) => !l.completedAt);
     if (uncompleted) {
       nextLessonId = uncompleted._id;
       break;
     }
   }
-  if (!nextLessonId && course.modules?.[0]?.lessons?.[0]) {
-    nextLessonId = course.modules[0].lessons[0]._id;
+  if (!nextLessonId && modules?.[0]?.lessons?.[0]) {
+    nextLessonId = modules[0].lessons[0]._id;
   }
 
   return {

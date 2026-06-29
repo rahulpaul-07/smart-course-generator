@@ -14,9 +14,9 @@ export function useLessonNavigation(courseId: string | undefined, lessonId: stri
       if (!currentCourse) return currentCourse;
       return {
         ...currentCourse,
-        modules: currentCourse.modules.map((moduleDoc: any) => ({
+        modules: (currentCourse.modules || []).map((moduleDoc: any) => ({
           ...moduleDoc,
-          lessons: moduleDoc.lessons.map((item: any) => (
+          lessons: (moduleDoc.lessons || []).map((item: any) => (
             item._id === updatedLesson._id ? updatedLesson : item
           )),
         })),

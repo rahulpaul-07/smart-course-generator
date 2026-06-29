@@ -1,12 +1,24 @@
 import { calculatePercentage } from './percentages';
 
-export function courseProgress(course) {
+export function courseProgress(course: any | null | undefined) {
+  if (!course) {
+    return {
+      completedLessons: 0,
+      completionDate: null,
+      percentage: 0,
+      remainingLessons: 0,
+      totalLessons: 0,
+    };
+  }
+
   let totalLessons = 0;
   let completedLessons = 0;
   let completionDate = null;
 
-  for (const moduleDoc of course.modules || []) {
-    for (const lesson of moduleDoc.lessons || []) {
+  const modules = course?.modules ?? [];
+  for (const moduleDoc of modules) {
+    const lessons = moduleDoc.lessons ?? [];
+    for (const lesson of lessons) {
       totalLessons += 1;
       if (lesson.completedAt) {
         completedLessons += 1;
@@ -28,9 +40,13 @@ export function courseProgress(course) {
   };
 }
 
-export function nextIncompleteLesson(course) {
-  for (const moduleDoc of course.modules || []) {
-    for (const lesson of moduleDoc.lessons || []) {
+export function nextIncompleteLesson(course: any | null | undefined) {
+  if (!course) return null;
+
+  const modules = course?.modules ?? [];
+  for (const moduleDoc of modules) {
+    const lessons = moduleDoc.lessons ?? [];
+    for (const lesson of lessons) {
       if (!lesson.completedAt) {
         return {
           ...lesson,
@@ -43,12 +59,17 @@ export function nextIncompleteLesson(course) {
   return null;
 }
 
-export function mostRecentLesson(courses) {
+export function mostRecentLesson(courses: any[] | null | undefined) {
+  if (!courses) return null;
+
   let recent = null;
 
   for (const course of courses) {
-    for (const moduleDoc of course.modules || []) {
-      for (const lesson of moduleDoc.lessons || []) {
+    if (!course) continue;
+    const modules = course?.modules ?? [];
+    for (const moduleDoc of modules) {
+      const lessons = moduleDoc.lessons ?? [];
+      for (const lesson of lessons) {
         if (!lesson.lastOpenedAt) continue;
         if (!recent || new Date(lesson.lastOpenedAt) > new Date(recent.lastOpenedAt)) {
           recent = {

@@ -8,7 +8,8 @@ import { Progress } from '@/components/ui/progress';
 export default function CourseCard({ course, onDelete, index = 0 }: { course: any, onDelete: (id: string) => void, index?: number }) {
   const navigate = useNavigate();
 
-  const modules = course.modules?.length || 0;
+  if (!course) return null;
+  const modules = course?.modules?.length || 0;
   const progress = courseProgress(course);
 
   return (
