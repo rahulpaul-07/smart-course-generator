@@ -7,6 +7,8 @@ export default function LessonSidebar({ course, currentLessonId, lessonContent, 
   const [tocCollapsed, setTocCollapsed] = useState(false);
   const [navCollapsed, setNavCollapsed] = useState(false);
 
+  if (!course) return null;
+
   // Extract headings for TOC
   const headings = lessonContent?.filter(b => b.type === 'heading').map(h => ({
     id: h.text?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),

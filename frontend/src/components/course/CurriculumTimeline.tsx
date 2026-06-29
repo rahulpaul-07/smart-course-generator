@@ -133,6 +133,8 @@ const ModuleCard = ({ moduleDoc, moduleIndex, courseId }: { moduleDoc: any, modu
 };
 
 export function CurriculumTimeline({ course, courseId }: { course: any, courseId: string | undefined }) {
+  if (!course) return null;
+
   return (
     <motion.section
       initial={{ opacity: 0, y: 10 }}
@@ -145,7 +147,7 @@ export function CurriculumTimeline({ course, courseId }: { course: any, courseId
         </h2>
       </div>
       <div className="space-y-4">
-        {course?.modules?.map((moduleDoc: any, moduleIndex: number) => (
+        {course.modules?.map((moduleDoc: any, moduleIndex: number) => (
           <ModuleCard key={moduleDoc._id} moduleDoc={moduleDoc} moduleIndex={moduleIndex} courseId={courseId || ''} />
         ))}
       </div>

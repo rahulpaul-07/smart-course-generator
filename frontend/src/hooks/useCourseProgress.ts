@@ -34,8 +34,6 @@ export function useCourseProgress(id: string | undefined) {
     return fetchCourse();
   }, [id]);
 
-  console.log("course", course);
-
   if (!course) {
     return { course, loading, error, progress: null, estimatedHours: 0, difficulty: '', skills: [], nextLessonId: null, setCourse, refetch: fetchCourse };
   }
