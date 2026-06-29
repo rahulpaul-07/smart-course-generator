@@ -87,7 +87,7 @@ export function LessonLayout({
             animate={{ opacity: 1, width: 'auto', x: 0 }}
             exit={{ opacity: 0, width: 0, x: 50 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="hidden lg:block h-full border-l border-border/30 bg-card overflow-y-auto min-w-[340px]"
+            className="hidden lg:block h-full border-l border-border/40 bg-muted/20 overflow-y-auto min-w-[340px]"
           >
             {hasContent && !generating ? (
               <Suspense fallback={<div className="flex items-center justify-center h-full"><LoadingSpinner text="Loading study tools..." /></div>}>
@@ -101,12 +101,14 @@ export function LessonLayout({
                 />
               </Suspense>
             ) : (
-              <div className="flex flex-col items-center justify-center h-full p-12 text-center">
-                <div className="h-16 w-16 bg-muted rounded-full flex items-center justify-center mb-6 shadow-inner">
-                  <Sparkles className="h-7 w-7 text-muted-foreground/50" />
+              <div className="flex flex-col items-center justify-center h-full p-10 text-center">
+                <div className="h-20 w-20 bg-background border border-border/50 rounded-3xl flex items-center justify-center mb-6 shadow-sm rotate-3">
+                  <Sparkles className="h-8 w-8 text-brand-400/80 -rotate-3" />
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">Study Tools</h3>
-                <p className="text-sm text-muted-foreground">Generate the lesson first to unlock interactive study tools like flashcards and quizzes.</p>
+                <h3 className="text-xl font-bold text-foreground mb-3 font-display">Study Tools</h3>
+                <p className="text-sm font-medium text-muted-foreground leading-relaxed">
+                  Generate the lesson first to unlock interactive study tools like flashcards and practice quizzes.
+                </p>
               </div>
             )}
           </motion.div>
