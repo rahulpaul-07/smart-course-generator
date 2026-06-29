@@ -20,8 +20,7 @@ export default function LearningSummary({ courses }: { courses: any[] }) {
     totalLessons += progress.totalLessons;
     completedLessons += progress.completedLessons;
 
-    const modules = course?.modules ?? [];
-    for (const moduleDoc of modules) {
+    for (const moduleDoc of course.modules || []) {
       for (const lesson of moduleDoc.lessons || []) {
         if (lesson.bookmarked) {
           bookmarkedLessons.push({

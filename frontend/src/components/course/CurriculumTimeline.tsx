@@ -133,8 +133,6 @@ const ModuleCard = ({ moduleDoc, moduleIndex, courseId }: { moduleDoc: any, modu
 };
 
 export function CurriculumTimeline({ course, courseId }: { course: any, courseId: string | undefined }) {
-  if (!course) return null;
-
   return (
     <motion.section
       initial={{ opacity: 0, y: 10 }}

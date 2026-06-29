@@ -34,8 +34,7 @@ export default function CoursesPage() {
   const sorts = ['Recently Opened', 'Recently Created', 'Alphabetical', 'Progress'];
 
   const filteredCourses = courses?.filter((course: any) => {
-    if (!course) return false;
-    if (searchQuery && !course.title?.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+    if (searchQuery && !course.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
     
     const progress = course.progress || (course.modules?.reduce((acc: number, m: any) => acc + (m.lessons?.filter((l: any) => l.completedAt)?.length || 0), 0) || 0) / (course.modules?.reduce((acc: number, m: any) => acc + (m.lessons?.length || 0), 0) || 1) * 100;
     const isCompleted = progress >= 100;

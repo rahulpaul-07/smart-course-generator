@@ -12,9 +12,8 @@ interface CourseCardProps {
 
 export function CourseCard({ course, viewMode }: CourseCardProps) {
   const navigate = useNavigate();
-  if (!course) return null;
-  const totalLessons = course?.modules?.reduce((acc: number, m: any) => acc + (m.lessons?.length || 0), 0) || 12;
-  const completedLessons = course?.modules?.reduce((acc: number, m: any) => acc + (m.lessons?.filter((l: any) => l.completedAt)?.length || 0), 0) || 0;
+  const totalLessons = course.modules?.reduce((acc: number, m: any) => acc + (m.lessons?.length || 0), 0) || 12;
+  const completedLessons = course.modules?.reduce((acc: number, m: any) => acc + (m.lessons?.filter((l: any) => l.completedAt)?.length || 0), 0) || 0;
   const progress = course.progress || calculatePercentage(completedLessons, totalLessons);
   const difficulty = course.difficulty || 'Intermediate';
   
