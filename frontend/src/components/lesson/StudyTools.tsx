@@ -24,17 +24,18 @@ function ToolCard({
       disabled={disabled}
       onClick={onClick}
       aria-pressed={active}
-      className={`group relative flex w-full flex-col overflow-hidden rounded-xl border p-4 text-left transition-all duration-200 ${
+      className={`group relative flex w-full flex-col overflow-hidden rounded-xl border p-4 text-left transition-all duration-300 ${
         active
-          ? 'border-primary bg-primary/10 shadow-md shadow-primary/10'
-          : 'border-border/30 bg-card hover:bg-accent/50 hover:border-border/30 hover:shadow-sm'
-      } disabled:opacity-60 ${disabled ? 'cursor-progress' : 'cursor-pointer'}`}
+          ? 'border-primary bg-primary/10 shadow-[0_0_20px_rgba(var(--primary),0.15)] ring-1 ring-primary/50'
+          : 'border-border/50 bg-card hover:bg-accent/40 hover:border-primary/30 hover:shadow-lg'
+      } disabled:opacity-60 ${disabled ? 'cursor-progress' : 'cursor-pointer'} hover:-translate-y-0.5`}
     >
-      <div className="flex items-start gap-4">
-        <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border transition-colors ${
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 pointer-events-none" />
+      <div className="relative flex items-start gap-4 z-10">
+        <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border transition-all duration-300 ${
           active
-            ? 'border-primary bg-primary text-primary-foreground'
-            : 'border-border bg-muted text-muted-foreground group-hover:text-foreground group-hover:border-border'
+            ? 'border-primary bg-primary text-primary-foreground shadow-[0_0_15px_rgba(var(--primary),0.4)]'
+            : 'border-border bg-muted text-muted-foreground group-hover:text-primary group-hover:border-primary/30 group-hover:bg-primary/10 group-hover:scale-110'
         }`}>
           <Icon className="h-5 w-5" />
         </span>
@@ -83,11 +84,15 @@ const StudyTools = React.memo(({
   }
 
   return (
-    <aside className="h-full flex flex-col py-8 px-6">
-      <div className="mb-8">
-        <p className="text-xs font-semibold text-primary mb-1">Study Toolkit</p>
-        <h2 className="text-xl font-semibold text-foreground">Lesson Tools</h2>
-        <p className="mt-1 text-sm text-muted-foreground">
+    <aside className="h-full flex flex-col relative overflow-hidden">
+      {/* Premium subtle background texture */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:16px_16px] [mask-image:radial-gradient(ellipse_80%_30%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
+      <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
+      
+      <div className="relative z-10 px-6 py-8 mb-4">
+        <p className="text-xs font-bold tracking-wider uppercase text-primary mb-1">Study Toolkit</p>
+        <h2 className="text-2xl font-bold text-foreground font-display">Lesson Tools</h2>
+        <p className="mt-1 text-sm text-muted-foreground font-medium">
           Interactive tools to master this topic.
         </p>
       </div>

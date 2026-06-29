@@ -17,16 +17,19 @@ export default function LessonGenerator({
   const isStreaming = isGenerating && streamedCount > 0;
 
   return (
-    <section className="surface-card relative mb-10 overflow-hidden p-5 animate-enter-delay sm:p-6">
-      <div className="pointer-events-none absolute -right-14 -top-16 h-40 w-40 rounded-full bg-brand-500/15 blur-3xl" />
-      <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+    <section className="relative mb-10 overflow-hidden rounded-2xl bg-card border border-border/50 p-5 shadow-lg animate-enter-delay sm:p-6 group">
+      {/* Animated gradient border overlay */}
+      <div className="absolute inset-0 z-0 bg-[linear-gradient(110deg,transparent,rgba(var(--primary),0.1),transparent)] bg-[length:200%_100%] animate-shimmer pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity" />
+      <div className="pointer-events-none absolute -right-14 -top-16 h-40 w-40 rounded-full bg-primary/10 blur-[50px] transition-all group-hover:bg-primary/20 group-hover:scale-110" />
+      
+      <div className="relative z-10 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex gap-4 items-start">
-          <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border border-brand-400/20 bg-brand-500/10 text-brand-200">
-            <Sparkles className="h-6 w-6" />
+          <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl border border-primary/20 bg-primary/10 text-primary shadow-[0_0_20px_rgba(var(--primary),0.15)] relative">
+            <Sparkles className="h-7 w-7" />
           </span>
           <div>
-            <p className="text-xs font-bold uppercase tracking-wider text-brand-300">AI Lesson Studio</p>
-            <h2 className="mt-1 font-display text-xl font-bold text-foreground">
+            <p className="text-xs font-bold uppercase tracking-wider text-primary mb-1">AI Lesson Studio</p>
+            <h2 className="font-display text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">
               {hasContent ? 'Shape this lesson your way' : 'Bring this lesson to life'}
             </h2>
             <p className="mt-1 text-sm text-muted-foreground">
@@ -44,7 +47,7 @@ export default function LessonGenerator({
             size="lg"
             onClick={() => onPickerChange(true)}
             disabled={isGenerating}
-            className={`shrink-0 rounded-xl shadow-sm ${isGenerating ? 'cursor-progress' : ''}`}
+            className={`shrink-0 rounded-full px-6 shadow-[0_4px_15px_rgba(var(--primary),0.2)] hover:shadow-[0_4px_25px_rgba(var(--primary),0.4)] transition-all hover:-translate-y-1 ${isGenerating ? 'cursor-progress opacity-90' : 'bg-gradient-to-r from-primary to-indigo-500 text-white border-0'}`}
           >
             {isGenerating ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Sparkles className="h-4 w-4 mr-2" />}
             {isGenerating
