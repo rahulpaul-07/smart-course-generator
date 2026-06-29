@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Trophy, Flame, Zap, Award } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { collabService } from '../services/collabService';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { EmptyState } from '../components/ui/EmptyState';
@@ -70,10 +70,10 @@ export default function LeaderboardPage() {
         
         <div className="divide-y divide-border/30">
           {leaders.map((user: any, idx: number) => (
-            <div 
+            <Link 
+              to={`/profile/${user._id}`}
               key={user._id} 
-              onClick={() => navigate(`/profile/${user._id}`)}
-              className="p-4 grid grid-cols-1 sm:grid-cols-12 gap-4 items-center hover:bg-foreground/5 transition-colors cursor-pointer group"
+              className="p-4 grid grid-cols-1 sm:grid-cols-12 gap-4 items-center hover:bg-foreground/5 transition-colors cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             >
               <div className="col-span-2 flex items-center justify-between sm:justify-center">
                 <span className="sm:hidden text-xs font-bold text-muted-foreground uppercase tracking-wider">Rank</span>
@@ -117,7 +117,7 @@ export default function LeaderboardPage() {
                   {user.xp || 0}
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
           {leaders.length === 0 && (
             <EmptyState

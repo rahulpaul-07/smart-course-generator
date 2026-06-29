@@ -7,8 +7,9 @@ export default function FlashcardTestPage() {
     <div style={{ padding: '50px', background: '#fff', minHeight: '100vh', color: '#000' }}>
       <h1>Isolated Flashcard Test</h1>
       
-      <div 
-        className="scene"
+      <button 
+        type="button"
+        className="scene focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
         onClick={() => setFlipped(!flipped)}
         style={{
           border: '5px solid red',
@@ -16,7 +17,10 @@ export default function FlashcardTestPage() {
           width: '300px',
           height: '200px',
           margin: '50px auto',
-          cursor: 'pointer'
+          cursor: 'pointer',
+          background: 'none',
+          padding: 0,
+          display: 'block'
         }}
       >
         <div 
@@ -69,7 +73,7 @@ export default function FlashcardTestPage() {
             <p>Answer: React is a JavaScript library for building user interfaces.</p>
           </div>
         </div>
-      </div>
+      </button>
     </div>
   );
 }

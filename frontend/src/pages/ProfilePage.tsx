@@ -97,8 +97,9 @@ export default function ProfilePage() {
 
               <div className="space-y-4 pt-4 border-t border-border/30">
                 <div className="grid gap-2">
-                  <label className="text-sm font-medium">Display Name</label>
+                  <label htmlFor="display-name" className="text-sm font-medium">Display Name</label>
                   <Input 
+                    id="display-name"
                     value={profile.name}
                     onChange={e => setProfile({...profile, name: e.target.value})}
                     className="h-12 rounded-xl"
@@ -106,8 +107,9 @@ export default function ProfilePage() {
                 </div>
 
                 <div className="grid gap-2">
-                  <label className="text-sm font-medium">Bio</label>
+                  <label htmlFor="bio-input" className="text-sm font-medium">Bio</label>
                   <Textarea 
+                    id="bio-input"
                     value={profile.bio}
                     onChange={e => setProfile({...profile, bio: e.target.value})}
                     placeholder="Tell us a little bit about yourself and your learning goals..."
@@ -129,12 +131,13 @@ export default function ProfilePage() {
             <CardContent className="space-y-6">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <label className="text-sm font-medium">Public Profile</label>
+                  <label htmlFor="public-profile-switch" className="text-sm font-medium">Public Profile</label>
                   <p className="text-sm text-muted-foreground">
                     Allow your profile to appear on the leaderboard and community templates.
                   </p>
                 </div>
                 <Switch 
+                  id="public-profile-switch"
                   checked={profile.isProfilePublic}
                   onCheckedChange={(c) => setProfile({...profile, isProfilePublic: c})}
                 />

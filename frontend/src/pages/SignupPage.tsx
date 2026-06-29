@@ -103,12 +103,13 @@ export default function SignupPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium leading-none">
+            <label htmlFor="fullname" className="text-sm font-medium leading-none">
               Full Name
             </label>
             <div className="relative">
               <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
+                id="fullname"
                 type="text"
                 placeholder="John Doe"
                 value={name}
@@ -120,12 +121,13 @@ export default function SignupPage() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium leading-none">
+            <label htmlFor="email" className="text-sm font-medium leading-none">
               Email
             </label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
+                id="email"
                 type="email"
                 placeholder="name@example.com"
                 value={email}
@@ -138,7 +140,7 @@ export default function SignupPage() {
 
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <label className="text-sm font-medium leading-none">
+              <label htmlFor="password" className="text-sm font-medium leading-none">
                 Password
               </label>
               <span className="text-xs text-muted-foreground">8+ characters</span>
@@ -146,6 +148,7 @@ export default function SignupPage() {
             <div className="relative">
               <LockKeyhole className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
+                id="password"
                 type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}

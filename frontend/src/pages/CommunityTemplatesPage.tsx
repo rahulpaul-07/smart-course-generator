@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Globe, Heart, Copy, Star, Plus } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { collabService } from '../services/collabService';
 import LoadingSpinner from '../components/LoadingSpinner';
 import toast from 'react-hot-toast';
@@ -131,7 +131,7 @@ export default function CommunityTemplatesPage() {
             </div>
             
             <div className="flex items-center justify-between border-t border-border/ pt-4 mb-4">
-              <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate(`/profile/${template.creator?._id}`)}>
+              <Link to={`/profile/${template.creator?._id}`} className="flex items-center gap-2 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm">
                 <div className="h-7 w-7 rounded-full bg-muted flex items-center justify-center text-xs text-foreground overflow-hidden shadow-inner">
                   {template.creator?.avatar ? (
                     <img src={template.creator.avatar} alt="Avatar" className="h-full w-full object-cover" />
@@ -142,7 +142,7 @@ export default function CommunityTemplatesPage() {
                 <span className="text-xs font-medium text-foreground/90 hover:text-foreground transition-colors">
                   {template.creator?.name || 'Anonymous'}
                 </span>
-              </div>
+              </Link>
               <div className="flex items-center gap-3">
                 <button 
                   onClick={() => handleUpvote(template._id)}

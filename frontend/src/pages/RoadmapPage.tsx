@@ -117,8 +117,9 @@ export default function RoadmapPage() {
                 
                 <div className="grid gap-6 md:grid-cols-12">
                   <div className="col-span-12 md:col-span-6">
-                    <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-muted-foreground">Target Role / Goal</label>
+                    <label htmlFor="goal-input" className="mb-2 block text-xs font-bold uppercase tracking-widest text-muted-foreground">Target Role / Goal</label>
                     <input
+                      id="goal-input"
                       value={form.goal}
                       onChange={(e) => setForm({ ...form, goal: e.target.value })}
                       placeholder="e.g. Senior Frontend Engineer, Full-Stack Web Development..."
@@ -127,8 +128,9 @@ export default function RoadmapPage() {
                     />
                   </div>
                   <div className="col-span-6 md:col-span-3">
-                    <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-muted-foreground">Duration</label>
+                    <label htmlFor="duration-select" className="mb-2 block text-xs font-bold uppercase tracking-widest text-muted-foreground">Duration</label>
                     <select
+                      id="duration-select"
                       value={form.duration}
                       onChange={(e) => setForm({ ...form, duration: e.target.value })}
                       className="w-full h-12 rounded-xl border-2 border-border/30 bg-background/50 px-5 text-[15px] font-medium text-foreground outline-none transition focus:border-primary/50 focus:ring-4 focus:ring-primary/10 shadow-inner appearance-none"
@@ -141,8 +143,9 @@ export default function RoadmapPage() {
                     </select>
                   </div>
                   <div className="col-span-6 md:col-span-3">
-                    <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-muted-foreground">Skill Level</label>
+                    <label htmlFor="skill-level-select" className="mb-2 block text-xs font-bold uppercase tracking-widest text-muted-foreground">Skill Level</label>
                     <select
+                      id="skill-level-select"
                       value={form.skillLevel}
                       onChange={(e) => setForm({ ...form, skillLevel: e.target.value })}
                       className="w-full h-12 rounded-xl border-2 border-border/30 bg-background/50 px-5 text-[15px] font-medium text-foreground outline-none transition focus:border-primary/50 focus:ring-4 focus:ring-primary/10 shadow-inner appearance-none"
