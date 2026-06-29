@@ -12,6 +12,7 @@ interface LessonContentProps {
   lesson: any;
   course: any;
   courseId: string | undefined;
+  lessonId: string | undefined;
   isFocusMode: boolean;
   hasContent: boolean;
   generating: boolean;
@@ -33,6 +34,7 @@ export function LessonContent({
   lesson,
   course,
   courseId,
+  lessonId,
   isFocusMode,
   hasContent,
   generating,
@@ -154,7 +156,7 @@ export function LessonContent({
               <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
                 <BookOpen className="h-4 w-4 text-primary" /> Flashcards
               </h3>
-              <FlashcardDeck lessonId={lesson.id} courseId={courseId} embedded={true} />
+              <FlashcardDeck lessonId={lessonId!} courseId={courseId} embedded={true} />
             </div>
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
@@ -163,7 +165,7 @@ export function LessonContent({
                 </svg>
                 Practice Lab
               </h3>
-              <PracticeLab lessonId={lesson.id} courseId={courseId} embedded={true} />
+              <PracticeLab lessonId={lessonId!} courseId={courseId} embedded={true} />
             </div>
           </div>
         </div>

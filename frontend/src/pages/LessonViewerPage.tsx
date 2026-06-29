@@ -143,6 +143,7 @@ export default function LessonViewerPage() {
         lesson={lesson}
         course={course}
         courseId={courseId}
+        lessonId={lessonId}
         isFocusMode={isFocusMode}
         hasContent={hasContent}
         generating={generating}
