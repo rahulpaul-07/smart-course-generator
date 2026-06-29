@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { formatTimeDistance } from '../utils/dates';
 import { Activity, BookOpen, Award, PlusCircle, Trophy } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { collabService } from '../services/collabService';
 import { EmptyState } from './ui/EmptyState';
 import { Activity as ActivityIcon } from 'lucide-react';
@@ -45,13 +45,13 @@ export default function ActivityFeed() {
     const userName = activity.userId?.name || 'Someone';
     switch (activity.action) {
       case 'COMPLETED_COURSE': 
-        return <><span className="font-semibold text-foreground cursor-pointer hover:text-brand-300" onClick={() => navigate(`/profile/${activity.userId?._id}`)}>{userName}</span> completed the course <span className="text-emerald-300">"{activity.metadata?.title}"</span></>;
+        return <><Link to={`/profile/${activity.userId?._id}`} className="font-semibold text-foreground cursor-pointer hover:text-brand-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm">{userName}</Link> completed the course <span className="text-emerald-300">"{activity.metadata?.title}"</span></>;
       case 'PUBLISHED_COURSE':
-        return <><span className="font-semibold text-foreground cursor-pointer hover:text-brand-300" onClick={() => navigate(`/profile/${activity.userId?._id}`)}>{userName}</span> published <span className="text-brand-300 cursor-pointer hover:underline" onClick={() => navigate('/community')}>"{activity.metadata?.title}"</span></>;
+        return <><Link to={`/profile/${activity.userId?._id}`} className="font-semibold text-foreground cursor-pointer hover:text-brand-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm">{userName}</Link> published <Link to="/community" className="text-brand-300 cursor-pointer hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm">"{activity.metadata?.title}"</Link></>;
       case 'UNLOCKED_ACHIEVEMENT':
-        return <><span className="font-semibold text-foreground cursor-pointer hover:text-brand-300" onClick={() => navigate(`/profile/${activity.userId?._id}`)}>{userName}</span> unlocked <span className="text-purple-300 font-bold">{activity.metadata?.name}</span></>;
+        return <><Link to={`/profile/${activity.userId?._id}`} className="font-semibold text-foreground cursor-pointer hover:text-brand-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm">{userName}</Link> unlocked <span className="text-purple-300 font-bold">{activity.metadata?.name}</span></>;
       default:
-        return <><span className="font-semibold text-foreground cursor-pointer hover:text-brand-300" onClick={() => navigate(`/profile/${activity.userId?._id}`)}>{userName}</span> was active.</>;
+        return <><Link to={`/profile/${activity.userId?._id}`} className="font-semibold text-foreground cursor-pointer hover:text-brand-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm">{userName}</Link> was active.</>;
     }
   };
 
@@ -60,13 +60,13 @@ export default function ActivityFeed() {
       {activities.map((activity) => (
         <div key={activity._id} className="flex gap-4 p-3 rounded-xl hover:bg-foreground/10 transition-colors">
           <div className="shrink-0 mt-0.5">
-            <div className="h-8 w-8 rounded-full bg-card flex items-center justify-center cursor-pointer overflow-hidden border border-border/30 hover:border-brand-500/50 transition-colors" onClick={() => navigate(`/profile/${activity.userId?._id}`)}>
+            <Link to={`/profile/${activity.userId?._id}`} className="h-8 w-8 rounded-full bg-card flex items-center justify-center cursor-pointer overflow-hidden border border-border/30 hover:border-brand-500/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
               {activity.userId?.avatar ? (
-                <img src={activity.userId.avatar} alt="Avatar" className="h-full w-full object-cover" />
+                <img src={activity.userId.avatar} alt={`${activity.userId?.name || 'User'}'s Avatar`} className="h-full w-full object-cover" />
               ) : (
                 <span className="text-xs text-foreground">{activity.userId?.name?.[0] || '?'}</span>
               )}
-            </div>
+            </Link>
           </div>
           <div className="min-w-0 flex-1">
             <p className="text-sm text-foreground/90 leading-tight">

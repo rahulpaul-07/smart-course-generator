@@ -52,10 +52,11 @@ export function InterviewSidebar({ activePrep, activeTab, setActiveTab, setActiv
           {activePrep.status === 'pending' ? 'In Progress' : 'Completed'}
         </div>
       </div>
-      <nav 
+      <div 
         className="flex-1 overflow-y-auto p-4 space-y-2"
         role="tablist"
         aria-orientation="vertical"
+        aria-label="Interview Navigation"
         onKeyDown={handleKeyDown}
         tabIndex={0}
       >
@@ -79,7 +80,7 @@ export function InterviewSidebar({ activePrep, activeTab, setActiveTab, setActiv
             </button>
           );
         })}
-      </nav>
+      </div>
       <div className="p-4 border-t border-border/30 bg-background/50 backdrop-blur-md">
         <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 flex items-start gap-3 relative overflow-hidden group">
           <div className="absolute inset-0 bg-primary/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />

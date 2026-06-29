@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { ChevronRight, Clock, Minimize } from 'lucide-react';
 import { LessonNavigation } from './LessonNavigation';
 import { LessonActions } from './LessonActions';
@@ -42,7 +42,7 @@ export function LessonHeader({
           
           <div className="flex flex-col justify-center min-w-0">
             <div className="flex items-center gap-2 text-xs text-muted-foreground mb-0.5">
-              <span className="truncate max-w-[120px] sm:max-w-[200px] hover:text-foreground cursor-pointer transition-colors" onClick={() => navigate(`/course/${courseId}`)}>{course?.title}</span>
+              <Link to={`/course/${courseId}`} className="truncate max-w-[120px] sm:max-w-[200px] hover:text-foreground cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm">{course?.title}</Link>
               <ChevronRight className="w-3 h-3 shrink-0" />
               <span className="shrink-0 flex items-center gap-1.5 text-primary">
                 <Clock className="w-3 h-3" /> ~15m

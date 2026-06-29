@@ -304,21 +304,22 @@ export const ProductPreview = () => {
             </div>
             
             {tabs.map((tab) => (
-              <div 
+              <button 
+                type="button"
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center justify-center md:justify-start gap-3 p-2 md:px-3 md:py-2.5 rounded-lg cursor-pointer transition-all duration-300 ${
+                className={`flex items-center justify-center md:justify-start gap-3 p-2 md:px-3 md:py-2.5 rounded-lg cursor-pointer transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 w-full ${
                   activeTab === tab.id 
                     ? 'bg-primary text-primary-foreground shadow-md' 
                     : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
                 }`}
               >
                 <tab.icon className="h-5 w-5" />
-                <span className="text-sm font-medium hidden md:block">{tab.id}</span>
+                <span className="text-sm font-medium hidden md:block capitalize">{tab.id}</span>
                 {activeTab === tab.id && (
                   <motion.div layoutId="activeTabIndicator" className="absolute left-0 w-1 h-8 bg-primary rounded-r-full md:hidden" />
                 )}
-              </div>
+              </button>
             ))}
           </div>
           

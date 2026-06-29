@@ -38,8 +38,9 @@ export function AgentHeaderInputs({
           <div className="mt-4">
             {activeTab === 'reviewer' && (
               <div className="space-y-2">
-                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Select Course to Review</label>
+                <label htmlFor="course-select" className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Select Course to Review</label>
                 <select 
+                  id="course-select"
                   className="w-full rounded-xl border border-border/ bg-background px-4 py-2.5 text-sm text-foreground outline-none focus:border-brand-500"
                   value={selectedCourse}
                   onChange={(e) => setSelectedCourse(e.target.value)}
@@ -50,8 +51,9 @@ export function AgentHeaderInputs({
             )}
             {activeTab === 'planner' && (
               <div className="space-y-2">
-                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Upcoming Goals (comma separated)</label>
+                <label htmlFor="goals-input" className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Upcoming Goals (comma separated)</label>
                 <input 
+                  id="goals-input"
                   className="w-full rounded-xl border border-border/ bg-background px-4 py-2.5 text-sm text-foreground outline-none focus:border-brand-500"
                   placeholder="e.g. Pass interview next week, Build fullstack app"
                   value={goalsInput}
@@ -61,8 +63,9 @@ export function AgentHeaderInputs({
             )}
             {activeTab === 'recommend' && (
               <div className="space-y-2">
-                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Specific Interests (comma separated)</label>
+                <label htmlFor="interests-input" className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Specific Interests (comma separated)</label>
                 <input 
+                  id="interests-input"
                   className="w-full rounded-xl border border-border/ bg-background px-4 py-2.5 text-sm text-foreground outline-none focus:border-brand-500"
                   placeholder="e.g. Machine Learning, System Design"
                   value={interestsInput}

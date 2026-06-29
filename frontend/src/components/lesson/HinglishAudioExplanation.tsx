@@ -104,6 +104,7 @@ function HinglishAudioExplanation({ lessonText, initialText = "" }) {
       {audioUrl && (
         <div className="mt-4 rounded-lg bg-card p-4">
           <audio controls src={audioUrl} className="w-full">
+            <track kind="captions" />
             Your browser does not support audio playback.
           </audio>
 

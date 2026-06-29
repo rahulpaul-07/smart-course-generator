@@ -41,6 +41,7 @@ export function InterviewHeader({
           <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-primary/30 via-cyan-400/30 to-primary/30 opacity-20 blur-xl transition duration-200 group-hover:opacity-40" />
           <div className="relative flex flex-col sm:flex-row gap-3 bg-card p-3 rounded-2xl border border-border shadow-md">
             <input
+              aria-label="Interview topic"
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
               placeholder="E.g. Senior Frontend Engineer, System Design..."
@@ -59,7 +60,7 @@ export function InterviewHeader({
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {preps.map((p) => (
-              <div key={p._id} onClick={() => viewPrep(p._id)} className="group cursor-pointer rounded-2xl border border-border/30 bg-card/40 p-6 transition-all duration-300 hover:bg-card hover:border-primary/40 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:-translate-y-1 flex flex-col justify-between min-h-[180px]">
+              <button type="button" key={p._id} onClick={() => viewPrep(p._id)} className="group cursor-pointer rounded-2xl border border-border/30 bg-card/40 p-6 transition-all duration-300 hover:bg-card hover:border-primary/40 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:-translate-y-1 flex flex-col justify-between min-h-[180px] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 w-full">
                 <div>
                   <div className="flex items-center justify-between mb-5">
                     <span className={`px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${p.status === 'completed' ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-500 border border-amber-500/20'}`}>
@@ -77,7 +78,7 @@ export function InterviewHeader({
                     <p className="text-sm text-muted-foreground font-semibold">Score: <span className="text-foreground">{p.overallScore}%</span></p>
                   </div>
                 )}
-              </div>
+              </button>
             ))}
             {preps.length === 0 && (
               <div className="col-span-full">

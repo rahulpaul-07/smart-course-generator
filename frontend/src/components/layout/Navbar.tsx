@@ -1,5 +1,5 @@
 
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { BarChart3, BookOpen, Brain, LogOut, Map, Sparkles } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 
@@ -63,12 +63,12 @@ export default function Navbar() {
             AI learning studio
           </span>
           {user && (
-            <div className="hidden items-center gap-2 rounded-full border border-border bg-foreground/10 py-1.5 pl-1.5 pr-3 sm:flex cursor-pointer hover:bg-foreground/10 transition-colors" onClick={() => navigate('/profile')}>
+            <Link to="/profile" className="hidden items-center gap-2 rounded-full border border-border bg-foreground/10 py-1.5 pl-1.5 pr-3 sm:flex cursor-pointer hover:bg-foreground/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
               <span className="grid h-7 w-7 place-items-center rounded-full -white">
                 {(user.name || user.email || 'U').charAt(0).toUpperCase()}
               </span>
               <span className="max-w-28 truncate text-xs font-medium text-foreground/90">{user.name}</span>
-            </div>
+            </Link>
           )}
           <button type="button" onClick={signOut} className="icon-button" title="Sign out">
             <LogOut className="h-4 w-4" />
