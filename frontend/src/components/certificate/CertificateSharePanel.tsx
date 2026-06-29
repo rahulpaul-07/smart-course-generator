@@ -41,10 +41,10 @@ export function CertificateSharePanel({
         </div>
         <div className="h-px bg-border/50 my-2"></div>
         <div className="grid grid-cols-2 gap-2">
-          <Button onClick={handleExportPDF} disabled={isExportingPDF} className="w-full h-11 font-bold rounded-xl shadow-sm">
+          <Button onClick={handleExportPDF} disabled={isExportingPDF} className={`w-full h-11 font-bold rounded-xl shadow-sm ${isExportingPDF ? 'cursor-progress' : ''}`}>
             {isExportingPDF ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Download className="w-4 h-4 mr-2" /> PDF</>}
           </Button>
-          <Button onClick={handleExportPNG} disabled={isExportingPNG} variant="secondary" className="w-full h-11 font-bold rounded-xl bg-muted text-foreground hover:bg-muted/80">
+          <Button onClick={handleExportPNG} disabled={isExportingPNG} variant="secondary" className={`w-full h-11 font-bold rounded-xl bg-muted text-foreground hover:bg-muted/80 ${isExportingPNG ? 'cursor-progress' : ''}`}>
             {isExportingPNG ? <Loader2 className="w-4 h-4 animate-spin" /> : <><ImageIcon className="w-4 h-4 mr-2" /> PNG</>}
           </Button>
         </div>

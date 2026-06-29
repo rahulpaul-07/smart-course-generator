@@ -6,8 +6,10 @@ export function useCertificate(id: string | undefined) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const fetchCertificate = () => {
     if (!id) return;
+    setLoading(true);
+    setError(null);
     fetch(`${baseURL}/certificates/${id}`)
       .then(async res => {
         if (!res.ok) {
@@ -29,7 +31,11 @@ export function useCertificate(id: string | undefined) {
         setError(err.message);
         setLoading(false);
       });
+  };
+
+  useEffect(() => {
+    fetchCertificate();
   }, [id]);
 
-  return { certificate, loading, error };
+  return { certificate, loading, error, refetch: fetchCertificate };
 }

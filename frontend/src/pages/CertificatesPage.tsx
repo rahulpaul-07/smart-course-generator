@@ -8,20 +8,29 @@ import { SectionHeader } from '../components/ui/SectionHeader';
 import { EmptyState } from '../components/ui/EmptyState';
 import { Button } from '../components/ui/button';
 
+import { ErrorState } from '../components/ui/ErrorState';
+import { CertificatesGridSkeleton } from '../components/certificate/CertificateSkeleton';
+
 export default function CertificatesPage() {
   const [certificates, setCertificates] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
+  const fetchCertificates = () => {
+    setLoading(true);
+    setError(false);
     certificateService.getAllCertificates()
-      .then(([data]) => {
-        setCertificates((data as any) || []);
+      .then(([data, err]) => {
+        if (err) setError(true);
+        else setCertificates((data as any) || []);
       })
       .finally(() => setLoading(false));
-  }, []);
+  };
 
-  if (loading) return <div className="min-h-[60vh] flex items-center justify-center"><LoadingSpinner /></div>;
+  useEffect(() => {
+    fetchCertificates();
+  }, []);
 
   return (
     <PageContainer>
@@ -30,7 +39,17 @@ export default function CertificatesPage() {
         description="Verifiable credentials for your completed courses."
       />
 
-      {certificates.length === 0 ? (
+      {loading ? (
+        <CertificatesGridSkeleton />
+      ) : error ? (
+        <div className="py-16">
+          <ErrorState 
+            title="Unable to load certificates" 
+            description="Please try again later." 
+            onRetry={fetchCertificates} 
+          />
+        </div>
+      ) : certificates.length === 0 ? (
         <EmptyState
           icon={Award}
           title="No Certificates Yet"

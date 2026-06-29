@@ -10,6 +10,8 @@ import { CertificatePreview } from '../components/certificate/CertificatePreview
 import { CertificateMetadata } from '../components/certificate/CertificateMetadata';
 import { CertificateAchievements } from '../components/certificate/CertificateAchievements';
 import { CertificateSharePanel } from '../components/certificate/CertificateSharePanel';
+import { CertificateSkeleton } from '../components/certificate/CertificateSkeleton';
+import { ErrorState } from '../components/ui/ErrorState';
 import { formatDateLong } from '../utils/dates';
 
 export default function CertificatePage() {
@@ -17,7 +19,7 @@ export default function CertificatePage() {
   const navigate = useNavigate();
   const certificateRef = useRef<HTMLDivElement>(null);
   
-  const { certificate, loading, error } = useCertificate(id);
+  const { certificate, loading, error, refetch } = useCertificate(id);
   const {
     isExportingPDF,
     isExportingPNG,
@@ -30,32 +32,18 @@ export default function CertificatePage() {
   } = useCertificateExport(certificateRef, certificate);
 
   if (loading) {
-    return (
-      <div className="flex flex-col justify-center items-center min-h-[80vh] gap-6 text-foreground bg-background">
-        <div className="relative flex items-center justify-center h-24 w-24">
-          <div className="absolute inset-0 rounded-full border-4 border-muted/40"></div>
-          <div className="absolute inset-0 rounded-full border-4 border-primary border-t-transparent animate-spin"></div>
-          <ShieldCheck className="h-10 w-10 text-primary" />
-        </div>
-        <div className="space-y-2 flex flex-col items-center">
-          <div className="h-6 w-48 bg-muted animate-pulse rounded-md"></div>
-          <div className="h-4 w-32 bg-muted/60 animate-pulse rounded-md"></div>
-        </div>
-      </div>
-    );
+    return <CertificateSkeleton />;
   }
 
   if (error || !certificate) {
     return (
       <div className="flex flex-col min-h-[80vh] items-center justify-center p-6 text-center bg-background">
-        <div className="h-32 w-32 rounded-2xl bg-destructive/10 flex items-center justify-center mb-8 border border-destructive/20 shadow-inner">
-          <ShieldCheck className="w-16 h-16 text-destructive opacity-80" />
-        </div>
-        <h2 className="text-4xl font-extrabold text-foreground mb-4 font-serif">Invalid Credential</h2>
-        <p className="text-[15px] text-muted-foreground font-medium mb-10 max-w-md leading-relaxed">
-          This verification link is invalid, expired, or the certificate could not be found in our secure registry.
-        </p>
-        <Button onClick={() => navigate('/')} className="h-12 px-10 rounded-xl bg-foreground text-background font-bold hover:bg-foreground/90 transition-all shadow-md hover:shadow-lg hover:-translate-y-1">
+        <ErrorState 
+          title="Invalid Credential" 
+          description="This verification link is invalid, expired, or the certificate could not be found." 
+          onRetry={refetch}
+        />
+        <Button onClick={() => navigate('/')} className="mt-8 h-12 px-10 rounded-xl bg-foreground text-background font-bold hover:bg-foreground/90 transition-all shadow-md hover:shadow-lg hover:-translate-y-1">
           Return to Dashboard
         </Button>
       </div>
