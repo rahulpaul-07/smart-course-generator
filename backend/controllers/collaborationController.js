@@ -37,7 +37,7 @@ async function getPublicProfile(req, res) {
   
   // Fetch user's public courses
   const courses = await Course.find({ creator: user._id, isPublic: true })
-    .select("title description upvotesCount averageRating");
+    .select("title description upvotesCount clonesCount averageRating");
     
   res.json({ user, courses });
 }
