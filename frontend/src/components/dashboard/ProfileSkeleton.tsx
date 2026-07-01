@@ -1,6 +1,5 @@
 import React from 'react';
 import { Skeleton, SkeletonCard, SkeletonButton } from '../ui/skeleton';
-import { User } from 'lucide-react';
 import { PageContainer } from '../layout/PageContainer';
 import { SectionHeader } from '../ui/SectionHeader';
 
@@ -10,7 +9,6 @@ export function ProfileSkeleton() {
       <SectionHeader 
         title="Your Profile" 
         description="Manage your public presence and learning preferences."
-        icon={User}
       />
 
       <div className="mt-8 grid gap-8 lg:grid-cols-3">

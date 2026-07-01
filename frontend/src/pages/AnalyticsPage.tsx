@@ -2,9 +2,8 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BarChart3, BookOpen, Brain, Clock, Flame, Target, TrendingDown, TrendingUp, Trophy, Zap, PlusCircle } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
-import { analyticsService } from '../services/analyticsService';
-import LoadingSpinner from '../components/LoadingSpinner';
-import ActivityGrid from '../components/ActivityGrid';
+import { analyticsService, type AnalyticsDashboard, type CourseStat, type TopicScore } from '../services/analyticsService';
+import type { LucideIcon } from 'lucide-react';
 
 import { Button } from '../components/ui/button';
 import { AnalyticsSkeleton } from '../components/dashboard/AnalyticsSkeleton';
@@ -13,7 +12,7 @@ import { EmptyState } from '../components/ui/EmptyState';
 import { Loader2 } from 'lucide-react';
 
 export default function AnalyticsPage() {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<AnalyticsDashboard | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [exportingCsv, setExportingCsv] = useState(false);
@@ -28,7 +27,7 @@ export default function AnalyticsPage() {
           setError(true);
           setData(null);
         } else {
-          setData(resData as any);
+          setData(resData);
         }
       })
       .finally(() => setLoading(false));
@@ -63,7 +62,7 @@ export default function AnalyticsPage() {
   }
 
   // Prepare chart data
-  const chartData = data.courseStats.map(c => ({
+  const chartData = data.courseStats.map((c: CourseStat) => ({
     name: c.title.length > 15 ? c.title.substring(0, 15) + '...' : c.title,
     Completion: c.completionPct,
     Lessons: c.completedLessons
@@ -90,12 +89,12 @@ export default function AnalyticsPage() {
                 // However, since it's synchronous CSV generation, it might happen instantly.
                 // We'll wrap in a Promise to allow React to render the disabled state briefly if it takes time.
                 await new Promise(resolve => setTimeout(resolve, 0));
-                const escapeCsv = (val: any) => {
+                const escapeCsv = (val: unknown) => {
                   if (val === null || val === undefined) return '""';
                   return '"' + String(val).replace(/"/g, '""') + '"';
                 };
                 const headers = ['Course', 'Completed Lessons', 'Total Lessons', 'Completion %'].map(escapeCsv);
-                const rows = data.courseStats.map((c: any) => [c.title, c.completedLessons, c.totalLessons, c.completionPct].map(escapeCsv));
+                const rows = data.courseStats.map((c: CourseStat) => [c.title, c.completedLessons, c.totalLessons, c.completionPct].map(escapeCsv));
                 const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
                 const blob = new Blob([csv], { type: 'text/csv' });
                 const url = window.URL.createObjectURL(blob);
@@ -134,7 +133,7 @@ export default function AnalyticsPage() {
               <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#ffffff15" vertical={false} />
                 <XAxis dataKey="name" stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} />
-                <YAxis stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}%`} />
+                <YAxis stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value: number) => `${value}%`} />
                 <Tooltip 
                   cursor={{ fill: '#ffffff0a' }}
                   contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '12px', color: '#fff' }}
@@ -159,7 +158,7 @@ export default function AnalyticsPage() {
           <Target className="h-5 w-5 text-brand-300" /> Course Progress
         </h2>
         <div className="space-y-3">
-          {data.courseStats.map((course: any) => (
+          {data.courseStats.map((course: CourseStat) => (
             <div key={course._id} className="glass-card rounded-2xl p-4 transition-all hover:shadow-md">
               <div className="flex items-center justify-between gap-4">
                 <div className="min-w-0 flex-1">
@@ -211,7 +210,7 @@ export default function AnalyticsPage() {
             <TrendingUp className="h-5 w-5 text-emerald-400" /> Strong Topics
           </h2>
           <div className="space-y-2">
-            {data.strongTopics.length > 0 ? data.strongTopics.map((t, i) => (
+            {data.strongTopics.length > 0 ? data.strongTopics.map((t: TopicScore, i: number) => (
               <div key={i} className="glass-card flex items-center gap-3 rounded-xl p-3">
                 <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-emerald-500/15 text-xs font-bold text-emerald-400">
                   {t.score}/5
@@ -235,7 +234,7 @@ export default function AnalyticsPage() {
             <TrendingDown className="h-5 w-5 text-rose-400" /> Needs Improvement
           </h2>
           <div className="space-y-2">
-            {data.weakTopics.length > 0 ? data.weakTopics.map((t, i) => (
+            {data.weakTopics.length > 0 ? data.weakTopics.map((t: TopicScore, i: number) => (
               <div key={i} className="glass-card flex items-center gap-3 rounded-xl p-3">
                 <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-rose-500/15 text-xs font-bold text-rose-400">
                   {t.score}/5
@@ -258,7 +257,7 @@ export default function AnalyticsPage() {
   );
 }
 
-function StatCard({ icon: Icon, label, value, color }) {
+function StatCard({ icon: Icon, label, value, color }: { icon: LucideIcon; label: string; value: string | number; color: string }) {
   return (
     <div className="glass-card group rounded-2xl p-4 transition duration-300 hover:-translate-y-1 hover:border-brand-400/25">
       <span className={`grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br ${color} shadow-lg`}>
@@ -270,7 +269,7 @@ function StatCard({ icon: Icon, label, value, color }) {
   );
 }
 
-function ActivityGrid({ activityHistory }) {
+function ActivityGrid({ activityHistory }: { activityHistory: string[] }) {
   const today = new Date();
   const days = [];
 

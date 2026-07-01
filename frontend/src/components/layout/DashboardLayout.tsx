@@ -1,6 +1,7 @@
+import type { ReactNode } from 'react';
 import Navbar from './Navbar';
 
-export default function DashboardLayout({ children }) {
+export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
     <div className="relative min-h-screen overflow-hidden text-foreground">
       <div className="pointer-events-none fixed -left-40 top-20 -z-10 h-96 w-96 rounded-full bg-violet-600/10 blur-[100px]" />

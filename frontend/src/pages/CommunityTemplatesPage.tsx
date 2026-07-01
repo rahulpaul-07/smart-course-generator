@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Globe, Heart, Copy, Star, Plus } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
-import { collabService } from '../services/collabService';
+import { collabService, type CommunityTemplate } from '../services/collabService';
 import LoadingSpinner from '../components/LoadingSpinner';
-import toast from 'react-hot-toast';
 import { EmptyState } from '../components/ui/EmptyState';
 import { Button } from '../components/ui/button';
 
@@ -11,10 +10,10 @@ import { ErrorState } from '../components/ui/ErrorState';
 import { CommunitySkeleton } from '../components/courses/CommunitySkeleton';
 
 export default function CommunityTemplatesPage() {
-  const [templates, setTemplates] = useState([]);
+  const [templates, setTemplates] = useState<CommunityTemplate[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const [cloningId, setCloningId] = useState(null);
+  const [cloningId, setCloningId] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,12 +26,12 @@ export default function CommunityTemplatesPage() {
     collabService.getTemplates()
       .then(([data, err]) => {
         if (err || !data) setError(true);
-        else setTemplates((data as any) || []);
+        else setTemplates(data || []);
       })
       .finally(() => setLoading(false));
   };
 
-  const handleUpvote = async (courseId) => {
+  const handleUpvote = async (courseId: string) => {
     // Optimistic UI Update
     setTemplates(prev => prev.map(t => 
       t._id === courseId 
@@ -42,7 +41,7 @@ export default function CommunityTemplatesPage() {
     const [data, error] = await collabService.upvoteTemplate(courseId);
     if (data) {
       setTemplates(prev => prev.map(t => 
-        t._id === courseId ? { ...t, upvotesCount: (data as any).upvotesCount } : t
+        t._id === courseId ? { ...t, upvotesCount: data.upvotesCount } : t
       ));
     } else if (error) {
       setTemplates(prev => prev.map(t => 
@@ -53,18 +52,18 @@ export default function CommunityTemplatesPage() {
     }
   };
 
-  const handleRate = async (courseId, rating) => {
+  const handleRate = async (courseId: string, rating: number) => {
     const [data] = await collabService.rateTemplate(courseId, rating);
     if (data) {
-      setTemplates(templates.map(t => t._id === courseId ? { ...t, averageRating: (data as any).averageRating } : t));
+      setTemplates(templates.map(t => t._id === courseId ? { ...t, averageRating: data.averageRating } : t));
     }
   };
 
-  const handleClone = async (courseId) => {
+  const handleClone = async (courseId: string) => {
     setCloningId(courseId);
     const [data] = await collabService.cloneTemplate(courseId);
     if (data) {
-      navigate(`/course/${(data as any).courseId}`);
+      navigate(`/course/${data.courseId}`);
     } else {
       setCloningId(null);
     }

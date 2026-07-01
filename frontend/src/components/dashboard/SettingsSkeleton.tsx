@@ -1,6 +1,5 @@
 import React from 'react';
 import { Skeleton, SkeletonCard, SkeletonButton } from '../ui/skeleton';
-import { Settings as SettingsIcon } from 'lucide-react';
 import { PageContainer } from '../layout/PageContainer';
 import { SectionHeader } from '../ui/SectionHeader';
 
@@ -10,7 +9,6 @@ export function SettingsSkeleton() {
       <SectionHeader 
         title="Settings" 
         description="Manage your account preferences and settings."
-        icon={SettingsIcon}
       />
 
       <div className="mt-8 grid gap-8 lg:grid-cols-3">

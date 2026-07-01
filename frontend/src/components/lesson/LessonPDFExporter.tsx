@@ -5,6 +5,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Highlight, themes } from "prism-react-renderer";
+import type { Lesson, LessonContentBlock } from '../../types';
 
 const slugify = (value = "lesson") => {
   return value
@@ -45,7 +46,7 @@ const PDFMarkdown = ({ text }: { text: string }) => (
   </div>
 );
 
-const PDFDocument = ({ lesson }: { lesson: any }) => {
+const PDFDocument = ({ lesson }: { lesson: Lesson & { objectives?: string[]; description?: string } }) => {
   const title = lesson.title || "Lesson";
   const description = lesson.description || "";
   const objectives = Array.isArray(lesson.objectives) ? lesson.objectives : [];
@@ -73,7 +74,7 @@ const PDFDocument = ({ lesson }: { lesson: any }) => {
         <div style={{ backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", padding: "16px", marginBottom: "24px", pageBreakInside: "avoid" }}>
           <h3 style={{ margin: "0 0 10px", fontSize: "16px" }}>Objectives</h3>
           <ul style={{ margin: 0, paddingLeft: "20px", fontSize: "14px" }}>
-            {objectives.map((obj, i) => (
+            {objectives.map((obj: string, i: number) => (
               <li key={i}>{obj}</li>
             ))}
           </ul>
@@ -81,8 +82,11 @@ const PDFDocument = ({ lesson }: { lesson: any }) => {
       )}
 
       <div className="markdown-content">
-        {content.map((block, index) => {
-          if (!block) return null;
+        {content.map((rawBlock: LessonContentBlock, index: number) => {
+          if (!rawBlock) return null;
+          // Lesson content blocks are AI-generated and intentionally schema-less
+          // (backend stores them as Mongoose `Mixed`), so we read fields loosely here.
+          const block = rawBlock as Record<string, any>;
 
           switch (block.type) {
             case "heading": {
@@ -159,7 +163,11 @@ const PDFDocument = ({ lesson }: { lesson: any }) => {
   );
 };
 
-const LessonPDFExporter = React.memo(({ lesson, courseTitle = "Course" }: any) => {
+interface LessonPDFExporterProps {
+  lesson: Lesson;
+}
+
+const LessonPDFExporter = React.memo(({ lesson }: LessonPDFExporterProps) => {
   const [downloading, setDownloading] = useState(false);
 
   const handleDownloadPDF = async () => {
@@ -176,10 +184,10 @@ const LessonPDFExporter = React.memo(({ lesson, courseTitle = "Course" }: any) =
       pdfElement.innerHTML = htmlContent;
 
       const options = {
-        margin: [0.8, 0.5, 0.8, 0.5], // top, left, bottom, right in inches
+        margin: [0.8, 0.5, 0.8, 0.5] as [number, number, number, number], // top, left, bottom, right in inches
         filename: `${slugify(title)}.pdf`,
         image: {
-          type: "jpeg",
+          type: "jpeg" as const,
           quality: 0.98,
         },
         html2canvas: {
@@ -190,41 +198,38 @@ const LessonPDFExporter = React.memo(({ lesson, courseTitle = "Course" }: any) =
         jsPDF: {
           unit: "in",
           format: "a4",
-          orientation: "portrait",
+          orientation: "portrait" as const,
         },
         pagebreak: { mode: ["css", "legacy"] },
       };
 
       const { default: html2pdf } = await import("html2pdf.js");
-      
-      await html2pdf()
-        .set(options)
-        .from(pdfElement)
-        .toPdf()
-        .get("pdf")
-        .then((pdf: any) => {
-          const totalPages = pdf.internal.getNumberOfPages();
-          const dateStr = new Date().toLocaleDateString();
-          
-          for (let i = 1; i <= totalPages; i++) {
-            pdf.setPage(i);
-            pdf.setFontSize(9);
-            pdf.setTextColor(100);
-            
-            // Header
-            pdf.text(title, 0.5, 0.4);
-            pdf.text(dateStr, pdf.internal.pageSize.getWidth() - 0.5, 0.4, { align: "right" });
-            
-            // Footer
-            pdf.text(`Page ${i} of ${totalPages}`, pdf.internal.pageSize.getWidth() / 2, pdf.internal.pageSize.getHeight() - 0.4, { align: "center" });
-            
-            // Add a subtle header line
-            pdf.setDrawColor(226, 232, 240); // slate-200
-            pdf.setLineWidth(0.01);
-            pdf.line(0.5, 0.5, pdf.internal.pageSize.getWidth() - 0.5, 0.5);
-          }
-        })
-        .save();
+
+      const worker = html2pdf().set(options).from(pdfElement).toPdf();
+      const pdf = await worker.get("pdf");
+
+      const totalPages = pdf.internal.getNumberOfPages();
+      const dateStr = new Date().toLocaleDateString();
+
+      for (let i = 1; i <= totalPages; i++) {
+        pdf.setPage(i);
+        pdf.setFontSize(9);
+        pdf.setTextColor(100);
+
+        // Header
+        pdf.text(title, 0.5, 0.4);
+        pdf.text(dateStr, pdf.internal.pageSize.getWidth() - 0.5, 0.4, { align: "right" });
+
+        // Footer
+        pdf.text(`Page ${i} of ${totalPages}`, pdf.internal.pageSize.getWidth() / 2, pdf.internal.pageSize.getHeight() - 0.4, { align: "center" });
+
+        // Add a subtle header line
+        pdf.setDrawColor(226, 232, 240); // slate-200
+        pdf.setLineWidth(0.01);
+        pdf.line(0.5, 0.5, pdf.internal.pageSize.getWidth() - 0.5, 0.5);
+      }
+
+      await worker.save();
     } catch (error) {
       console.error("PDF download failed:", error);
       alert("Failed to download PDF. Please try again.");

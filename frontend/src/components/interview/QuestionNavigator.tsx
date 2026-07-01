@@ -42,13 +42,20 @@ export function QuestionNavigator({ activeTab, setActiveTab, status }: QuestionN
   return (
     <div 
       className="lg:hidden flex gap-2 overflow-x-auto pb-4 mb-6 scrollbar-none border-b border-border/30"
+      role="tablist"
+      aria-label="Interview Navigation"
+      onKeyDown={handleKeyDown}
     >
       {tabs.map((tab, i) => {
         const isSelected = activeTab === tab.key;
         return (
           <button 
             key={tab.key} 
+            ref={(el) => { tabRefs.current[i] = el; }}
             onClick={() => setActiveTab(tab.key)} 
+            role="tab"
+            aria-selected={isSelected}
+            tabIndex={isSelected ? 0 : -1}
             className={`shrink-0 flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-colors ${
               isSelected 
                 ? 'bg-primary text-primary-foreground shadow-sm' 

@@ -2,20 +2,22 @@ import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { interviewService } from '../services/interviewService';
 import { useSessionStorage } from './useStorage';
+import type { InterviewPrep } from '../types';
 
 export function useInterviewSession() {
-  const [preps, setPreps] = useState<any[]>([]);
+  const [preps, setPreps] = useState<InterviewPrep[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [generating, setGenerating] = useState(false);
   const [topic, setTopic] = useState('');
   
-  const [activePrep, setActivePrep] = useSessionStorage<any>('interview_active_prep', null);
+  const [activePrep, setActivePrep] = useSessionStorage<InterviewPrep | null>('interview_active_prep', null);
   const [activeTab, setActiveTab] = useSessionStorage<string>('interview_active_tab', 'mcq');
 
   const [isMobileCoachOpen, setIsMobileCoachOpen] = useState(false);
 
   useEffect(() => {
-    const handleBeforeUnload = (e: any) => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       if (activePrep && activePrep.status === 'pending') {
         e.preventDefault();
         e.returnValue = '';
@@ -28,12 +30,14 @@ export function useInterviewSession() {
   useEffect(() => { loadPreps(); }, []);
 
   async function loadPreps() {
-    const [data] = await interviewService.getMyInterviews();
+    setError('');
+    const [data, err] = await interviewService.getMyInterviews();
     if (data) setPreps(data);
+    else if (err) setError(err);
     setLoading(false);
   }
 
-  async function generate(e: any, setElapsedTime: (t: number) => void) {
+  async function generate(e: React.FormEvent, setElapsedTime: (t: number) => void) {
     e.preventDefault();
     if (!topic.trim()) return toast.error('Enter a topic');
     
@@ -70,7 +74,7 @@ export function useInterviewSession() {
 
   async function deletePrep(id: string) {
     if (!window.confirm('Delete this interview prep?')) return;
-    const [data, error] = await interviewService.deleteInterview(id);
+    const [, error] = await interviewService.deleteInterview(id);
     if (!error) {
       setPreps((p) => p.filter((x) => x._id !== id));
       if (activePrep?._id === id) setActivePrep(null);
@@ -80,6 +84,7 @@ export function useInterviewSession() {
   return {
     preps,
     loading,
+    error,
     generating,
     topic,
     setTopic,

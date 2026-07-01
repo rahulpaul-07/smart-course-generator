@@ -1,17 +1,18 @@
-import { ArrowRight, BookOpen, CheckCircle2, Target, Trophy, Clock, PlayCircle } from 'lucide-react';
+import { BookOpen, CheckCircle2, Target, Trophy, Clock, PlayCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { courseProgress, mostRecentLesson } from '../utils/courseProgress';
+import type { PopulatedCourse, Lesson } from '../types';
 import { useAuth } from '../hooks/useAuth';
 import { calculatePercentage } from '../utils/percentages';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 
-export default function LearningSummary({ courses }: { courses: any[] }) {
+export default function LearningSummary({ courses }: { courses: PopulatedCourse[] }) {
   const navigate = useNavigate();
   const recentLesson = mostRecentLesson(courses);
-  const bookmarkedLessons: any[] = [];
+  const bookmarkedLessons: (Lesson & { courseId: string; courseTitle: string })[] = [];
   let totalLessons = 0;
   let completedLessons = 0;
 
@@ -34,7 +35,6 @@ export default function LearningSummary({ courses }: { courses: any[] }) {
   }
 
   const completion = calculatePercentage(completedLessons, totalLessons);
-  const completedCourses = courses.filter((course) => courseProgress(course).percentage === 100).length;
 
   const { user } = useAuth();
   const streak = user?.studyStreak || 0;

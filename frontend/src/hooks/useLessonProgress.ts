@@ -2,10 +2,13 @@ import { useState, useRef } from 'react';
 import toast from 'react-hot-toast';
 import { baseURL } from '../utils/api';
 import { lessonService } from '../services/lessonService';
+import type { Lesson } from '../types';
+import type { Dispatch, SetStateAction } from 'react';
+import { getApiError } from '../services/apiHelper';
 
 const API_BASE = baseURL;
 
-export function useLessonProgress(courseId: string | undefined, lessonId: string | undefined, updateCurrentLesson: (lesson: any) => void, setLesson: any) {
+export function useLessonProgress(courseId: string | undefined, lessonId: string | undefined, updateCurrentLesson: (lesson: Lesson) => void, setLesson: Dispatch<SetStateAction<Lesson | null>>) {
   const [generating, setGenerating] = useState(false);
   const [showDepthPicker, setShowDepthPicker] = useState(false);
   const [streamStatus, setStreamStatus] = useState<'idle' | 'interrupted' | 'error' | 'success'>('idle');
@@ -39,7 +42,7 @@ export function useLessonProgress(courseId: string | undefined, lessonId: string
     setStreamedCount(0);
     setStreamStage('Creating outline');
     setStreamStatus('idle');
-    setLesson((prev: any) => prev ? { ...prev, content: [] } : prev);
+    setLesson((prev) => prev ? { ...prev, content: [] } : prev);
 
     try {
       const token = localStorage.getItem('token');
@@ -75,7 +78,7 @@ export function useLessonProgress(courseId: string | undefined, lessonId: string
           const result = await reader.read();
           done = result.done;
           value = result.value;
-        } catch (readErr) {
+        } catch {
           done = true;
           streamInterrupted = true;
         }
@@ -102,9 +105,9 @@ export function useLessonProgress(courseId: string | undefined, lessonId: string
                 if (count === 1) setStreamStage('Writing section');
                 else if (count === 3) setStreamStage('Generating code examples');
                 else if (count === 6) setStreamStage('Finalizing lesson');
-                setLesson((prev: any) => prev ? { ...prev, content: [...(prev.content || []), data] } : prev);
+                setLesson((prev) => prev ? { ...prev, content: [...(prev.content || []), data] } : prev);
               } else if (currentEvent === 'videos') {
-                setLesson((prev: any) => prev ? { ...prev, videos: data } : prev);
+                setLesson((prev) => prev ? { ...prev, videos: data } : prev);
               } else if (currentEvent === 'done') {
                 setStreamStage('Saving lesson');
                 updateCurrentLesson(data);
@@ -114,8 +117,9 @@ export function useLessonProgress(courseId: string | undefined, lessonId: string
                 if (typeof errMsg === 'object') errMsg = errMsg.message || JSON.stringify(errMsg);
                 throw new Error(errMsg);
               }
-            } catch (parseErr: any) {
-              if (parseErr.message && !parseErr.message.includes('JSON')) throw parseErr;
+            } catch (parseErr) {
+              const msg = parseErr instanceof Error ? parseErr.message : '';
+              if (msg && !msg.includes('JSON')) throw parseErr;
             }
             currentEvent = '';
           }
@@ -131,13 +135,13 @@ export function useLessonProgress(courseId: string | undefined, lessonId: string
         toast.error('No content was generated. Please try again.');
         setStreamStatus('error');
       }
-    } catch (error: any) {
-      if (error.message === 'STREAM_INTERRUPTED') {
+    } catch (error) {
+      if (error instanceof Error && error.message === 'STREAM_INTERRUPTED') {
         setStreamStatus('interrupted');
         return;
       }
       setStreamStatus('error');
-      setStreamError(error.message || 'Failed to generate content');
+      setStreamError(getApiError(error) || 'Failed to generate content');
     } finally {
       sessionStorage.removeItem('active_generation_job');
       isGeneratingRef.current = false;

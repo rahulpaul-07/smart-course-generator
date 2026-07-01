@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Award, ExternalLink, ArrowRight } from 'lucide-react';
+import { Award, ExternalLink } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { certificateService } from '../services/certificateService';
-import LoadingSpinner from '../components/LoadingSpinner';
 import { PageContainer } from '../components/layout/PageContainer';
 import { SectionHeader } from '../components/ui/SectionHeader';
 import { EmptyState } from '../components/ui/EmptyState';

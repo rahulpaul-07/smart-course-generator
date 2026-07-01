@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowRight, Loader2, Sparkles, Wand2 } from 'lucide-react';
+import { ArrowRight, Loader2, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';

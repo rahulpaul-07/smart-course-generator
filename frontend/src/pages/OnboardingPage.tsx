@@ -51,7 +51,7 @@ export default function OnboardingPage() {
     setLoading(false);
 
     if (!error && data) {
-      login({ ...user, ...data });
+      if (user) login({ ...user, ...data });
       toast.success('Profile setup complete!');
       navigate('/dashboard');
     }

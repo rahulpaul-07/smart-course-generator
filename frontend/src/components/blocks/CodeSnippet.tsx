@@ -1,6 +1,6 @@
 import { Check, Copy } from 'lucide-react';
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Highlight, themes } from 'prism-react-renderer';
 import clsx from 'clsx';
 import { useClipboard } from '../../hooks/useClipboard';
@@ -10,7 +10,7 @@ export default function CodeSnippet({ block }: { block: any }) {
 
   const availableLanguages = block.codes
     ? Object.entries(block.codes)
-        .filter(([_, code]) => Boolean(code))
+        .filter(([, code]) => Boolean(code))
         .map(([lang]) => lang)
     : [block.language || 'text'];
 

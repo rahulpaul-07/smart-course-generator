@@ -1,18 +1,17 @@
 import { ArrowLeft, ArrowRight, Layers3, Loader2, RefreshCw, Undo2 } from 'lucide-react';
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { lessonService } from '../../services/lessonService';
+import { lessonService, type Flashcard } from '../../services/lessonService';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { calculatePercentage } from '../../utils/percentages';
 
 const FlashcardDeck = React.memo(({ lessonId, courseId, embedded = false }: { lessonId: string, courseId: string, embedded?: boolean }) => {
-  const [flashcards, setFlashcards] = useState<any[]>([]);
+  const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
   const [index, setIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [sessionDeck, setSessionDeck] = useState<any[]>([]);
+  const [sessionDeck, setSessionDeck] = useState<Flashcard[]>([]);
 
   async function generateFlashcards() {
     setLoading(true);
@@ -38,7 +37,7 @@ const FlashcardDeck = React.memo(({ lessonId, courseId, embedded = false }: { le
 
   function handleConfidence(level: 'again' | 'hard' | 'good' | 'easy') {
     const currentCard = sessionDeck[index];
-    let newDeck = [...sessionDeck];
+    const newDeck = [...sessionDeck];
     
     if (level === 'again' || level === 'hard') {
       newDeck.splice(index, 1);

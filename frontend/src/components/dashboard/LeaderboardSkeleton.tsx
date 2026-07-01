@@ -1,5 +1,5 @@
 import React from 'react';
-import { Skeleton, SkeletonCard } from '../ui/skeleton';
+import { Skeleton } from '../ui/skeleton';
 import { Trophy } from 'lucide-react';
 
 export function LeaderboardSkeleton() {

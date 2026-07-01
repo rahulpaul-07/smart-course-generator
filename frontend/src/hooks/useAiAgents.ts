@@ -13,7 +13,7 @@ export function useAiAgents() {
   const [interestsInput, setInterestsInput] = useState('');
 
   useEffect(() => {
-    courseService.getMyCourses().then(([data, error]) => {
+    courseService.getMyCourses().then(([data]) => {
       if (data) {
         setCourses(data);
         if (data.length > 0) setSelectedCourse(data[0]._id);

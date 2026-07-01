@@ -1,21 +1,36 @@
-import { createContext, useContext, useEffect, useRef, useState } from 'react';
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import toast from 'react-hot-toast';
 import api from '../utils/api';
 import { authService } from '../services/authService';
+import { getApiError } from '../services/apiHelper';
+import type { User } from '../types';
 
-const AuthContext = createContext(null);
+interface AuthContextValue {
+  isAuthenticated: boolean;
+  loading: boolean;
+  user: User | null;
+  hasAuth0Config: boolean;
+  login: (userData?: User & { token?: string }) => void;
+  loginWithGoogle: (googleToken: string) => Promise<User | undefined>;
+  logout: () => Promise<void>;
+  getToken: () => Promise<string | null>;
+  loginWithAuth0: () => void;
+  signupWithAuth0: () => void;
+}
+
+const AuthContext = createContext<AuthContextValue | null>(null);
 const hasAuth0Config = !!(import.meta.env.VITE_AUTH0_DOMAIN && import.meta.env.VITE_AUTH0_CLIENT_ID);
 
-export function AuthProvider({ children }) {
+export function AuthProvider({ children }: { children: ReactNode }) {
   const auth0 = hasAuth0Config
     ? useAuth0()
     : {
         getAccessTokenSilently: async () => '',
         isAuthenticated: false,
         isLoading: false,
-        loginWithRedirect: () => {},
-        logout: () => {},
+        loginWithRedirect: (() => {}) as (opts?: unknown) => void,
+        logout: (() => {}) as (opts?: unknown) => void,
       };
 
   const {
@@ -25,7 +40,7 @@ export function AuthProvider({ children }) {
     loginWithRedirect,
     logout: logoutFromAuth0,
   } = auth0;
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loadingSession, setLoadingSession] = useState(true);
   const [syncingAuth0, setSyncingAuth0] = useState(false);
   const auth0SyncStarted = useRef(false);
@@ -36,7 +51,7 @@ export function AuthProvider({ children }) {
         setUser(null);
         localStorage.removeItem('token');
       } else {
-        setUser(data as any);
+        setUser(data);
       }
       setLoadingSession(false);
     });
@@ -52,10 +67,10 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const root = window.document.documentElement;
     const theme = user?.theme || localStorage.getItem('theme') || 'system';
-    
+
     localStorage.setItem('theme', theme);
 
-    const applyTheme = (t) => {
+    const applyTheme = (t: string) => {
       root.classList.remove('light', 'dark');
       if (t === 'system') {
         const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -70,7 +85,7 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const listener = (e) => {
+    const listener = (e: MediaQueryListEvent) => {
       const currentTheme = localStorage.getItem('theme') || 'system';
       if (currentTheme === 'system') {
         const root = window.document.documentElement;
@@ -93,16 +108,14 @@ export function AuthProvider({ children }) {
     setSyncingAuth0(true);
 
     getAccessTokenSilently()
-      .then(async (token) => {
-        // Just setting the token on api defaults won't work perfectly for this specific request if it wasn't intercepted, 
-        // but api interceptor pulls from localStorage. Auth0 provides a different token.
-        // We'll need to keep this one api.post to pass the headers explicitly, OR update authService to accept a token.
-        // Let's use api.post here for this exceptional case to avoid changing the method signature of authService.auth0Sync.
+      .then(async (token: string) => {
+        // api interceptor pulls the token from localStorage, but Auth0 provides a
+        // different token here, so we pass it explicitly for this one request.
         try {
-          const { data } = await api.post('/auth/auth0-sync', {}, { headers: { Authorization: `Bearer ${token}` } });
+          const { data } = await api.post<User>('/auth/auth0-sync', {}, { headers: { Authorization: `Bearer ${token}` } });
           setUser(data);
-        } catch (error: any) {
-          toast.error(error.response?.data?.error || 'Could not finish Google login');
+        } catch (error) {
+          toast.error(getApiError(error) || 'Could not finish Google login');
         } finally {
           setSyncingAuth0(false);
           auth0SyncStarted.current = false;
@@ -110,7 +123,7 @@ export function AuthProvider({ children }) {
       });
   }, [getAccessTokenSilently, hasAuth0Session, loadingSession, user]);
 
-  async function getToken() {
+  async function getToken(): Promise<string | null> {
     if (hasAuth0Session) {
       try {
         return await getAccessTokenSilently();
@@ -131,26 +144,26 @@ export function AuthProvider({ children }) {
     }
   }
 
-  const value = {
+  const value: AuthContextValue = {
     isAuthenticated: Boolean(user),
     loading: loadingSession || auth0Loading || syncingAuth0,
     user,
     hasAuth0Config,
     login: (userData) => {
-      setUser(userData);
+      setUser(userData ?? null);
       if (userData?.token) {
         localStorage.setItem('token', userData.token);
       }
     },
-    loginWithGoogle: async (googleToken) => {
+    loginWithGoogle: async (googleToken: string) => {
       const [data, error] = await authService.googleLogin(googleToken);
       if (error) throw new Error(error);
-      
-      setUser(data as any);
-      if ((data as any)?.token) {
-        localStorage.setItem('token', (data as any).token);
+
+      setUser(data);
+      if (data?.token) {
+        localStorage.setItem('token', data.token);
       }
-      return data;
+      return data ?? undefined;
     },
     logout,
     getToken,
@@ -159,9 +172,12 @@ export function AuthProvider({ children }) {
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-
 }
 
-export function useAuth() {
-  return useContext(AuthContext);
+export function useAuth(): AuthContextValue {
+  const ctx = useContext(AuthContext);
+  if (!ctx) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return ctx;
 }

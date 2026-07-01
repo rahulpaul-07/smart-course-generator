@@ -3,7 +3,7 @@ import { Brain, Award } from 'lucide-react';
 
 interface CertificatePreviewProps {
   certificate: any;
-  certificateRef: React.RefObject<HTMLDivElement>;
+  certificateRef: React.RefObject<HTMLDivElement | null>;
   issueDate: string;
 }
 

@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
-import { lessonService } from "../../../services/lessonService";
+import { lessonService } from "../../services/lessonService";
 
-function HinglishAudioExplanation({ lessonText, initialText = "" }) {
+interface HinglishAudioExplanationProps {
+  lessonText: string;
+  initialText?: string;
+}
+
+function HinglishAudioExplanation({ lessonText, initialText = "" }: HinglishAudioExplanationProps) {
   const [audioUrl, setAudioUrl] = useState("");
   const [hinglishText, setHinglishText] = useState(initialText);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -33,7 +38,7 @@ function HinglishAudioExplanation({ lessonText, initialText = "" }) {
       return;
     }
 
-    const translatedText = (textResponse as any)?.data?.hinglishText || "";
+    const translatedText = textResponse?.data?.hinglishText || "";
     setHinglishText(translatedText);
 
     const [audioBlob, audioError] = await lessonService.generateHinglishAudio(translatedText || lessonText);
@@ -50,7 +55,7 @@ function HinglishAudioExplanation({ lessonText, initialText = "" }) {
       // Since handleApi discards headers, maybe we can ignore it or we need headers.
       // Let's just create blob from data.
       
-      const blob = new Blob([audioBlob as any], { type: "audio/wav" });
+      const blob = new Blob([audioBlob], { type: "audio/wav" });
       const url = URL.createObjectURL(blob);
       setAudioUrl(url);
     }
