@@ -84,7 +84,9 @@ export function useInterviewProgress(prep: any) {
                   return prev;
                 });
               }
-            } catch (err) {}
+            } catch {
+              // Ignore malformed SSE chunks; the stream will continue or time out.
+            }
           }
         }
       }

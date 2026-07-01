@@ -18,7 +18,9 @@ export function useCertificate(id: string | undefined) {
           try {
             const json = JSON.parse(text);
             if (json.error) msg = json.error;
-          } catch (e) {}
+          } catch {
+            // Response body wasn't valid JSON; fall back to the generic message above.
+          }
           throw new Error(msg);
         }
         return res.json();

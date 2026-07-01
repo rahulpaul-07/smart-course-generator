@@ -1,10 +1,11 @@
 import { calculatePercentage } from './percentages';
+import type { PopulatedCourse, Lesson } from '../types';
 
-export function courseProgress(course: any | null | undefined) {
+export function courseProgress(course: PopulatedCourse | null | undefined) {
   if (!course) {
     return {
       completedLessons: 0,
-      completionDate: null,
+      completionDate: null as string | null,
       percentage: 0,
       remainingLessons: 0,
       totalLessons: 0,
@@ -13,7 +14,7 @@ export function courseProgress(course: any | null | undefined) {
 
   let totalLessons = 0;
   let completedLessons = 0;
-  let completionDate = null;
+  let completionDate: string | null = null;
 
   const modules = course?.modules ?? [];
   for (const moduleDoc of modules) {
@@ -40,7 +41,7 @@ export function courseProgress(course: any | null | undefined) {
   };
 }
 
-export function nextIncompleteLesson(course: any | null | undefined) {
+export function nextIncompleteLesson(course: PopulatedCourse | null | undefined) {
   if (!course) return null;
 
   const modules = course?.modules ?? [];
@@ -59,10 +60,10 @@ export function nextIncompleteLesson(course: any | null | undefined) {
   return null;
 }
 
-export function mostRecentLesson(courses: any[] | null | undefined) {
+export function mostRecentLesson(courses: PopulatedCourse[] | null | undefined) {
   if (!courses) return null;
 
-  let recent = null;
+  let recent: (Lesson & { courseId?: string; courseTitle?: string; moduleTitle?: string }) | null = null;
 
   for (const course of courses) {
     if (!course) continue;
@@ -71,7 +72,7 @@ export function mostRecentLesson(courses: any[] | null | undefined) {
       const lessons = moduleDoc.lessons ?? [];
       for (const lesson of lessons) {
         if (!lesson.lastOpenedAt) continue;
-        if (!recent || new Date(lesson.lastOpenedAt) > new Date(recent.lastOpenedAt)) {
+        if (!recent || !recent.lastOpenedAt || new Date(lesson.lastOpenedAt) > new Date(recent.lastOpenedAt)) {
           recent = {
             ...lesson,
             courseId: course._id,

@@ -1,154 +1,137 @@
-<h1 align="center">CourseAI Pro 🚀</h1>
-<p align="center">
-  <img src="https://github.com/yourusername/smart-course-generator/actions/workflows/ci.yml/badge.svg" alt="CI Pipeline" />
-</p>
-<p align="center">
-  <em>An intelligent, scalable EdTech platform generating personalized, highly structured learning courses dynamically via advanced LLM orchestration.</em>
-</p>
+# CourseAI Pro
+
+An AI-powered learning platform that generates full, structured courses on any topic in seconds, then teaches them back through streaming lessons, adaptive quizzes, flashcards, mock interviews, and a public leaderboard.
+
+[![Deployment CI Checks](https://github.com/rahulpaul-07/smart-course-generator/actions/workflows/deploy-checks.yml/badge.svg)](https://github.com/rahulpaul-07/smart-course-generator/actions/workflows/deploy-checks.yml)
+[![CI/CD Pipeline](https://github.com/rahulpaul-07/smart-course-generator/actions/workflows/ci.yml/badge.svg)](https://github.com/rahulpaul-07/smart-course-generator/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+[![Node](https://img.shields.io/badge/node-%3E%3D18-339933?logo=node.js&logoColor=white)](./backend/package.json)
+[![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)](./frontend/tsconfig.app.json)
+
+## Overview
+
+Static course platforms (Udemy, Coursera) can't adapt to what an individual learner already knows. General-purpose chat assistants can generate content, but produce a linear conversation, not a structured, resumable curriculum with progress tracking, spaced-repetition review, and assessment.
+
+CourseAI Pro sits between the two: give it a topic, and it generates a full multi-module course — streamed lesson-by-lesson over Server-Sent Events rather than a single blocking request — with quizzes, flashcards, and optional YouTube video enrichment per lesson. Progress, XP, and streaks are tracked per user, courses can be published to a community marketplace, and a separate interview-prep mode runs mock technical interviews (MCQ, theory, and coding rounds) with AI-scored feedback.
 
 <p align="center">
-  <img src="/docs/assets/hero-placeholder.png" alt="CourseAI Pro Dashboard" width="800"/>
+  <img src="docs/screenshots/screenshot_dashboard.png" alt="CourseAI Pro dashboard" width="720" />
 </p>
 
----
+## Features
 
-## 🌟 Why CourseAI Pro?
+- **AI course generation** — a topic in, a structured course out: modules, lessons, and a final assessment, streamed incrementally so the UI never blocks on a single long request.
+- **Multi-provider AI routing** — a custom router (no LangChain) fails over across Gemini, Groq, and OpenRouter, with per-provider API key rotation and cooldown handling, so a single rate-limited key doesn't take generation down.
+- **Adaptive study tools** — AI-generated flashcards, practice labs, and inline lesson chat, plus optional Hinglish audio explanations via text-to-speech.
+- **Interview prep** — generates MCQ, theory, and coding question sets for a topic, scores submitted answers, and produces a strengths/weaknesses breakdown.
+- **Roadmaps** — multi-week personalized learning plans generated from a goal, duration, and skill level.
+- **Community & gamification** — publish courses publicly, clone others', rate and upvote templates, and track XP, streaks, and achievements on a public leaderboard.
+- **Certificates** — PDF certificates generated on course completion, independently verifiable via a public certificate ID.
+- **Auth** — email/password, Google OAuth, or Auth0, behind the same session contract on the frontend.
 
-Traditional learning platforms like Coursera are static. AI chatbots like ChatGPT are unstructured and prone to hallucination. **CourseAI Pro** bridges the gap. It utilizes a custom AI routing architecture to dynamically stream interactive, hyper-tailored technical courses while providing a robust, gamified interface (XP, leaderboards, quizzes) to track progress.
+## Architecture
 
-## ✨ Core Features
-
-| Feature | Description | Technical Implementation |
-|---------|-------------|--------------------------|
-| **Instant Generation** | 2,000+ word structured courses generated in seconds. | Gemini LLM + Custom Fallback Router |
-| **Real-time Streaming** | No loading spinners. Content appears chunk-by-chunk. | Node.js Server-Sent Events (SSE) |
-| **Gamified Ecosystem** | Earn XP, track streaks, and climb weekly leaderboards. | MongoDB Aggregation Pipelines |
-| **Community Market** | Publish your courses or clone top-rated community courses. | Express.js + React.js |
-| **Interactive Tutors** | Ask questions directly in the context of a lesson. | Bounded Context Prompts |
-
----
-
-## 🏗️ Architecture
-
-CourseAI Pro is designed with **Production Engineering** standards. It is resilient, secure, and performant.
-
-### Highlights:
-- **Resilient AI Routing:** Graceful degradation fallback from Gemini → OpenRouter → Groq ensures 99.9% generation uptime.
-- **Security Posture:** Endpoints fortified with `zod` schema validation, `helmet` HTTP headers, and NoSQL injection sanitization.
-- **Performance:** Heavy read endpoints (like Community Leaderboards) are protected by `node-cache` memory caching.
-
-### System Diagram
 ```mermaid
-graph LR
-    Client[React Frontend] -->|HTTPS API Requests| LB[Load Balancer]
-    LB --> NodeAPI[Node.js / Express Backend]
-    NodeAPI -->|Reads/Writes| MongoDB[(MongoDB Atlas)]
-    NodeAPI -->|LLM Fallbacks| AI_Router[AI Router Service]
+graph TD
+    Client[React 19 + Vite SPA] -->|HTTPS, JWT Bearer| API[Node.js / Express API]
+    API -->|Mongoose| DB[(MongoDB)]
+    API -->|Auth0 / Google OAuth| Auth[Identity Providers]
+    API --> Router[AI Router]
+    Router -->|Priority 1| Gemini[Google Gemini]
+    Router -->|Priority 2| Groq[Groq]
+    Router -->|Priority 3| OpenRouter[OpenRouter]
+    API -->|SSE| Client
 ```
-👉 *[Read the Full Technical Deep Dive](./docs/portfolio/technical-deep-dive.md)* | *[View all Architecture Diagrams](./docs/architecture/)*
 
----
+The frontend and backend are independently deployable: a React SPA (Vite, TypeScript, Tailwind, React Query) talking to a stateless Express API over a versioned REST contract, secured with JWTs so either side can scale or redeploy on its own. See [`docs/architecture/`](./docs/architecture) for the per-layer diagrams (frontend, backend, auth, database, AI routing) and [`docs/engineering_decisions.md`](./docs/engineering_decisions.md) for the reasoning behind the notable choices (custom AI router over LangChain, SSE over WebSockets, stateless JWT auth, Tailwind over a component library).
 
-## 📸 Screenshots
+## Tech stack
 
-| Dashboard & Leaderboard | Course Streamer & AI Tutor |
-|:-----------------------:|:--------------------------:|
-| *[View Analytics](./docs/assets/dashboard-placeholder.png)* | *[View Lesson](./docs/assets/lesson-placeholder.png)* |
+| Layer | Technologies |
+|---|---|
+| Frontend | React 19, TypeScript, Vite, Tailwind CSS, React Query, React Router, Radix UI |
+| Backend | Node.js, Express, MongoDB (Mongoose), Zod validation |
+| AI | Google Gemini, Groq, OpenRouter — routed with automatic fallback |
+| Auth | JWT (email/password), Google OAuth, Auth0 |
+| Testing | Jest + Supertest (backend), Vitest + Testing Library (frontend) |
+| Tooling | ESLint, TypeScript project references, GitHub Actions CI, Docker |
 
----
+## Getting started
 
-## 🚀 Quick Start
+**Prerequisites:** Node.js 18+, npm, and a MongoDB instance (local or [Atlas](https://www.mongodb.com/atlas)).
 
-### 1. Local Setup
-Ensure you have Node.js 18+ and MongoDB running.
 ```bash
-git clone https://github.com/yourusername/smart-course-generator.git
-cd smart-course-generator/backend
+git clone https://github.com/rahulpaul-07/smart-course-generator.git
+cd smart-course-generator
+
+# Backend
+cd backend
 npm install
-```
+cp .env.example .env   # fill in MONGO_URI, JWT_SECRET, and at least one AI provider key
+npm run dev             # http://localhost:8000
 
-### 2. Environment Configuration
-Copy the `.env.example` file to `.env` and provide your keys:
-```bash
+# Frontend, in a separate terminal
+cd frontend
+npm install
 cp .env.example .env
+npm run dev             # http://localhost:5173
 ```
-*Required: `MONGO_URI`, `JWT_SECRET`, `GEMINI_API_KEY`*
 
-### 3. Run the Backend
+With the backend running, interactive API docs (Swagger) are available at `http://localhost:8000/api-docs`.
+
+Only `MONGO_URI` and `JWT_SECRET` are strictly required to boot; course generation additionally needs at least one of `GEMINI_API_KEY`, `GROQ_API_KEY`, or `OPENROUTER_API_KEY`. Google sign-in and Auth0 are both optional — the app falls back to email/password auth when their env vars are absent. See [`backend/.env.example`](./backend/.env.example) and [`frontend/.env.example`](./frontend/.env.example) for the full list.
+
+### Docker
+
 ```bash
-npm run dev
-```
-Navigate to `http://localhost:8000/api-docs` to view the interactive **Swagger API Documentation**.
-
----
-
-## 🚢 Production Deployment
-
-CourseAI Pro is fully configured for seamless deployment across modern cloud platforms. The repository includes configurations for **Vercel**, **Render**, and **Docker**.
-
-### Method 1: Vercel (Frontend) & Render (Backend)
-This is the recommended approach for the best performance and easiest CI/CD.
-
-**1. Deploy Backend (Render)**
-- Connect the repository to Render and create a new **Web Service**.
-- **Root Directory**: `backend`
-- **Build Command**: `npm install`
-- **Start Command**: `npm start`
-- Add necessary environment variables (`MONGO_URI`, `GEMINI_API_KEY`, etc.).
-- Copy the generated Render URL (e.g., `https://courseai-backend.onrender.com`).
-
-**2. Deploy Frontend (Vercel)**
-- Connect the repository to Vercel and create a new Project.
-- **Root Directory**: `frontend`
-- **Framework Preset**: Vite
-- **Environment Variables**: Add `VITE_API_BASE_URL` and set it to your Render URL. Our dynamic API resolver will automatically append `/api` to it.
-- Vercel automatically detects the `vercel.json` file for SPA routing.
-
-### Method 2: Docker Compose (All-in-one)
-For dedicated servers or VPS, use the included Docker configuration:
-```bash
-# Rename environment files
 cp backend/.env.example backend/.env
 cp frontend/.env.example frontend/.env
-
-# Build and start the cluster
-docker-compose up -d --build
+docker-compose up --build
 ```
 
-### Health Probes
-Deployment pipelines and orchestrators can utilize the built-in probes:
-- **Readiness**: `/api/health/readiness`
-- **Liveness**: `/api/health/liveness`
+This starts the backend, frontend, and a local MongoDB container together.
 
-👉 *[See Full Deployment Verification](./docs/deployment-verification.md)*
+## Testing
 
----
-
-## 🧪 Testing & CI/CD Pipeline
-
-The repository uses **Jest** and **Supertest** for isolated integration testing, heavily utilizing `mongodb-memory-server` to mock DB connections cleanly.
 ```bash
-cd backend
-npm run test
+cd backend && npm test    # Jest + Supertest, against an in-memory MongoDB instance
+cd frontend && npm test   # Vitest + React Testing Library
 ```
 
-### Continuous Integration (GitHub Actions)
-CourseAI Pro implements a production-grade CI pipeline (`.github/workflows/ci.yml`) that runs on every `push` and `pull_request` to `main`.
-The pipeline ensures code quality by automating:
-- **Frontend**: Dependency installation (with npm caching), ESLint checks, TypeScript type checking (`npx tsc --noEmit`), and production build verification (`npm run build`).
-- **Backend**: Dependency installation and ESLint checks.
+`npm run typecheck` in `frontend/` runs a full `tsc -b` project build across the app and Vite config; `npm run lint` runs ESLint in both packages. All four gates run in CI on every push and pull request to `main` (see [`.github/workflows`](./.github/workflows)).
 
-Builds will automatically **fail** if there are syntax errors, missing dependencies, TypeScript type errors, or failed linting rules.
+## Deployment
 
----
+The repo is preconfigured for either a split Vercel/Render deployment or a single-host Docker deployment.
 
-## 📚 Recruiter & Portfolio Assets
+**Backend (Render):** root directory `backend`, build `npm install`, start `npm start`. Set `MONGO_URI`, `JWT_SECRET`, and your AI provider keys as environment variables. See [`render.yaml`](./render.yaml).
 
-Hiring managers and recruiters can explore the following artifacts to understand the depth of engineering applied to this project:
-- 📖 [10-Minute Technical Walkthrough](./docs/demo/recruiter-walkthrough.md)
-- ❓ [Recruiter FAQ](./docs/demo/recruiter-faq.md)
-- 📊 [Competitive Benchmark Report](./docs/benchmark-report.md)
-- 💬 [Interview Discussion Guide (STAR Format)](./docs/portfolio/interview-discussion-guide.md)
+**Frontend (Vercel):** root directory `frontend`, framework preset Vite. Set `VITE_API_BASE_URL` to the deployed backend URL — the frontend automatically appends `/api` if it's missing. `vercel.json` already handles SPA routing.
 
----
-<p align="center">Made with ❤️ by an engineer passionate about scaling AI applications.</p>
+**Docker Compose:** `docker-compose up -d --build` builds and runs backend, frontend, and MongoDB as a single stack; see [`docker-compose.yml`](./docker-compose.yml).
+
+Health probes for orchestrators: `GET /api/health/liveness` and `GET /api/health/readiness`.
+
+## Security
+
+- Helmet security headers, MongoDB query sanitization, and XSS input sanitization on every request.
+- Global and endpoint-specific rate limiting, including a dedicated auth limiter to slow down credential-stuffing attempts.
+- Passwords hashed with bcrypt and never returned in API responses; JWT secret is required at boot (the process refuses to start without one).
+- Zod schema validation on all mutating routes; ObjectId shape validation on all `:id`-style route params.
+- See [`SECURITY.md`](./SECURITY.md) for the vulnerability disclosure policy.
+
+## Project structure
+
+```
+backend/    Express API — controllers, routes, Mongoose models, AI services, Jest tests
+frontend/   React SPA — pages, components, hooks, typed API service layer
+docs/       Architecture diagrams, database schema, API flows, engineering decisions
+```
+
+## Contributing
+
+Contributions are welcome — see [`CONTRIBUTING.md`](./CONTRIBUTING.md) for the workflow and [`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md). Check [`CHANGELOG.md`](./CHANGELOG.md) for release history.
+
+## License
+
+MIT — see [`LICENSE`](./LICENSE).

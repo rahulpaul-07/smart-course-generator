@@ -183,7 +183,7 @@ export function LessonContent({
 
       {hasContent && !generating && course && (
         <div className="mt-20 pt-12 border-t border-border/30">
-          <LessonCompletion course={course} courseId={courseId} lesson={lesson} onLessonUpdate={updateCurrentLesson} />
+          <LessonCompletion course={course} courseId={courseId!} lesson={lesson} onLessonUpdate={updateCurrentLesson} />
         </div>
       )}
     </article>

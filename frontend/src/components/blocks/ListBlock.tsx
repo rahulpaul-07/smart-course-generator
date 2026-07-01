@@ -1,4 +1,6 @@
-export default function ListBlock({ block }) {
+import type { LessonContentBlock } from '../../types';
+
+export default function ListBlock({ block }: { block: LessonContentBlock & { style?: string; items: string[] } }) {
   const Tag = block.style === 'numbered' ? 'ol' : 'ul';
 
   return (
@@ -9,7 +11,7 @@ export default function ListBlock({ block }) {
           : 'list-disc marker:text-indigo-400'
       }`}
     >
-      {block.items.map((item, index) => (
+      {block.items.map((item: string, index: number) => (
         <li key={index} className="pl-2 leading-7">
           {item}
         </li>

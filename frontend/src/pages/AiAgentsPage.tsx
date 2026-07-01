@@ -1,5 +1,4 @@
 import { Bot } from 'lucide-react';
-import LoadingSpinner from '../components/LoadingSpinner';
 import { useAiAgents } from '../hooks/useAiAgents';
 import { AgentSidebar } from '../components/agents/AgentSidebar';
 import { AgentHeaderInputs } from '../components/agents/AgentHeaderInputs';

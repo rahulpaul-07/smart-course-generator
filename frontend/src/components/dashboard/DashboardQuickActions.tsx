@@ -2,10 +2,11 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import type { LucideIcon } from 'lucide-react';
 
 interface QuickAction {
   label: string;
-  icon: any;
+  icon: LucideIcon;
   url: string;
   desc: string;
   color: string;

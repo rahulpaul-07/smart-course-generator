@@ -3,6 +3,9 @@ import { useState } from 'react';
 export function useRoadmapProgress(initialExpanded = new Set([1])) {
   const [expandedWeeks, setExpandedWeeks] = useState<Set<number>>(initialExpanded);
   const [completedWeeks, setCompletedWeeks] = useState<Set<number>>(new Set());
+  // setSavingWeeks is currently unused: there is no roadmap-progress persistence
+  // endpoint yet, so completion toggles are optimistic/local-only (see below).
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [savingWeeks, setSavingWeeks] = useState<Set<number>>(new Set());
 
   function toggleWeek(num: number) {

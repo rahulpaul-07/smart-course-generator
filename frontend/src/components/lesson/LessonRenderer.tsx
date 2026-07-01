@@ -13,7 +13,7 @@ const LessonRenderer = React.memo(({ content = [], isStreaming = false }: { cont
 
   return (
     <article id="lesson-content" data-print-content className="space-y-2 text-[17px] leading-relaxed text-foreground/90 font-sans">
-      {content.map((block, index) => <MemoizedBlock key={index} block={block} index={index} />)}
+      {content.map((block, index) => <MemoizedBlock key={index} block={block} />)}
 
       {isStreaming && (
         <div className="space-y-6 pt-12 animate-pulse">

@@ -6,7 +6,7 @@ import ListBlock from '../blocks/ListBlock';
 import VideoBlock from '../blocks/VideoBlock';
 import { MemoizedMarkdown } from './MemoizedMarkdown';
 
-export const MemoizedBlock = memo(({ block, index }: { block: any, index: number }) => {
+export const MemoizedBlock = memo(({ block }: { block: any }) => {
   if (block.type === 'heading') {
     const Heading = block.level === 3 ? 'h3' : 'h2';
     // Generate an ID for Table of Contents based on the text

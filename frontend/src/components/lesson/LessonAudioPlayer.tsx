@@ -14,11 +14,12 @@ import {
   speechLanguageCode,
   splitForSpeech,
 } from '../../utils/speech';
+import type { Lesson } from '../../types';
 
-export default function LessonAudioPlayer({ lesson }) {
+export default function LessonAudioPlayer({ lesson }: { lesson: Lesson }) {
   const language = lesson.language || 'English';
   const narration = useMemo(() => extractNarration(lesson), [lesson]);
-  const [voices, setVoices] = useState([]);
+  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [rate] = useState(1);
   const [status, setStatus] = useState('idle');
   const [currentChunk, setCurrentChunk] = useState(0);
@@ -73,7 +74,7 @@ export default function LessonAudioPlayer({ lesson }) {
     if (reset) setCurrentChunk(0);
   }
 
-  function speakAt(index, session) {
+  function speakAt(index: number, session: number) {
     if (!supported || session !== playbackSession.current) return;
 
     if (index >= speechQueue.length) {

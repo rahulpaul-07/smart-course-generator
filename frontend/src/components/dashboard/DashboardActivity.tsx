@@ -3,10 +3,11 @@ import { motion } from 'framer-motion';
 import { Sparkles, Activity, Clock, ChevronRight } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
+import type { LucideIcon } from 'lucide-react';
 
 interface Recommendation {
   label: string;
-  icon: any;
+  icon: LucideIcon;
   desc: string;
 }
 

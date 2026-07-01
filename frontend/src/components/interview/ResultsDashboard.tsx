@@ -1,5 +1,5 @@
 import React from 'react';
-import { Trophy, CheckCircle2, BookOpen, Code2, Zap, AlertTriangle, Brain } from 'lucide-react';
+import { Trophy, CheckCircle2, BookOpen, Code2, Zap, AlertTriangle, Brain, XCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { ScoreBreakdown } from './ScoreBreakdown';
 

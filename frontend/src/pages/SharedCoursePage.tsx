@@ -5,11 +5,12 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import LessonAudioPlayer from '../components/lesson/LessonAudioPlayer';
 import LessonRenderer from '../components/lesson/LessonRenderer';
 import { courseService } from '../services/courseService';
+import type { PopulatedCourse, Lesson } from '../types';
 
 export default function SharedCoursePage() {
   const { shareId } = useParams();
-  const [course, setCourse] = useState(null);
-  const [selectedLesson, setSelectedLesson] = useState(null);
+  const [course, setCourse] = useState<PopulatedCourse | null>(null);
+  const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -19,10 +20,10 @@ export default function SharedCoursePage() {
           setCourse(null);
           return;
         }
-        setCourse(data as any);
+        setCourse(data);
 
-        for (const moduleDoc of (data as any).modules || []) {
-          const lesson = moduleDoc.lessons?.find((item: any) => item.isEnriched);
+        for (const moduleDoc of data.modules || []) {
+          const lesson = moduleDoc.lessons?.find((item) => item.isEnriched);
           if (lesson) {
             setSelectedLesson(lesson);
             break;
@@ -72,20 +73,20 @@ export default function SharedCoursePage() {
           {course.description && <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{course.description}</p>}
 
           <div className="mt-8 space-y-5">
-            {course.modules?.map((moduleDoc: any, moduleIndex: number) => (
+            {course.modules?.map((moduleDoc, moduleIndex: number) => (
               <section key={moduleDoc._id}>
                 <h2 className="text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
                   {moduleIndex + 1}. {moduleDoc.title}
                 </h2>
                 <div className="mt-2 space-y-1">
-                  {moduleDoc.lessons?.map((lesson: any) => (
+                  {moduleDoc.lessons?.map((lesson) => (
                     <button
                       key={lesson._id}
                       type="button"
                       disabled={!lesson.isEnriched}
                       onClick={() => setSelectedLesson(lesson)}
                       className={`group flex w-full items-center gap-2 rounded-xl border px-3 py-2.5 text-left text-sm transition ${
-                        lesson._id === (selectedLesson as any)?._id
+                        lesson._id === selectedLesson?._id
                           ? 'border-brand-400/25 bg-brand-500/10 text-foreground font-medium shadow-sm'
                           : 'border-transparent text-muted-foreground hover:border-border hover:bg-foreground/10 hover:text-foreground/90 disabled:opacity-40'
                       }`}

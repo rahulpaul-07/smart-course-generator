@@ -65,7 +65,7 @@ export function InterviewSidebar({ activePrep, activeTab, setActiveTab, setActiv
           return (
             <button
               key={tab.id}
-              ref={el => tabRefs.current[i] = el}
+              ref={(el) => { tabRefs.current[i] = el; }}
               onClick={() => setActiveTab(tab.id)}
               role="tab"
               aria-selected={isSelected}

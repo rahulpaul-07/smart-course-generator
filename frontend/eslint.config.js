@@ -25,4 +25,19 @@ export default defineConfig([
       ...jsxA11y.configs.recommended.rules
     }
   },
+  {
+    // TypeScript already checks that every identifier resolves (and does it
+    // correctly for type-only positions, ambient globals, etc). The base
+    // no-undef rule predates TS-awareness and produces false positives on
+    // .ts/.tsx files, so it's disabled there per typescript-eslint's own
+    // guidance: https://typescript-eslint.io/rules/no-undef/
+    files: ['**/*.{ts,tsx}'],
+    rules: {
+      'no-undef': 'off',
+      // Superseded by @typescript-eslint/no-unused-vars, which understands
+      // TS-only constructs (type-only imports, interface method params,
+      // overload signatures) that the base rule flags incorrectly.
+      'no-unused-vars': 'off',
+    },
+  },
 ])

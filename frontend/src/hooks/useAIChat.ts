@@ -47,7 +47,7 @@ export function useAIChat(courseId: string, lessonId: string, isOpen: boolean) {
     }
   };
 
-  async function sendMessage(text: string = input, scrollToBottom: (behavior: ScrollBehavior) => void, inputRef: React.RefObject<HTMLTextAreaElement>) {
+  async function sendMessage(text: string = input, scrollToBottom: (behavior: ScrollBehavior) => void, inputRef: React.RefObject<HTMLTextAreaElement | null>) {
     const message = text.trim();
     if (!message || sending) return;
 

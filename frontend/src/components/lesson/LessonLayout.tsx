@@ -1,6 +1,5 @@
 import React, { Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles } from 'lucide-react';
 import LoadingSpinner from '../LoadingSpinner';
 import LessonSidebar from './LessonSidebar';
 import ReadingProgressBar from './ReadingProgressBar';
@@ -19,7 +18,7 @@ interface LessonLayoutProps {
   addingVideos: boolean;
   showChat: boolean;
   setShowChat: React.Dispatch<React.SetStateAction<boolean>>;
-  lessonScrollRef: React.RefObject<HTMLDivElement>;
+  lessonScrollRef: React.RefObject<HTMLDivElement | null>;
   addVideos: () => void;
   updateCurrentLesson: (lesson: any) => void;
   onNavigateBack: () => void;
@@ -120,7 +119,7 @@ export function LessonLayout({
       )}
 
       <Suspense fallback={null}>
-        <AIChatPanel lessonId={lessonId} courseId={courseId} lessonTitle={lessonTitle} isOpen={showChat} onClose={() => setShowChat(false)} />
+        <AIChatPanel lessonId={lessonId!} courseId={courseId!} lessonTitle={lessonTitle} isOpen={showChat} onClose={() => setShowChat(false)} />
       </Suspense>
     </div>
   );

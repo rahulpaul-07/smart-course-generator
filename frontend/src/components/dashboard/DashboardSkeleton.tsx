@@ -1,6 +1,5 @@
 import React from 'react';
-import { Skeleton, SkeletonCard, SkeletonText, SkeletonAvatar, SkeletonButton } from '../ui/skeleton';
-import { PageContainer } from '../layout/PageContainer';
+import { Skeleton, SkeletonCard } from '../ui/skeleton';
 
 export function DashboardSkeleton() {
   return (

@@ -32,9 +32,9 @@ export function MCQWorkspace({ prep, mcqAnswers, setMcqAnswers, submitted, submi
             </p>
             <div className="space-y-3 pl-12">
               {q.options.map((opt: string, oi: number) => {
-                let isSelected = userAns === oi;
-                let isCorrect = submitted && oi === q.correctAnswer;
-                let isWrong = submitted && oi === userAns && oi !== q.correctAnswer;
+                const isSelected = userAns === oi;
+                const isCorrect = submitted && oi === q.correctAnswer;
+                const isWrong = submitted && oi === userAns && oi !== q.correctAnswer;
                 
                 let cls = 'border-border/30 bg-background hover:border-primary/40 hover:bg-muted/50 text-foreground';
                 if (submitted) {

@@ -1,16 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { BookOpen, Sparkles, Activity, PlayCircle, Brain, MessageSquare, Award, Map, Code, FileText } from 'lucide-react';
+import { BookOpen, Sparkles, PlayCircle, Brain, MessageSquare, Award, Map, Code, FileText } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { PageContainer } from '../components/layout/PageContainer';
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
-import api from '../utils/api';
 import React, { useState } from 'react';
-import toast from 'react-hot-toast';
 import PromptForm from '../components/PromptForm';
 import { courseService } from '../services/courseService';
 import { dashboardService } from '../services/dashboardService';
+import { useAuth } from '../hooks/useAuth';
 import { DashboardHero } from '../components/dashboard/DashboardHero';
 import { DashboardContinueLearning } from '../components/dashboard/DashboardContinueLearning';
 import { DashboardQuickActions } from '../components/dashboard/DashboardQuickActions';
@@ -22,6 +19,7 @@ import { EmptyState } from '../components/ui/EmptyState';
 
 export default function HomePage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [generating, setGenerating] = useState(false);
 
   async function generateCourse(topic: string) {
@@ -90,7 +88,7 @@ export default function HomePage() {
         ) : (
           <div className="flex flex-col gap-10">
             {/* 1. Hero Banner */}
-            <DashboardHero name="Rahul" continueUrl={data?.continueLearning?.url} onNavigate={navigate} />
+            <DashboardHero name={user?.name || 'there'} continueUrl={data?.continueLearning?.url} onNavigate={navigate} />
 
             {/* Course Generator Section */}
             <motion.section 

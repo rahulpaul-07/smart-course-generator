@@ -178,10 +178,7 @@ export default function RoadmapPage() {
                   icon={Map}
                   title="No Roadmaps Yet"
                   description="Choose an existing roadmap from the sidebar or generate a new tailored learning path to accelerate your career."
-                  action={{
-                    label: "Generate Roadmap",
-                    onClick: () => setShowForm(true)
-                  }}
+                  action={<Button onClick={() => setShowForm(true)}>Generate Roadmap</Button>}
                 />
               ) : (
                 <div className="h-full min-h-[400px] border border-border/30 rounded-2xl bg-card/10 flex flex-col items-center justify-center text-center p-10 relative overflow-hidden">

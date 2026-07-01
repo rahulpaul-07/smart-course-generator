@@ -171,13 +171,21 @@ function LearningStudio() {
   );
 }
 
+interface AuthLayoutProps {
+  children: React.ReactNode;
+  title: string;
+  description?: string;
+  footer?: React.ReactNode;
+  eyebrow?: string;
+}
+
 export default function AuthLayout({
   children,
   title,
   description,
   footer,
   eyebrow,
-}) {
+}: AuthLayoutProps) {
   return (
     <main className="auth-stage relative min-h-screen overflow-x-hidden text-foreground lg:grid lg:grid-cols-[minmax(0,1.12fr)_minmax(450px,0.88fr)]">
       <div className="auth-aurora auth-aurora-one pointer-events-none absolute" />

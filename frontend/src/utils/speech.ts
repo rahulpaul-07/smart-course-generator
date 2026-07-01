@@ -29,18 +29,18 @@ export const SPEECH_LANGUAGES = [
   { label: 'Polish', code: 'pl-PL' },
 ];
 
-const LANGUAGE_ALIASES = new Map([
+const LANGUAGE_ALIASES = new Map<string, string>([
   ['chinese', 'zh-CN'],
   ['mandarin', 'zh-CN'],
   ['portuguese', 'pt-BR'],
-  ...SPEECH_LANGUAGES.map(({ label, code }) => [label.toLocaleLowerCase(), code]),
+  ...SPEECH_LANGUAGES.map(({ label, code }): [string, string] => [label.toLocaleLowerCase(), code]),
 ]);
 
-function cleanText(value) {
+function cleanText(value: unknown): string {
   return String(value || '').replace(/\s+/g, ' ').trim();
 }
 
-export function speechLanguageCode(language) {
+export function speechLanguageCode(language: unknown): string {
   const value = cleanText(language);
   if (/^[a-z]{2,3}(?:-[a-z]{2,4})?$/i.test(value)) return value;
 
@@ -52,10 +52,10 @@ export function speechLanguageCode(language) {
   return partial?.[1] || 'en-US';
 }
 
-export function matchingVoices(voices, language) {
+export function matchingVoices(voices: SpeechSynthesisVoice[], language: string): SpeechSynthesisVoice[] {
   const languageCode = speechLanguageCode(language).toLocaleLowerCase();
   const languageRoot = languageCode.split('-')[0];
-  const matches = voices.filter((voice) => voice.lang.toLocaleLowerCase().startsWith(languageRoot));
+  const matches = voices.filter((voice: SpeechSynthesisVoice) => voice.lang.toLocaleLowerCase().startsWith(languageRoot));
 
   return matches.sort((first, second) => {
     const firstScore = Number(first.lang.toLocaleLowerCase() === languageCode) * 4
@@ -68,7 +68,7 @@ export function matchingVoices(voices, language) {
   });
 }
 
-export function extractNarration(lesson) {
+export function extractNarration(lesson: { title?: string; content?: Array<Record<string, unknown>> } | null | undefined): string[] {
   const parts = [cleanText(lesson?.title)];
 
   for (const block of lesson?.content || []) {
@@ -86,12 +86,12 @@ export function extractNarration(lesson) {
   return parts.filter(Boolean);
 }
 
-export function splitForSpeech(value, maxLength = 240) {
+export function splitForSpeech(value: unknown, maxLength = 240): string[] {
   const text = cleanText(value);
   if (!text) return [];
 
   const sentences = text.match(/[^.!?\u3002\uFF01\uFF1F]+[.!?\u3002\uFF01\uFF1F]+|[^.!?\u3002\uFF01\uFF1F]+$/gu) || [text];
-  const chunks = [];
+  const chunks: string[] = [];
   let current = '';
 
   for (const sentence of sentences) {

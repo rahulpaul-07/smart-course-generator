@@ -3,11 +3,12 @@ import { motion } from 'framer-motion';
 import { BarChart2, Target, Flame } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { CountUp } from '@/components/ui/CountUp';
+import type { LucideIcon } from 'lucide-react';
 
 interface StatsList {
   label: string;
   value: number;
-  icon: any;
+  icon: LucideIcon;
 }
 
 interface DashboardOverviewProps {

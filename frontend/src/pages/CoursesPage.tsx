@@ -5,7 +5,6 @@ import { Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { PageContainer } from '../components/layout/PageContainer';
 import { Button } from '@/components/ui/button';
-import api from '../utils/api';
 import { courseService } from '../services/courseService';
 import { useLocalStorage } from '../hooks/useStorage';
 import { sortCourses } from '../utils/sorting';

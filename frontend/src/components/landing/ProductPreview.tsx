@@ -1,9 +1,9 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Sparkles, BrainCircuit, Rocket, ArrowRight, ShieldCheck, 
-  BookOpen, Code, FileText, CheckCircle2, PlayCircle, 
-  Map, Award, MessageSquare, LayoutDashboard, Zap
+  Sparkles, BrainCircuit, ArrowRight, ShieldCheck, 
+  BookOpen, Code, CheckCircle2, PlayCircle, 
+  Award, MessageSquare, LayoutDashboard, Zap
 } from 'lucide-react';
 
 const PreviewDashboard = () => (

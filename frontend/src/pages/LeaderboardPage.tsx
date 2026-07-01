@@ -1,15 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Trophy, Flame, Zap, Award } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
-import { collabService } from '../services/collabService';
-import LoadingSpinner from '../components/LoadingSpinner';
+import { collabService, type LeaderboardUser } from '../services/collabService';
 import { EmptyState } from '../components/ui/EmptyState';
 
 import { ErrorState } from '../components/ui/ErrorState';
 import { LeaderboardSkeleton } from '../components/dashboard/LeaderboardSkeleton';
 
 export default function LeaderboardPage() {
-  const [leaders, setLeaders] = useState([]);
+  const [leaders, setLeaders] = useState<LeaderboardUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const navigate = useNavigate();
@@ -20,7 +19,7 @@ export default function LeaderboardPage() {
     collabService.getLeaderboard()
       .then(([data, err]) => {
         if (err || !data) setError(true);
-        else setLeaders((data as any) || []);
+        else setLeaders(data || []);
       })
       .finally(() => setLoading(false));
   };
@@ -69,7 +68,7 @@ export default function LeaderboardPage() {
         </div>
         
         <div className="divide-y divide-border/30">
-          {leaders.map((user: any, idx: number) => (
+          {leaders.map((user, idx: number) => (
             <Link 
               to={`/profile/${user._id}`}
               key={user._id} 
@@ -106,7 +105,7 @@ export default function LeaderboardPage() {
                   </div>
                 ))}
                 {(user.achievements?.length || 0) > 4 && (
-                  <span className="text-xs text-muted-foreground">+{user.achievements.length - 4}</span>
+                  <span className="text-xs text-muted-foreground">+{(user.achievements?.length || 0) - 4}</span>
                 )}
               </div>
               

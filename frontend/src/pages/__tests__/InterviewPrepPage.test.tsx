@@ -1,5 +1,4 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import InterviewPrepPage from '../InterviewPrepPage';
 import { MemoryRouter } from 'react-router-dom';
@@ -15,7 +14,7 @@ vi.mock('../../utils/api', () => ({
 
 // Mock sub-components
 vi.mock('../InterviewPrepPage', async (importOriginal) => {
-  const actual = await importOriginal();
+  const actual = await importOriginal<typeof import('../InterviewPrepPage')>();
   return {
     ...actual,
     MCQSection: () => <div data-testid="mcq-section">MCQ Content</div>,

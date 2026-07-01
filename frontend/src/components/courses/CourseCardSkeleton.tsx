@@ -1,5 +1,5 @@
 import React from 'react';
-import { Skeleton, SkeletonCard, SkeletonText, SkeletonButton } from '../ui/skeleton';
+import { Skeleton, SkeletonText, SkeletonButton } from '../ui/skeleton';
 import { cn } from '@/lib/utils';
 
 interface CourseCardSkeletonProps {

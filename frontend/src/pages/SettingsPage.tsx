@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Settings as SettingsIcon, Bell, Moon, Sun, Monitor, Shield, Key } from 'lucide-react';
+import { Settings as SettingsIcon, Moon, Sun, Monitor } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { userService } from '../services/userService';
 import { useAuth } from '../hooks/useAuth';
@@ -7,7 +7,6 @@ import { PageContainer } from '../components/layout/PageContainer';
 import { SectionHeader } from '../components/ui/SectionHeader';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
 import { Loader2 } from 'lucide-react';
 import { SettingsSkeleton } from '../components/dashboard/SettingsSkeleton';
 
@@ -32,7 +31,7 @@ export default function SettingsPage() {
     setSaving(false);
 
     if (!error && data) {
-      login({ ...user, ...data });
+      if (user) login({ ...user, ...data });
       toast.success('Settings updated successfully');
     }
   };

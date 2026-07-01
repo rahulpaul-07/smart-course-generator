@@ -1,5 +1,5 @@
 import React from 'react';
-import { Skeleton, SkeletonCard, SkeletonText, SkeletonButton } from '../ui/skeleton';
+import { Skeleton, SkeletonCard } from '../ui/skeleton';
 import { PageContainer } from '../layout/PageContainer';
 
 export function CourseOverviewSkeleton() {

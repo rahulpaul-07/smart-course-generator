@@ -1,6 +1,14 @@
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
+// Augment axios's request config with the small piece of metadata we attach
+// for request deduplication (see interceptor below).
+declare module 'axios' {
+  export interface InternalAxiosRequestConfig {
+    metadata?: { key: string };
+  }
+}
+
 let baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
 // In Render, the base URL is provided without /api (e.g. https://my-backend.onrender.com)
 if (baseURL && !baseURL.endsWith('/api') && baseURL.startsWith('http')) {
@@ -13,7 +21,7 @@ const api = axios.create({
   timeout: 180000,
 });
 
-const pendingRequests = new Map();
+const pendingRequests = new Map<string, boolean>();
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
@@ -34,14 +42,16 @@ api.interceptors.request.use((config) => {
           toast.success('Generation is continuing in the background. Please wait...');
           return Promise.reject({ isDuplicate: true, message: 'Generation already in progress.' });
         }
-      } catch {}
+      } catch {
+        // Ignore malformed sessionStorage state; treat as no active job.
+      }
     }
 
     if (pendingRequests.has(key)) {
       return Promise.reject({ isDuplicate: true, message: 'Request already in progress' });
     }
     pendingRequests.set(key, true);
-    (config as any).metadata = { key };
+    config.metadata = { key };
     
     // Save active generation job for recovery
     sessionStorage.setItem('active_generation_job', JSON.stringify({ key, timestamp: Date.now() }));
@@ -54,8 +64,8 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(
   (response) => {
-    if ((response.config as any)?.metadata?.key) {
-      pendingRequests.delete((response.config as any).metadata.key);
+    if (response.config?.metadata?.key) {
+      pendingRequests.delete(response.config.metadata.key);
       sessionStorage.removeItem('active_generation_job');
     }
     return response;
@@ -63,8 +73,8 @@ api.interceptors.response.use(
   (error) => {
     if (error.isDuplicate) return Promise.reject(error);
     
-    if (error.config && (error.config as any).metadata?.key) {
-      pendingRequests.delete((error.config as any).metadata.key);
+    if (error.config?.metadata?.key) {
+      pendingRequests.delete(error.config.metadata.key);
       // We don't remove active_generation_job here because the browser might have just disconnected but the backend is still running
     }
 

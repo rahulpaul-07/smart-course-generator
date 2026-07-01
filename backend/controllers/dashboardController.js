@@ -1,6 +1,7 @@
 const Course = require("../models/Course");
 const InterviewPrep = require("../models/InterviewPrep");
 const Roadmap = require("../models/Roadmap");
+const Certificate = require("../models/Certificate");
 
 exports.getDashboardSummary = async (req, res) => {
   try {
@@ -91,6 +92,7 @@ exports.getDashboardSummary = async (req, res) => {
     const coursesCompleted = await Course.countDocuments({ creator: userId, earnedCertificateId: { $exists: true, $ne: "" } });
     const roadmapsCreated = await Roadmap.countDocuments({ user: userId });
     const interviewPacks = await InterviewPrep.countDocuments({ user: userId });
+    const certificatesEarned = await Certificate.countDocuments({ user: userId });
     
     // User stats
     const User = require("../models/User");
@@ -104,6 +106,7 @@ exports.getDashboardSummary = async (req, res) => {
       practiceLabsGenerated: 0, 
       flashcardsGenerated: 0,
       interviewPacks,
+      certificatesEarned,
       aiQuestionsAsked: 0
     };
 

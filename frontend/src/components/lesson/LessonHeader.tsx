@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { ChevronRight, Clock, Minimize } from 'lucide-react';
 import { LessonNavigation } from './LessonNavigation';
 import { LessonActions } from './LessonActions';
@@ -23,7 +23,6 @@ export function LessonHeader({
   isFocusMode,
   setIsFocusMode
 }: LessonHeaderProps) {
-  const navigate = useNavigate();
 
   return (
     <div className="sticky top-0 z-20 w-full bg-background/90 backdrop-blur-2xl border-b border-border/30 shadow-sm transition-all">

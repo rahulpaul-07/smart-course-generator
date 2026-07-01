@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-import toast from 'react-hot-toast';
 import { Code2, Layers3, Shield, Brain, BookOpen } from 'lucide-react';
 import { courseService } from '../services/courseService';
 import { courseProgress } from '../utils/courseProgress';
 import { calculateEstimatedHours } from '../utils/durations';
+import type { PopulatedCourse } from '../types';
 
 export function useCourseProgress(id: string | undefined) {
-  const [course, setCourse] = useState<any>(null);
+  const [course, setCourse] = useState<PopulatedCourse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -15,7 +15,7 @@ export function useCourseProgress(id: string | undefined) {
     setLoading(true);
     setError(null);
     
-    courseService.getCourse(id).then(([data, err]) => {
+    courseService.getCourse(id!).then(([data, err]) => {
       if (!active) return;
       if (err) {
         setError(err);
@@ -43,7 +43,8 @@ export function useCourseProgress(id: string | undefined) {
   const totalLessons = progress.totalLessons || 0;
   const estimatedHours = calculateEstimatedHours(totalLessons);
   
-  const difficulty = course.difficulty || 'Intermediate';
+  // The Course schema has no difficulty field yet; default until that's added.
+  const difficulty = 'Intermediate';
 
   const title = course.title || '';
   const skills = [
@@ -57,7 +58,7 @@ export function useCourseProgress(id: string | undefined) {
   let nextLessonId = null;
   const modules = course?.modules ?? [];
   for (const mod of modules) {
-    const uncompleted = mod.lessons?.find((l: any) => !l.completedAt);
+    const uncompleted = mod.lessons?.find((l) => !l.completedAt);
     if (uncompleted) {
       nextLessonId = uncompleted._id;
       break;

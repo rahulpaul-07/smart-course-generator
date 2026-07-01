@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Eye, EyeOff, Loader2, LockKeyhole, Mail } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { motion } from 'framer-motion';
 import { GoogleLogin } from '@react-oauth/google';
-import AuthLayout, { GoogleIcon } from '../components/AuthLayout';
+import AuthLayout from '../components/AuthLayout';
 import { useAuth } from '../hooks/useAuth';
 import { authService } from '../services/authService';
 import { Button } from '@/components/ui/button';
@@ -17,8 +16,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { login, loginWithGoogle, loginWithAuth0, hasAuth0Config } = useAuth();
-  const navigate = useNavigate();
+  const { login, loginWithGoogle } = useAuth();
 
   const handleGoogleSuccess = async (credentialResponse: any) => {
     try {

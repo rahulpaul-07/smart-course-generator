@@ -1,4 +1,6 @@
-function youtubeId(url) {
+import type { LessonContentBlock } from '../../types';
+
+function youtubeId(url: URL) {
   const hostname = url.hostname.replace('www.', '');
 
   if (hostname === 'youtu.be') return url.pathname.slice(1);
@@ -7,7 +9,7 @@ function youtubeId(url) {
   return url.searchParams.get('v');
 }
 
-export default function VideoBlock({ block }) {
+export default function VideoBlock({ block }: { block: LessonContentBlock & { url?: string; title?: string } }) {
   if (!block.url) return null;
 
   let url;
@@ -19,7 +21,7 @@ export default function VideoBlock({ block }) {
 
   if (url.protocol !== 'http:' && url.protocol !== 'https:') return null;
 
-  let id = youtubeId(url);
+  const id = youtubeId(url);
   const isSearch = url.searchParams.get('listType') === 'search';
   const searchQuery = url.searchParams.get('list');
   const title = block.title || 'Lesson video';

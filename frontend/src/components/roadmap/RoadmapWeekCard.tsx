@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, CheckCircle2, ChevronDown, ChevronRight, Flag, LayoutGrid, Rocket, ArrowRight } from 'lucide-react';
+import { BookOpen, CheckCircle2, ChevronDown, ChevronRight, Flag, LayoutGrid, Loader2, Rocket, ArrowRight } from 'lucide-react';
 
 interface RoadmapWeekCardProps {
   roadmap: any;
