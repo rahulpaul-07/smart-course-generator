@@ -4,7 +4,7 @@ import { Button } from '../ui/button';
 import { renderToStaticMarkup } from "react-dom/server";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { Highlight, themes } from "prism-react-renderer";
+import { Highlight, themes, type Language } from "prism-react-renderer";
 import type { Lesson, LessonContentBlock } from '../../types';
 
 const slugify = (value = "lesson") => {
@@ -14,8 +14,73 @@ const slugify = (value = "lesson") => {
     .replace(/(^-|-$)+/g, "");
 };
 
-const PDFCodeBlock = ({ block }: { block: any }) => {
-  const code = block.code || (block.codes ? Object.values(block.codes).find(Boolean) : "");
+interface HeadingBlock extends LessonContentBlock {
+  type: "heading";
+  level?: number;
+  text?: string;
+}
+
+interface TextBlock extends LessonContentBlock {
+  type: "paragraph" | "text";
+  text: string;
+}
+
+interface CodeBlock extends LessonContentBlock {
+  type: "code";
+  code?: string;
+  codes?: Record<string, string>;
+  language?: string;
+}
+
+interface VideoBlock extends LessonContentBlock {
+  type: "video";
+  query?: string;
+}
+
+interface CalloutBlock extends LessonContentBlock {
+  type: "callout";
+  emoji?: string;
+  title?: string;
+  text?: string;
+}
+
+interface ListBlock extends LessonContentBlock {
+  type: "list";
+  style?: string;
+  items?: string[];
+}
+
+interface QuizQuestion {
+  question?: string;
+  options?: string[];
+  answer?: number | string;
+  correctAnswer?: number;
+  explanation?: string;
+}
+
+interface McqBlock extends LessonContentBlock, QuizQuestion {
+  type: "mcq";
+  title?: string;
+}
+
+interface QuizBlock extends LessonContentBlock {
+  type: "quiz";
+  title?: string;
+  questions?: QuizQuestion[];
+}
+
+type AnyPDFBlock =
+  | HeadingBlock
+  | TextBlock
+  | CodeBlock
+  | VideoBlock
+  | CalloutBlock
+  | ListBlock
+  | McqBlock
+  | QuizBlock;
+
+const PDFCodeBlock = ({ block }: { block: CodeBlock }) => {
+  const code = block.code || (block.codes ? Object.values(block.codes).find(Boolean) : "") || "";
   const lang = block.language || "text";
 
   return (
@@ -23,7 +88,7 @@ const PDFCodeBlock = ({ block }: { block: any }) => {
       <div style={{ backgroundColor: "#f8fafc", padding: "6px 12px", borderBottom: "1px solid #e2e8f0", fontFamily: "monospace", fontSize: "11px", color: "#64748b", textTransform: "uppercase" }}>
         {lang}
       </div>
-      <Highlight theme={themes.github} code={code as string} language={lang as any}>
+      <Highlight theme={themes.github} code={code as string} language={lang as Language}>
         {({ className, style, tokens, getLineProps, getTokenProps }) => (
           <pre className={className} style={{ ...style, padding: "12px", margin: 0, fontSize: "12px", whiteSpace: "pre-wrap", backgroundColor: "#ffffff" }}>
             {tokens.map((line, i) => (
@@ -86,7 +151,7 @@ const PDFDocument = ({ lesson }: { lesson: Lesson & { objectives?: string[]; des
           if (!rawBlock) return null;
           // Lesson content blocks are AI-generated and intentionally schema-less
           // (backend stores them as Mongoose `Mixed`), so we read fields loosely here.
-          const block = rawBlock as Record<string, any>;
+          const block = rawBlock as AnyPDFBlock;
 
           switch (block.type) {
             case "heading": {
@@ -129,13 +194,13 @@ const PDFDocument = ({ lesson }: { lesson: Lesson & { objectives?: string[]; des
             case "mcq":
             case "quiz": {
               // Exclude interactive quiz blocks from the main reading document or format them nicely
-              const questions = block.type === "quiz" ? block.questions : [block];
+              const questions: QuizQuestion[] = block.type === "quiz" ? (block.questions || []) : [block];
               if (!questions || questions.length === 0) return null;
               
               return (
                 <div key={index} style={{ marginTop: "24px", borderTop: "2px solid #e2e8f0", paddingTop: "20px" }}>
                   <h2 style={{ margin: "0 0 16px", pageBreakAfter: "avoid" }}>{block.title || "Knowledge Check"}</h2>
-                  {questions.map((q: any, qIdx: number) => {
+                  {questions.map((q: QuizQuestion, qIdx: number) => {
                     const answerText = typeof q.answer === "number" ? q.options?.[q.answer] : (q.answer || (typeof q.correctAnswer === "number" ? q.options?.[q.correctAnswer] : ""));
                     
                     return (

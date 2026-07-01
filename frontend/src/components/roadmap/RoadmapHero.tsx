@@ -1,9 +1,10 @@
 import React from 'react';
 import { ArrowLeft } from 'lucide-react';
+import type { Roadmap } from '../../types';
 
 interface RoadmapHeroProps {
-  activeRoadmap: any;
-  setActiveRoadmap: (r: any) => void;
+  activeRoadmap: Roadmap;
+  setActiveRoadmap: (value: Roadmap | null | ((val: Roadmap | null) => Roadmap | null)) => void;
   deleteRoadmap: (id: string) => void;
 }
 

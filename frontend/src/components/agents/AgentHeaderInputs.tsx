@@ -1,12 +1,13 @@
 import React from 'react';
 import { Bot } from 'lucide-react';
 import LoadingSpinner from '../LoadingSpinner';
-import { tabs } from './AgentSidebar';
+import { tabs } from './agentTabs';
 import { Button } from '@/components/ui/button';
+import type { Course } from '../../types';
 
 interface AgentHeaderInputsProps {
   activeTab: string;
-  courses: any[];
+  courses: Course[];
   selectedCourse: string;
   setSelectedCourse: (val: string) => void;
   goalsInput: string;

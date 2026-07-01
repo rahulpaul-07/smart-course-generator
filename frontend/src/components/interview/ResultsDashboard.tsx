@@ -2,9 +2,19 @@ import React from 'react';
 import { Trophy, CheckCircle2, BookOpen, Code2, Zap, AlertTriangle, Brain, XCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { ScoreBreakdown } from './ScoreBreakdown';
+import type { InterviewPrep, CodingQuestion } from '../../types';
+
+/** The backend may include aggregate `mcqScore` / `theoryScore` fields on
+ * completed interview preps that are not part of the shared `InterviewPrep`
+ * type. Narrowly extended here rather than widening the shared type, since
+ * these fields are only known to be produced for completed assessments. */
+type InterviewPrepWithSubScores = InterviewPrep & {
+  mcqScore?: number;
+  theoryScore?: number;
+};
 
 interface ResultsDashboardProps {
-  prep: any;
+  prep: InterviewPrepWithSubScores;
   readiness: string;
   strengths: string[];
   weaknesses: string[];
@@ -33,7 +43,7 @@ export function ResultsDashboard({ prep, readiness, strengths, weaknesses, aiRec
                 className="text-primary stroke-current"
                 strokeWidth="6" strokeLinecap="round" cx="50" cy="50" r="44" fill="transparent"
                 initial={{ strokeDasharray: "276.46", strokeDashoffset: "276.46" }}
-                animate={{ strokeDashoffset: 276.46 - (276.46 * prep.overallScore) / 100 }}
+                animate={{ strokeDashoffset: 276.46 - (276.46 * (prep.overallScore ?? 0)) / 100 }}
                 transition={{ duration: 1.5, ease: "easeOut", delay: 0.2 }}
               />
             </svg>
@@ -45,9 +55,9 @@ export function ResultsDashboard({ prep, readiness, strengths, weaknesses, aiRec
         </div>
 
         <div className="flex flex-col gap-4">
-          <ScoreBreakdown title="MCQ Accuracy" score={prep.mcqScore} icon={CheckCircle2} color="primary" />
-          <ScoreBreakdown title="Theory Depth" score={prep.theoryScore} icon={BookOpen} color="emerald" />
-          <ScoreBreakdown title="Code Quality" score={prep.codingQuestions?.reduce((s:any, q:any) => s + (q.score||0), 0) / (prep.codingQuestions?.length || 1) * 10} icon={Code2} color="cyan" />
+          <ScoreBreakdown title="MCQ Accuracy" score={prep.mcqScore ?? 0} icon={CheckCircle2} color="primary" />
+          <ScoreBreakdown title="Theory Depth" score={prep.theoryScore ?? 0} icon={BookOpen} color="emerald" />
+          <ScoreBreakdown title="Code Quality" score={prep.codingQuestions?.reduce((s: number, q: CodingQuestion) => s + (q.score || 0), 0) / (prep.codingQuestions?.length || 1) * 10} icon={Code2} color="cyan" />
         </div>
       </div>
 
@@ -55,7 +65,7 @@ export function ResultsDashboard({ prep, readiness, strengths, weaknesses, aiRec
         <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-8 shadow-sm transition-all hover:shadow-md">
           <h3 className="flex items-center gap-2 text-[13px] font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400 mb-6"><Zap className="h-4 w-4" /> Demonstrated Strengths</h3>
           <ul className="space-y-4">
-            {strengths.length > 0 ? strengths.map((s:string, i:number) => (
+            {strengths.length > 0 ? strengths.map((s: string, i: number) => (
               <li key={i} className="flex items-start gap-3 text-[14px] text-foreground/90 font-medium leading-relaxed">
                 <CheckCircle2 className="h-5 w-5 text-emerald-500 shrink-0 mt-0.5" /> {s}
               </li>
@@ -65,7 +75,7 @@ export function ResultsDashboard({ prep, readiness, strengths, weaknesses, aiRec
         <div className="rounded-2xl border border-destructive/20 bg-destructive/5 p-8 shadow-sm transition-all hover:shadow-md">
           <h3 className="flex items-center gap-2 text-[13px] font-bold uppercase tracking-widest text-destructive mb-6"><AlertTriangle className="h-4 w-4" /> Areas for Improvement</h3>
           <ul className="space-y-4">
-            {weaknesses.length > 0 ? weaknesses.map((s:string, i:number) => (
+            {weaknesses.length > 0 ? weaknesses.map((s: string, i: number) => (
               <li key={i} className="flex items-start gap-3 text-[14px] text-foreground/90 font-medium leading-relaxed">
                 <XCircle className="h-5 w-5 text-destructive shrink-0 mt-0.5" /> {s}
               </li>
@@ -99,7 +109,7 @@ export function ResultsDashboard({ prep, readiness, strengths, weaknesses, aiRec
         <div className="rounded-2xl border border-border/30 bg-card/50 p-8 shadow-sm">
           <h4 className="text-[13px] font-bold uppercase tracking-widest text-foreground mb-6">Recommended Next Steps</h4>
           <ul className="space-y-3 text-[14px] font-medium text-muted-foreground list-disc pl-5">
-            {prep.nextSteps.map((step:string, i:number) => <li key={i} className="pl-2">{step}</li>)}
+            {prep.nextSteps.map((step: string, i: number) => <li key={i} className="pl-2">{step}</li>)}
           </ul>
         </div>
       )}

@@ -1,13 +1,48 @@
 import { useState, useEffect } from 'react';
 import { agentService } from '../services/agentService';
 import { courseService } from '../services/courseService';
+import type { Course } from '../types';
+
+interface PlannerScheduleItem {
+  day?: string;
+  topic?: string;
+  method?: string;
+}
+
+interface RecommendationItem {
+  topic?: string;
+  reason?: string;
+}
+
+/** The AI agent endpoints (reviewer/coach/planner/recommend) each return a
+ * differently-shaped payload. Rather than a discriminated union (the active
+ * tab already tells the view which fields are relevant), this models the
+ * superset of fields any agent response or local error may carry. */
+export interface AgentResult {
+  error?: string;
+  // reviewer
+  rating?: number;
+  strengths?: string[];
+  weaknesses?: string[];
+  suggestedImprovements?: string[];
+  // coach
+  greeting?: string;
+  encouragement?: string;
+  analysis?: string;
+  actionableAdvice?: string[];
+  // planner
+  planName?: string;
+  schedule?: PlannerScheduleItem[];
+  // recommend
+  recommendations?: RecommendationItem[];
+}
 
 export function useAiAgents() {
   const [activeTab, setActiveTab] = useState('reviewer');
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<AgentResult | null>(null);
   
-  const [courses, setCourses] = useState<any[]>([]);
+  const [courses, setCourses] = useState<Course[]>([]);
   const [selectedCourse, setSelectedCourse] = useState('');
   const [goalsInput, setGoalsInput] = useState('');
   const [interestsInput, setInterestsInput] = useState('');
@@ -42,11 +77,12 @@ export function useAiAgents() {
       if (error) {
         setResult({ error });
       } else {
-        setResult(data);
+        setResult(data as AgentResult);
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      setResult({ error: err.message || "Failed to run agent." });
+      const message = err instanceof Error ? err.message : "Failed to run agent.";
+      setResult({ error: message });
     } finally {
       setLoading(false);
     }

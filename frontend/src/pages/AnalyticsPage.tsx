@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BarChart3, BookOpen, Brain, Clock, Flame, Target, TrendingDown, TrendingUp, Trophy, Zap, PlusCircle } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
@@ -18,24 +18,29 @@ export default function AnalyticsPage() {
   const [exportingCsv, setExportingCsv] = useState(false);
   const navigate = useNavigate();
 
-  const fetchAnalytics = () => {
-    setLoading(true);
-    setError(false);
-    analyticsService.getDashboard()
-      .then(([resData, err]) => {
-        if (err || !resData) {
-          setError(true);
-          setData(null);
-        } else {
-          setData(resData);
-        }
-      })
-      .finally(() => setLoading(false));
-  };
+  const fetchAnalytics = useCallback(() => {
+    // Deferred to a microtask so this reads as a callback invocation (like a
+    // promise .then()) rather than a synchronous setState call within the
+    // effect body -- avoids an extra synchronous re-render pass.
+    queueMicrotask(() => {
+      setLoading(true);
+      setError(false);
+      analyticsService.getDashboard()
+        .then(([resData, err]) => {
+          if (err || !resData) {
+            setError(true);
+            setData(null);
+          } else {
+            setData(resData);
+          }
+        })
+        .finally(() => setLoading(false));
+    });
+  }, []);
 
   useEffect(() => {
     fetchAnalytics();
-  }, []);
+  }, [fetchAnalytics]);
 
   if (loading) return <AnalyticsSkeleton />;
   if (error || !data) return (

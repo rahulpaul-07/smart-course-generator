@@ -44,6 +44,7 @@ export function QuestionNavigator({ activeTab, setActiveTab, status }: QuestionN
       className="lg:hidden flex gap-2 overflow-x-auto pb-4 mb-6 scrollbar-none border-b border-border/30"
       role="tablist"
       aria-label="Interview Navigation"
+      tabIndex={0}
       onKeyDown={handleKeyDown}
     >
       {tabs.map((tab, i) => {

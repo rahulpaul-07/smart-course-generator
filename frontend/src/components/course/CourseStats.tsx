@@ -2,11 +2,12 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { FileText, Shield, Clock, BookOpen, Calendar, Brain } from 'lucide-react';
 import { Card } from '@/components/ui/card';
+import type { Course } from '../../types';
 
 interface CourseStatsProps {
   difficulty: string;
   estimatedHours: number;
-  course: any;
+  course: Pick<Course, 'createdAt' | 'updatedAt'>;
 }
 
 export function CourseStats({ difficulty, estimatedHours, course }: CourseStatsProps) {
@@ -43,13 +44,13 @@ export function CourseStats({ difficulty, estimatedHours, course }: CourseStatsP
             <span className="text-xs text-muted-foreground flex items-center gap-2">
               <Calendar className="h-4 w-4" /> Generated On
             </span>
-            <span className="text-xs font-medium text-foreground">{new Date(course.createdAt).toLocaleDateString()}</span>
+            <span className="text-xs font-medium text-foreground">{new Date(course.createdAt ?? '').toLocaleDateString()}</span>
           </div>
           <div className="flex items-center justify-between pb-3 border-b border-border/30">
             <span className="text-xs text-muted-foreground flex items-center gap-2">
               <Calendar className="h-4 w-4" /> Last Updated
             </span>
-            <span className="text-xs font-medium text-foreground">{new Date(course.updatedAt || course.createdAt).toLocaleDateString()}</span>
+            <span className="text-xs font-medium text-foreground">{new Date(course.updatedAt || course.createdAt || '').toLocaleDateString()}</span>
           </div>
           <div className="flex items-center justify-between">
             <span className="text-xs text-muted-foreground flex items-center gap-2">

@@ -7,6 +7,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useApi } from '../hooks/useApi';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import type { PopulatedCourse, FinalTestQuestion } from '../types';
+
+interface FinalTestResult {
+  score: number | null;
+  passed: boolean;
+  certificateId?: string;
+  error?: string;
+}
 
 export default function FinalTestPage() {
   const { id } = useParams();
@@ -14,12 +22,12 @@ export default function FinalTestPage() {
   const fetchApi = useApi();
   const { width, height } = useWindowSize();
 
-  const [course, setCourse] = useState<any>(null);
+  const [course, setCourse] = useState<PopulatedCourse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [submitting, setSubmitting] = useState(false);
-  const [result, setResult] = useState<any>(null); // { score, passed, certificateId }
+  const [result, setResult] = useState<FinalTestResult | null>(null);
 
   useEffect(() => {
     async function loadTest() {
@@ -32,8 +40,9 @@ export default function FinalTestPage() {
           data = { ...data, finalTest: genResult.finalTest };
         }
         setCourse(data);
-      } catch (err: any) {
-        setError(err.message || 'Failed to load test');
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'Failed to load test';
+        setError(message);
       } finally {
         setLoading(false);
       }
@@ -45,7 +54,8 @@ export default function FinalTestPage() {
 
   const handleSubmit = async () => {
     if (submitting || isSubmittingRef.current) return;
-    
+    if (!course?.finalTest?.questions) return;
+
     const questions = course.finalTest.questions;
     const answeredCount = Object.keys(answers).length;
     
@@ -58,7 +68,7 @@ export default function FinalTestPage() {
     isSubmittingRef.current = true;
     setSubmitting(true);
     try {
-      const answersArray = questions.map((_: any, idx: number) => answers[idx] !== undefined ? answers[idx] : -1);
+      const answersArray = questions.map((_: FinalTestQuestion, idx: number) => answers[idx] !== undefined ? answers[idx] : -1);
       
       const res = await fetchApi(`/certificates/claim/${id}`, {
         method: 'POST',
@@ -70,11 +80,12 @@ export default function FinalTestPage() {
         passed: res.passed,
         certificateId: res.certificateId
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : undefined;
       setResult({
         score: null,
         passed: false,
-        error: err.message
+        error: message
       });
     } finally {
       setSubmitting(false);
@@ -105,7 +116,7 @@ export default function FinalTestPage() {
     );
   }
 
-  const questions = course.finalTest.questions;
+  const questions = course.finalTest?.questions || [];
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -187,7 +198,7 @@ export default function FinalTestPage() {
               </div>
 
               <div className="space-y-8">
-                {questions.map((q: any, qIdx: number) => {
+                {questions.map((q: FinalTestQuestion, qIdx: number) => {
                   const selectedAns = answers[qIdx];
 
                   return (

@@ -1,8 +1,9 @@
 import React from 'react';
 import { Flame, Target } from 'lucide-react';
+import type { Roadmap, RoadmapWeek } from '../../types';
 
 interface RoadmapStatsProps {
-  activeRoadmap: any;
+  activeRoadmap: Roadmap;
 }
 
 export function RoadmapStats({ activeRoadmap }: RoadmapStatsProps) {
@@ -34,7 +35,7 @@ export function RoadmapStats({ activeRoadmap }: RoadmapStatsProps) {
               <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Milestones</span>
               <Target className="h-3.5 w-3.5 text-emerald-500" />
             </div>
-            <span className="text-2xl font-extrabold text-foreground">0<span className="text-lg text-muted-foreground">/{activeRoadmap.weeks?.reduce((acc: number, w: any) => acc + (w.milestones?.length || 0), 0) || 0}</span></span>
+            <span className="text-2xl font-extrabold text-foreground">0<span className="text-lg text-muted-foreground">/{activeRoadmap.weeks?.reduce((acc: number, w: RoadmapWeek) => acc + (w.milestones?.length || 0), 0) || 0}</span></span>
           </div>
         </div>
       </div>

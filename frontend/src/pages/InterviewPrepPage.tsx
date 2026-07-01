@@ -5,6 +5,7 @@ import { useInterviewSession } from '../hooks/useInterviewSession';
 import { useInterviewTimer } from '../hooks/useInterviewTimer';
 import { useInterviewAnswers } from '../hooks/useInterviewAnswers';
 import { useInterviewResults } from '../hooks/useInterviewResults';
+import type { InterviewPrep } from '../types';
 import { InterviewHeader } from '../components/interview/InterviewHeader';
 import { InterviewSidebar } from '../components/interview/InterviewSidebar';
 import { InterviewToolbar } from '../components/interview/InterviewToolbar';
@@ -150,7 +151,13 @@ export default function InterviewPrepPage() {
   );
 }
 
-function WorkspaceRouter({ activeTab, prep, onUpdate }: any) {
+interface WorkspaceRouterProps {
+  activeTab: string;
+  prep: InterviewPrep;
+  onUpdate: (value: InterviewPrep | null | ((val: InterviewPrep | null) => InterviewPrep | null)) => void;
+}
+
+function WorkspaceRouter({ activeTab, prep, onUpdate }: WorkspaceRouterProps) {
   const {
     mcqAnswers,
     setMcqAnswers,

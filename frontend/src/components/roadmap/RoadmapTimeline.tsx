@@ -1,9 +1,10 @@
 import React from 'react';
 import { useRoadmapProgress } from '../../hooks/useRoadmapProgress';
 import { RoadmapWeekCard } from './RoadmapWeekCard';
+import type { Roadmap, RoadmapWeek } from '../../types';
 
 interface RoadmapTimelineProps {
-  roadmap: any;
+  roadmap: Roadmap;
   onGenerateCourse: (topic: string) => void;
 }
 
@@ -17,7 +18,7 @@ export function RoadmapTimeline({ roadmap, onGenerateCourse }: RoadmapTimelinePr
       <div className="absolute left-[31px] top-8 bottom-8 w-[2px] bg-border/60" />
 
       <div className="space-y-6">
-        {weeks.map((week: any, index: number) => {
+        {weeks.map((week: RoadmapWeek, index: number) => {
           const isExpanded = expandedWeeks.has(week.weekNumber);
           const isCompleted = completedWeeks.has(week.weekNumber);
           const isSaving = savingWeeks.has(week.weekNumber);

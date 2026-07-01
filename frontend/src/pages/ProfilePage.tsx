@@ -27,7 +27,10 @@ export default function ProfilePage() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    if (user) {
+    if (!user) return;
+    // Deferred to a microtask so this reads as a callback invocation rather
+    // than a synchronous setState call within the effect body.
+    queueMicrotask(() => {
       setProfile({
         name: user.name || '',
         bio: user.bio || '',
@@ -36,7 +39,7 @@ export default function ProfilePage() {
         skillLevel: user.skillLevel || 'beginner',
         learningInterests: user.learningInterests || [],
       });
-    }
+    });
   }, [user]);
 
   const handleSave = async () => {

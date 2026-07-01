@@ -32,7 +32,9 @@ export function useLessonProgress(courseId: string | undefined, lessonId: string
           toast.success('Generation is continuing in the background. Please wait...');
           return;
         }
-      } catch {}
+      } catch {
+        // Malformed sessionStorage entry; fall through and start a fresh job.
+      }
     }
 
     isGeneratingRef.current = true;
