@@ -5,7 +5,7 @@ First off, thank you for considering contributing to the Unified Course Platform
 ## Getting Started
 
 1. **Fork the repository** on GitHub.
-2. **Clone your fork** locally: `git clone https://github.com/your-username/unified-course-platform.git`
+2. **Clone your fork** locally: `git clone https://github.com/rahulpaul-07/smart-course-generator.git`
 3. **Set up the backend**: Install dependencies (`npm i` in `/backend`) and copy `.env.example` to `.env`.
 4. **Set up the frontend**: Install dependencies (`npm i` in `/frontend`) and configure Vite environment variables.
 
