@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
+import type { AiConversationMessage } from '../types';
 
-export function useAutoScroll(isOpen: boolean, hasFetchedHistory: boolean, messages: any[], sending: boolean) {
+export function useAutoScroll(isOpen: boolean, hasFetchedHistory: boolean, messages: AiConversationMessage[], sending: boolean) {
   const [showScrollBottom, setShowScrollBottom] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);

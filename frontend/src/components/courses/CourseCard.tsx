@@ -4,16 +4,25 @@ import { BookOpen, Sparkles, MoreVertical, Layers, Clock, ArrowRight } from 'luc
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { calculatePercentage } from '../../utils/percentages';
+import type { Course, Module, Lesson } from '../../types';
+
+export type CourseCardCourse = Course & {
+  progress?: number;
+  difficulty?: string;
+};
 
 interface CourseCardProps {
-  course: any;
+  course: CourseCardCourse;
   viewMode: 'grid' | 'list';
 }
 
+const isPopulatedModule = (m: Module | string): m is Module => typeof m !== 'string';
+
 export function CourseCard({ course, viewMode }: CourseCardProps) {
   const navigate = useNavigate();
-  const totalLessons = course.modules?.reduce((acc: number, m: any) => acc + (m.lessons?.length || 0), 0) || 12;
-  const completedLessons = course.modules?.reduce((acc: number, m: any) => acc + (m.lessons?.filter((l: any) => l.completedAt)?.length || 0), 0) || 0;
+  const modules = (course.modules as (Module | string)[] | undefined)?.filter(isPopulatedModule);
+  const totalLessons = modules?.reduce((acc: number, m: Module) => acc + ((m.lessons as Lesson[] | undefined)?.length || 0), 0) || 12;
+  const completedLessons = modules?.reduce((acc: number, m: Module) => acc + ((m.lessons as Lesson[] | undefined)?.filter((l: Lesson) => l.completedAt)?.length || 0), 0) || 0;
   const progress = course.progress || calculatePercentage(completedLessons, totalLessons);
   const difficulty = course.difficulty || 'Intermediate';
   
@@ -78,7 +87,7 @@ export function CourseCard({ course, viewMode }: CourseCardProps) {
 
           <div className="flex flex-col sm:flex-row items-center gap-4 justify-between border-t border-border/30 pt-4">
             <span className="text-xs font-medium text-muted-foreground w-full sm:w-auto">
-              Opened {new Date(course.updatedAt || course.createdAt).toLocaleDateString()}
+              Opened {new Date(course.updatedAt || course.createdAt || '').toLocaleDateString()}
             </span>
             <Button 
               variant="secondary"

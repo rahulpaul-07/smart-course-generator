@@ -1,9 +1,10 @@
 import React from 'react';
 import { Layers, Trash2 } from 'lucide-react';
 import { EmptyState } from '../ui/EmptyState';
+import type { Roadmap } from '../../types';
 
 interface RoadmapSidebarProps {
-  roadmaps: any[];
+  roadmaps: Roadmap[];
   viewRoadmap: (id: string) => void;
   deleteRoadmap: (id: string) => void;
 }

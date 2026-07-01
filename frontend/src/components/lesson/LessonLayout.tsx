@@ -3,16 +3,17 @@ import { motion, AnimatePresence } from 'framer-motion';
 import LoadingSpinner from '../LoadingSpinner';
 import LessonSidebar from './LessonSidebar';
 import ReadingProgressBar from './ReadingProgressBar';
+import type { Lesson, LessonContentBlock, PopulatedCourse } from '../../types';
 const StudyTools = React.lazy(() => import('./StudyTools'));
 const AIChatPanel = React.lazy(() => import('./AIChatPanel'));
 
 interface LessonLayoutProps {
   isFocusMode: boolean;
-  course: any;
+  course: PopulatedCourse | null;
   courseId: string | undefined;
   lessonId: string | undefined;
   lessonTitle: string;
-  lessonContent: any;
+  lessonContent: LessonContentBlock[];
   hasContent: boolean;
   generating: boolean;
   addingVideos: boolean;
@@ -20,7 +21,7 @@ interface LessonLayoutProps {
   setShowChat: React.Dispatch<React.SetStateAction<boolean>>;
   lessonScrollRef: React.RefObject<HTMLDivElement | null>;
   addVideos: () => void;
-  updateCurrentLesson: (lesson: any) => void;
+  updateCurrentLesson: (lesson: Lesson) => void;
   onNavigateBack: () => void;
   onSelectLesson: (id: string) => void;
   children: React.ReactNode;
@@ -47,7 +48,7 @@ export function LessonLayout({
 }: LessonLayoutProps) {
   return (
     <div className={`grid overflow-hidden relative bg-background transition-all duration-300 ease-out ${isFocusMode ? 'fixed inset-0 z-50 h-screen w-screen block' : 'h-[calc(100vh-4.5rem)] lg:grid-cols-[auto_1fr_auto]'}`}>
-      <ReadingProgressBar containerRef={lessonScrollRef as any} />
+      <ReadingProgressBar containerRef={lessonScrollRef as React.RefObject<HTMLElement>} />
 
       {/* Left Sidebar (Course Navigation & TOC) */}
       <AnimatePresence>
@@ -90,7 +91,7 @@ export function LessonLayout({
           >
             <Suspense fallback={<div className="flex items-center justify-center h-full"><LoadingSpinner text="Loading study tools..." /></div>}>
               <StudyTools 
-                lesson={{ title: lessonTitle, content: lessonContent, ...course?.modules?.flatMap((m: any) => m.lessons)?.find((l: any) => l._id === lessonId) }} 
+                lesson={{ title: lessonTitle, content: lessonContent, ...course?.modules?.flatMap((m) => m.lessons)?.find((l) => l._id === lessonId) } as Lesson} 
                 addingVideos={addingVideos} 
                 chatOpen={showChat} 
                 onAddVideos={addVideos} 
@@ -107,7 +108,7 @@ export function LessonLayout({
         <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-background border-t border-border/30 p-4 max-h-[60vh] overflow-y-auto shadow-md">
           <Suspense fallback={<div className="p-4 flex justify-center"><LoadingSpinner /></div>}>
             <StudyTools 
-              lesson={{ title: lessonTitle, content: lessonContent, ...course?.modules?.flatMap((m: any) => m.lessons)?.find((l: any) => l._id === lessonId) }} 
+              lesson={{ title: lessonTitle, content: lessonContent, ...course?.modules?.flatMap((m) => m.lessons)?.find((l) => l._id === lessonId) } as Lesson} 
               addingVideos={addingVideos} 
               chatOpen={showChat} 
               onAddVideos={addVideos} 

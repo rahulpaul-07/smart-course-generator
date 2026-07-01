@@ -2,7 +2,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { CourseCard } from './CourseCard';
+import { CourseCard, type CourseCardCourse } from './CourseCard';
 import { useNavigate } from 'react-router-dom';
 import { CoursesGridSkeleton } from './CoursesGridSkeleton';
 import { ErrorState } from '../ui/ErrorState';
@@ -11,7 +11,7 @@ import { EmptyState } from '../ui/EmptyState';
 interface CourseListProps {
   isLoading: boolean;
   isError: boolean;
-  courses: any[];
+  courses: CourseCardCourse[];
   viewMode: 'grid' | 'list';
   searchQuery: string;
   filter: string;
@@ -75,7 +75,7 @@ export function CourseList({
         layout
         className={viewMode === 'grid' ? 'grid md:grid-cols-2 xl:grid-cols-3 gap-6' : 'flex flex-col gap-4'}
       >
-        {courses.map((course: any) => (
+        {courses.map((course: CourseCardCourse) => (
           <CourseCard key={course._id} course={course} viewMode={viewMode} />
         ))}
       </motion.div>

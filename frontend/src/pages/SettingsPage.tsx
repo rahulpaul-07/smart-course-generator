@@ -18,11 +18,14 @@ export default function SettingsPage() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    if (user) {
+    if (!user) return;
+    // Deferred to a microtask so this reads as a callback invocation rather
+    // than a synchronous setState call within the effect body.
+    queueMicrotask(() => {
       setSettings({
         theme: user.theme || 'system',
       });
-    }
+    });
   }, [user]);
 
   const handleSave = async () => {

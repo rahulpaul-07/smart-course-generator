@@ -1,17 +1,24 @@
 import { ArrowLeft, Bookmark, CheckCircle2, ChevronDown, ChevronRight, List as ListIcon, BookOpen } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import React from 'react';
+import type { LessonContentBlock, PopulatedCourse } from '../../types';
 
-export default function LessonSidebar({ course, currentLessonId, lessonContent, onBack, onSelectLesson }: { course: any, currentLessonId: string, lessonContent?: any[], onBack: () => void, onSelectLesson: (id: string) => void }) {
+interface HeadingBlock extends LessonContentBlock {
+  type: 'heading';
+  text?: string;
+  level?: number;
+}
+
+export default function LessonSidebar({ course, currentLessonId, lessonContent, onBack, onSelectLesson }: { course: PopulatedCourse, currentLessonId: string, lessonContent?: LessonContentBlock[], onBack: () => void, onSelectLesson: (id: string) => void }) {
   const [activeHeadingId, setActiveHeadingId] = useState<string>('');
   const [tocCollapsed, setTocCollapsed] = useState(false);
   const [navCollapsed, setNavCollapsed] = useState(false);
   // Extract headings for TOC
-  const headings = lessonContent?.filter(b => b.type === 'heading').map(h => ({
-    id: h.text?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
+  const headings = (lessonContent?.filter((b): b is HeadingBlock => b.type === 'heading') || []).map(h => ({
+    id: h.text?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || '',
     text: h.text,
     level: h.level
-  })) || [];
+  }));
 
   // Track active heading on scroll
   useEffect(() => {
@@ -103,13 +110,13 @@ export default function LessonSidebar({ course, currentLessonId, lessonContent, 
             {navCollapsed ? <ChevronRight className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
           </button>
 
-          {!navCollapsed && course?.modules?.map((moduleDoc: any, moduleIndex: number) => (
+          {!navCollapsed && course?.modules?.map((moduleDoc, moduleIndex: number) => (
             <section key={moduleDoc._id} className="mb-6">
               <h3 className="px-2 mb-2 text-xs font-semibold text-muted-foreground/70">
                 Module {moduleIndex + 1}
               </h3>
               <div className="space-y-1">
-                {moduleDoc.lessons?.map((lesson: any) => {
+                {moduleDoc.lessons?.map((lesson) => {
                   const isActive = lesson._id === currentLessonId;
                   return (
                     <button

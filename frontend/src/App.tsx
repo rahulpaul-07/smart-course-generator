@@ -8,8 +8,8 @@ import LoadingSpinner from './components/LoadingSpinner';
 
 import ErrorBoundary from './components/ErrorBoundary';
 
-const withSuspense = (Component: React.ComponentType) => {
-  return function SuspensedComponent(props: any) {
+const withSuspense = <P extends object>(Component: React.ComponentType<P>) => {
+  return function SuspensedComponent(props: P) {
     return (
       <Suspense fallback={<div className="flex min-h-screen items-center justify-center"><LoadingSpinner text="Loading..." /></div>}>
         <Component {...props} />

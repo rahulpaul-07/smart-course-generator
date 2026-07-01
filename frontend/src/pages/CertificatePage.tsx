@@ -50,8 +50,10 @@ export default function CertificatePage() {
     );
   }
 
-  const issueDate = formatDateLong(certificate.issuedAt);
-  const completionTime = certificate.completionTime || 'Self-Paced';
+  const issueDate = formatDateLong(certificate.issuedAt || certificate.createdAt || new Date().toISOString());
+  // The backend doesn't track a distinct "completion time" for a course --
+  // only the certificate issue date -- so this is always the fallback value.
+  const completionTime = 'Self-Paced';
 
   return (
     <div className="min-h-screen bg-background pb-32">

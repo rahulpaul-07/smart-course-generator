@@ -1,5 +1,5 @@
 import React, { memo, useState } from 'react';
-import ReactMarkdown from 'react-markdown';
+import ReactMarkdown, { type ExtraProps } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
@@ -9,6 +9,7 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Bot, UserRound, Copy, RefreshCw, ThumbsUp, ThumbsDown, Check } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
+import type { AiConversationMessage } from '../../types';
 
 const CodeBlock = ({ language, value }: { language: string, value: string }) => {
   const [copied, setCopied] = useState(false);
@@ -44,7 +45,7 @@ const CodeBlock = ({ language, value }: { language: string, value: string }) => 
       <div className="text-[13px] leading-relaxed overflow-x-auto tab-size-4">
         <SyntaxHighlighter
           language={language || 'text'}
-          style={vscDarkPlus as any}
+          style={vscDarkPlus}
           customStyle={{ margin: 0, padding: '1rem 1.25rem', background: 'transparent' }}
           PreTag="div"
           tabIndex={0}
@@ -76,7 +77,7 @@ export const AssistantMessageContent = memo(function AssistantMessageContent({ c
         remarkPlugins={[remarkGfm, remarkMath]}
         rehypePlugins={[rehypeKatex]}
         components={{
-          code: ({ children, className, ...props }: any) => {
+          code: ({ children, className, ...props }: React.ClassAttributes<HTMLElement> & React.HTMLAttributes<HTMLElement> & ExtraProps) => {
             const match = /language-(\w+)/.exec(className || '');
             const isBlock = match || String(children).includes('\n');
             if (isBlock) {
@@ -100,7 +101,7 @@ export const AssistantMessageContent = memo(function AssistantMessageContent({ c
 });
 
 interface ChatMessageProps {
-  message: any;
+  message: AiConversationMessage;
   isUser: boolean;
   isStreamingThis: boolean;
   onRegenerate?: () => void;

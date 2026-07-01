@@ -6,7 +6,8 @@ import toast from 'react-hot-toast';
  */
 export function getApiError(error: unknown): string {
   if (error && typeof error === 'object' && 'isDuplicate' in error && error.isDuplicate) {
-    return (error as any).message || 'Request already in progress';
+    const message = (error as Record<string, unknown>).message;
+    return typeof message === 'string' && message ? message : 'Request already in progress';
   }
   
   if (error instanceof AxiosError) {
@@ -37,7 +38,8 @@ export async function handleApi<T>(
     const errMsg = getApiError(error) || options?.fallbackMsg || 'An error occurred';
     if (options?.showErrorToast) {
       // Don't toast for duplicates as they are handled in interceptor
-      if (!((error as any)?.isDuplicate)) {
+      const isDuplicate = !!(error && typeof error === 'object' && 'isDuplicate' in error && (error as Record<string, unknown>).isDuplicate);
+      if (!isDuplicate) {
         toast.error(errMsg);
       }
     }

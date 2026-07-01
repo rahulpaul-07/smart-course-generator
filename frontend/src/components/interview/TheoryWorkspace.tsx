@@ -1,9 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { BookOpen, Clock, Sparkles, CheckCircle2, ChevronRight } from 'lucide-react';
+import type { InterviewPrep, TheoryQuestion } from '../../types';
 
 interface TheoryWorkspaceProps {
-  prep: any;
+  prep: InterviewPrep;
   theoryAnswers: string[];
   setTheoryAnswers: (answers: string[]) => void;
   submitted: boolean;
@@ -23,7 +24,7 @@ export function TheoryWorkspace({ prep, theoryAnswers, setTheoryAnswers, submitt
         <p className="text-muted-foreground font-medium">Provide detailed, comprehensive answers.</p>
       </div>
 
-      {prep.theoryQuestions?.map((q: any, i: number) => {
+      {prep.theoryQuestions?.map((q: TheoryQuestion, i: number) => {
         const textValue = submitted ? (q.userAnswer || '') : theoryAnswers[i];
         const wordCount = textValue.trim().split(/\s+/).filter(Boolean).length;
         const readTime = Math.max(1, Math.ceil(wordCount / 200));
@@ -39,7 +40,7 @@ export function TheoryWorkspace({ prep, theoryAnswers, setTheoryAnswers, submitt
             <div className="relative pl-12">
               <textarea
                 value={textValue}
-                onChange={(e) => updateAnswer(i, e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => updateAnswer(i, e.target.value)}
                 disabled={submitted}
                 rows={8}
                 className="w-full rounded-2xl border border-border bg-background/50 p-5 text-[15px] leading-relaxed text-foreground outline-none transition focus:border-primary/50 focus:ring-4 focus:ring-primary/10 shadow-inner resize-y disabled:opacity-70 disabled:cursor-not-allowed placeholder:text-muted-foreground/60"
@@ -59,7 +60,7 @@ export function TheoryWorkspace({ prep, theoryAnswers, setTheoryAnswers, submitt
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-4 ml-12 space-y-5 rounded-2xl border border-border bg-card p-6 shadow-sm">
                 <div className="flex items-center justify-between border-b border-border/30 pb-4">
                   <span className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2"><Sparkles className="w-4 h-4 text-primary" /> AI Evaluation</span>
-                  <span className={`px-3 py-1 rounded-md text-xs font-bold ${q.score >= 7 ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' : q.score >= 4 ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' : 'bg-destructive/10 text-destructive border border-destructive/20'}`}>
+                  <span className={`px-3 py-1 rounded-md text-xs font-bold ${(q.score ?? 0) >= 7 ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' : (q.score ?? 0) >= 4 ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' : 'bg-destructive/10 text-destructive border border-destructive/20'}`}>
                     Score: {q.score}/10
                   </span>
                 </div>
