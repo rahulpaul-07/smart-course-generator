@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-import { User, Save, Camera, Mail, Sparkles, Loader2, BookOpen, Trophy } from 'lucide-react';
+import { User, Save, Mail, Sparkles, Loader2, BookOpen, Trophy } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { motion } from 'framer-motion';
 import { userService } from '../services/userService';
 import { useAuth } from '../hooks/useAuth';
 import { PageContainer } from '../components/layout/PageContainer';
@@ -23,7 +22,7 @@ export default function ProfilePage() {
     avatar: '',
     isProfilePublic: false,
     skillLevel: 'beginner',
-    learningInterests: [],
+    learningInterests: [] as string[],
   });
   const [saving, setSaving] = useState(false);
 
@@ -52,7 +51,7 @@ export default function ProfilePage() {
     setSaving(false);
 
     if (!error && data) {
-      login({ ...user, ...data });
+      if (user) login({ ...user, ...data });
       toast.success('Profile updated successfully');
     }
   };

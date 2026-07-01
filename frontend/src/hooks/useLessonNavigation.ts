@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react';
-import toast from 'react-hot-toast';
 import { lessonService } from '../services/lessonService';
 
 export function useLessonNavigation(courseId: string | undefined, lessonId: string | undefined) {

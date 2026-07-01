@@ -1,7 +1,5 @@
 import { useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, BookOpen } from 'lucide-react';
-import LoadingSpinner from '../components/LoadingSpinner';
 import { Button } from '../components/ui/button';
 import { ErrorState } from '../components/ui/ErrorState';
 import { EmptyState } from '../components/ui/EmptyState';

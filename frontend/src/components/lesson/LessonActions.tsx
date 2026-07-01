@@ -1,5 +1,5 @@
 import React from 'react';
-import { Maximize, Minimize } from 'lucide-react';
+import { Maximize } from 'lucide-react';
 
 interface LessonActionsProps {
   isFocusMode: boolean;

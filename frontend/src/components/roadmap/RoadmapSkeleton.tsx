@@ -1,5 +1,5 @@
 import React from 'react';
-import { Skeleton, SkeletonCard, SkeletonText, SkeletonAvatar, SkeletonButton } from '../ui/skeleton';
+import { Skeleton, SkeletonCard, SkeletonText, SkeletonButton } from '../ui/skeleton';
 
 export function RoadmapSkeleton() {
   return (

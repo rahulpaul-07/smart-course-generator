@@ -1,10 +1,9 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, BookOpen } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 import { PageContainer } from '../components/layout/PageContainer';
 import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
 import CertificateProgress from '../components/CertificateProgress';
 
 import { useCourseProgress } from '../hooks/useCourseProgress';

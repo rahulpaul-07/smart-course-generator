@@ -9,7 +9,6 @@ import 'katex/dist/katex.min.css';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useInterviewProgress } from '../../hooks/useInterviewProgress';
-import { Skeleton, SkeletonAvatar, SkeletonText } from '../ui/skeleton';
 import { ErrorState } from '../ui/ErrorState';
 
 const CodeBlock = ({ language, value }: { language: string, value: string }) => {
@@ -78,7 +77,7 @@ export function FeedbackPanel({ prep }: FeedbackPanelProps) {
                       remarkPlugins={[remarkGfm, remarkMath]}
                       rehypePlugins={[rehypeKatex]}
                       components={{
-                        code: ({ children, className, node, ...props }: any) => {
+                        code: ({ children, className, ...props }: any) => {
                           const match = /language-(\w+)/.exec(className || '');
                           if (match || String(children).includes('\n')) {
                             return <CodeBlock language={match?.[1] || 'text'} value={String(children).replace(/\n$/, '')} />;

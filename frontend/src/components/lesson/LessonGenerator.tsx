@@ -1,6 +1,20 @@
 import { BookOpen, Languages, Loader2, Sparkles } from 'lucide-react';
 import { Button } from '../ui/button';
 
+interface LessonGeneratorProps {
+  hasContent: boolean;
+  isGenerating: boolean;
+  isPickerOpen: boolean;
+  language: string;
+  onGenerate: () => void;
+  onLanguageChange: (language: string) => void;
+  onPickerChange: (open: boolean) => void;
+  onDepthChange: (depth: string) => void;
+  selectedDepth: string;
+  streamedCount?: number;
+  streamStage?: string;
+}
+
 export default function LessonGenerator({
   hasContent,
   isGenerating,
@@ -13,7 +27,7 @@ export default function LessonGenerator({
   selectedDepth,
   streamedCount = 0,
   streamStage = 'Creating outline',
-}) {
+}: LessonGeneratorProps) {
   const isStreaming = isGenerating && streamedCount > 0;
 
   return (

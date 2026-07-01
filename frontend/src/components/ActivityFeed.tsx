@@ -1,19 +1,19 @@
 import { useState, useEffect } from 'react';
 import { formatTimeDistance } from '../utils/dates';
-import { Activity, BookOpen, Award, PlusCircle, Trophy } from 'lucide-react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Activity, BookOpen, Award, Trophy } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { collabService } from '../services/collabService';
 import { EmptyState } from './ui/EmptyState';
 import { Activity as ActivityIcon } from 'lucide-react';
+import type { ActivityLogEntry } from '../types';
 export default function ActivityFeed() {
-  const [activities, setActivities] = useState([]);
+  const [activities, setActivities] = useState<ActivityLogEntry[]>([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
 
   useEffect(() => {
     collabService.getActivity()
       .then(([data]) => {
-        if (data) setActivities(data as any);
+        if (data) setActivities(data);
       })
       .finally(() => setLoading(false));
   }, []);
@@ -32,7 +32,7 @@ export default function ActivityFeed() {
     );
   }
 
-  const getIcon = (action) => {
+  const getIcon = (action: string) => {
     switch (action) {
       case 'COMPLETED_COURSE': return <Trophy className="h-4 w-4 text-emerald-400" />;
       case 'PUBLISHED_COURSE': return <BookOpen className="h-4 w-4 text-brand-400" />;
@@ -41,15 +41,15 @@ export default function ActivityFeed() {
     }
   };
 
-  const getMessage = (activity) => {
+  const getMessage = (activity: ActivityLogEntry) => {
     const userName = activity.userId?.name || 'Someone';
     switch (activity.action) {
       case 'COMPLETED_COURSE': 
-        return <><Link to={`/profile/${activity.userId?._id}`} className="font-semibold text-foreground cursor-pointer hover:text-brand-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm">{userName}</Link> completed the course <span className="text-emerald-300">"{activity.metadata?.title}"</span></>;
+        return <><Link to={`/profile/${activity.userId?._id}`} className="font-semibold text-foreground cursor-pointer hover:text-brand-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm">{userName}</Link> completed the course <span className="text-emerald-300">"{String(activity.metadata?.title ?? '')}"</span></>;
       case 'PUBLISHED_COURSE':
-        return <><Link to={`/profile/${activity.userId?._id}`} className="font-semibold text-foreground cursor-pointer hover:text-brand-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm">{userName}</Link> published <Link to="/community" className="text-brand-300 cursor-pointer hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm">"{activity.metadata?.title}"</Link></>;
+        return <><Link to={`/profile/${activity.userId?._id}`} className="font-semibold text-foreground cursor-pointer hover:text-brand-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm">{userName}</Link> published <Link to="/community" className="text-brand-300 cursor-pointer hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm">"{String(activity.metadata?.title ?? '')}"</Link></>;
       case 'UNLOCKED_ACHIEVEMENT':
-        return <><Link to={`/profile/${activity.userId?._id}`} className="font-semibold text-foreground cursor-pointer hover:text-brand-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm">{userName}</Link> unlocked <span className="text-purple-300 font-bold">{activity.metadata?.name}</span></>;
+        return <><Link to={`/profile/${activity.userId?._id}`} className="font-semibold text-foreground cursor-pointer hover:text-brand-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm">{userName}</Link> unlocked <span className="text-purple-300 font-bold">{String(activity.metadata?.name ?? '')}</span></>;
       default:
         return <><Link to={`/profile/${activity.userId?._id}`} className="font-semibold text-foreground cursor-pointer hover:text-brand-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm">{userName}</Link> was active.</>;
     }
@@ -80,7 +80,7 @@ export default function ActivityFeed() {
               <span>•</span>
               <span className="uppercase tracking-wider text-[10px]">{formatTimeDistance(activity.createdAt)}</span>
               
-              {activity.xpEarned > 0 && (
+              {(activity.xpEarned || 0) > 0 && (
                 <>
                   <span>•</span>
                   <span className="text-amber-400 font-bold">+{activity.xpEarned} XP</span>

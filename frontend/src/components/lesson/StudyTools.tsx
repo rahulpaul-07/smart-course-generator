@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bookmark, Check, FlaskConical, Layers3, Loader2, MessageCircle, NotebookPen, Play, Save, ChevronDown, ChevronUp } from 'lucide-react';
+import { Bookmark, Check, FlaskConical, Layers3, Loader2, MessageCircle, NotebookPen, Play, Save } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../../utils/api';
@@ -54,9 +54,7 @@ function ToolCard({
 const StudyTools = React.memo(({
   addingVideos,
   chatOpen,
-  courseId,
   lesson,
-  lessonId,
   onAddVideos,
   onLessonUpdate,
   onToggleChat,

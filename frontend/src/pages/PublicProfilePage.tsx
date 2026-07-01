@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Trophy, Flame, Clock, BookOpen, Star, Copy, Heart, Zap, Award } from 'lucide-react';
-import { collabService } from '../services/collabService';
+import { collabService, type PublicProfileResponse } from '../services/collabService';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { EmptyState } from '../components/ui/EmptyState';
 
 export default function PublicProfilePage() {
   const { userId } = useParams();
   const navigate = useNavigate();
-  const [profileData, setProfileData] = useState(null);
+  const [profileData, setProfileData] = useState<PublicProfileResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -16,7 +16,7 @@ export default function PublicProfilePage() {
     collabService.getPublicProfile(userId!)
       .then(([data, fetchError]) => {
         if (fetchError) setError(fetchError);
-        else setProfileData(data as any);
+        else setProfileData(data);
       })
       .finally(() => setLoading(false));
   }, [userId]);

@@ -4,14 +4,15 @@ import { useNavigate } from 'react-router-dom';
 import { roadmapService } from '../services/roadmapService';
 import { courseService } from '../services/courseService';
 import { useSessionStorage } from './useStorage';
+import type { Roadmap } from '../types';
 
 export function useRoadmap() {
-  const [roadmaps, setRoadmaps] = useState<any[]>([]);
+  const [roadmaps, setRoadmaps] = useState<Roadmap[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [generating, setGenerating] = useState(false);
   
-  const [activeRoadmap, setActiveRoadmap] = useSessionStorage<any>('roadmap_active', null);
+  const [activeRoadmap, setActiveRoadmap] = useSessionStorage<Roadmap | null>('roadmap_active', null);
 
   const navigate = useNavigate();
 
@@ -53,7 +54,7 @@ export function useRoadmap() {
 
   async function deleteRoadmap(id: string) {
     if (!window.confirm('Delete this roadmap?')) return;
-    const [data, error] = await roadmapService.deleteRoadmap(id);
+    const [, error] = await roadmapService.deleteRoadmap(id);
     if (!error) {
       setRoadmaps((prev) => prev.filter((r) => r._id !== id));
       if (activeRoadmap?._id === id) setActiveRoadmap(null);

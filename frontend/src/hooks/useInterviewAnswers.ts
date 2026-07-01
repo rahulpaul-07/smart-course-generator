@@ -2,21 +2,22 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { interviewService } from '../services/interviewService';
 import { useSessionStorage } from './useStorage';
+import type { InterviewPrep } from '../types';
 
-export function useInterviewAnswers(prep: any, onUpdate?: (prep: any) => void) {
+export function useInterviewAnswers(prep: InterviewPrep, onUpdate?: (prep: InterviewPrep) => void) {
   const [mcqAnswers, setMcqAnswers] = useSessionStorage<number[]>(
     `interview_mcq_${prep._id}`, 
-    () => prep.mcqs?.map((q: any) => q.userAnswer >= 0 ? q.userAnswer : -1) || []
+    () => prep.mcqs?.map((q) => (q.userAnswer ?? -1) >= 0 ? q.userAnswer as number : -1) || []
   );
   
   const [theoryAnswers, setTheoryAnswers] = useSessionStorage<string[]>(
     `interview_theory_${prep._id}`, 
-    () => prep.theoryQuestions?.map((q: any) => q.userAnswer || '') || []
+    () => prep.theoryQuestions?.map((q) => q.userAnswer || '') || []
   );
 
   const [codingSolutions, setCodingSolutions] = useSessionStorage<string[]>(
     `interview_coding_${prep._id}`, 
-    () => prep.codingQuestions?.map((q: any) => q.userSolution || '') || []
+    () => prep.codingQuestions?.map((q) => q.userSolution || '') || []
   );
 
   const [submitted, setSubmitted] = useSessionStorage<boolean>(

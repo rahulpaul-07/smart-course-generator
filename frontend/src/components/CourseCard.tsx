@@ -4,8 +4,9 @@ import { courseProgress } from '../utils/courseProgress';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import type { PopulatedCourse } from '../types';
 
-export default function CourseCard({ course, onDelete, index = 0 }: { course: any, onDelete: (id: string) => void, index?: number }) {
+export default function CourseCard({ course, onDelete }: { course: PopulatedCourse, onDelete: (id: string) => void }) {
   const navigate = useNavigate();
 
   const modules = course.modules?.length || 0;

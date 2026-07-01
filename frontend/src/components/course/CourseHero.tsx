@@ -4,8 +4,6 @@ import { Sparkles, Clock, PlayCircle, Award } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import ShareCourseButton from '../../components/ShareCourseButton';
-import { calculateStudiedHours } from '../../utils/durations';
-import { formatDateLong } from '../../utils/dates';
 
 interface CourseHeroProps {
   course: any;

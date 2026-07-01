@@ -5,15 +5,23 @@ import toast from 'react-hot-toast';
 import { lessonService } from '../../services/lessonService';
 import { courseProgress, nextIncompleteLesson } from '../../utils/courseProgress';
 import { Button } from '../ui/button';
+import type { PopulatedCourse, Lesson } from '../../types';
 
-const LessonCompletion = React.memo(({ course, courseId, lesson, onLessonUpdate }: any) => {
+interface LessonCompletionProps {
+  course: PopulatedCourse;
+  courseId: string;
+  lesson: Lesson;
+  onLessonUpdate: (lesson: Lesson) => void;
+}
+
+const LessonCompletion = React.memo(({ course, courseId, lesson, onLessonUpdate }: LessonCompletionProps) => {
   const navigate = useNavigate();
   const [saving, setSaving] = useState(false);
   const progress = courseProgress(course);
   const nextLesson = nextIncompleteLesson(course);
   const certificateUnlocked = progress.totalLessons > 0 && progress.remainingLessons === 0;
 
-  async function setCompleted(completed) {
+  async function setCompleted(completed: boolean) {
     setSaving(true);
     const [data] = await lessonService.updateProgress(lesson._id, { completed });
     setSaving(false);

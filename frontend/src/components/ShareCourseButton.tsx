@@ -4,8 +4,14 @@ import toast from 'react-hot-toast';
 import { courseService } from '../services/courseService';
 import { Button } from './ui/button';
 import { useClipboard } from '../hooks/useClipboard';
+import type { Course } from '../types';
 
-export default function ShareCourseButton({ course, onUpdate }) {
+interface ShareCourseButtonProps {
+  course: Course;
+  onUpdate: (course: Course) => void;
+}
+
+export default function ShareCourseButton({ course, onUpdate }: ShareCourseButtonProps) {
   const [saving, setSaving] = useState(false);
   const { copyToClipboard } = useClipboard({ successMessage: 'Public link copied' });
 

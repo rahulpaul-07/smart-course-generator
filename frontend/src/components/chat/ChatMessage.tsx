@@ -76,7 +76,7 @@ export const AssistantMessageContent = memo(function AssistantMessageContent({ c
         remarkPlugins={[remarkGfm, remarkMath]}
         rehypePlugins={[rehypeKatex]}
         components={{
-          code: ({ children, className, node, ...props }: any) => {
+          code: ({ children, className, ...props }: any) => {
             const match = /language-(\w+)/.exec(className || '');
             const isBlock = match || String(children).includes('\n');
             if (isBlock) {
