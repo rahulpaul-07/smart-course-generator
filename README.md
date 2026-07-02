@@ -2,10 +2,13 @@
 
 An AI-powered learning platform that generates full, structured courses on any topic in seconds, then teaches them back through streaming lessons, adaptive quizzes, flashcards, mock interviews, and a public leaderboard.
 
+[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen?logo=vercel&logoColor=white)](https://smart-course-generator.vercel.app/)
 [![CI/CD Pipeline](https://github.com/rahulpaul-07/smart-course-generator/actions/workflows/ci.yml/badge.svg)](https://github.com/rahulpaul-07/smart-course-generator/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D18-339933?logo=node.js&logoColor=white)](./backend/package.json)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)](./frontend/tsconfig.app.json)
+
+**[Live demo →](https://smart-course-generator.vercel.app/)** (backend runs on Render's free tier — the first request after a period of inactivity can take 30-60s to cold-start; it's fast after that)
 
 ## Overview
 
@@ -15,7 +18,7 @@ CourseAI Pro sits between the two: give it a topic, and it generates a full mult
 
 ## Screenshots
 
-A hosted live demo and product screenshots are on the way — see [Getting Started](#getting-started) to run it locally in the meantime.
+Try it live: **[smart-course-generator.vercel.app](https://smart-course-generator.vercel.app/)**. Product screenshots are on the way — see [Getting Started](#getting-started) to run it locally in the meantime.
 
 ## Features
 
