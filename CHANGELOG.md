@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0] - 2026-06-20
 
 ### Added
-- **Multi-Agent AI Router:** Custom fallback orchestration (Llama-3, Mixtral, Gemini) replacing LangChain.
+- **Multi-Agent AI Router:** Custom fallback orchestration (Gemini, Groq, OpenRouter) replacing LangChain.
 - **Server-Sent Events (SSE):** Real-time markdown streaming to drastically reduce TTFB.
 - **Adaptive Difficulty:** Dynamic prompt mutation based on user study analytics and quiz performance.
 - **Community Hub:** Public profiles, course cloning, upvoting, and an automated global Leaderboard.

@@ -1,6 +1,6 @@
 # API Architecture Diagram
 
-This document presents the API design for the **Unified AI Course Platform**, mapping out the routes, access-control states, and parameters.
+This document presents the API design for **CourseAI Pro**, mapping out the routes, access-control states, and parameters.
 
 ## API Endpoint Relationships
 
@@ -11,12 +11,11 @@ graph LR
         HinglishText["POST /api/explanations/hinglish-text<br/>(Text Translation)"]
         HinglishAudio["POST /api/explanations/hinglish-audio<br/>(Audio Explanation)"]
         Health["GET /api/health<br/>(System Health Check)"]
+        AuthReg["POST /api/auth/register<br/>(Rate-limited, Zod-validated)"]
+        AuthLogin["POST /api/auth/login<br/>(Rate-limited, Zod-validated)"]
     end
 
-    subgraph ProtectedEndpoints [Auth0 Protected API Routes]
-        AuthReg["POST /api/auth/register<br/>(Sync/Create User)"]
-        AuthLogin["POST /api/auth/login<br/>(Validate Session)"]
-        
+    subgraph ProtectedEndpoints [Auth-Protected API Routes]
         CourseCreate["POST /api/courses/generate<br/>(Start AI Generation)"]
         CourseMine["GET /api/courses/mine<br/>(Fetch My Courses)"]
         CourseGet["GET /api/courses/:courseId<br/>(Course Structure)"]
@@ -33,15 +32,15 @@ graph LR
     classDef public fill:#d4edda,stroke:#28a745,stroke-width:2px;
     classDef protected fill:#f8d7da,stroke:#dc3545,stroke-width:2px;
     
-    class CertGet,HinglishText,HinglishAudio,Health public;
-    class AuthReg,AuthLogin,CourseCreate,CourseMine,CourseGet,CourseDelete,LessonOutline,LessonChunk,LessonQuiz,LessonProgress,CertClaim protected;
+    class CertGet,HinglishText,HinglishAudio,Health,AuthReg,AuthLogin public;
+    class CourseCreate,CourseMine,CourseGet,CourseDelete,LessonOutline,LessonChunk,LessonQuiz,LessonProgress,CertClaim protected;
 ```
 
 ## API Endpoint Reference
 
-### Authentication Routes
-* `POST /api/auth/register`: Syncs a newly created Auth0 user into the local MongoDB database.
-* `POST /api/auth/login`: Validates the local user session.
+### Authentication Routes (Public)
+* `POST /api/auth/register`: Creates a new local user account. Rate-limited and Zod-validated; not behind auth middleware, since no token exists yet.
+* `POST /api/auth/login`: Validates credentials and issues a JWT. Rate-limited and Zod-validated; not behind auth middleware.
 
 ### Course Management Routes (Protected)
 * `POST /api/courses/generate`: Spawns initial AI generation workflow for a course outline and list of modules.

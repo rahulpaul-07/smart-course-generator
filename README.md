@@ -14,9 +14,9 @@ Static course platforms (Udemy, Coursera) can't adapt to what an individual lear
 
 CourseAI Pro sits between the two: give it a topic, and it generates a full multi-module course — streamed lesson-by-lesson over Server-Sent Events rather than a single blocking request — with quizzes, flashcards, and optional YouTube video enrichment per lesson. Progress, XP, and streaks are tracked per user, courses can be published to a community marketplace, and a separate interview-prep mode runs mock technical interviews (MCQ, theory, and coding rounds) with AI-scored feedback.
 
-<p align="center">
-  <img src="docs/screenshots/screenshot_dashboard.png" alt="CourseAI Pro dashboard" width="720" />
-</p>
+## Screenshots
+
+A hosted live demo and product screenshots are on the way — see [Getting Started](#getting-started) to run it locally in the meantime.
 
 ## Features
 
@@ -127,6 +127,25 @@ backend/    Express API — controllers, routes, Mongoose models, AI services, J
 frontend/   React SPA — pages, components, hooks, typed API service layer
 docs/       Architecture diagrams, database schema, API flows, engineering decisions
 ```
+
+## Documentation
+
+| Doc | Covers |
+|---|---|
+| [`docs/architecture/architecture-diagram.md`](./docs/architecture/architecture-diagram.md) | End-to-end system architecture (client, API, AI router, database) |
+| [`docs/architecture/system.md`](./docs/architecture/system.md) | High-level deployment topology |
+| [`docs/architecture/backend.md`](./docs/architecture/backend.md) | Express middleware pipeline, request/response conventions, troubleshooting |
+| [`docs/architecture/frontend.md`](./docs/architecture/frontend.md) | React SPA structure and routing |
+| [`docs/architecture/auth.md`](./docs/architecture/auth.md) | Authentication flow (email/password, Google OAuth, Auth0) |
+| [`docs/architecture/ai.md`](./docs/architecture/ai.md) | AI course/lesson generation flow |
+| [`docs/architecture/database.md`](./docs/architecture/database.md) | Core schema overview |
+| [`docs/database/er-diagram.md`](./docs/database/er-diagram.md) | Full entity-relationship diagram with indexes |
+| [`docs/api/api-diagram.md`](./docs/api/api-diagram.md) | API route map, public vs. protected access |
+| [`docs/flows/user-flow-diagram.md`](./docs/flows/user-flow-diagram.md) | End-to-end user journey |
+| [`docs/flows/sequence-course-generation.md`](./docs/flows/sequence-course-generation.md) | Course generation sequence diagram |
+| [`docs/deployment.md`](./docs/deployment.md) | Production deployment guide (Vercel, Render, MongoDB Atlas) |
+| [`docs/engineering_decisions.md`](./docs/engineering_decisions.md) | Rationale behind key technical choices |
+| [`docs/testing/e2e-verification.md`](./docs/testing/e2e-verification.md) | Automated test coverage and CI gates |
 
 ## Contributing
 
