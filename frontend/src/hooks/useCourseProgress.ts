@@ -1,9 +1,16 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Code2, Layers3, Shield, Brain, BookOpen } from 'lucide-react';
+import { Code2, Layers3, Shield, Brain, BookOpen, Sparkles } from 'lucide-react';
 import { courseService } from '../services/courseService';
 import { courseProgress } from '../utils/courseProgress';
 import { calculateEstimatedHours } from '../utils/durations';
 import type { PopulatedCourse } from '../types';
+
+/** The Course schema gained `difficulty`/`skills` after this hook shipped;
+ * cast locally (rather than widening the shared Course type) since only
+ * this hook reads them today. */
+type CourseWithGeneratedMeta = PopulatedCourse & { difficulty?: string; skills?: string[] };
+
+const SKILL_ICONS = [Code2, Layers3, Shield, Brain, BookOpen, Sparkles];
 
 export function useCourseProgress(id: string | undefined) {
   const [course, setCourse] = useState<PopulatedCourse | null>(null);
@@ -44,21 +51,18 @@ export function useCourseProgress(id: string | undefined) {
   }
 
   const progress = courseProgress(course);
-  
+
   const totalLessons = progress.totalLessons || 0;
   const estimatedHours = calculateEstimatedHours(totalLessons);
-  
-  // The Course schema has no difficulty field yet; default until that's added.
-  const difficulty = 'Intermediate';
 
-  const title = course.title || '';
-  const skills = [
-    { name: title.split(' ')[0] || 'Fundamentals', icon: Code2 },
-    { name: 'System Design', icon: Layers3 },
-    { name: 'Best Practices', icon: Shield },
-    { name: 'Problem Solving', icon: Brain },
-    { name: 'Architecture', icon: BookOpen }
-  ].slice(0, Math.max(3, Math.min(5, Math.ceil(totalLessons / 3))));
+  const courseMeta = course as CourseWithGeneratedMeta;
+  // Real difficulty/skills come from the AI-generated outline. Courses
+  // created before that field existed genuinely have no value stored, so
+  // fall back to the same neutral defaults used elsewhere (CourseCard).
+  const difficulty = courseMeta.difficulty || 'Intermediate';
+  const skills = (courseMeta.skills || [])
+    .filter(Boolean)
+    .map((name, i) => ({ name, icon: SKILL_ICONS[i % SKILL_ICONS.length] }));
 
   let nextLessonId = null;
   const modules = course?.modules ?? [];
