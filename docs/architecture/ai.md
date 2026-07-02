@@ -6,16 +6,22 @@ sequenceDiagram
     participant API
     participant AIRouter
     participant Gemini
-    participant Fallback
+    participant Groq
+    participant OpenRouter
     
     Client->>API: POST /api/courses/generate {prompt}
     API->>AIRouter: createCourseOutline(prompt)
-    AIRouter->>Gemini: generateJson(prompt)
+    AIRouter->>Gemini: generateJson(prompt) [gemini-2.5-flash]
     alt Gemini Success
         Gemini-->>AIRouter: JSON Array
     else Gemini Fails/Rate Limited
-        AIRouter->>Fallback: generateJson(prompt)
-        Fallback-->>AIRouter: JSON Array
+        AIRouter->>Groq: generateJson(prompt) [llama-3.3-70b-versatile, then llama-3.1-8b-instant]
+        alt Groq Success
+            Groq-->>AIRouter: JSON Array
+        else Groq Fails/Rate Limited
+            AIRouter->>OpenRouter: generateJson(prompt) [gpt-4o-mini, then gpt-4o]
+            OpenRouter-->>AIRouter: JSON Array
+        end
     end
     AIRouter-->>API: Outline Array
     API->>API: Save Course to MongoDB
