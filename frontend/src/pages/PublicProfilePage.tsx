@@ -60,17 +60,17 @@ export default function PublicProfilePage() {
             <p className="text-muted-foreground mt-2 max-w-2xl">{user.bio || 'This learner prefers to keep an air of mystery.'}</p>
             
             <div className="flex flex-wrap justify-center md:justify-start gap-4 mt-6">
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-foreground/10 border border-border/ text-sm">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-foreground/10 border border-border/30 text-sm">
                 <Zap className="h-4 w-4 text-amber-400" />
                 <span className="text-foreground font-bold">{user.xp || 0}</span>
                 <span className="text-muted-foreground text-xs uppercase tracking-wider">XP</span>
               </div>
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-foreground/10 border border-border/ text-sm">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-foreground/10 border border-border/30 text-sm">
                 <Flame className="h-4 w-4 text-orange-400" />
                 <span className="text-foreground font-bold">{user.studyStreak || 0}</span>
                 <span className="text-muted-foreground text-xs uppercase tracking-wider">Day Streak</span>
               </div>
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-foreground/10 border border-border/ text-sm">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-foreground/10 border border-border/30 text-sm">
                 <Clock className="h-4 w-4 text-cyan-400" />
                 <span className="text-foreground font-bold">{Math.floor((user.totalStudyMinutes || 0) / 60)}</span>
                 <span className="text-muted-foreground text-xs uppercase tracking-wider">Hours Studied</span>
@@ -98,7 +98,7 @@ export default function PublicProfilePage() {
             ) : (
               <div className="space-y-4">
                 {user.achievements.map((ach) => (
-                  <div key={ach.badge} className="flex gap-3 items-start bg-foreground/10 p-3 rounded-xl border border-border/">
+                  <div key={ach.badge} className="flex gap-3 items-start bg-foreground/10 p-3 rounded-xl border border-border/30">
                     <div className="h-10 w-10 shrink-0 rounded-full bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 flex items-center justify-center">
                       <Award className="h-5 w-5 text-indigo-400" />
                     </div>
@@ -135,7 +135,7 @@ export default function PublicProfilePage() {
                     {course.description || "No description provided."}
                   </p>
                   
-                  <div className="mt-4 flex items-center justify-between border-t border-border/ pt-3">
+                  <div className="mt-4 flex items-center justify-between border-t border-border/30 pt-3">
                     <div className="flex items-center gap-1">
                       <Star className="h-3.5 w-3.5 text-yellow-400 fill-yellow-400" />
                       <span className="text-xs text-foreground/90 font-medium">{(course.averageRating || 0).toFixed(1)}</span>

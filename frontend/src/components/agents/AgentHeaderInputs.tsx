@@ -31,7 +31,7 @@ export function AgentHeaderInputs({
   loading
 }: AgentHeaderInputsProps) {
   return (
-    <div className="border-b border-border/ bg-foreground/10 p-6">
+    <div className="border-b border-border/30 bg-foreground/10 p-6">
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div className="flex-1">
           <h2 className="text-xl font-bold text-foreground capitalize">{tabs.find(t => t.id === activeTab)?.label}</h2>
@@ -42,7 +42,7 @@ export function AgentHeaderInputs({
                 <label htmlFor="course-select" className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Select Course to Review</label>
                 <select 
                   id="course-select"
-                  className="w-full rounded-xl border border-border/ bg-background px-4 py-2.5 text-sm text-foreground outline-none focus:border-brand-500"
+                  className="w-full rounded-xl border border-border/30 bg-background px-4 py-2.5 text-sm text-foreground outline-none focus:border-brand-500"
                   value={selectedCourse}
                   onChange={(e) => setSelectedCourse(e.target.value)}
                 >
@@ -55,7 +55,7 @@ export function AgentHeaderInputs({
                 <label htmlFor="goals-input" className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Upcoming Goals (comma separated)</label>
                 <input 
                   id="goals-input"
-                  className="w-full rounded-xl border border-border/ bg-background px-4 py-2.5 text-sm text-foreground outline-none focus:border-brand-500"
+                  className="w-full rounded-xl border border-border/30 bg-background px-4 py-2.5 text-sm text-foreground outline-none focus:border-brand-500"
                   placeholder="e.g. Pass interview next week, Build fullstack app"
                   value={goalsInput}
                   onChange={e => setGoalsInput(e.target.value)}
@@ -67,7 +67,7 @@ export function AgentHeaderInputs({
                 <label htmlFor="interests-input" className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Specific Interests (comma separated)</label>
                 <input 
                   id="interests-input"
-                  className="w-full rounded-xl border border-border/ bg-background px-4 py-2.5 text-sm text-foreground outline-none focus:border-brand-500"
+                  className="w-full rounded-xl border border-border/30 bg-background px-4 py-2.5 text-sm text-foreground outline-none focus:border-brand-500"
                   placeholder="e.g. Machine Learning, System Design"
                   value={interestsInput}
                   onChange={e => setInterestsInput(e.target.value)}

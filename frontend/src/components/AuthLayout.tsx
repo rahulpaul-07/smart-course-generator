@@ -48,7 +48,7 @@ function LearningStudio() {
     <div className="auth-workspace relative mt-9 max-w-2xl overflow-hidden rounded-2xl border border-border bg-card/90 shadow-lg backdrop-blur-xl">
       <div className="flex items-center justify-between gap-3 border-b border-border bg-foreground/10 px-4 py-3">
         <div className="flex items-center gap-2">
-          <span className="grid h-7 w-7 place-items-center rounded-lg -white">
+          <span className="grid h-7 w-7 place-items-center rounded-lg bg-gradient-to-br from-brand-500 to-cyan-400">
             <WandSparkles className="h-3.5 w-3.5" />
           </span>
           <div>
@@ -259,7 +259,7 @@ export default function AuthLayout({
 
             <div className="relative">{children}</div>
 
-            <div className="relative mt-7 border-t border-border/ pt-6 text-center text-sm text-muted-foreground">
+            <div className="relative mt-7 border-t border-border/30 pt-6 text-center text-sm text-muted-foreground">
               {footer}
             </div>
           </div>
