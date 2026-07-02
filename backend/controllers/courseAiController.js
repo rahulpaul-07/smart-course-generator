@@ -88,21 +88,8 @@ async function enrichLesson(req, res) {
 }
 
 async function enrichLessonStream(req, res) {
-  const context = await getOwnedLesson(req.params.lessonId, req.user._id);
-  const requestedDepth = String(req.body?.depth || "").trim().slice(0, 20);
-  const depth = VALID_DEPTHS.has(requestedDepth) ? requestedDepth : "standard";
-  const language = context.course.language || "English";
-
-  // Set up SSE headers
-  res.writeHead(200, {
-    "Content-Type": "text/event-stream",
-    "Cache-Control": "no-cache",
-    Connection: "keep-alive",
-    "X-Accel-Buffering": "no",
-  });
-
   let closed = false;
-  res.on("close", () => { closed = true; });
+  let headersWritten = false;
 
   function sendEvent(event, data) {
     if (closed) return;
@@ -110,6 +97,22 @@ async function enrichLessonStream(req, res) {
   }
 
   try {
+    const context = await getOwnedLesson(req.params.lessonId, req.user._id);
+    const requestedDepth = String(req.body?.depth || "").trim().slice(0, 20);
+    const depth = VALID_DEPTHS.has(requestedDepth) ? requestedDepth : "standard";
+    const language = context.course.language || "English";
+
+    // Set up SSE headers
+    res.writeHead(200, {
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache",
+      Connection: "keep-alive",
+      "X-Accel-Buffering": "no",
+    });
+    headersWritten = true;
+
+    res.on("close", () => { closed = true; });
+
     const Lesson = require("../models/Lesson");
     const siblingLessons = await Lesson.find({ 
       module: context.moduleDoc._id, 
@@ -177,6 +180,12 @@ async function enrichLessonStream(req, res) {
 
     sendEvent("done", context.lesson.toObject({ depopulate: true }));
   } catch (error) {
+    console.error("Enrich Lesson Stream Error:", error);
+    if (!headersWritten) {
+      return res.status(error.statusCode || 500).json({
+        error: error.message || "Failed to generate lesson content.",
+      });
+    }
     sendEvent("error", {
       error: error.message || "Failed to generate lesson content.",
     });

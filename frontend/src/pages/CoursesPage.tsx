@@ -14,10 +14,7 @@ import { CourseFilters } from '../components/courses/CourseFilters';
 import { CourseList } from '../components/courses/CourseList';
 import { STORAGE_KEYS } from '../utils/constants';
 
-// `progress`/`isFavorite`/`difficulty` aren't part of the Course schema yet
-// (see hooks/useCourseProgress.ts), but the filter logic below reads them
-// defensively via optional chaining, so they're modeled as optional here.
-type FilterableCourse = Course & { progress?: number; isFavorite?: boolean; difficulty?: string };
+type FilterableCourse = Course & { progress?: number };
 
 export default function CoursesPage() {
   const navigate = useNavigate();
@@ -35,21 +32,21 @@ export default function CoursesPage() {
     }
   });
 
-  const filters = ['All', 'In Progress', 'Completed', 'Favorites', 'Recently Viewed', 'Difficulty'];
+  const filters = ['All', 'In Progress', 'Completed'];
   const sorts = ['Recently Opened', 'Recently Created', 'Alphabetical', 'Progress'];
 
-  const filteredCourses = (courses as FilterableCourse[] | undefined)?.filter((course) => {
-    if (searchQuery && !course.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
-    
+  const filteredCourses = (courses as FilterableCourse[] | undefined)?.map((course) => {
     const modules = course.modules as Module[] | undefined;
     const progress = course.progress || (modules?.reduce((acc: number, m) => acc + ((m.lessons as Lesson[] | undefined)?.filter((l) => l.completedAt)?.length || 0), 0) || 0) / (modules?.reduce((acc: number, m) => acc + ((m.lessons as Lesson[] | undefined)?.length || 0), 0) || 1) * 100;
-    const isCompleted = progress >= 100;
-    const isInProgress = progress > 0 && progress < 100;
+    return { ...course, progress };
+  }).filter((course) => {
+    if (searchQuery && !course.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+
+    const isCompleted = course.progress >= 100;
+    const isInProgress = course.progress > 0 && course.progress < 100;
 
     if (filter === 'In Progress' && !isInProgress) return false;
     if (filter === 'Completed' && !isCompleted) return false;
-    if (filter === 'Favorites' && !course.isFavorite) return false;
-    if (filter === 'Difficulty' && (!course.difficulty || course.difficulty === 'Unknown')) return false;
 
     return true;
   }) || [];

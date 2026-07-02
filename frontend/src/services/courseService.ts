@@ -11,10 +11,6 @@ export const courseService = {
 
   deleteCourse: (id: string) => handleApi<void>(api.delete(`/courses/${id}`), { showErrorToast: true, fallbackMsg: 'Failed to delete course' }),
 
-  updateProgress: (id: string, moduleId: string, lessonId: string) => handleApi<Course>(api.post(`/courses/${id}/progress`, { moduleId, lessonId }), { showErrorToast: false }),
-
-  generateLesson: (id: string, moduleId: string, lessonId: string) => handleApi<Course>(api.post(`/courses/${id}/modules/${moduleId}/lessons/${lessonId}/generate`), { showErrorToast: true, fallbackMsg: 'Failed to generate lesson' }),
-
   toggleSharing: (id: string, enabled: boolean) => handleApi<Course>(api.patch(`/courses/${id}/sharing`, { enabled }), { showErrorToast: true, fallbackMsg: 'Could not update sharing' }),
 
   getSharedCourse: (shareId: string) => handleApi<PopulatedCourse>(api.get(`/public/courses/${shareId}`), { showErrorToast: false }),

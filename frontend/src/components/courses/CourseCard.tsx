@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useNavigate } from 'react-router-dom';
 import { calculatePercentage } from '../../utils/percentages';
+import { calculateEstimatedHours } from '../../utils/durations';
 import { courseService } from '../../services/courseService';
 import type { Course, Module, Lesson } from '../../types';
 
@@ -100,7 +101,7 @@ export function CourseCard({ course, viewMode, onDeleted }: CourseCardProps) {
         <div className="mt-auto space-y-5">
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs font-semibold text-muted-foreground">
             <span className="flex items-center gap-1.5"><Layers className="h-3.5 w-3.5" /> {totalLessons} lessons</span>
-            <span className="flex items-center gap-1.5"><Clock className="h-3.5 w-3.5" /> ~2.5 hours</span>
+            <span className="flex items-center gap-1.5"><Clock className="h-3.5 w-3.5" /> ~{calculateEstimatedHours(totalLessons)} hours</span>
           </div>
 
           {/* Progress Bar */}

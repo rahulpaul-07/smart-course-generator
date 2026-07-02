@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
-import { BookOpen, Sparkles, PlayCircle, Brain, MessageSquare, Award, Map, Code, FileText } from 'lucide-react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { BookOpen, Sparkles, PlayCircle, Brain, MessageSquare, Award, Map, Code } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { PageContainer } from '../components/layout/PageContainer';
 import React, { useState } from 'react';
@@ -21,6 +21,8 @@ export default function HomePage() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [generating, setGenerating] = useState(false);
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get('search')?.trim().toLowerCase() || '';
 
   async function generateCourse(topic: string) {
     setGenerating(true);
@@ -51,19 +53,24 @@ export default function HomePage() {
   ];
 
   const quickActions = [
-    { label: "Generate Course", icon: Sparkles, url: "/roadmaps", desc: "Instantly create a new curriculum", color: "from-primary/20 to-primary/5", text: "text-primary", border: "group-hover:border-primary/50" },
+    { label: "Generate Course", icon: Sparkles, url: "#course-generator", desc: "Instantly create a new curriculum", color: "from-primary/20 to-primary/5", text: "text-primary", border: "group-hover:border-primary/50" },
     { label: "Generate Roadmap", icon: Map, url: "/roadmaps", desc: "Plan your learning path", color: "from-blue-500/20 to-blue-500/5", text: "text-blue-500", border: "group-hover:border-blue-500/50" },
-    { label: "Interview Prep", icon: Brain, url: "/interview", desc: "Practice with AI voice", color: "from-rose-500/20 to-rose-500/5", text: "text-rose-500", border: "group-hover:border-rose-500/50" },
-    { label: "AI Tutor", icon: MessageSquare, url: "/ai-agents", desc: "Get unstuck instantly", color: "from-amber-500/20 to-amber-500/5", text: "text-amber-500", border: "group-hover:border-amber-500/50" },
+    { label: "Interview Prep", icon: Brain, url: "/interview-prep", desc: "Practice with AI voice", color: "from-rose-500/20 to-rose-500/5", text: "text-rose-500", border: "group-hover:border-rose-500/50" },
+    { label: "AI Tutor", icon: MessageSquare, url: "/agents", desc: "Get unstuck instantly", color: "from-amber-500/20 to-amber-500/5", text: "text-amber-500", border: "group-hover:border-amber-500/50" },
     { label: "Certificates", icon: Award, url: "/certificates", desc: "View your achievements", color: "from-emerald-500/20 to-emerald-500/5", text: "text-emerald-500", border: "group-hover:border-emerald-500/50" }
   ];
   
   const recommendations = [
-    { label: "Resume AI Course", icon: PlayCircle, desc: "Continue where you left off" },
-    { label: "Practice Interview", icon: Code, desc: "Ace your next technical round" },
-    { label: "Review Flashcards", icon: FileText, desc: "Spaced repetition due today" },
-    { label: "Generate Roadmap", icon: Map, desc: "Plan your long-term goals" }
+    ...(data?.continueLearning?.url
+      ? [{ label: "Resume AI Course", icon: PlayCircle, desc: "Continue where you left off", url: data.continueLearning.url }]
+      : []),
+    { label: "Practice Interview", icon: Code, desc: "Ace your next technical round", url: "/interview-prep" },
+    { label: "Generate Roadmap", icon: Map, desc: "Plan your long-term goals", url: "/roadmaps" }
   ];
+
+  const filteredRecentActivity = (data?.recentActivity || []).filter((activity) =>
+    !searchQuery || activity.title.toLowerCase().includes(searchQuery)
+  );
 
   return (
     <div className="relative min-h-screen bg-background text-foreground font-sans">
@@ -107,7 +114,7 @@ export default function HomePage() {
             </motion.section>
 
             {/* 2. Continue Learning */}
-            {data?.continueLearning && (
+            {data?.continueLearning && (!searchQuery || data.continueLearning.title.toLowerCase().includes(searchQuery)) && (
               <DashboardContinueLearning data={data.continueLearning} />
             )}
 
@@ -125,9 +132,9 @@ export default function HomePage() {
               />
 
               {/* 6 & 7: Activity and Recommended */}
-              <DashboardActivity 
+              <DashboardActivity
                 recommendations={recommendations}
-                recentActivity={data?.recentActivity}
+                recentActivity={filteredRecentActivity}
               />
             </div>
           </div>

@@ -1,7 +1,7 @@
 const request = require("supertest");
 const app = require("../server");
 
-describe.skip("Health API", () => {
+describe("Health API", () => {
   it("should return a 200 OK for the health check", async () => {
     const res = await request(app).get("/api/health");
     expect(res.statusCode).toEqual(200);

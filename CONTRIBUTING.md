@@ -1,6 +1,6 @@
-# Contributing to Unified Course Platform
+# Contributing to CourseAI Pro
 
-First off, thank you for considering contributing to the Unified Course Platform! It's people like you that make the open-source community such a fantastic place to learn, inspire, and create.
+First off, thank you for considering contributing to CourseAI Pro! It's people like you that make the open-source community such a fantastic place to learn, inspire, and create.
 
 ## Getting Started
 
@@ -16,6 +16,23 @@ First off, thank you for considering contributing to the Unified Course Platform
 - Follow the existing code style (Prettier/ESLint rules are included).
 - Write descriptive commit messages.
 - Push your branch to GitHub and open a Pull Request against the `main` branch.
+
+## Before you submit a PR
+
+CI runs the following checks on every push and pull request (see [`.github/workflows/ci.yml`](./.github/workflows/ci.yml)) — run them locally first so your PR doesn't fail the build:
+
+```bash
+# Frontend
+cd frontend
+npm run lint
+npm run typecheck
+npm test
+
+# Backend
+cd backend
+npm run lint
+npm test
+```
 
 ## Issue Tracking
 

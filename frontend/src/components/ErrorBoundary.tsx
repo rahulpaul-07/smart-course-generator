@@ -53,7 +53,7 @@ class ErrorBoundary extends Component<Props, State> {
               Refresh Page
             </Button>
             {this.state.error && (
-              <details className="mt-6 text-left bg-black/40 border border-border/ p-4 rounded-xl text-xs text-destructive overflow-auto backdrop-blur-sm">
+              <details className="mt-6 text-left bg-black/40 border border-border/30 p-4 rounded-xl text-xs text-destructive overflow-auto backdrop-blur-sm">
                 <summary className="cursor-pointer mb-2 font-semibold text-muted-foreground hover:text-foreground transition-colors">Error Details</summary>
                 <div className="font-mono mt-2">
                   {this.state.error.toString()}

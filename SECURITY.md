@@ -13,7 +13,7 @@ Currently, only the `main` branch (v1.0.0+) is supported with security updates.
 
 Please do not report security vulnerabilities through public GitHub issues.
 
-Instead, please email `security@unifiedcourseplatform.com` or send a direct message to the repository maintainers. 
+Instead, please email `paulrahulami@gmail.com` or open a [private GitHub security advisory](https://github.com/rahulpaul-07/smart-course-generator/security/advisories/new) on this repository.
 
 We will acknowledge receipt of your vulnerability report within 48 hours and strive to send you regular updates about our progress. If a fix is required, we will push a patch as soon as possible and credit you for the discovery in our release notes.
 

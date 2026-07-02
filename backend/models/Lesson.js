@@ -15,7 +15,7 @@ const lessonSchema = new mongoose.Schema(
     lastOpenedAt: { type: Date, default: null },
     quizBestScore: { type: Number, default: 0, min: 0, max: 5 },
     quizAttempts: { type: Number, default: 0, min: 0 },
-    module: { type: mongoose.Schema.Types.ObjectId, ref: "Module", required: true },
+    module: { type: mongoose.Schema.Types.ObjectId, ref: "Module", required: true, index: true },
     videos: {
       type: [{
         title: String,

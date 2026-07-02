@@ -11,6 +11,6 @@ graph TD
     NodeAPI -->|Course Generation| AI_Router[Custom AI Router Service]
     
     AI_Router -->|Priority 1| Gemini(Google Gemini API)
-    AI_Router -->|Priority 2| OpenRouter(OpenRouter API)
-    AI_Router -->|Priority 3| Groq(Groq API)
+    AI_Router -->|Priority 2| Groq(Groq API)
+    AI_Router -->|Priority 3| OpenRouter(OpenRouter API)
 ```
