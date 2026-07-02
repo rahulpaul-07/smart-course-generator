@@ -108,6 +108,16 @@ interface ChatMessageProps {
 }
 
 export function ChatMessage({ message, isUser, isStreamingThis, onRegenerate }: ChatMessageProps) {
+  const [feedback, setFeedback] = useState<'up' | 'down' | null>(null);
+
+  function giveFeedback(value: 'up' | 'down') {
+    setFeedback((current) => {
+      const next = current === value ? null : value;
+      if (next) toast.success(next === 'up' ? 'Thanks for the feedback!' : "Thanks — we'll use this to improve responses.");
+      return next;
+    });
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -144,10 +154,20 @@ export function ChatMessage({ message, isUser, isStreamingThis, onRegenerate }: 
               <RefreshCw className="h-3 w-3" />
             </button>
             <div className="w-px h-3 bg-border mx-1" />
-            <button className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors" title="Helpful">
+            <button
+              onClick={() => giveFeedback('up')}
+              aria-pressed={feedback === 'up'}
+              className={`p-1.5 rounded-md transition-colors ${feedback === 'up' ? 'text-emerald-500 bg-emerald-500/10' : 'text-muted-foreground hover:text-foreground hover:bg-muted'}`}
+              title="Helpful"
+            >
               <ThumbsUp className="h-3 w-3" />
             </button>
-            <button className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors" title="Not helpful">
+            <button
+              onClick={() => giveFeedback('down')}
+              aria-pressed={feedback === 'down'}
+              className={`p-1.5 rounded-md transition-colors ${feedback === 'down' ? 'text-destructive bg-destructive/10' : 'text-muted-foreground hover:text-foreground hover:bg-muted'}`}
+              title="Not helpful"
+            >
               <ThumbsDown className="h-3 w-3" />
             </button>
           </div>
