@@ -1,8 +1,10 @@
 import { useRef } from "react";
-import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, ShieldCheck, Target, Sparkles } from 'lucide-react';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { ShieldCheck, Target, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
+import { BackButton } from '@/components/ui/back-button';
+import { Breadcrumb } from '@/components/ui/breadcrumb';
 
 import { useCertificate } from '../hooks/useCertificate';
 import { useCertificateExport } from '../hooks/useCertificateExport';
@@ -17,7 +19,9 @@ import { formatDateLong } from '../utils/dates';
 export default function CertificatePage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const certificateRef = useRef<HTMLDivElement>(null);
+  const isCourseLinked = location.pathname.startsWith('/course/');
   
   const { certificate, loading, error, refetch } = useCertificate(id);
   const {
@@ -58,23 +62,33 @@ export default function CertificatePage() {
   return (
     <div className="min-h-screen bg-background pb-32">
       <div className="w-full bg-emerald-500/10 border-b border-emerald-500/20 py-3 backdrop-blur-md sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-6 flex items-center justify-center sm:justify-between gap-4">
+        <div className="max-w-6xl mx-auto px-6 flex items-center justify-between gap-4">
           <div className="flex items-center gap-2.5 text-emerald-600 dark:text-emerald-400 text-xs sm:text-sm font-bold uppercase tracking-widest">
-            <ShieldCheck className="h-4 w-4" />
+            <ShieldCheck className="h-4 w-4 shrink-0" />
             <span>Official Verified Credential</span>
           </div>
-          <Button 
-            variant="ghost" 
-            onClick={() => navigate(certificate.course ? `/course/${certificate.course}` : '/')}
-            className="hidden sm:flex text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 font-bold hover:bg-emerald-500/10 h-8 text-xs uppercase tracking-widest"
-          >
-            <ArrowLeft className="mr-2 w-3.5 h-3.5" /> Back
-          </Button>
+          <BackButton
+            to={certificate.course ? `/course/${certificate.course}` : '/'}
+            label="Back"
+            className="shrink-0 text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 hover:bg-emerald-500/10 h-8 text-xs font-bold uppercase tracking-widest"
+          />
         </div>
       </div>
 
+      {isCourseLinked && (
+        <div className="max-w-6xl mx-auto px-6 pt-6">
+          <Breadcrumb
+            items={[
+              { label: 'My Courses', to: '/courses' },
+              { label: certificate.courseTitle, to: `/course/${certificate.course}` },
+              { label: 'Certificate' }
+            ]}
+          />
+        </div>
+      )}
+
       <div className="max-w-5xl mx-auto px-6 pt-12 lg:pt-16 flex flex-col items-center">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 40, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.4, ease: "easeOut" }}

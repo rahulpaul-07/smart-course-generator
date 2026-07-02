@@ -1,6 +1,7 @@
-import { ArrowLeft, Bookmark, CheckCircle2, ChevronDown, ChevronRight, List as ListIcon, BookOpen } from 'lucide-react';
+import { Bookmark, CheckCircle2, ChevronDown, ChevronRight, List as ListIcon, BookOpen } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import React from 'react';
+import { BackButton } from '../ui/back-button';
 import type { LessonContentBlock, PopulatedCourse } from '../../types';
 
 interface HeadingBlock extends LessonContentBlock {
@@ -51,10 +52,7 @@ export default function LessonSidebar({ course, currentLessonId, lessonContent, 
   return (
     <aside className="hidden h-full w-[280px] xl:w-[320px] flex-shrink-0 overflow-y-auto bg-card lg:flex flex-col border-r border-border/30">
       <header className="sticky top-0 z-10 bg-card p-5 border-b border-border/30">
-        <button onClick={onBack} className="mb-4 flex items-center gap-2 text-xs font-bold text-muted-foreground transition hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg px-2 py-1 -ml-2">
-          <ArrowLeft className="h-4 w-4" />
-          Back to Course
-        </button>
+        <BackButton onClick={onBack} label="Back to Course" className="mb-4 -ml-2" />
         <h2 className="line-clamp-2 text-lg font-semibold text-foreground leading-tight">{course.title}</h2>
       </header>
 

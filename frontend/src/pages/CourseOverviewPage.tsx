@@ -1,9 +1,10 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 import { PageContainer } from '../components/layout/PageContainer';
 import { Button } from '@/components/ui/button';
+import { BackButton } from '@/components/ui/back-button';
+import { Breadcrumb } from '@/components/ui/breadcrumb';
 import CertificateProgress from '../components/CertificateProgress';
 
 import { useCourseProgress } from '../hooks/useCourseProgress';
@@ -39,18 +40,11 @@ export default function CourseOverviewPage() {
     return (
       <div className="relative min-h-screen bg-background text-foreground font-sans selection:bg-primary/20 selection:text-primary pb-24">
         <PageContainer className="relative z-10 pt-6 max-w-7xl mx-auto">
-          <Button
-            variant="ghost" 
-            onClick={() => navigate('/courses')} 
-            className="flex items-center gap-2 text-sm font-bold text-muted-foreground hover:text-foreground mb-6 -ml-4"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back to Library
-          </Button>
-          <ErrorState 
-            title="Unable to load course" 
-            description="We couldn't load this course. Please try again." 
-            onRetry={refetch} 
+          <BackButton to="/courses" label="Back to Library" className="mb-6 -ml-2" />
+          <ErrorState
+            title="Unable to load course"
+            description="We couldn't load this course. Please try again."
+            onRetry={refetch}
           />
         </PageContainer>
       </div>
@@ -61,14 +55,7 @@ export default function CourseOverviewPage() {
     return (
       <div className="relative min-h-screen bg-background text-foreground font-sans selection:bg-primary/20 selection:text-primary pb-24">
         <PageContainer className="relative z-10 pt-6 max-w-7xl mx-auto">
-          <Button
-            variant="ghost" 
-            onClick={() => navigate('/courses')} 
-            className="flex items-center gap-2 text-sm font-bold text-muted-foreground hover:text-foreground mb-6 -ml-4"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back to Library
-          </Button>
+          <BackButton to="/courses" label="Back to Library" className="mb-6 -ml-2" />
           <EmptyState
             title="Course not found"
             description="This course has no content or does not exist."
@@ -93,16 +80,13 @@ export default function CourseOverviewPage() {
       </div>
 
       <PageContainer className="relative z-10 pt-6 max-w-7xl mx-auto">
-        <Button
-          variant="ghost" 
-          onClick={() => navigate('/courses')} 
-          className="flex items-center gap-2 text-sm font-bold text-muted-foreground hover:text-foreground mb-6 -ml-4"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Library
-        </Button>
+        <BackButton to="/courses" label="Back to Library" className="mb-2 -ml-2" />
+        <Breadcrumb
+          items={[{ label: 'My Courses', to: '/courses' }, { label: course.title }]}
+          className="mb-6"
+        />
 
-        <CourseHero 
+        <CourseHero
           course={course}
           courseId={id}
           difficulty={difficulty}
