@@ -4,7 +4,33 @@ import { useNavigate } from 'react-router-dom';
 import { CheckCircle2, ChevronDown, ChevronUp, Clock, Lock, PlayCircle, Bookmark, Layers3 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { calculatePercentage } from '../../utils/percentages';
-import type { PopulatedCourse, PopulatedModule, Lesson } from '../../types';
+import type { PopulatedCourse, PopulatedModule, Lesson, LessonContentBlock } from '../../types';
+
+const AVERAGE_READING_WPM = 180;
+const FALLBACK_MINUTES = 15;
+
+/** Genuine per-lesson estimate from the lesson's own content blocks, when
+ * available. The course overview endpoint intentionally omits full lesson
+ * content for payload size, so lessons without it fall back to the same
+ * baseline used at the course level (calculateEstimatedHours). */
+function estimateLessonMinutes(content: LessonContentBlock[] | undefined): number {
+  if (!Array.isArray(content) || content.length === 0) return FALLBACK_MINUTES;
+
+  const countWords = (text: unknown) =>
+    typeof text === 'string' ? text.trim().split(/\s+/).filter(Boolean).length : 0;
+
+  let words = 0;
+  for (const block of content) {
+    words += countWords(block.text);
+    words += Math.ceil(countWords(block.code) / 2);
+    if (Array.isArray(block.items)) {
+      words += block.items.reduce((sum: number, item) => sum + countWords(item), 0);
+    }
+  }
+
+  if (words === 0) return FALLBACK_MINUTES;
+  return Math.min(45, Math.max(4, Math.round(words / AVERAGE_READING_WPM)));
+}
 
 const ModuleCard = ({ moduleDoc, moduleIndex, courseId }: { moduleDoc: PopulatedModule, moduleIndex: number, courseId: string }) => {
   const navigate = useNavigate();
@@ -102,7 +128,7 @@ const ModuleCard = ({ moduleDoc, moduleIndex, courseId }: { moduleDoc: Populated
                           </p>
                           <div className="flex items-center gap-3 mt-1.5 opacity-70">
                             <span className="text-xs text-muted-foreground flex items-center gap-1">
-                              <Clock className="h-3 w-3" /> ~15m
+                              <Clock className="h-3 w-3" /> ~{estimateLessonMinutes(lesson.content)}m
                             </span>
                           </div>
                         </div>

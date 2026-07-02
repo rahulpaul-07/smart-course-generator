@@ -60,7 +60,7 @@ export default function AnalyticsPage() {
           icon={BarChart3}
           title="No analytics yet"
           description="Start learning and completing lessons to see your progress here."
-          action={<Button onClick={() => navigate('/dashboard')}>Explore Courses</Button>}
+          action={<Button onClick={() => navigate('/dashboard#course-generator')}>Explore Courses</Button>}
         />
       </div>
     );
@@ -136,19 +136,19 @@ export default function AnalyticsPage() {
           <div className="glass-card rounded-2xl p-6 h-[300px] shadow-lg">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff15" vertical={false} />
-                <XAxis dataKey="name" stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} />
-                <YAxis stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value: number) => `${value}%`} />
-                <Tooltip 
-                  cursor={{ fill: '#ffffff0a' }}
-                  contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '12px', color: '#fff' }}
-                  itemStyle={{ color: '#38bdf8' }}
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+                <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value: number) => `${value}%`} />
+                <Tooltip
+                  cursor={{ fill: 'hsl(var(--muted) / 0.4)' }}
+                  contentStyle={{ backgroundColor: 'hsl(var(--popover))', border: '1px solid hsl(var(--border))', borderRadius: '12px', color: 'hsl(var(--popover-foreground))' }}
+                  itemStyle={{ color: 'hsl(var(--primary))' }}
                 />
                 <Bar dataKey="Completion" fill="url(#colorCompletion)" radius={[4, 4, 0, 0]} maxBarSize={50} />
                 <defs>
                   <linearGradient id="colorCompletion" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#38bdf8" stopOpacity={1}/>
-                    <stop offset="100%" stopColor="#3b82f6" stopOpacity={0.8}/>
+                    <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={1}/>
+                    <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.6}/>
                   </linearGradient>
                 </defs>
               </BarChart>
@@ -190,7 +190,7 @@ export default function AnalyticsPage() {
               </div>
               <h3 className="mb-2 text-xl font-bold text-foreground">No Learning Data Yet</h3>
               <p className="mb-6 max-w-sm text-sm text-muted-foreground font-medium">Generate your first course to start tracking your XP, streaks, and completion rates.</p>
-              <Button variant="secondary" onClick={() => navigate('/dashboard')} className="flex items-center justify-center gap-2 h-11 px-6 rounded-xl font-bold shadow-md hover:-translate-y-0.5">
+              <Button variant="secondary" onClick={() => navigate('/dashboard#course-generator')} className="flex items-center justify-center gap-2 h-11 px-6 rounded-xl font-bold shadow-md">
                 <PlusCircle className="h-4 w-4" /> Start Learning
               </Button>
             </div>

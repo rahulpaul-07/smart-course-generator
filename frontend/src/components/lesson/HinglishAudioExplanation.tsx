@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { lessonService } from "../../services/lessonService";
+import { Button } from "@/components/ui/button";
 
 interface HinglishAudioExplanationProps {
   lessonText: string;
@@ -64,13 +65,13 @@ function HinglishAudioExplanation({ lessonText, initialText = "" }: HinglishAudi
   };
 
   return (
-    <section className="mt-8 rounded-lg border border-indigo-100 bg-indigo-50 p-5 shadow-sm">
+    <section className="mt-8 rounded-lg border border-border/30 bg-card/60 p-5 shadow-sm">
       <div className="mb-4">
-        <p className="text-sm font-semibold uppercase tracking-wide text-indigo-600">
+        <p className="text-sm font-semibold uppercase tracking-wide text-primary">
           Accessibility
         </p>
 
-        <h3 className="text-xl font-bold text-slate-950">
+        <h3 className="text-xl font-bold text-foreground">
           Hinglish Audio Explanation
         </h3>
 
@@ -79,28 +80,27 @@ function HinglishAudioExplanation({ lessonText, initialText = "" }: HinglishAudi
         </p>
       </div>
 
-      <button
+      <Button
         type="button"
         onClick={handleGenerateAudio}
         disabled={isGenerating}
-        className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-foreground hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
       >
         {isGenerating ? "Preparing..." : "Generate Hinglish Explanation"}
-      </button>
+      </Button>
 
       {error && (
-        <p className="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">
+        <p className="mt-4 rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
           {error}
         </p>
       )}
 
       {hinglishText && (
         <div className="mt-4 rounded-lg bg-card p-4">
-          <p className="text-sm font-semibold text-slate-900">
+          <p className="text-sm font-semibold text-foreground">
             Hinglish Explanation
           </p>
 
-          <p className="mt-2 text-sm leading-6 text-slate-700">
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
             {hinglishText}
           </p>
         </div>
@@ -116,7 +116,7 @@ function HinglishAudioExplanation({ lessonText, initialText = "" }: HinglishAudi
           <a
             href={audioUrl}
             download="hinglish-explanation.wav"
-            className="mt-3 inline-block text-sm font-semibold text-indigo-700 hover:text-indigo-900"
+            className="mt-3 inline-block text-sm font-semibold text-primary hover:text-primary/80"
           >
             Download audio
           </a>

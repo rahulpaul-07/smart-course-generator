@@ -107,7 +107,7 @@ export default function RoadmapPage() {
               <div className="bg-card/30 backdrop-blur-md mb-8 rounded-2xl border border-border/30 p-8 shadow-md">
                 <div className="flex items-center justify-between mb-8">
                   <div>
-                    <h3 className="font-serif text-3xl font-extrabold tracking-tight text-foreground mb-2">Configure Your Path</h3>
+                    <h3 className="font-display text-3xl font-extrabold tracking-tight text-foreground mb-2">Configure Your Path</h3>
                     <p className="text-muted-foreground font-medium">Define your goals, and our AI will build a comprehensive step-by-step journey.</p>
                   </div>
                   <button type="button" onClick={() => setShowForm(false)} className="text-muted-foreground hover:bg-muted p-2 rounded-full transition-colors">
@@ -186,7 +186,7 @@ export default function RoadmapPage() {
                   <div className="h-24 w-24 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20 flex items-center justify-center mb-6 shadow-lg z-10">
                     <Map className="h-10 w-10 text-primary" />
                   </div>
-                  <h2 className="font-serif text-3xl font-extrabold text-foreground mb-3 z-10">Select a Roadmap</h2>
+                  <h2 className="font-display text-3xl font-extrabold text-foreground mb-3 z-10">Select a Roadmap</h2>
                   <p className="text-[15px] text-muted-foreground font-medium max-w-md z-10 mb-8">Choose an existing roadmap from the sidebar or generate a new tailored learning path to accelerate your career.</p>
                   {!showForm && (
                     <Button onClick={() => setShowForm(true)} className="h-12 px-8 rounded-xl font-bold shadow-lg z-10">

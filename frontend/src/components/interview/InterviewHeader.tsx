@@ -30,7 +30,7 @@ export function InterviewHeader({
           <div className="inline-flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20 mb-2 shadow-lg shadow-primary/10">
             <Brain className="h-10 w-10 text-primary" />
           </div>
-          <h1 className="font-serif text-5xl font-extrabold tracking-tight text-foreground md:text-6xl drop-shadow-sm">
+          <h1 className="font-display text-5xl font-extrabold tracking-tight text-foreground md:text-6xl drop-shadow-sm">
             AI Interview Platform
           </h1>
           <p className="text-muted-foreground text-lg md:text-xl font-medium leading-relaxed max-w-xl mx-auto">

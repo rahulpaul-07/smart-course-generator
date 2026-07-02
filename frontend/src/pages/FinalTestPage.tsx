@@ -1,12 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Loader2, ArrowLeft, CheckCircle2, Trophy, Sparkles, RotateCcw } from 'lucide-react';
+import { Loader2, CheckCircle2, Trophy, Sparkles, RotateCcw } from 'lucide-react';
 import Confetti from 'react-confetti';
 import { useWindowSize } from 'react-use';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useApi } from '../hooks/useApi';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { BackButton } from '@/components/ui/back-button';
+import { Breadcrumb } from '@/components/ui/breadcrumb';
 import type { PopulatedCourse, FinalTestQuestion } from '../types';
 
 interface FinalTestResult {
@@ -109,9 +111,7 @@ export default function FinalTestPage() {
         </div>
         <h2 className="text-2xl font-bold text-foreground mb-2">Something went wrong</h2>
         <p className="text-muted-foreground mb-8 max-w-md">{error}</p>
-        <Button onClick={() => navigate(`/course/${id}`)} variant="outline">
-          <ArrowLeft className="mr-2 h-4 w-4" /> Back to Course
-        </Button>
+        <BackButton to={`/course/${id}`} label="Back to Course" />
       </div>
     );
   }
@@ -123,13 +123,15 @@ export default function FinalTestPage() {
       {result && result.passed && <Confetti width={width} height={height} recycle={false} numberOfPieces={800} gravity={0.15} />}
       
       <div className="max-w-4xl mx-auto px-4 sm:px-8 pt-12">
-        <Button 
-          variant="ghost" 
-          onClick={() => navigate(`/course/${id}`)}
-          className="mb-8 -ml-4 text-muted-foreground hover:text-foreground"
-        >
-          <ArrowLeft className="mr-2 w-4 h-4" /> Back to Course
-        </Button>
+        <BackButton to={`/course/${id}`} label="Back to Course" className="mb-2 -ml-2" />
+        <Breadcrumb
+          items={[
+            { label: 'My Courses', to: '/courses' },
+            { label: course.title, to: `/course/${id}` },
+            { label: 'Final Test' }
+          ]}
+          className="mb-8"
+        />
 
         <AnimatePresence mode="wait">
           {result ? (

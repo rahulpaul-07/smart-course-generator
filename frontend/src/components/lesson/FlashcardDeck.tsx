@@ -52,7 +52,7 @@ const FlashcardDeck = React.memo(({ lessonId, courseId, embedded = false }: { le
 
   if (!flashcards.length) {
     return (
-      <div className={embedded ? '' : 'rounded-2xl border border-border bg-card p-6'}>
+      <div className={embedded ? '' : 'surface-card rounded-2xl p-6'}>
         <div className="flex flex-col items-center justify-center text-center py-10 relative">
           <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:14px_14px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
           <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center mb-6 border border-primary/20 shadow-[0_0_30px_rgba(var(--primary),0.15)] relative z-10 animate-float">
@@ -76,7 +76,7 @@ const FlashcardDeck = React.memo(({ lessonId, courseId, embedded = false }: { le
   const progress = calculatePercentage(index + 1, sessionDeck.length);
 
   return (
-    <div className={embedded ? '' : 'rounded-2xl border border-border bg-card p-6 shadow-sm'}>
+    <div className={embedded ? '' : 'surface-card rounded-2xl p-6'}>
       <div className="flex items-center justify-between gap-4 mb-6">
         <div className="flex-1">
           <div className="flex justify-between text-xs font-medium text-muted-foreground mb-2">
@@ -163,7 +163,7 @@ const FlashcardDeck = React.memo(({ lessonId, courseId, embedded = false }: { le
 
       {showAnswer ? (
         <div className="mt-8 flex flex-wrap justify-center gap-2 sm:gap-4 w-full">
-          <Button variant="outline" className="w-20 bg-red-500/10 text-red-500 hover:bg-red-500/20 hover:text-red-500 border-red-500/20" onClick={() => handleConfidence('again')}>
+          <Button variant="outline" className="w-20 bg-destructive/10 text-destructive hover:bg-destructive/20 hover:text-destructive border-destructive/20" onClick={() => handleConfidence('again')}>
             Again
           </Button>
           <Button variant="outline" className="w-20 bg-orange-500/10 text-orange-500 hover:bg-orange-500/20 hover:text-orange-500 border-orange-500/20" onClick={() => handleConfidence('hard')}>
