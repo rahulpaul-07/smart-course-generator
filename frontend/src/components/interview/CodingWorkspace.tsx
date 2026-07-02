@@ -25,7 +25,7 @@ export function CodingWorkspace({ prep, codingSolutions, setCodingSolutions, sub
   return (
     <div className="space-y-10">
       <div className="mb-10 pb-6 border-b border-border/30">
-        <h2 className="text-3xl font-extrabold font-serif tracking-tight text-foreground mb-2">Coding Challenges</h2>
+        <h2 className="text-3xl font-extrabold font-display tracking-tight text-foreground mb-2">Coding Challenges</h2>
         <p className="text-muted-foreground font-medium">Write clean, optimized, and robust code.</p>
       </div>
 

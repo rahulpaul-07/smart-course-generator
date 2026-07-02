@@ -3,7 +3,32 @@ import { Link } from 'react-router-dom';
 import { ChevronRight, Clock, Minimize } from 'lucide-react';
 import { LessonNavigation } from './LessonNavigation';
 import { LessonActions } from './LessonActions';
-import type { Lesson, PopulatedCourse } from '../../types';
+import type { Lesson, LessonContentBlock, PopulatedCourse } from '../../types';
+
+const AVERAGE_READING_WPM = 180;
+const FALLBACK_MINUTES = 15;
+
+/** Genuine per-lesson estimate from the lesson's own content blocks
+ * (word/code count), instead of a hardcoded "~15m" for every lesson. */
+function estimateLessonMinutes(content: LessonContentBlock[] | undefined): number {
+  if (!Array.isArray(content) || content.length === 0) return FALLBACK_MINUTES;
+
+  const countWords = (text: unknown) =>
+    typeof text === 'string' ? text.trim().split(/\s+/).filter(Boolean).length : 0;
+
+  let words = 0;
+  for (const block of content) {
+    words += countWords(block.text);
+    // Code reads slower than prose, but token-density is higher; weight it down.
+    words += Math.ceil(countWords(block.code) / 2);
+    if (Array.isArray(block.items)) {
+      words += block.items.reduce((sum: number, item) => sum + countWords(item), 0);
+    }
+  }
+
+  if (words === 0) return FALLBACK_MINUTES;
+  return Math.min(45, Math.max(4, Math.round(words / AVERAGE_READING_WPM)));
+}
 
 interface LessonHeaderProps {
   courseId: string | undefined;
@@ -24,6 +49,7 @@ export function LessonHeader({
   isFocusMode,
   setIsFocusMode
 }: LessonHeaderProps) {
+  const estimatedMinutes = estimateLessonMinutes(lesson?.content);
 
   return (
     <div className="sticky top-0 z-20 w-full bg-background/90 backdrop-blur-2xl border-b border-border/30 shadow-sm transition-all">
@@ -45,7 +71,7 @@ export function LessonHeader({
               <Link to={`/course/${courseId}`} className="truncate max-w-[120px] sm:max-w-[200px] hover:text-foreground cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm">{course?.title}</Link>
               <ChevronRight className="w-3 h-3 shrink-0" />
               <span className="shrink-0 flex items-center gap-1.5 text-primary">
-                <Clock className="w-3 h-3" /> ~15m
+                <Clock className="w-3 h-3" /> ~{estimatedMinutes}m
               </span>
             </div>
             <h1 className="text-base font-semibold text-foreground truncate">{lesson?.title}</h1>

@@ -3,6 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { ErrorState } from '../components/ui/ErrorState';
 import { EmptyState } from '../components/ui/EmptyState';
+import { BackButton } from '../components/ui/back-button';
+import { Breadcrumb, type BreadcrumbItem } from '../components/ui/breadcrumb';
 import { LessonViewerSkeleton } from '../components/lesson/LessonViewerSkeleton';
 
 import { useFocusMode } from '../hooks/useFocusMode';
@@ -54,6 +56,21 @@ export default function LessonViewerPage() {
     return <LessonViewerSkeleton />;
   }
 
+  const breadcrumbItems: BreadcrumbItem[] = [
+    { label: 'My Courses', to: '/courses' },
+    ...(course ? [{ label: course.title, to: `/course/${courseId}` }] : []),
+    ...(lesson ? [{ label: lesson.title }] : [])
+  ];
+
+  const courseBreadcrumbBar = !isFocusMode && (
+    <div className="flex items-center gap-3 border-b border-border/20 bg-background/60 px-4 py-2 sm:px-6">
+      <div className="shrink-0 lg:hidden">
+        <BackButton onClick={() => navigate(`/course/${courseId}`)} label="Back to Course" iconOnly />
+      </div>
+      <Breadcrumb items={breadcrumbItems} className="min-w-0 flex-1" />
+    </div>
+  );
+
   if (error || !lesson) {
     return (
       <LessonLayout
@@ -74,7 +91,8 @@ export default function LessonViewerPage() {
         onNavigateBack={() => navigate(`/course/${courseId}`)}
         onSelectLesson={(id) => navigate(`/course/${courseId}/lesson/${id}`)}
       >
-        <LessonHeader 
+        {courseBreadcrumbBar}
+        <LessonHeader
           courseId={courseId}
           course={course}
           lesson={lesson}
@@ -127,7 +145,8 @@ export default function LessonViewerPage() {
       onNavigateBack={() => navigate(`/course/${courseId}`)}
       onSelectLesson={(id) => navigate(`/course/${courseId}/lesson/${id}`)}
     >
-      <LessonHeader 
+      {courseBreadcrumbBar}
+      <LessonHeader
         courseId={courseId}
         course={course}
         lesson={lesson}

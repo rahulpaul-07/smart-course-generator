@@ -14,6 +14,12 @@ const courseSchema = new mongoose.Schema(
       index: true,
     },
     language: { type: String, default: "English" },
+    difficulty: {
+      type: String,
+      enum: ["Beginner", "Intermediate", "Advanced"],
+      default: "Intermediate",
+    },
+    skills: { type: [String], default: [] },
     modules: [{ type: mongoose.Schema.Types.ObjectId, ref: "Module" }],
     isPublic: { type: Boolean, default: false },
     earnedCertificateId: { type: String },

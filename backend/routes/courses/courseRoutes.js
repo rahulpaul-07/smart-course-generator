@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { generateCourseContent, enrichLessonStream, enrichLesson, generateFlashcards, generatePracticeLab, chatAboutLesson, chatAboutCourse, generateLessonOutline, generateLessonChunk, generateLessonQuizChunk, addVideosToLesson } = require("../../controllers/courseAiController");
+const { generateCourseContent, generateCourseContentStream, enrichLessonStream, enrichLesson, generateFlashcards, generatePracticeLab, chatAboutLesson, chatAboutCourse, generateLessonOutline, generateLessonChunk, generateLessonQuizChunk, addVideosToLesson } = require("../../controllers/courseAiController");
 const {
   deleteCourse,
   getCourseById,
@@ -22,6 +22,7 @@ router.use(validateObjectIds);
 router.use(verifyAuth0Token); // Ensure user is authenticated via Auth0
 
 router.post("/generate", courseGenLimiter, aiLimiter, validateRequest(generateCourseSchema), generateCourseContent);
+router.post("/generate-stream", courseGenLimiter, aiLimiter, validateRequest(generateCourseSchema), generateCourseContentStream);
 router.get("/mine", getMyCourses);
 router.post("/:courseId/chat", aiLimiter, chatAboutCourse);
 
