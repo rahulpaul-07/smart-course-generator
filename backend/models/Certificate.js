@@ -9,19 +9,21 @@ const certificateSchema = new mongoose.Schema(
       unique: true, 
       default: () => crypto.randomUUID() 
     },
-    user: { 
-      type: mongoose.Schema.Types.ObjectId, 
-      ref: "User", 
-      required: true 
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true
     },
-    userName: { 
-      type: String, 
-      required: true 
+    userName: {
+      type: String,
+      required: true
     },
-    course: { 
-      type: mongoose.Schema.Types.ObjectId, 
-      ref: "Course", 
-      required: true 
+    course: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Course",
+      required: true,
+      index: true
     },
     courseTitle: { 
       type: String, 
