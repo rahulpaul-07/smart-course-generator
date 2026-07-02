@@ -93,7 +93,7 @@ export default function InterviewPrepPage() {
           {activePrep.status === 'completed' ? (
             <ResultsDashboard prep={activePrep} readiness={readiness} strengths={strengths} weaknesses={weaknesses} aiRec={aiRec} />
           ) : (
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode="sync" initial={false}>
               <motion.div
                 key={activeTab}
                 initial={{ opacity: 0, y: 10 }}
