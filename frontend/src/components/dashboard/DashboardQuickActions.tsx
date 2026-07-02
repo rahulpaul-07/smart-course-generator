@@ -27,20 +27,39 @@ export function DashboardQuickActions({ actions }: { actions: QuickAction[] }) {
         </h2>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-        {actions.map((action, i) => (
-          <Link 
-            key={i}
-            to={action.url}
-            className="group flex flex-col p-6 h-full rounded-2xl border border-border/30 bg-card shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 relative overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-          >
-            <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${action.color} blur-2xl -mr-16 -mt-16 rounded-full opacity-10 group-hover:opacity-20 transition-opacity duration-200`} />
-            <div className={`h-10 w-10 rounded-xl bg-background flex items-center justify-center mb-4 ${action.text} shadow-sm border border-border/30 transition-transform duration-200`}>
-              <action.icon className="h-5 w-5" />
-            </div>
-            <h3 className="text-sm font-semibold text-foreground mb-1">{action.label}</h3>
-            <p className="text-xs text-muted-foreground line-clamp-1">{action.desc}</p>
-          </Link>
-        ))}
+        {actions.map((action, i) => {
+          const cardClassName = "group flex flex-col p-6 h-full rounded-2xl border border-border/30 bg-card shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 relative overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary";
+          const cardContent = (
+            <>
+              <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${action.color} blur-2xl -mr-16 -mt-16 rounded-full opacity-10 group-hover:opacity-20 transition-opacity duration-200`} />
+              <div className={`h-10 w-10 rounded-xl bg-background flex items-center justify-center mb-4 ${action.text} shadow-sm border border-border/30 transition-transform duration-200`}>
+                <action.icon className="h-5 w-5" />
+              </div>
+              <h3 className="text-sm font-semibold text-foreground mb-1">{action.label}</h3>
+              <p className="text-xs text-muted-foreground line-clamp-1">{action.desc}</p>
+            </>
+          );
+
+          if (action.url.startsWith('#')) {
+            const targetId = action.url.slice(1);
+            return (
+              <button
+                key={i}
+                type="button"
+                onClick={() => document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' })}
+                className={`${cardClassName} text-left`}
+              >
+                {cardContent}
+              </button>
+            );
+          }
+
+          return (
+            <Link key={i} to={action.url} className={cardClassName}>
+              {cardContent}
+            </Link>
+          );
+        })}
       </div>
     </motion.section>
   );

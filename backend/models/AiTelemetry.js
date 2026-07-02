@@ -14,7 +14,7 @@ const aiTelemetrySchema = new mongoose.Schema({
   endpoint: {
     type: String,
     required: true,
-    enum: ['generateJson', 'generateJsonStream'],
+    enum: ['generateJson', 'generateJsonStream', 'generateText', 'generateTextStream'],
   },
   status: {
     type: String,

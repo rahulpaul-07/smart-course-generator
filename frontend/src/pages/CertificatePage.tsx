@@ -98,7 +98,7 @@ export default function CertificatePage() {
           transition={{ duration: 0.4, delay: 0.2, ease: "easeOut" }}
           className="w-full max-w-[1000px] grid md:grid-cols-12 gap-8 mb-16"
         >
-          <CertificateAchievements />
+          <CertificateAchievements certificate={certificate} />
           <CertificateSharePanel
             shareToLinkedIn={shareToLinkedIn}
             shareToTwitter={shareToTwitter}

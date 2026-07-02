@@ -1,6 +1,6 @@
 # System Architecture Diagram
 
-This document illustrates the high-level architecture of the **Unified AI Course Platform**, highlighting the data flow from the client application through the Express backend, the AI Router, and the persistence layer.
+This document illustrates the high-level architecture of **CourseAI Pro**, highlighting the data flow from the client application through the Express backend, the AI Router, and the persistence layer.
 
 ## System Architecture
 
@@ -35,8 +35,8 @@ graph TD
 
     %% AI Providers Layer
     subgraph AIProviders [AI LLM Routing Group]
-        Groq[Groq API]
         Gemini[Gemini API]
+        Groq[Groq API]
         OpenRouter[OpenRouter API]
     end
 
@@ -66,8 +66,8 @@ graph TD
     LessonGen --> AiRouter
     ExplanationsController --> AiRouter
     
-    AiRouter -->|1. Try Key / Quota| Groq
-    AiRouter -->|2. Fallback| Gemini
+    AiRouter -->|1. Try Key / Quota| Gemini
+    AiRouter -->|2. Fallback| Groq
     AiRouter -->|3. Fallback| OpenRouter
     AiRouter -->|Log API Success/Fail| TelemCol
 
@@ -87,5 +87,5 @@ graph TD
 
 1. **React Frontend (SPA):** Built using Vite, React, and Tailwind CSS. Authenticates users via Auth0 SDK and manages client-side routing.
 2. **Express API Server:** Serves as the application gateway, performing authentication validation, exposing endpoints, and orchestrating requests.
-3. **AI Router Service:** A critical failover service that routes AI requests across Groq, Gemini, and OpenRouter APIs based on availability and key validation. Saves telemetry to MongoDB.
+3. **AI Router Service:** A critical failover service that routes AI requests across Gemini, Groq, and OpenRouter APIs (in that priority order) based on availability and key validation. Saves telemetry to MongoDB.
 4. **MongoDB Layer:** Persists course outlines, lesson content, user records, earned certificates, and telemetry data.
