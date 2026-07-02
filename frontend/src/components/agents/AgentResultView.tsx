@@ -77,8 +77,8 @@ export function AgentResultView({ activeTab, result, onRun }: AgentResultViewPro
     const reviewerResult = result as CourseReviewerResult;
     return (
       <div className="space-y-6 animate-enter">
-        <div className="flex items-center gap-4 border-b border-border/ pb-4">
-          <div className="flex h-16 w-16 items-center justify-center rounded-2xl -white shadow-lg text-2xl font-bold bg-foreground text-background">
+        <div className="flex items-center gap-4 border-b border-border/30 pb-4">
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl shadow-lg text-2xl font-bold bg-foreground text-background">
             {reviewerResult.rating}
           </div>
           <div>
@@ -139,12 +139,12 @@ export function AgentResultView({ activeTab, result, onRun }: AgentResultViewPro
           <p className="text-brand-200">{coachResult.encouragement}</p>
         </div>
         
-        <div className="rounded-xl bg-card/50 border border-border/ p-5">
+        <div className="rounded-xl bg-card/50 border border-border/30 p-5">
           <h4 className="font-bold text-foreground mb-2">AI Analysis</h4>
           <p className="text-sm text-foreground/90">{coachResult.analysis}</p>
         </div>
 
-        <div className="rounded-xl bg-card/50 border border-border/ p-5">
+        <div className="rounded-xl bg-card/50 border border-border/30 p-5">
           <h4 className="font-bold text-foreground mb-4">Actionable Advice</h4>
           <ul className="space-y-3">
             {coachResult.actionableAdvice?.map((a: string, i: number) => (
@@ -168,7 +168,7 @@ export function AgentResultView({ activeTab, result, onRun }: AgentResultViewPro
         </h3>
         <div className="space-y-3">
           {plannerResult.schedule?.map((item: RevisionPlanScheduleItem, i: number) => (
-            <div key={i} className="flex items-center justify-between rounded-xl border border-border/ bg-card/50 p-4">
+            <div key={i} className="flex items-center justify-between rounded-xl border border-border/30 bg-card/50 p-4">
               <div className="flex items-center gap-4">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-500/20 font-bold text-indigo-400">
                   {item.day?.substring(0,3)}
@@ -194,7 +194,7 @@ export function AgentResultView({ activeTab, result, onRun }: AgentResultViewPro
       <div className="space-y-4 animate-enter">
         <h3 className="text-xl font-bold text-foreground mb-6">Recommended For You</h3>
         {recommendResult.recommendations?.map((rec: RecommendationItem, i: number) => (
-          <div key={i} className="flex gap-4 rounded-xl border border-border/ bg-card/50 p-5 transition hover:bg-card">
+          <div key={i} className="flex gap-4 rounded-xl border border-border/30 bg-card/50 p-5 transition hover:bg-card">
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-foreground text-background shadow-lg">
               <Star className="h-6 w-6" />
             </div>

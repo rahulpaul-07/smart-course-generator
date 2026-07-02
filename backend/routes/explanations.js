@@ -7,9 +7,12 @@ router.use(validateObjectIds);
 
 // Controllers
 const explanationsController = require('../controllers/explanationsController');
+const { verifyAuth0Token } = require('../middlewares/auth0Auth');
+const { aiLimiter } = require('../middlewares/rateLimit');
 
-// NOTE: For demo purposes these routes are public. In production you would protect them with verifyAuth0Token.
-router.post('/hinglish-text', explanationsController.getHinglishText);
-router.post('/hinglish-audio', explanationsController.getHinglishAudio);
+router.use(verifyAuth0Token);
+
+router.post('/hinglish-text', aiLimiter, explanationsController.getHinglishText);
+router.post('/hinglish-audio', aiLimiter, explanationsController.getHinglishAudio);
 
 module.exports = router;

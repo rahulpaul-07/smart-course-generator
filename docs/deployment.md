@@ -1,13 +1,13 @@
 # Production Deployment Guide
 
-This guide covers deploying the Unified Course Platform across Vercel (Frontend), Render (Backend), and MongoDB Atlas (Database).
+This guide covers deploying CourseAI Pro across Vercel (Frontend), Render (Backend), and MongoDB Atlas (Database).
 
 ## 1. Database Deployment: MongoDB Atlas
 1. Create an account at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas).
 2. Create a new cluster (M0 Free Tier is sufficient for staging).
 3. Under **Database Access**, create a new database user with a secure password.
 4. Under **Network Access**, whitelist `0.0.0.0/0` (or configure specific Render IP ranges if applicable).
-5. Click **Connect** -> **Connect your application** and copy the Connection String (`MONGODB_URI`).
+5. Click **Connect** -> **Connect your application** and copy the Connection String (`MONGO_URI`).
 
 ## 2. Backend Deployment: Render
 1. Create an account at [Render](https://render.com/).
@@ -19,7 +19,7 @@ This guide covers deploying the Unified Course Platform across Vercel (Frontend)
    - **Build Command:** `npm install`
    - **Start Command:** `node server.js`
 5. Add the following **Environment Variables**:
-   - `MONGODB_URI` (from Atlas)
+   - `MONGO_URI` (from Atlas)
    - `JWT_SECRET`
    - `PORT` (usually defaults to 10000 on Render)
    - `GEMINI_API_KEY`, `GROQ_API_KEY`, `OPENROUTER_API_KEY`
@@ -32,7 +32,7 @@ This guide covers deploying the Unified Course Platform across Vercel (Frontend)
    - **Framework Preset:** `Vite`
    - **Root Directory:** `frontend`
 4. Add the following **Environment Variables**:
-   - `VITE_API_URL` (Set this to your Render backend URL, e.g., `https://my-backend.onrender.com`)
+   - `VITE_API_BASE_URL` (Set this to your Render backend URL, e.g., `https://my-backend.onrender.com/api`)
    - `VITE_AUTH0_DOMAIN`, `VITE_AUTH0_CLIENT_ID`, `VITE_AUTH0_AUDIENCE`
 5. Deploy the project.
 

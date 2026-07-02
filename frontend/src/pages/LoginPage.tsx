@@ -115,9 +115,13 @@ export default function LoginPage() {
               <label htmlFor="password" className="text-sm font-medium leading-none">
                 Password
               </label>
-              <Link to="#" className="text-sm font-medium text-primary hover:underline">
-                Forgot password?
-              </Link>
+              <span
+                className="text-sm font-medium text-muted-foreground/60 cursor-not-allowed select-none"
+                title="Password reset is coming soon"
+                aria-disabled="true"
+              >
+                Forgot password? <span className="text-xs">(coming soon)</span>
+              </span>
             </div>
             <div className="relative">
               <LockKeyhole className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />

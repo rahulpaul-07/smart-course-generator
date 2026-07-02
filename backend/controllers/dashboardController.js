@@ -2,6 +2,7 @@ const Course = require("../models/Course");
 const InterviewPrep = require("../models/InterviewPrep");
 const Roadmap = require("../models/Roadmap");
 const Certificate = require("../models/Certificate");
+const AuditLog = require("../models/AuditLog");
 
 exports.getDashboardSummary = async (req, res) => {
   try {
@@ -93,27 +94,68 @@ exports.getDashboardSummary = async (req, res) => {
     const roadmapsCreated = await Roadmap.countDocuments({ user: userId });
     const interviewPacks = await InterviewPrep.countDocuments({ user: userId });
     const certificatesEarned = await Certificate.countDocuments({ user: userId });
-    
+
     // User stats
     const User = require("../models/User");
-    const userDoc = await User.findById(userId).select('studyStreak lastActiveDate');
+    const userDoc = await User.findById(userId).select('studyStreak lastActiveDate activityHistory');
+
+    // Aggregate real lesson-level stats across the user's courses
+    const coursesWithLessons = await Course.find({ creator: userId })
+      .populate({
+        path: "modules",
+        populate: { path: "lessons", select: "completedAt practiceLab aiConversation" },
+      })
+      .lean();
+
+    let lessonsCompleted = 0;
+    let practiceLabsGenerated = 0;
+    let aiQuestionsAsked = 0;
+
+    for (const course of coursesWithLessons) {
+      for (const mod of course.modules || []) {
+        for (const lesson of mod.lessons || []) {
+          if (lesson.completedAt) lessonsCompleted++;
+          if (lesson.practiceLab && lesson.practiceLab.title) practiceLabsGenerated++;
+          if (Array.isArray(lesson.aiConversation)) {
+            aiQuestionsAsked += lesson.aiConversation.filter((m) => m.role === "user").length;
+          }
+        }
+      }
+    }
+
+    const flashcardsGenerated = await AuditLog.countDocuments({ userId, action: "GENERATED_FLASHCARDS" });
 
     const statistics = {
       coursesCreated,
       coursesCompleted,
-      lessonsCompleted: 0, // To be implemented with deeper aggregation
+      lessonsCompleted,
       roadmapsCreated,
-      practiceLabsGenerated: 0, 
-      flashcardsGenerated: 0,
+      practiceLabsGenerated,
+      flashcardsGenerated,
       interviewPacks,
       certificatesEarned,
-      aiQuestionsAsked: 0
+      aiQuestionsAsked
     };
+
+    // Weekly/monthly progress = share of the last 7/30 days on which the user was active
+    const toDateStr = (d) => d.toISOString().slice(0, 10);
+    const activityHistory = new Set(userDoc?.activityHistory || []);
+    let activeDaysLast7 = 0;
+    let activeDaysLast30 = 0;
+    for (let i = 0; i < 30; i++) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const dateStr = toDateStr(d);
+      if (activityHistory.has(dateStr)) {
+        activeDaysLast30++;
+        if (i < 7) activeDaysLast7++;
+      }
+    }
 
     const progress = {
       overallCompletion: coursesCreated > 0 ? Math.round((coursesCompleted / coursesCreated) * 100) : 0,
-      weeklyProgress: 45, // Example computed value
-      monthlyProgress: 60
+      weeklyProgress: Math.round((activeDaysLast7 / 7) * 100),
+      monthlyProgress: Math.round((activeDaysLast30 / 30) * 100)
     };
 
     const streak = {
