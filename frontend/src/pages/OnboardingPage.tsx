@@ -72,13 +72,14 @@ export default function OnboardingPage() {
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="w-full max-w-2xl z-10">
-        <div className="flex justify-center mb-8">
+        <div className="flex flex-col items-center mb-8 gap-3">
           <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center ring-1 ring-primary/20 shadow-lg shadow-primary/10">
             <Sparkles className="w-8 h-8 text-primary" />
           </div>
+          <p className="eyebrow">Getting Started</p>
         </div>
 
-        <Card className="p-8 border-border/30 bg-card/60 backdrop-blur-xl shadow-lg rounded-2xl overflow-hidden relative">
+        <Card variant="glass" className="p-8 shadow-lg overflow-hidden relative backdrop-blur-xl">
           
           {/* Progress Bar */}
           <div className="absolute top-0 left-0 right-0 h-1 bg-secondary">
@@ -100,7 +101,7 @@ export default function OnboardingPage() {
                 className="space-y-8"
               >
                 <div className="text-center space-y-2">
-                  <h1 className="text-3xl font-bold tracking-tight text-foreground">Welcome to CourseAI Pro</h1>
+                  <h1 className="gradient-text font-display text-3xl font-extrabold tracking-tight">Welcome to CourseAI Pro</h1>
                   <p className="text-muted-foreground text-lg">Let's personalize your learning experience.</p>
                 </div>
 
@@ -142,7 +143,7 @@ export default function OnboardingPage() {
                 className="space-y-8"
               >
                 <div className="text-center space-y-2">
-                  <h1 className="text-3xl font-bold tracking-tight text-foreground">What do you want to learn?</h1>
+                  <h1 className="gradient-text font-display text-3xl font-extrabold tracking-tight">What do you want to learn?</h1>
                   <p className="text-muted-foreground text-lg">Select at least one topic to get personalized course recommendations.</p>
                 </div>
 
