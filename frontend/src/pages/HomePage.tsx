@@ -1,11 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { BookOpen, Sparkles, PlayCircle, Brain, MessageSquare, Award, Map, Code } from 'lucide-react';
 import { motion } from 'framer-motion';
+import toast from 'react-hot-toast';
 import { PageContainer } from '../components/layout/PageContainer';
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import PromptForm from '../components/PromptForm';
-import { courseService } from '../services/courseService';
+import { courseService, type CourseGenerationStage } from '../services/courseService';
 import { dashboardService } from '../services/dashboardService';
 import { useAuth } from '../hooks/useAuth';
 import { DashboardHero } from '../components/dashboard/DashboardHero';
@@ -19,19 +20,61 @@ import { EmptyState } from '../components/ui/EmptyState';
 
 export default function HomePage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
   const [generating, setGenerating] = useState(false);
+  const [generationStage, setGenerationStage] = useState<CourseGenerationStage | null>(null);
+  const [generationError, setGenerationError] = useState<string | null>(null);
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get('search')?.trim().toLowerCase() || '';
 
+  const mountedRef = useRef(true);
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => { mountedRef.current = false; };
+  }, []);
+
+  function showCourseReadyToast(courseId: string) {
+    toast.success((t) => (
+      <span className="flex items-center gap-3">
+        Course ready
+        <button
+          type="button"
+          onClick={() => { navigate(`/course/${courseId}`); toast.dismiss(t.id); }}
+          className="font-semibold text-primary underline underline-offset-2"
+        >
+          View it
+        </button>
+      </span>
+    ));
+  }
+
   async function generateCourse(topic: string) {
     setGenerating(true);
-    const [data] = await courseService.generateCourse({ prompt: topic });
+    setGenerationError(null);
+    setGenerationStage('analyzing_topic');
+
+    const [data, err] = await courseService.generateCourseStream({ prompt: topic }, (stage) => {
+      if (mountedRef.current) setGenerationStage(stage);
+    });
+
+    if (!mountedRef.current) {
+      // The user already navigated away; don't yank them back with a hard
+      // redirect. Let them opt in via the toast's click-through instead.
+      if (data) showCourseReadyToast(data._id);
+      return true;
+    }
+
     setGenerating(false);
+    setGenerationStage(null);
+
     if (data) {
+      showCourseReadyToast(data._id);
       navigate(`/course/${data._id}`);
       return true;
     }
+
+    setGenerationError(err || 'Failed to generate course');
     return false;
   }
 
@@ -43,6 +86,12 @@ export default function HomePage() {
       return res;
     }
   });
+
+  useEffect(() => {
+    if (!loading && data && location.hash === '#course-generator') {
+      document.getElementById('course-generator')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [loading, data, location.hash]);
 
   const statsList = [
     { label: "Courses", value: data?.statistics?.coursesCreated || 0, icon: BookOpen },
@@ -56,7 +105,7 @@ export default function HomePage() {
     { label: "Generate Course", icon: Sparkles, url: "#course-generator", desc: "Instantly create a new curriculum", color: "from-primary/20 to-primary/5", text: "text-primary", border: "group-hover:border-primary/50" },
     { label: "Generate Roadmap", icon: Map, url: "/roadmaps", desc: "Plan your learning path", color: "from-blue-500/20 to-blue-500/5", text: "text-blue-500", border: "group-hover:border-blue-500/50" },
     { label: "Interview Prep", icon: Brain, url: "/interview-prep", desc: "Practice with AI voice", color: "from-rose-500/20 to-rose-500/5", text: "text-rose-500", border: "group-hover:border-rose-500/50" },
-    { label: "AI Tutor", icon: MessageSquare, url: "/agents", desc: "Get unstuck instantly", color: "from-amber-500/20 to-amber-500/5", text: "text-amber-500", border: "group-hover:border-amber-500/50" },
+    { label: "AI Insights", icon: MessageSquare, url: "/agents", desc: "Specialized agents for reviews & planning", color: "from-amber-500/20 to-amber-500/5", text: "text-amber-500", border: "group-hover:border-amber-500/50" },
     { label: "Certificates", icon: Award, url: "/certificates", desc: "View your achievements", color: "from-emerald-500/20 to-emerald-500/5", text: "text-emerald-500", border: "group-hover:border-emerald-500/50" }
   ];
   
@@ -110,7 +159,13 @@ export default function HomePage() {
                   <Sparkles className="h-5 w-5 text-primary" /> Generate New Course
                 </h2>
               </div>
-              <PromptForm onSubmit={generateCourse} isLoading={generating} />
+              <PromptForm
+                onSubmit={generateCourse}
+                isLoading={generating}
+                stage={generationStage}
+                error={generationError}
+                onDismissError={() => setGenerationError(null)}
+              />
             </motion.section>
 
             {/* 2. Continue Learning */}
