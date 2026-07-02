@@ -197,7 +197,7 @@ export default function ProfilePage() {
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between p-3 rounded-xl bg-secondary/50">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-blue-500/10 rounded-md text-blue-500">
+                  <div className="p-2 bg-primary/10 rounded-md text-primary">
                     <BookOpen className="w-4 h-4" />
                   </div>
                   <span className="font-medium">Courses Generated</span>
@@ -206,7 +206,7 @@ export default function ProfilePage() {
               </div>
               <div className="flex items-center justify-between p-3 rounded-xl bg-secondary/50">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-amber-500/10 rounded-md text-amber-500">
+                  <div className="p-2 bg-primary/10 rounded-md text-primary">
                     <Trophy className="w-4 h-4" />
                   </div>
                   <span className="font-medium">Certificates</span>

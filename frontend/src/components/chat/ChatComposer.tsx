@@ -97,7 +97,7 @@ export function ChatComposer({
           <button
             onClick={toggleListening}
             aria-label={isListening ? "Stop voice dictation" : "Start voice dictation"}
-            className={`flex items-center justify-center h-8 w-8 rounded-xl transition-all ${isListening ? 'bg-red-500/20 text-red-500 hover:bg-red-500/30' : 'text-muted-foreground hover:text-foreground hover:bg-muted'}`}
+            className={`flex items-center justify-center h-8 w-8 rounded-xl transition-all ${isListening ? 'bg-destructive/20 text-destructive hover:bg-destructive/30' : 'text-muted-foreground hover:text-foreground hover:bg-muted'}`}
           >
             {isListening ? <Mic className="h-4 w-4 animate-pulse" /> : <MicOff className="h-4 w-4" />}
           </button>
