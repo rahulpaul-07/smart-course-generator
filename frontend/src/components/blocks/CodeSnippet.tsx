@@ -4,21 +4,24 @@ import { motion } from 'framer-motion';
 import { Highlight, themes } from 'prism-react-renderer';
 import clsx from 'clsx';
 import { useClipboard } from '../../hooks/useClipboard';
+import type { LessonContentBlock } from '../../types';
 
-export default function CodeSnippet({ block }: { block: any }) {
+export default function CodeSnippet({ block }: { block: LessonContentBlock }) {
   const { hasCopied, copyToClipboard } = useClipboard({ successMessage: '' });
 
-  const availableLanguages = block.codes
-    ? Object.entries(block.codes)
+  const codes = block.codes as Record<string, string> | undefined;
+
+  const availableLanguages = codes
+    ? Object.entries(codes)
         .filter(([, code]) => Boolean(code))
         .map(([lang]) => lang)
-    : [block.language || 'text'];
+    : [(block.language as string | undefined) || 'text'];
 
   const [selectedLang, setSelectedLang] = useState(availableLanguages[0] || 'text');
 
-  const currentCode = (block.codes
-    ? block.codes[selectedLang]
-    : block.code || '') as string;
+  const currentCode = (codes
+    ? codes[selectedLang]
+    : (block.code as string | undefined) || '') as string;
 
   const handleCopy = () => {
     copyToClipboard(currentCode);

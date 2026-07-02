@@ -2,9 +2,10 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle2, XCircle, BookOpen, Award } from 'lucide-react';
 import LoadingSpinner from '../LoadingSpinner';
+import type { InterviewPrep, MCQQuestion } from '../../types';
 
 interface MCQWorkspaceProps {
-  prep: any;
+  prep: InterviewPrep;
   mcqAnswers: number[];
   setMcqAnswers: (answers: number[]) => void;
   submitted: boolean;
@@ -20,7 +21,7 @@ export function MCQWorkspace({ prep, mcqAnswers, setMcqAnswers, submitted, submi
         <p className="text-muted-foreground font-medium">Select the best answer for each question.</p>
       </div>
       
-      {prep.mcqs?.map((q: any, i: number) => {
+      {prep.mcqs?.map((q: MCQQuestion, i: number) => {
         const userAns = submitted ? q.userAnswer : mcqAnswers[i];
         return (
           <div key={i} className="rounded-2xl border border-border/30 bg-card/20 backdrop-blur-md p-8 shadow-sm transition-all hover:shadow-md">

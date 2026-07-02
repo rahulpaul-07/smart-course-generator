@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuth";
-import { navItems } from "./Sidebar";
+import { navItems } from "./navItems";
 import { cn } from "@/lib/utils";
 import { useLayout } from "@/contexts/LayoutContext";
 

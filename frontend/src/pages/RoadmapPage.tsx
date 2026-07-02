@@ -200,7 +200,7 @@ export default function RoadmapPage() {
         ) : (
           <div className="grid lg:grid-cols-12 gap-8 items-start">
             <div className="lg:col-span-8 space-y-8">
-              <RoadmapHero activeRoadmap={activeRoadmap} setActiveRoadmap={setActiveRoadmap} deleteRoadmap={deleteRoadmap} />
+              <RoadmapHero activeRoadmap={activeRoadmap} setActiveRoadmap={setActiveRoadmap} deleteRoadmap={deleteRoadmap} generateCourseFromTopic={generateCourseFromTopic} />
               <div className="rounded-2xl border border-border/30 bg-background/50 p-6 lg:p-10 shadow-sm relative">
                 <h3 className="text-xl font-bold text-foreground mb-8">Curriculum Timeline</h3>
                 <RoadmapTimeline roadmap={activeRoadmap} onGenerateCourse={generateCourseFromTopic} />

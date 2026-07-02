@@ -1,5 +1,5 @@
 import React, { memo, useState } from 'react';
-import ReactMarkdown from 'react-markdown';
+import ReactMarkdown, { type ExtraProps } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
@@ -9,6 +9,7 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Bot, UserRound, Copy, RefreshCw, ThumbsUp, ThumbsDown, Check } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
+import type { AiConversationMessage } from '../../types';
 
 const CodeBlock = ({ language, value }: { language: string, value: string }) => {
   const [copied, setCopied] = useState(false);
@@ -44,7 +45,7 @@ const CodeBlock = ({ language, value }: { language: string, value: string }) => 
       <div className="text-[13px] leading-relaxed overflow-x-auto tab-size-4">
         <SyntaxHighlighter
           language={language || 'text'}
-          style={vscDarkPlus as any}
+          style={vscDarkPlus}
           customStyle={{ margin: 0, padding: '1rem 1.25rem', background: 'transparent' }}
           PreTag="div"
           tabIndex={0}
@@ -76,7 +77,7 @@ export const AssistantMessageContent = memo(function AssistantMessageContent({ c
         remarkPlugins={[remarkGfm, remarkMath]}
         rehypePlugins={[rehypeKatex]}
         components={{
-          code: ({ children, className, ...props }: any) => {
+          code: ({ children, className, ...props }: React.ClassAttributes<HTMLElement> & React.HTMLAttributes<HTMLElement> & ExtraProps) => {
             const match = /language-(\w+)/.exec(className || '');
             const isBlock = match || String(children).includes('\n');
             if (isBlock) {
@@ -100,13 +101,23 @@ export const AssistantMessageContent = memo(function AssistantMessageContent({ c
 });
 
 interface ChatMessageProps {
-  message: any;
+  message: AiConversationMessage;
   isUser: boolean;
   isStreamingThis: boolean;
   onRegenerate?: () => void;
 }
 
 export function ChatMessage({ message, isUser, isStreamingThis, onRegenerate }: ChatMessageProps) {
+  const [feedback, setFeedback] = useState<'up' | 'down' | null>(null);
+
+  function giveFeedback(value: 'up' | 'down') {
+    setFeedback((current) => {
+      const next = current === value ? null : value;
+      if (next) toast.success(next === 'up' ? 'Thanks for the feedback!' : "Thanks — we'll use this to improve responses.");
+      return next;
+    });
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -143,10 +154,20 @@ export function ChatMessage({ message, isUser, isStreamingThis, onRegenerate }: 
               <RefreshCw className="h-3 w-3" />
             </button>
             <div className="w-px h-3 bg-border mx-1" />
-            <button className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors" title="Helpful">
+            <button
+              onClick={() => giveFeedback('up')}
+              aria-pressed={feedback === 'up'}
+              className={`p-1.5 rounded-md transition-colors ${feedback === 'up' ? 'text-emerald-500 bg-emerald-500/10' : 'text-muted-foreground hover:text-foreground hover:bg-muted'}`}
+              title="Helpful"
+            >
               <ThumbsUp className="h-3 w-3" />
             </button>
-            <button className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors" title="Not helpful">
+            <button
+              onClick={() => giveFeedback('down')}
+              aria-pressed={feedback === 'down'}
+              className={`p-1.5 rounded-md transition-colors ${feedback === 'down' ? 'text-destructive bg-destructive/10' : 'text-muted-foreground hover:text-foreground hover:bg-muted'}`}
+              title="Not helpful"
+            >
               <ThumbsDown className="h-3 w-3" />
             </button>
           </div>

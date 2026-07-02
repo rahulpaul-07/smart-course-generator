@@ -3,16 +3,17 @@ import { courseProgress, nextIncompleteLesson } from '../utils/courseProgress';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import type { PopulatedCourse } from '../types';
 
 export default function CertificateProgress({
   course,
   onContinue,
   onViewCertificate,
   onTakeTest,
-}: { course: any, onContinue?: (id: string) => void, onViewCertificate?: () => void, onTakeTest?: () => void }) {
+}: { course: PopulatedCourse | null, onContinue?: (id: string) => void, onViewCertificate?: () => void, onTakeTest?: () => void }) {
   const progress = courseProgress(course);
   const nextLesson = nextIncompleteLesson(course);
-  const hasCertificate = !!course.earnedCertificateId;
+  const hasCertificate = !!course?.earnedCertificateId;
   const lessonsCompleted = progress.totalLessons > 0 && progress.remainingLessons === 0;
   const lessonWord = progress.remainingLessons === 1 ? 'lesson' : 'lessons';
 

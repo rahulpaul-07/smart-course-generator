@@ -2,22 +2,9 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { Home, BookOpen, Compass, Award, Settings, Layers, ChevronLeft, ChevronRight } from "lucide-react";
+import { Settings, ChevronLeft, ChevronRight, Layers } from "lucide-react";
 import { useLayout } from "@/contexts/LayoutContext";
-
-interface NavItem {
-  name: string;
-  href: string;
-  icon: React.ElementType;
-}
-
-export const navItems: NavItem[] = [
-  { name: "Dashboard", href: "/dashboard", icon: Home },
-  { name: "My Courses", href: "/courses", icon: BookOpen },
-  { name: "Explore", href: "/community", icon: Compass },
-  { name: "Certificates", href: "/certificates", icon: Award },
-  { name: "Roadmaps", href: "/roadmaps", icon: Layers },
-];
+import { navItems } from "./navItems";
 
 export function Sidebar() {
   const location = useLocation();

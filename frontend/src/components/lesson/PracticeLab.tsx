@@ -5,9 +5,10 @@ import { lessonService } from '../../services/lessonService';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import type { PracticeLab as PracticeLabData } from '../../types';
 
 const PracticeLab = React.memo(({ lessonId, courseId, embedded = false }: { lessonId: string, courseId: string, embedded?: boolean }) => {
-  const [lab, setLab] = useState<any>(null);
+  const [lab, setLab] = useState<PracticeLabData | null>(null);
   const [initialLoading, setInitialLoading] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -22,7 +23,7 @@ const PracticeLab = React.memo(({ lessonId, courseId, embedded = false }: { less
       try {
         const [data, fetchError] = await lessonService.generateLab(courseId, lessonId);
         if (mounted && fetchError) setError(fetchError);
-        if (mounted && data) setLab((data as any).lab);
+        if (mounted && data) setLab((data as unknown as { lab: PracticeLabData }).lab);
       } finally {
         if (mounted) setInitialLoading(false);
       }
@@ -49,7 +50,7 @@ const PracticeLab = React.memo(({ lessonId, courseId, embedded = false }: { less
     if (fetchError) {
       setError(fetchError);
     } else if (data) {
-      setLab((data as any).lab);
+      setLab((data as unknown as { lab: PracticeLabData }).lab);
       if (forceRegenerate) {
         setShowSuccess(true);
         setTimeout(() => setShowSuccess(false), 3000);
@@ -150,7 +151,7 @@ const PracticeLab = React.memo(({ lessonId, courseId, embedded = false }: { less
             Implementation Steps
           </h4>
           <ol className="space-y-3">
-            {lab.steps.map((step: string, index: number) => (
+            {(lab.steps || []).map((step: string, index: number) => (
               <motion.li 
                 key={index}
                 initial={{ opacity: 0, x: -10 }}
@@ -171,7 +172,7 @@ const PracticeLab = React.memo(({ lessonId, courseId, embedded = false }: { less
             Definition of Done
           </h4>
           <ul className="space-y-2.5 rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4">
-            {lab.successCriteria.map((item: string, index: number) => (
+            {(lab.successCriteria || []).map((item: string, index: number) => (
               <li key={index} className="flex gap-3 text-sm text-foreground">
                 <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
                 <span className="leading-relaxed">{item}</span>

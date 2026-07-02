@@ -1,7 +1,7 @@
 import type { AxiosRequestConfig } from 'axios';
 import api from '../utils/api';
 import { handleApi } from './apiHelper';
-import type { Lesson, LessonVideo } from '../types';
+import type { Lesson, LessonVideo, PopulatedCourse } from '../types';
 
 export interface Flashcard {
   front: string;
@@ -18,8 +18,10 @@ export interface LessonProgressUpdate {
 }
 
 export const lessonService = {
+  // The backend's getLessonView controller returns { course, lesson }, not a
+  // bare Lesson -- see backend/controllers/courseController.js.
   getLesson: (courseId: string, lessonId: string, config?: AxiosRequestConfig) =>
-    handleApi<Lesson>(api.get(`/courses/${courseId}/lessons/${lessonId}`, config), { showErrorToast: true, fallbackMsg: 'Failed to load lesson content.' }),
+    handleApi<{ course: PopulatedCourse; lesson: Lesson }>(api.get(`/courses/${courseId}/lessons/${lessonId}`, config), { showErrorToast: true, fallbackMsg: 'Failed to load lesson content.' }),
 
   updateProgress: (lessonId: string, changes: LessonProgressUpdate, config?: AxiosRequestConfig) =>
     handleApi<Lesson>(api.patch(`/courses/lessons/${lessonId}/progress`, changes, config), { showErrorToast: true, fallbackMsg: 'Failed to update progress' }),

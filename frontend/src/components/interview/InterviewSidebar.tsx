@@ -1,11 +1,12 @@
 import React, { useRef } from 'react';
 import { ArrowLeft, CheckCircle2, MessageSquare, Code2, BookOpen, User } from 'lucide-react';
+import type { InterviewPrep } from '../../types';
 
 interface InterviewSidebarProps {
-  activePrep: any;
+  activePrep: InterviewPrep;
   activeTab: string;
   setActiveTab: (tab: string) => void;
-  setActivePrep: (prep: any) => void;
+  setActivePrep: (prep: InterviewPrep | null) => void;
 }
 
 export function InterviewSidebar({ activePrep, activeTab, setActiveTab, setActivePrep }: InterviewSidebarProps) {
@@ -18,7 +19,7 @@ export function InterviewSidebar({ activePrep, activeTab, setActiveTab, setActiv
 
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     const currentIndex = tabs.findIndex(t => t.id === activeTab);
     let nextIndex = currentIndex;
 

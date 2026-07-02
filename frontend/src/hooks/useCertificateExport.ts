@@ -1,6 +1,7 @@
 import { useState } from 'react';
+import type { Certificate } from '../types';
 
-export function useCertificateExport(certificateRef: React.RefObject<HTMLDivElement | null>, certificate: any) {
+export function useCertificateExport(certificateRef: React.RefObject<HTMLDivElement | null>, certificate: Certificate | null) {
   const [isExportingPDF, setIsExportingPDF] = useState(false);
   const [isExportingPNG, setIsExportingPNG] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);

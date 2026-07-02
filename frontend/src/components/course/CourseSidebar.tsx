@@ -2,13 +2,15 @@ import React from 'react';
 import { SkillSection } from './SkillSection';
 import { CourseStats } from './CourseStats';
 import { CourseActions } from './CourseActions';
+import { courseProgress } from '../../utils/courseProgress';
+import type { PopulatedCourse } from '../../types';
 
 interface CourseSidebarProps {
-  skills: any[];
+  skills: { name: string; icon: React.ElementType }[];
   difficulty: string;
   estimatedHours: number;
-  course: any;
-  progress: any;
+  course: Pick<PopulatedCourse, 'createdAt' | 'updatedAt'>;
+  progress: ReturnType<typeof courseProgress>;
   nextLessonId: string | null;
   courseId: string | undefined;
 }

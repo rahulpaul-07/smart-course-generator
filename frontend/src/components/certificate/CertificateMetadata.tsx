@@ -1,8 +1,9 @@
 import React from 'react';
 import { ShieldCheck, Calendar, Clock, QrCode } from 'lucide-react';
+import type { Certificate } from '../../types';
 
 interface CertificateMetadataProps {
-  certificate: any;
+  certificate: Certificate;
   issueDate: string;
   completionTime: string;
 }

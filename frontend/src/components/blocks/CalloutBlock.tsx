@@ -1,8 +1,9 @@
 import { Info, AlertTriangle, Lightbulb, CheckCircle2, FileCode2 } from 'lucide-react';
 import React from 'react';
+import type { LessonContentBlock } from '../../types';
 
-export default function CalloutBlock({ block }: { block: any }) {
-  const type = block.calloutType || 'info'; // info, warning, tip, success, example
+export default function CalloutBlock({ block }: { block: LessonContentBlock }) {
+  const type = (block.calloutType as string | undefined) || 'info'; // info, warning, tip, success, example
   
   const styles = {
     info: {
@@ -45,11 +46,11 @@ export default function CalloutBlock({ block }: { block: any }) {
         {currentStyle.icon}
       </span>
       <div className="min-w-0 flex-1 pt-0.5">
-        {block.title && (
+        {typeof block.title === 'string' && block.title && (
           <h4 className={`mb-1.5 font-bold tracking-tight text-sm ${currentStyle.title}`}>{block.title}</h4>
         )}
         <div className="text-[15px] leading-relaxed text-foreground/90">
-          {block.text}
+          {block.text as string}
         </div>
       </div>
     </div>

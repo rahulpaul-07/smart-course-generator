@@ -3,9 +3,10 @@ import { motion } from 'framer-motion';
 import { PlayCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import { courseProgress } from '../../utils/courseProgress';
 
 interface CourseActionsProps {
-  progress: any;
+  progress: ReturnType<typeof courseProgress>;
   nextLessonId: string | null;
   courseId: string | undefined;
 }

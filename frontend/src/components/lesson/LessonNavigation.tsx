@@ -1,11 +1,12 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import type { Lesson } from '../../types';
 
 interface LessonNavigationProps {
   courseId: string | undefined;
-  prevLesson: any;
-  nextLesson: any;
+  prevLesson: Lesson | null;
+  nextLesson: Lesson | null;
 }
 
 export function LessonNavigation({ courseId, prevLesson, nextLesson }: LessonNavigationProps) {

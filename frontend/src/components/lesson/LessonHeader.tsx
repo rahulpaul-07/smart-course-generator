@@ -3,13 +3,14 @@ import { Link } from 'react-router-dom';
 import { ChevronRight, Clock, Minimize } from 'lucide-react';
 import { LessonNavigation } from './LessonNavigation';
 import { LessonActions } from './LessonActions';
+import type { Lesson, PopulatedCourse } from '../../types';
 
 interface LessonHeaderProps {
   courseId: string | undefined;
-  course: any;
-  lesson: any;
-  prevLesson: any;
-  nextLesson: any;
+  course: PopulatedCourse | null;
+  lesson: Lesson | null;
+  prevLesson: Lesson | null;
+  nextLesson: Lesson | null;
   isFocusMode: boolean;
   setIsFocusMode: (v: boolean) => void;
 }
@@ -47,7 +48,7 @@ export function LessonHeader({
                 <Clock className="w-3 h-3" /> ~15m
               </span>
             </div>
-            <h1 className="text-base font-semibold text-foreground truncate">{lesson.title}</h1>
+            <h1 className="text-base font-semibold text-foreground truncate">{lesson?.title}</h1>
           </div>
         </div>
 

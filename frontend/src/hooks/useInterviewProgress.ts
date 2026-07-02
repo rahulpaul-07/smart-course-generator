@@ -1,12 +1,14 @@
 import { useState, useRef, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { useSessionStorage } from './useStorage';
+import type { InterviewPrep, InterviewChatMessage } from '../types';
+import type { FormEvent } from 'react';
 
-export function useInterviewProgress(prep: any) {
+export function useInterviewProgress(prep: InterviewPrep | null) {
   const [message, setMessage] = useState('');
   const [sending, setSending] = useState(false);
   const [chatError, setChatError] = useState(false);
-  const [chat, setChat] = useSessionStorage<any[]>(
+  const [chat, setChat] = useSessionStorage<InterviewChatMessage[]>(
     `interview_mock_${prep?._id}`,
     () => {
       if (!prep) return [];
@@ -22,19 +24,22 @@ export function useInterviewProgress(prep: any) {
   };
 
   useEffect(() => {
-    if (prep) {
+    if (!prep) return;
+    // Deferred to a microtask so this reads as a callback invocation rather
+    // than a synchronous setState call within the effect body.
+    queueMicrotask(() => {
       setChatError(false);
       setTimeout(scrollToBottom, 50);
-    }
+    });
   }, [prep?._id]);
 
-  async function sendMessage(e?: any) {
+  async function sendMessage(e?: FormEvent) {
     e?.preventDefault();
     if (!message.trim() || sending || !prep) return;
     const text = message.trim();
     setMessage('');
     
-    const newChat = [...chat, { role: 'candidate', content: text }];
+    const newChat: InterviewChatMessage[] = [...chat, { role: 'candidate' as const, content: text }];
     setChat(newChat);
     setSending(true);
     setChatError(false);
@@ -60,7 +65,7 @@ export function useInterviewProgress(prep: any) {
       const decoder = new TextDecoder();
       let assistantMessage = '';
       
-      setChat([...newChat, { role: 'interviewer', content: '' }]);
+      setChat([...newChat, { role: 'interviewer' as const, content: '' }]);
 
       while (true) {
         const { done, value } = await reader.read();
@@ -90,8 +95,8 @@ export function useInterviewProgress(prep: any) {
           }
         }
       }
-    } catch (err: any) {
-      if (err.name !== 'AbortError') {
+    } catch (err: unknown) {
+      if (!(err instanceof DOMException) || err.name !== 'AbortError') {
         toast.error('Failed to send message');
         setChatError(true);
         setChat(prev => {

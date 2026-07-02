@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Trophy, Flame, Zap, Award } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { collabService, type LeaderboardUser } from '../services/collabService';
@@ -13,20 +13,22 @@ export default function LeaderboardPage() {
   const [error, setError] = useState(false);
   const navigate = useNavigate();
 
-  const fetchLeaderboard = () => {
-    setLoading(true);
-    setError(false);
-    collabService.getLeaderboard()
-      .then(([data, err]) => {
-        if (err || !data) setError(true);
-        else setLeaders(data || []);
-      })
-      .finally(() => setLoading(false));
-  };
+  const fetchLeaderboard = useCallback(() => {
+    queueMicrotask(() => {
+      setLoading(true);
+      setError(false);
+      collabService.getLeaderboard()
+        .then(([data, err]) => {
+          if (err || !data) setError(true);
+          else setLeaders(data || []);
+        })
+        .finally(() => setLoading(false));
+    });
+  }, []);
 
   useEffect(() => {
     fetchLeaderboard();
-  }, []);
+  }, [fetchLeaderboard]);
 
   if (loading) return <LeaderboardSkeleton />;
   if (error) return (

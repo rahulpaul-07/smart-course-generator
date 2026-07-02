@@ -6,11 +6,12 @@ import LessonCompletion from './LessonCompletion';
 import VideoBlock from '../blocks/VideoBlock';
 import FlashcardDeck from './FlashcardDeck';
 import PracticeLab from './PracticeLab';
+import type { Lesson, LessonVideo, PopulatedCourse } from '../../types';
 const LessonRenderer = lazy(() => import('./LessonRenderer'));
 
 interface LessonContentProps {
-  lesson: any;
-  course: any;
+  lesson: Lesson;
+  course: PopulatedCourse | null;
   courseId: string | undefined;
   lessonId: string | undefined;
   isFocusMode: boolean;
@@ -27,7 +28,7 @@ interface LessonContentProps {
   onLanguageChange: (lang: string) => void;
   onPickerChange: (show: boolean) => void;
   onDepthChange: (depth: string) => void;
-  updateCurrentLesson: (lesson: any) => void;
+  updateCurrentLesson: (lesson: Lesson) => void;
 }
 
 export function LessonContent({
@@ -132,7 +133,7 @@ export function LessonContent({
             </h2>
           </div>
           <div className="grid sm:grid-cols-2 gap-6">
-            {lesson.videos.map((video: any, idx: number) => (
+            {lesson.videos.map((video: LessonVideo, idx: number) => (
               <VideoBlock key={idx} block={{ type: 'video', url: video.url, title: video.title }} />
             ))}
           </div>

@@ -1,8 +1,9 @@
 import React from 'react';
 import { Brain, Award } from 'lucide-react';
+import type { Certificate } from '../../types';
 
 interface CertificatePreviewProps {
-  certificate: any;
+  certificate: Certificate;
   certificateRef: React.RefObject<HTMLDivElement | null>;
   issueDate: string;
 }

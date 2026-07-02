@@ -1,9 +1,10 @@
 import React from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { ChatMessage } from './ChatMessage';
+import type { AiConversationMessage } from '../../types';
 
 interface ChatMessageListProps {
-  messages: any[];
+  messages: AiConversationMessage[];
   sending: boolean;
   onRegenerate: (index: number) => void;
 }
