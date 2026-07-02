@@ -61,7 +61,7 @@ export function CourseList({
               Clear All Filters
             </Button>
           ) : (
-            <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold px-8 shadow-md" onClick={() => navigate('/dashboard')}>
+            <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold px-8 shadow-md" onClick={() => navigate('/dashboard#course-generator')}>
               <Sparkles className="mr-2 h-4 w-4" />
               Generate New Course
             </Button>

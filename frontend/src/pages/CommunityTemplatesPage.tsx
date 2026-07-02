@@ -88,7 +88,7 @@ export default function CommunityTemplatesPage() {
       <section className="mb-10 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
           <p className="eyebrow"><Globe className="h-3.5 w-3.5" /> Community</p>
-          <h1 className="gradient-text mt-3 font-display text-3xl font-extrabold">Course Marketplace</h1>
+          <h1 className="gradient-text mt-3 font-display text-3xl font-extrabold">Community</h1>
           <p className="mt-2 text-sm text-muted-foreground">Discover, clone, and rate courses created by the community.</p>
         </div>
       </section>
@@ -179,7 +179,7 @@ export default function CommunityTemplatesPage() {
           title="No Community Courses Yet"
           description="Be the first to publish a course and share it with the community!"
           action={
-            <Button onClick={() => navigate('/dashboard')}>
+            <Button onClick={() => navigate('/dashboard#course-generator')}>
               Create Course
             </Button>
           }

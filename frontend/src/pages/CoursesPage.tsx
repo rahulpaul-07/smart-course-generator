@@ -74,7 +74,7 @@ export default function CoursesPage() {
             <p className="text-base md:text-lg text-muted-foreground font-medium">Manage and continue your AI-generated learning journeys.</p>
           </div>
           
-          <Button size="lg" className="rounded-xl shadow-[0_4px_20px_rgb(0,0,0,0.1)] shadow-primary/20 hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 w-full md:w-auto shrink-0 bg-primary hover:bg-primary/90 font-bold" onClick={() => navigate('/dashboard')}>
+          <Button size="lg" className="rounded-xl shadow-[0_4px_20px_rgb(0,0,0,0.1)] shadow-primary/20 hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 w-full md:w-auto shrink-0 bg-primary hover:bg-primary/90 font-bold" onClick={() => navigate('/dashboard#course-generator')}>
             <Sparkles className="mr-2 h-4 w-4" />
             Generate New Course
           </Button>

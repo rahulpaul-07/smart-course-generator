@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { Link, useLocation, useSearchParams } from "react-router-dom";
-import { Menu, Search, User, X, Settings } from "lucide-react";
+import { Menu, Search, User, X, Settings, BrainCircuit } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuth";
-import { navItems } from "./navItems";
+import { navGroups, navItems, accountNavItems, isNavItemActive } from "./navItems";
 import { cn } from "@/lib/utils";
 import { useLayout } from "@/contexts/LayoutContext";
 
@@ -101,7 +101,7 @@ export function TopNavigation() {
                     </Link>
                   </DropdownMenuItem>
                   <div className="h-px bg-border my-1" />
-                  <DropdownMenuItem className="cursor-pointer text-red-500 focus:text-red-500 focus:bg-red-500/10" onClick={() => logout && logout()}>
+                  <DropdownMenuItem className="cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10" onClick={() => logout && logout()}>
                     Log out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -131,48 +131,77 @@ export function TopNavigation() {
               className="fixed inset-y-0 left-0 z-50 w-3/4 max-w-sm border-r border-border bg-sidebar p-6 shadow-lg md:hidden flex flex-col"
             >
               <div className="flex items-center justify-between mb-8">
-                <div className="flex items-center gap-2 font-bold text-lg text-primary tracking-tight">
+                <Link
+                  to="/dashboard"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-2 font-bold text-lg text-foreground tracking-tight focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg"
+                >
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary shadow-lg shadow-primary/20 shrink-0">
+                    <BrainCircuit className="h-5 w-5 text-primary-foreground" />
+                  </div>
                   CourseAI Pro
-                </div>
+                </Link>
                 <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(false)}>
                   <X className="h-5 w-5" />
                 </Button>
               </div>
 
-              <div className="flex-1 space-y-2">
-                <div className="text-xs font-semibold text-muted-foreground/50 tracking-wider uppercase mb-3 px-2">
-                  Menu
+              <div className="flex-1 overflow-y-auto space-y-5">
+                {navGroups.map((group) => {
+                  const groupItems = navItems.filter((item) => item.group === group.key);
+                  if (groupItems.length === 0) return null;
+                  return (
+                    <div key={group.key} className="space-y-2">
+                      <div className="eyebrow px-2">
+                        {group.label}
+                      </div>
+                      {groupItems.map((item) => {
+                        const isActive = isNavItemActive(location.pathname, item.href);
+                        return (
+                          <Link
+                            key={item.name}
+                            to={item.href}
+                            onClick={() => setMobileMenuOpen(false)}
+                            className={cn(
+                              "group flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium transition-all duration-200",
+                              isActive
+                                ? "bg-primary/10 text-primary"
+                                : "text-muted-foreground hover:bg-foreground/10 hover:text-foreground"
+                            )}
+                          >
+                            <item.icon className={cn("h-5 w-5 shrink-0", isActive ? "text-primary" : "text-muted-foreground")} />
+                            {item.name}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="mt-auto pt-6 border-t border-border/30 space-y-2">
+                <div className="eyebrow px-2">
+                  Account
                 </div>
-                {navItems.map((item) => {
-                  const isActive = location.pathname.startsWith(item.href);
+                {accountNavItems.map((item) => {
+                  const isActive = isNavItemActive(location.pathname, item.href);
                   return (
                     <Link
                       key={item.name}
                       to={item.href}
                       onClick={() => setMobileMenuOpen(false)}
                       className={cn(
-                        "group flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium transition-all duration-200",
+                        "flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium transition-all",
                         isActive
                           ? "bg-primary/10 text-primary"
                           : "text-muted-foreground hover:bg-foreground/10 hover:text-foreground"
                       )}
                     >
-                      <item.icon className={cn("h-5 w-5 shrink-0", isActive ? "text-primary" : "text-muted-foreground")} />
+                      <item.icon className="h-5 w-5 shrink-0" />
                       {item.name}
                     </Link>
                   );
                 })}
-              </div>
-
-              <div className="mt-auto pt-6 border-t border-border/30">
-                <Link
-                  to="/settings"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium text-muted-foreground hover:bg-foreground/10 hover:text-foreground transition-all"
-                >
-                  <Settings className="h-5 w-5 shrink-0" />
-                  Settings
-                </Link>
               </div>
             </motion.div>
           </>

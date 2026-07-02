@@ -57,7 +57,7 @@ export default function CertificatesPage() {
           title="No Certificates Yet"
           description="Complete a final test to earn a verifiable certificate and prove your skills."
           action={
-            <Button onClick={() => navigate('/dashboard')} className="w-full sm:w-auto">
+            <Button onClick={() => navigate('/dashboard#course-generator')} className="w-full sm:w-auto">
               Go to Courses
             </Button>
           }

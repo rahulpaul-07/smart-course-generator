@@ -2,9 +2,9 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { Settings, ChevronLeft, ChevronRight, Layers } from "lucide-react";
+import { ChevronLeft, ChevronRight, BrainCircuit } from "lucide-react";
 import { useLayout } from "@/contexts/LayoutContext";
-import { navItems } from "./navItems";
+import { navGroups, navItems, accountNavItems, isNavItemActive } from "./navItems";
 
 export function Sidebar() {
   const location = useLocation();
@@ -14,92 +14,108 @@ export function Sidebar() {
     <motion.aside
       id="global-sidebar"
       initial={false}
-      animate={{ 
+      animate={{
         width: isSidebarCollapsed ? 80 : 256,
       }}
       transition={{ duration: 0.2, ease: "easeOut" }}
       className="hidden flex-col border-r border-border bg-card/80 backdrop-blur-xl h-screen md:flex relative shrink-0 z-50"
     >
       <div className={cn("flex h-16 shrink-0 items-center border-b border-border transition-all duration-300", isSidebarCollapsed ? "px-0 justify-center" : "px-6")}>
-        <div className="flex items-center gap-2 font-bold text-lg text-foreground tracking-tight overflow-hidden whitespace-nowrap">
-          <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center shrink-0">
-            <Layers className="w-5 h-5 text-primary" />
+        <Link to="/dashboard" className="flex items-center gap-2 font-bold text-lg text-foreground tracking-tight overflow-hidden whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary shadow-lg shadow-primary/20 shrink-0">
+            <BrainCircuit className="h-5 w-5 text-primary-foreground" />
           </div>
           {!isSidebarCollapsed && (
-            <motion.span 
-              initial={{ opacity: 0 }} 
-              animate={{ opacity: 1 }} 
+            <motion.span
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
               CourseAI Pro
             </motion.span>
           )}
-        </div>
+        </Link>
       </div>
-      
-      <div className="flex-1 overflow-y-auto py-6 flex flex-col space-y-1">
+
+      <div className="flex-1 overflow-y-auto py-6 flex flex-col space-y-5">
+        {navGroups.map((group) => {
+          const groupItems = navItems.filter((item) => item.group === group.key);
+          if (groupItems.length === 0) return null;
+          return (
+            <div key={group.key} className="px-3 space-y-1">
+              {!isSidebarCollapsed && (
+                <div className="eyebrow px-3 mb-2">
+                  {group.label}
+                </div>
+              )}
+              {groupItems.map((item) => {
+                const isActive = isNavItemActive(location.pathname, item.href);
+                return (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    className={cn(
+                      "group relative flex items-center rounded-xl py-2.5 text-sm font-medium transition-all duration-200 overflow-hidden focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-primary",
+                      isSidebarCollapsed ? "justify-center px-0" : "gap-3 px-3",
+                      isActive
+                        ? "bg-primary/10 text-primary"
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                    )}
+                    title={isSidebarCollapsed ? item.name : undefined}
+                    aria-label={isSidebarCollapsed ? item.name : undefined}
+                  >
+                    {isActive && (
+                      <motion.div
+                        layoutId="sidebar-active"
+                        className="absolute left-0 top-1 bottom-1 w-1 bg-primary rounded-r-full"
+                      />
+                    )}
+                    <item.icon className={cn("h-5 w-5 shrink-0 transition-all duration-200", isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground")} aria-hidden="true" />
+                    {!isSidebarCollapsed && (
+                      <span className="truncate">{item.name}</span>
+                    )}
+                  </Link>
+                );
+              })}
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="p-3 border-t border-border/30 space-y-1">
         {!isSidebarCollapsed && (
-          <div className="text-xs font-semibold text-muted-foreground/50 tracking-wider uppercase mb-3 px-6">
-            Menu
+          <div className="eyebrow px-3 mb-2">
+            Account
           </div>
         )}
-        
-        <div className="px-3 space-y-1">
-          {navItems.map((item) => {
-            const isActive = location.pathname.startsWith(item.href);
-            return (
-              <Link
-                key={item.name}
-                to={item.href}
-                className={cn(
-                  "group relative flex items-center rounded-xl py-2.5 text-sm font-medium transition-all duration-200 overflow-hidden focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-primary",
-                  isSidebarCollapsed ? "justify-center px-0" : "gap-3 px-3",
-                  isActive
-                    ? "bg-primary/10 text-primary"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                )}
-                title={isSidebarCollapsed ? item.name : undefined}
-                aria-label={isSidebarCollapsed ? item.name : undefined}
-              >
-                {isActive && (
-                  <motion.div 
-                    layoutId="sidebar-active" 
-                    className="absolute left-0 top-1 bottom-1 w-1 bg-primary rounded-r-full" 
-                  />
-                )}
-                <item.icon className={cn("h-5 w-5 shrink-0 transition-all duration-200", isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground")} aria-hidden="true" />
-                {!isSidebarCollapsed && (
-                  <span className="truncate">{item.name}</span>
-                )}
-              </Link>
-            );
-          })}
-        </div>
-      </div>
-      
-      <div className="p-3 border-t border-border/30 space-y-2">
-        <Link
-          to="/settings"
-          className={cn(
-            "group relative flex items-center rounded-xl py-2.5 text-sm font-medium transition-all duration-200 focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-primary",
-            isSidebarCollapsed ? "justify-center px-0" : "gap-3 px-3",
-            location.pathname.startsWith("/settings")
-              ? "bg-primary/10 text-primary"
-              : "text-muted-foreground hover:bg-muted hover:text-foreground"
-          )}
-          title={isSidebarCollapsed ? "Settings" : undefined}
-          aria-label={isSidebarCollapsed ? "Settings" : undefined}
-        >
-          {location.pathname.startsWith("/settings") && (
-            <motion.div 
-              layoutId="sidebar-active" 
-              className="absolute left-0 top-1 bottom-1 w-1 bg-primary rounded-r-full" 
-            />
-          )}
-          <Settings className={cn("h-5 w-5 shrink-0 transition-all duration-200", location.pathname.startsWith("/settings") ? "text-primary" : "text-muted-foreground group-hover:text-foreground")} aria-hidden="true" />
-          {!isSidebarCollapsed && <span>Settings</span>}
-        </Link>
-        
+        {accountNavItems.map((item) => {
+          const isActive = isNavItemActive(location.pathname, item.href);
+          return (
+            <Link
+              key={item.name}
+              to={item.href}
+              className={cn(
+                "group relative flex items-center rounded-xl py-2.5 text-sm font-medium transition-all duration-200 focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-primary",
+                isSidebarCollapsed ? "justify-center px-0" : "gap-3 px-3",
+                isActive
+                  ? "bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+              )}
+              title={isSidebarCollapsed ? item.name : undefined}
+              aria-label={isSidebarCollapsed ? item.name : undefined}
+            >
+              {isActive && (
+                <motion.div
+                  layoutId="sidebar-active"
+                  className="absolute left-0 top-1 bottom-1 w-1 bg-primary rounded-r-full"
+                />
+              )}
+              <item.icon className={cn("h-5 w-5 shrink-0 transition-all duration-200", isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground")} aria-hidden="true" />
+              {!isSidebarCollapsed && <span>{item.name}</span>}
+            </Link>
+          );
+        })}
+
         <button
           onClick={toggleSidebar}
           className={cn(
