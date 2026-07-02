@@ -107,6 +107,7 @@ export default function CoursesPage() {
           searchQuery={searchQuery}
           filter={filter}
           onClearFilters={() => { setSearchQuery(''); setFilter('All'); }}
+          onCourseDeleted={refetch}
         />
       </PageContainer>
     </div>

@@ -1,9 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { BookOpen, Sparkles, MoreVertical, Layers, Clock, ArrowRight } from 'lucide-react';
+import { BookOpen, Sparkles, MoreVertical, Layers, Clock, ArrowRight, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useNavigate } from 'react-router-dom';
 import { calculatePercentage } from '../../utils/percentages';
+import { courseService } from '../../services/courseService';
 import type { Course, Module, Lesson } from '../../types';
 
 export type CourseCardCourse = Course & {
@@ -14,12 +16,22 @@ export type CourseCardCourse = Course & {
 interface CourseCardProps {
   course: CourseCardCourse;
   viewMode: 'grid' | 'list';
+  onDeleted?: () => void;
 }
 
 const isPopulatedModule = (m: Module | string): m is Module => typeof m !== 'string';
 
-export function CourseCard({ course, viewMode }: CourseCardProps) {
+export function CourseCard({ course, viewMode, onDeleted }: CourseCardProps) {
   const navigate = useNavigate();
+  const [deleting, setDeleting] = React.useState(false);
+
+  async function handleDelete() {
+    if (!window.confirm(`Delete "${course.title}"? This can't be undone.`)) return;
+    setDeleting(true);
+    const [, error] = await courseService.deleteCourse(course._id);
+    setDeleting(false);
+    if (!error) onDeleted?.();
+  }
   const modules = (course.modules as (Module | string)[] | undefined)?.filter(isPopulatedModule);
   const totalLessons = modules?.reduce((acc: number, m: Module) => acc + ((m.lessons as Lesson[] | undefined)?.length || 0), 0) || 12;
   const completedLessons = modules?.reduce((acc: number, m: Module) => acc + ((m.lessons as Lesson[] | undefined)?.filter((l: Lesson) => l.completedAt)?.length || 0), 0) || 0;
@@ -33,7 +45,11 @@ export function CourseCard({ course, viewMode }: CourseCardProps) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.2, ease: "easeOut" }}
-      className={`group relative rounded-2xl border border-border/30 bg-card/40 backdrop-blur-md overflow-hidden hover:-translate-y-0.5 hover:shadow-md hover:border-primary/30 transition-all duration-200 cursor-pointer focus-within:ring-2 focus-within:ring-primary focus-within:border-primary ${viewMode === 'list' ? 'flex flex-col sm:flex-row gap-0' : 'flex flex-col'}`}
+      role="link"
+      tabIndex={0}
+      onClick={() => navigate(`/course/${course._id}`)}
+      onKeyDown={(e) => { if (e.key === 'Enter') navigate(`/course/${course._id}`); }}
+      className={`group relative rounded-2xl border border-border/30 bg-card/40 backdrop-blur-md overflow-hidden hover:-translate-y-0.5 hover:shadow-md hover:border-primary/30 transition-all duration-200 cursor-pointer focus-within:ring-2 focus-within:ring-primary focus-within:border-primary ${deleting ? 'opacity-50 pointer-events-none' : ''} ${viewMode === 'list' ? 'flex flex-col sm:flex-row gap-0' : 'flex flex-col'}`}
     >
       {/* Cover Thumbnail */}
       <div className={`relative bg-muted/30 border-b border-border/30 overflow-hidden shrink-0 flex items-center justify-center ${viewMode === 'list' ? 'w-full sm:w-[280px] sm:border-r sm:border-b-0' : 'h-40'}`}>
@@ -51,9 +67,25 @@ export function CourseCard({ course, viewMode }: CourseCardProps) {
           </span>
         </div>
 
-        <button className="absolute top-3 right-3 h-8 w-8 rounded-md bg-background/50 backdrop-blur-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-background/90 border border-border/30 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary shadow-sm">
-          <MoreVertical className="h-4 w-4 text-foreground" />
-        </button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              onClick={(e) => e.stopPropagation()}
+              aria-label="Course options"
+              className="absolute top-3 right-3 h-8 w-8 rounded-md bg-background/50 backdrop-blur-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-background/90 border border-border/30 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary shadow-sm"
+            >
+              <MoreVertical className="h-4 w-4 text-foreground" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-44 bg-card border-border" onClick={(e) => e.stopPropagation()}>
+            <DropdownMenuItem
+              className="cursor-pointer text-red-500 focus:text-red-500 focus:bg-red-500/10"
+              onClick={handleDelete}
+            >
+              <Trash2 className="mr-2 h-4 w-4" /> Delete course
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {/* Card Content */}
@@ -92,7 +124,7 @@ export function CourseCard({ course, viewMode }: CourseCardProps) {
             <Button 
               variant="secondary"
               className="w-full sm:w-auto h-11 px-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 group/btn font-semibold" 
-              onClick={() => navigate(`/course/${course._id}`)}
+              onClick={(e) => { e.stopPropagation(); navigate(`/course/${course._id}`); }}
             >
               {progress === 0 ? 'Start Learning' : progress === 100 ? 'Review' : 'Continue'} 
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />

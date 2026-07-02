@@ -17,6 +17,7 @@ interface CourseListProps {
   filter: string;
   onClearFilters: () => void;
   onRetry: () => void;
+  onCourseDeleted?: () => void;
 }
 
 export function CourseList({
@@ -27,7 +28,8 @@ export function CourseList({
   searchQuery,
   filter,
   onClearFilters,
-  onRetry
+  onRetry,
+  onCourseDeleted
 }: CourseListProps) {
   const navigate = useNavigate();
 
@@ -76,7 +78,7 @@ export function CourseList({
         className={viewMode === 'grid' ? 'grid md:grid-cols-2 xl:grid-cols-3 gap-6' : 'flex flex-col gap-4'}
       >
         {courses.map((course: CourseCardCourse) => (
-          <CourseCard key={course._id} course={course} viewMode={viewMode} />
+          <CourseCard key={course._id} course={course} viewMode={viewMode} onDeleted={onCourseDeleted} />
         ))}
       </motion.div>
     </AnimatePresence>
