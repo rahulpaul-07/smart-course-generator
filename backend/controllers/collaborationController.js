@@ -159,8 +159,27 @@ async function cloneTemplate(req, res) {
     language: ol.language
   }));
 
+  let insertedLessons = [];
   if (lessonsToInsert.length > 0) {
-    await Lesson.insertMany(lessonsToInsert);
+    insertedLessons = await Lesson.insertMany(lessonsToInsert);
+  }
+
+  const lessonIdsByModule = {};
+  insertedLessons.forEach((lesson) => {
+    const moduleId = String(lesson.module);
+    if (!lessonIdsByModule[moduleId]) lessonIdsByModule[moduleId] = [];
+    lessonIdsByModule[moduleId].push(lesson._id);
+  });
+
+  if (insertedModules.length > 0) {
+    await Module.bulkWrite(
+      insertedModules.map((moduleDoc) => ({
+        updateOne: {
+          filter: { _id: moduleDoc._id },
+          update: { $set: { lessons: lessonIdsByModule[String(moduleDoc._id)] || [] } },
+        },
+      }))
+    );
   }
 
   const newModuleIds = insertedModules.map(m => m._id);

@@ -300,10 +300,7 @@ async function answerCourseQuestion({ course, message, currentLessonId, history 
         let lessonTextContent = '';
         l.content.forEach(block => {
            if (block.type === 'paragraph') lessonTextContent += block.text + '\n';
-           else if (block.type === 'code') lessonTextContent += 'Code:\n' + block.code + '\n';
-           else if (block.type === 'knowledge_check') {
-              lessonTextContent += `Knowledge Check: ${block.question}\nCorrect Answer: ${block.options.find(o => o.isCorrect)?.text}\n`;
-           }
+           else if (block.type === 'code') lessonTextContent += 'Code:\n' + (block.codes?.python || block.codes?.cpp || block.codes?.java || '') + '\n';
            else if (block.type === 'quiz' && Array.isArray(block.questions)) {
               lessonTextContent += `Knowledge Check Questions:\n`;
               block.questions.forEach((q, qIdx) => {

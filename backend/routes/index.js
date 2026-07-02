@@ -11,8 +11,11 @@ const agentRoutes = require("./agents");
 const collaborationRoutes = require("./collaboration");
 const dashboardRoutes = require("./dashboard");
 const { getHealth } = require("../controllers/healthController");
+const { getPublicCourse } = require("../controllers/courseController");
 
 const router = Router();
+
+router.get("/public/courses/:shareId", getPublicCourse);
 
 router.use("/dashboard", dashboardRoutes);
 router.use("/courses", courseRoutes);

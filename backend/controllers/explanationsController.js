@@ -5,10 +5,11 @@ const googleTTS = require('google-tts-api');
 
 exports.getHinglishText = async (req, res) => {
   try {
-    const { lessonText } = req.body || {};
-    if (!lessonText) {
+    const { lessonText: rawLessonText } = req.body || {};
+    if (!rawLessonText) {
       return res.status(400).json({ error: 'lessonText is required' });
     }
+    const lessonText = String(rawLessonText).slice(0, 2000);
 
     const systemPrompt = `You are an expert bilingual teacher. Translate the following educational text into friendly, easy-to-understand Hinglish (a blend of Hindi and English written in the Latin alphabet). Keep it professional but accessible.`;
     
@@ -27,10 +28,11 @@ exports.getHinglishText = async (req, res) => {
 
 exports.getHinglishAudio = async (req, res) => {
   try {
-    const { lessonText } = req.body || {};
-    if (!lessonText) {
+    const { lessonText: rawLessonText } = req.body || {};
+    if (!rawLessonText) {
       return res.status(400).json({ error: 'lessonText is required' });
     }
+    const lessonText = String(rawLessonText).slice(0, 2000);
 
     // Echo back the hinglish text via header for the frontend to decode.
     res.setHeader('x-hinglish-text', encodeURIComponent(lessonText));
