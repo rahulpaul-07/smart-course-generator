@@ -4,15 +4,17 @@ import { Sparkles, Clock, PlayCircle, Award } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import ShareCourseButton from '../../components/ShareCourseButton';
+import { courseProgress } from '../../utils/courseProgress';
+import type { Course, PopulatedCourse } from '../../types';
 
 interface CourseHeroProps {
-  course: any;
+  course: PopulatedCourse;
   courseId: string | undefined;
   difficulty: string;
   estimatedHours: number;
-  progress: any;
+  progress: ReturnType<typeof courseProgress>;
   nextLessonId: string | null;
-  setCourse: (course: any) => void;
+  setCourse: (course: PopulatedCourse) => void;
 }
 
 export function CourseHero({ course, courseId, difficulty, estimatedHours, progress, nextLessonId, setCourse }: CourseHeroProps) {
@@ -73,7 +75,10 @@ export function CourseHero({ course, courseId, difficulty, estimatedHours, progr
               View Certificate
             </Button>
           )}
-          <ShareCourseButton course={course} onUpdate={setCourse} />
+          <ShareCourseButton
+            course={course}
+            onUpdate={(updated: Course) => setCourse({ ...course, ...updated, modules: course.modules })}
+          />
         </div>
 
         {/* 5. Metadata */}

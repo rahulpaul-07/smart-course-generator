@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Loader2, LockKeyhole, Mail, User } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { GoogleLogin } from '@react-oauth/google';
+import { GoogleLogin, type CredentialResponse } from '@react-oauth/google';
 import AuthLayout from '../components/AuthLayout';
 import { useAuth } from '../hooks/useAuth';
 import { authService } from '../services/authService';
@@ -20,10 +20,10 @@ export default function SignupPage() {
   const { login, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
 
-  const handleGoogleSuccess = async (credentialResponse: any) => {
+  const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
     try {
       setLoading(true);
-      await loginWithGoogle(credentialResponse.credential);
+      await loginWithGoogle(credentialResponse.credential as string);
       navigate('/dashboard');
     } catch (error) {
       console.error('Google signup error', error);

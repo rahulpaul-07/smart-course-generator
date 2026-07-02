@@ -10,6 +10,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useInterviewProgress } from '../../hooks/useInterviewProgress';
 import { ErrorState } from '../ui/ErrorState';
+import type { InterviewPrep, InterviewChatMessage } from '../../types';
 
 const CodeBlock = ({ language, value }: { language: string, value: string }) => {
   const [copied, setCopied] = React.useState(false);
@@ -27,7 +28,7 @@ const CodeBlock = ({ language, value }: { language: string, value: string }) => 
         </button>
       </div>
       <div className="text-[12px] overflow-x-auto tab-size-4">
-        <SyntaxHighlighter language={language || 'text'} style={vscDarkPlus as any} customStyle={{ margin: 0, padding: '1rem', background: 'transparent' }} PreTag="div">
+        <SyntaxHighlighter language={language || 'text'} style={vscDarkPlus} customStyle={{ margin: 0, padding: '1rem', background: 'transparent' }} PreTag="div">
           {value}
         </SyntaxHighlighter>
       </div>
@@ -36,7 +37,12 @@ const CodeBlock = ({ language, value }: { language: string, value: string }) => 
 };
 
 interface FeedbackPanelProps {
-  prep: any;
+  prep: InterviewPrep;
+}
+
+interface MarkdownCodeProps {
+  children?: React.ReactNode;
+  className?: string;
 }
 
 export function FeedbackPanel({ prep }: FeedbackPanelProps) {
@@ -56,7 +62,7 @@ export function FeedbackPanel({ prep }: FeedbackPanelProps) {
     <div className="flex h-full flex-col bg-background/50">
       <div className="flex-1 overflow-y-auto p-5 space-y-6 scroll-smooth">
         <AnimatePresence initial={false}>
-          {chat.map((msg: any, i: number) => (
+          {chat.map((msg: InterviewChatMessage, i: number) => (
             <motion.div 
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -77,7 +83,7 @@ export function FeedbackPanel({ prep }: FeedbackPanelProps) {
                       remarkPlugins={[remarkGfm, remarkMath]}
                       rehypePlugins={[rehypeKatex]}
                       components={{
-                        code: ({ children, className, ...props }: any) => {
+                        code: ({ children, className, ...props }: MarkdownCodeProps) => {
                           const match = /language-(\w+)/.exec(className || '');
                           if (match || String(children).includes('\n')) {
                             return <CodeBlock language={match?.[1] || 'text'} value={String(children).replace(/\n$/, '')} />;
@@ -129,8 +135,8 @@ export function FeedbackPanel({ prep }: FeedbackPanelProps) {
             <div className="relative flex-1 flex items-end bg-background border border-border/30 rounded-xl shadow-sm focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary/50 transition-all">
               <textarea
                 value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                onKeyDown={(e) => {
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setMessage(e.target.value)}
+                onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
                   if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
                     sendMessage();

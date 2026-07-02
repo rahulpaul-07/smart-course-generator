@@ -5,6 +5,7 @@ import { useInterviewSession } from '../hooks/useInterviewSession';
 import { useInterviewTimer } from '../hooks/useInterviewTimer';
 import { useInterviewAnswers } from '../hooks/useInterviewAnswers';
 import { useInterviewResults } from '../hooks/useInterviewResults';
+import type { InterviewPrep } from '../types';
 import { InterviewHeader } from '../components/interview/InterviewHeader';
 import { InterviewSidebar } from '../components/interview/InterviewSidebar';
 import { InterviewToolbar } from '../components/interview/InterviewToolbar';
@@ -92,7 +93,7 @@ export default function InterviewPrepPage() {
           {activePrep.status === 'completed' ? (
             <ResultsDashboard prep={activePrep} readiness={readiness} strengths={strengths} weaknesses={weaknesses} aiRec={aiRec} />
           ) : (
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode="sync" initial={false}>
               <motion.div
                 key={activeTab}
                 initial={{ opacity: 0, y: 10 }}
@@ -150,7 +151,13 @@ export default function InterviewPrepPage() {
   );
 }
 
-function WorkspaceRouter({ activeTab, prep, onUpdate }: any) {
+interface WorkspaceRouterProps {
+  activeTab: string;
+  prep: InterviewPrep;
+  onUpdate: (value: InterviewPrep | null | ((val: InterviewPrep | null) => InterviewPrep | null)) => void;
+}
+
+function WorkspaceRouter({ activeTab, prep, onUpdate }: WorkspaceRouterProps) {
   const {
     mcqAnswers,
     setMcqAnswers,

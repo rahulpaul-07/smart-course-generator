@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bookmark, Check, FlaskConical, Layers3, Loader2, MessageCircle, NotebookPen, Play, Save } from 'lucide-react';
+import { Bookmark, Check, FlaskConical, Layers3, Loader2, MessageCircle, NotebookPen, Play, Save, type LucideIcon } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../../utils/api';
@@ -8,6 +8,18 @@ import PracticeLab from './PracticeLab';
 import LessonPDFExporter from './LessonPDFExporter';
 import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
+import type { Lesson } from '../../types';
+import type { LessonProgressUpdate } from '../../services/lessonService';
+
+interface ToolCardProps {
+  active?: boolean;
+  description: string;
+  disabled?: boolean;
+  icon: LucideIcon;
+  onClick: () => void;
+  status?: string;
+  title: string;
+}
 
 function ToolCard({
   active = false,
@@ -17,7 +29,7 @@ function ToolCard({
   onClick,
   status,
   title,
-}: any) {
+}: ToolCardProps) {
   return (
     <button
       type="button"
@@ -51,6 +63,15 @@ function ToolCard({
   );
 }
 
+interface StudyToolsProps {
+  addingVideos: boolean;
+  chatOpen: boolean;
+  lesson: Lesson;
+  onAddVideos: () => void;
+  onLessonUpdate: (lesson: Lesson) => void;
+  onToggleChat: () => void;
+}
+
 const StudyTools = React.memo(({
   addingVideos,
   chatOpen,
@@ -58,13 +79,13 @@ const StudyTools = React.memo(({
   onAddVideos,
   onLessonUpdate,
   onToggleChat,
-}: any) => {
+}: StudyToolsProps) => {
   const [activeTool, setActiveTool] = useState('');
   const [notes, setNotes] = useState(lesson.notes || '');
   const [saving, setSaving] = useState(false);
   const videoCount = lesson.videos?.length || 0;
 
-  async function updateProgress(changes: any, successMessage?: string) {
+  async function updateProgress(changes: LessonProgressUpdate, successMessage?: string) {
     setSaving(true);
     try {
       const { data } = await api.patch(`/courses/lessons/${lesson._id}/progress`, changes);
@@ -116,7 +137,7 @@ const StudyTools = React.memo(({
           {activeTool === 'flashcards' && (
             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
               <div className="rounded-xl border border-border bg-card/50 p-4 mb-2 shadow-inner">
-                <FlashcardDeck lessonId={lesson._id} courseId={lesson.course} embedded />
+                <FlashcardDeck lessonId={lesson._id} courseId={(lesson as Lesson & { course?: string }).course as string} embedded />
               </div>
             </motion.div>
           )}
@@ -133,7 +154,7 @@ const StudyTools = React.memo(({
           {activeTool === 'lab' && (
             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
               <div className="rounded-xl border border-border bg-card/50 p-4 mb-2 shadow-inner">
-                <PracticeLab lessonId={lesson._id} courseId={lesson.course} embedded />
+                <PracticeLab lessonId={lesson._id} courseId={(lesson as Lesson & { course?: string }).course as string} embedded />
               </div>
             </motion.div>
           )}

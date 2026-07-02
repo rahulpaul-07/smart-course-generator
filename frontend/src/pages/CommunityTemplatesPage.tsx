@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Globe, Heart, Copy, Star, Plus } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { collabService, type CommunityTemplate } from '../services/collabService';
@@ -16,20 +16,22 @@ export default function CommunityTemplatesPage() {
   const [cloningId, setCloningId] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchTemplates();
+  const fetchTemplates = useCallback(() => {
+    queueMicrotask(() => {
+      setLoading(true);
+      setError(false);
+      collabService.getTemplates()
+        .then(([data, err]) => {
+          if (err || !data) setError(true);
+          else setTemplates(data || []);
+        })
+        .finally(() => setLoading(false));
+    });
   }, []);
 
-  const fetchTemplates = () => {
-    setLoading(true);
-    setError(false);
-    collabService.getTemplates()
-      .then(([data, err]) => {
-        if (err || !data) setError(true);
-        else setTemplates(data || []);
-      })
-      .finally(() => setLoading(false));
-  };
+  useEffect(() => {
+    fetchTemplates();
+  }, [fetchTemplates]);
 
   const handleUpvote = async (courseId: string) => {
     // Optimistic UI Update

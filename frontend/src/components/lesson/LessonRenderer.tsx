@@ -1,8 +1,9 @@
 import React from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { MemoizedBlock } from './MemoizedBlock';
+import type { LessonContentBlock } from '../../types';
 
-const LessonRenderer = React.memo(({ content = [], isStreaming = false }: { content: any[], isStreaming?: boolean }) => {
+const LessonRenderer = React.memo(({ content = [], isStreaming = false }: { content: LessonContentBlock[], isStreaming?: boolean }) => {
   if (!content.length && !isStreaming) {
     return (
       <div className="p-16 text-center rounded-2xl border border-dashed border-border bg-card/20 backdrop-blur-sm">

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import type { MouseEvent } from 'react';
 
 export function useRoadmapProgress(initialExpanded = new Set([1])) {
   const [expandedWeeks, setExpandedWeeks] = useState<Set<number>>(initialExpanded);
@@ -11,12 +12,12 @@ export function useRoadmapProgress(initialExpanded = new Set([1])) {
   function toggleWeek(num: number) {
     setExpandedWeeks((prev) => {
       const next = new Set(prev);
-      next.has(num) ? next.delete(num) : next.add(num);
+      if (next.has(num)) next.delete(num); else next.add(num);
       return next;
     });
   }
 
-  async function toggleCompletion(e: any, num: number) {
+  async function toggleCompletion(e: MouseEvent<HTMLButtonElement>, num: number) {
     e.stopPropagation();
     
     // If an actual API call is added later, it should replace the fake delay.
@@ -24,7 +25,7 @@ export function useRoadmapProgress(initialExpanded = new Set([1])) {
     
     setCompletedWeeks(prev => {
       const next = new Set(prev);
-      next.has(num) ? next.delete(num) : next.add(num);
+      if (next.has(num)) next.delete(num); else next.add(num);
       return next;
     });
     

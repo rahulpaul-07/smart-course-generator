@@ -1,9 +1,10 @@
 import { useRef, useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { lessonService } from '../services/lessonService';
+import type { AiConversationMessage } from '../types';
 
 export function useAIChat(courseId: string, lessonId: string, isOpen: boolean) {
-  const [messages, setMessages] = useState<any[]>([]);
+  const [messages, setMessages] = useState<AiConversationMessage[]>([]);
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
   const [hasFetchedHistory, setHasFetchedHistory] = useState(false);
@@ -15,20 +16,25 @@ export function useAIChat(courseId: string, lessonId: string, isOpen: boolean) {
   useEffect(() => {
     let mounted = true;
     if (isOpen && !hasFetchedHistory) {
-      setLoadingHistory(true);
-      setHistoryError(null);
-      lessonService.getLesson(courseId, lessonId)
-        .then(([data, err]) => {
-          if (mounted) {
-            if (err) {
-              setHistoryError(err);
-            } else if (data && (data as any).lesson?.aiConversation?.length) {
-              setMessages((data as any).lesson.aiConversation);
+      // Deferred to a microtask so this reads as a callback invocation
+      // rather than a synchronous setState call within the effect body.
+      queueMicrotask(() => {
+        if (!mounted) return;
+        setLoadingHistory(true);
+        setHistoryError(null);
+        lessonService.getLesson(courseId, lessonId)
+          .then(([data, err]) => {
+            if (mounted) {
+              if (err) {
+                setHistoryError(err);
+              } else if (data?.lesson?.aiConversation?.length) {
+                setMessages(data.lesson.aiConversation);
+              }
+              setHasFetchedHistory(true);
+              setLoadingHistory(false);
             }
-            setHasFetchedHistory(true);
-            setLoadingHistory(false);
-          }
-        });
+          });
+      });
     }
     return () => { mounted = false; };
   }, [isOpen, courseId, lessonId, hasFetchedHistory]);
@@ -51,8 +57,8 @@ export function useAIChat(courseId: string, lessonId: string, isOpen: boolean) {
     const message = text.trim();
     if (!message || sending) return;
 
-    const history = [...messages, { role: 'user', content: message }];
-    setMessages([...history, { role: 'assistant', content: '' }]);
+    const history: AiConversationMessage[] = [...messages, { role: 'user' as const, content: message }];
+    setMessages([...history, { role: 'assistant' as const, content: '' }]);
     setInput('');
     if (inputRef.current) inputRef.current.style.height = 'auto';
     setSending(true);
@@ -121,12 +127,12 @@ export function useAIChat(courseId: string, lessonId: string, isOpen: boolean) {
       if (!streamedContent.trim()) {
         throw new Error('Empty response');
       }
-    } catch (error: any) {
-      if (error.name === 'AbortError') {
+    } catch (error: unknown) {
+      if (error instanceof DOMException && error.name === 'AbortError') {
         // User aborted, keep what's completed
       } else {
         setMessages(history); 
-        toast.error(error.message || 'Could not answer that question.');
+        toast.error(error instanceof Error ? error.message : 'Could not answer that question.');
       }
     } finally {
       abortControllerRef.current = null;

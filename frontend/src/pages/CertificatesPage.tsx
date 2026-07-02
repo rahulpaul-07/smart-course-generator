@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Award, ExternalLink } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { certificateService } from '../services/certificateService';
+import type { Certificate } from '../types';
 import { PageContainer } from '../components/layout/PageContainer';
 import { SectionHeader } from '../components/ui/SectionHeader';
 import { EmptyState } from '../components/ui/EmptyState';
@@ -11,25 +12,27 @@ import { ErrorState } from '../components/ui/ErrorState';
 import { CertificatesGridSkeleton } from '../components/certificate/CertificateSkeleton';
 
 export default function CertificatesPage() {
-  const [certificates, setCertificates] = useState([]);
+  const [certificates, setCertificates] = useState<Certificate[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const navigate = useNavigate();
 
-  const fetchCertificates = () => {
-    setLoading(true);
-    setError(false);
-    certificateService.getAllCertificates()
-      .then(([data, err]) => {
-        if (err) setError(true);
-        else setCertificates((data as any) || []);
-      })
-      .finally(() => setLoading(false));
-  };
+  const fetchCertificates = useCallback(() => {
+    queueMicrotask(() => {
+      setLoading(true);
+      setError(false);
+      certificateService.getAllCertificates()
+        .then(([data, err]) => {
+          if (err) setError(true);
+          else setCertificates(data || []);
+        })
+        .finally(() => setLoading(false));
+    });
+  }, []);
 
   useEffect(() => {
     fetchCertificates();
-  }, []);
+  }, [fetchCertificates]);
 
   return (
     <PageContainer>
@@ -61,7 +64,7 @@ export default function CertificatesPage() {
         />
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-8">
-          {certificates.map((cert: any) => (
+          {certificates.map((cert) => (
             <div key={cert._id} className="glass-card p-6 rounded-2xl flex flex-col items-center text-center">
               <Award className="h-12 w-12 text-amber-500 mb-4" />
               <h3 className="font-bold text-foreground mb-2">{cert.courseTitle || 'Course Certificate'}</h3>

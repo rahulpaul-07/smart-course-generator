@@ -1,17 +1,18 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BookOpen, CheckCircle2, ChevronDown, ChevronRight, Flag, LayoutGrid, Loader2, Rocket, ArrowRight } from 'lucide-react';
+import type { Roadmap, RoadmapWeek } from '../../types';
 
 interface RoadmapWeekCardProps {
-  roadmap: any;
-  week: any;
+  roadmap: Roadmap;
+  week: RoadmapWeek;
   index: number;
   isExpanded: boolean;
   isCompleted: boolean;
   isCurrent: boolean;
   isSaving?: boolean;
   toggleWeek: (num: number) => void;
-  toggleCompletion: (e: any, num: number) => void;
+  toggleCompletion: (e: React.MouseEvent<HTMLButtonElement>, num: number) => void;
   onGenerateCourse: (topic: string) => void;
 }
 
@@ -101,13 +102,13 @@ export function RoadmapWeekCard({
               <div className="p-6 space-y-8">
                 
                 {/* Topics Section */}
-                {week.topics?.length > 0 && (
+                {(week.topics?.length ?? 0) > 0 && (
                   <div>
                     <h4 className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-foreground mb-4">
                       <BookOpen className="h-4 w-4 text-primary" /> Key Topics
                     </h4>
                     <div className="flex flex-wrap gap-2.5">
-                      {week.topics.map((topic: string, i: number) => {
+                      {week.topics?.map((topic: string, i: number) => {
                         const isGenerating = generatingTopic === topic;
                         return (
                           <button
@@ -133,13 +134,13 @@ export function RoadmapWeekCard({
 
                 <div className="grid md:grid-cols-2 gap-6">
                   {/* Milestones */}
-                  {week.milestones?.length > 0 && (
+                  {(week.milestones?.length ?? 0) > 0 && (
                     <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-5 shadow-sm">
                       <h4 className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400 mb-4">
                         <Flag className="h-4 w-4" /> Milestones
                       </h4>
                       <ul className="space-y-3">
-                        {week.milestones.map((m: string, i: number) => (
+                        {week.milestones?.map((m: string, i: number) => (
                           <li key={i} className="flex items-start gap-3 text-[14px] text-foreground/90 font-medium leading-relaxed">
                             <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
                             {m}
@@ -163,7 +164,7 @@ export function RoadmapWeekCard({
                       )}
                       <button
                         disabled={generatingTopic === week.project.title}
-                        onClick={() => handleGenerateCourse(week.project.title)}
+                        onClick={() => handleGenerateCourse(week.project?.title ?? '')}
                         className={`mt-auto flex items-center justify-center gap-2 w-full h-10 rounded-xl bg-background border border-amber-500/30 text-[13px] font-bold text-amber-600 dark:text-amber-500 hover:bg-amber-500/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 ${generatingTopic === week.project.title ? 'cursor-progress opacity-70' : ''}`}
                       >
                         {generatingTopic === week.project.title ? (

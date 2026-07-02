@@ -23,23 +23,20 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 const hasAuth0Config = !!(import.meta.env.VITE_AUTH0_DOMAIN && import.meta.env.VITE_AUTH0_CLIENT_ID);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const auth0 = hasAuth0Config
-    ? useAuth0()
-    : {
-        getAccessTokenSilently: async () => '',
-        isAuthenticated: false,
-        isLoading: false,
-        loginWithRedirect: (() => {}) as (opts?: unknown) => void,
-        logout: (() => {}) as (opts?: unknown) => void,
-      };
-
+  // Auth0Provider always wraps the app (see AuthWrapper.tsx), using inert
+  // placeholder values when Auth0 isn't configured -- so this hook is safe
+  // to call unconditionally per React's Rules of Hooks. Actual Auth0 session
+  // state below is ignored whenever hasAuth0Config is false.
   const {
     getAccessTokenSilently,
-    isAuthenticated: hasAuth0Session,
-    isLoading: auth0Loading,
+    isAuthenticated: auth0SessionFlag,
+    isLoading: auth0LoadingFlag,
     loginWithRedirect,
     logout: logoutFromAuth0,
-  } = auth0;
+  } = useAuth0();
+
+  const hasAuth0Session = hasAuth0Config && auth0SessionFlag;
+  const auth0Loading = hasAuth0Config && auth0LoadingFlag;
   const [user, setUser] = useState<User | null>(null);
   const [loadingSession, setLoadingSession] = useState(true);
   const [syncingAuth0, setSyncingAuth0] = useState(false);

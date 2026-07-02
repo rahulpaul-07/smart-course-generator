@@ -1,9 +1,10 @@
 import React from 'react';
 import { ArrowLeft, MessageSquare } from 'lucide-react';
+import type { InterviewPrep } from '../../types';
 
 interface InterviewToolbarProps {
-  activePrep: any;
-  setActivePrep: (prep: any) => void;
+  activePrep: InterviewPrep;
+  setActivePrep: (prep: InterviewPrep | null) => void;
   formattedTime: string;
   setIsMobileCoachOpen: (open: boolean) => void;
 }

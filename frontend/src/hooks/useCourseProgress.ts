@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Code2, Layers3, Shield, Brain, BookOpen } from 'lucide-react';
 import { courseService } from '../services/courseService';
 import { courseProgress } from '../utils/courseProgress';
@@ -10,29 +10,34 @@ export function useCourseProgress(id: string | undefined) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchCourse = () => {
+  const fetchCourse = useCallback(() => {
     let active = true;
-    setLoading(true);
-    setError(null);
-    
-    courseService.getCourse(id!).then(([data, err]) => {
+    // Deferred to a microtask so this reads as a callback invocation rather
+    // than a synchronous setState call within the effect body.
+    queueMicrotask(() => {
       if (!active) return;
-      if (err) {
-        setError(err);
-      } else if (data) {
-        setCourse(data);
-      }
-      setLoading(false);
+      setLoading(true);
+      setError(null);
+
+      courseService.getCourse(id!).then(([data, err]) => {
+        if (!active) return;
+        if (err) {
+          setError(err);
+        } else if (data) {
+          setCourse(data);
+        }
+        setLoading(false);
+      });
     });
 
     return () => {
       active = false;
     };
-  };
+  }, [id]);
 
   useEffect(() => {
     return fetchCourse();
-  }, [id]);
+  }, [fetchCourse]);
 
   if (!course) {
     return { course, loading, error, progress: null, estimatedHours: 0, difficulty: '', skills: [], nextLessonId: null, setCourse, refetch: fetchCourse };

@@ -2,13 +2,18 @@ import React from 'react';
 import { Code2, AlertTriangle, Sparkles, ChevronRight, Brain, CheckCircle2 } from 'lucide-react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import type { InterviewPrep, CodingQuestion } from '../../types';
 
 interface CodingWorkspaceProps {
-  prep: any;
+  prep: InterviewPrep;
   codingSolutions: string[];
   setCodingSolutions: (answers: string[]) => void;
   submitted: boolean;
 }
+
+/** The backend may include an `idealSolution` field on completed coding
+ * questions that is not part of the shared `CodingQuestion` type. */
+type CodingQuestionWithIdealSolution = CodingQuestion & { idealSolution?: string };
 
 export function CodingWorkspace({ prep, codingSolutions, setCodingSolutions, submitted }: CodingWorkspaceProps) {
   function updateSolution(i: number, val: string) {
@@ -24,7 +29,7 @@ export function CodingWorkspace({ prep, codingSolutions, setCodingSolutions, sub
         <p className="text-muted-foreground font-medium">Write clean, optimized, and robust code.</p>
       </div>
 
-      {prep.codingQuestions?.map((q: any, i: number) => (
+      {prep.codingQuestions?.map((q: CodingQuestionWithIdealSolution, i: number) => (
         <div key={i} className="rounded-2xl border border-border/30 bg-card/20 backdrop-blur-md shadow-sm overflow-hidden flex flex-col transition-all">
           <div className="border-b border-border/30 bg-muted/40 p-5 px-8 flex items-center gap-4">
             <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20 shadow-sm">
@@ -54,7 +59,7 @@ export function CodingWorkspace({ prep, codingSolutions, setCodingSolutions, sub
                   <span>Starter Code</span>
                   <span className="text-primary/70">JavaScript</span>
                 </div>
-                <SyntaxHighlighter language="javascript" style={vscDarkPlus as any} customStyle={{ margin: 0, padding: '1.25rem', background: 'transparent' }}>
+                <SyntaxHighlighter language="javascript" style={vscDarkPlus} customStyle={{ margin: 0, padding: '1.25rem', background: 'transparent' }}>
                   {q.starterCode}
                 </SyntaxHighlighter>
               </div>
@@ -67,7 +72,7 @@ export function CodingWorkspace({ prep, codingSolutions, setCodingSolutions, sub
               </div>
               <textarea
                 value={submitted ? (q.userSolution || '') : codingSolutions[i]}
-                onChange={(e) => updateSolution(i, e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => updateSolution(i, e.target.value)}
                 disabled={submitted}
                 rows={12}
                 className="w-full bg-[#0D0D0D] p-5 pt-16 text-[14px] font-mono leading-relaxed text-emerald-400 outline-none resize-y disabled:opacity-90 placeholder:text-muted-foreground/30 relative z-0"
@@ -101,7 +106,7 @@ export function CodingWorkspace({ prep, codingSolutions, setCodingSolutions, sub
                       <span className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5" /> Ideal Solution</span>
                       <span>JavaScript</span>
                     </div>
-                    <SyntaxHighlighter language="javascript" style={vscDarkPlus as any} customStyle={{ margin: 0, padding: '1.25rem', background: 'transparent' }}>
+                    <SyntaxHighlighter language="javascript" style={vscDarkPlus} customStyle={{ margin: 0, padding: '1.25rem', background: 'transparent' }}>
                       {q.idealSolution}
                     </SyntaxHighlighter>
                   </div>

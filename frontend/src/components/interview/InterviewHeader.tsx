@@ -2,13 +2,14 @@ import React from 'react';
 import { Brain, Sparkles, Trophy, Trash2, BookOpen } from 'lucide-react';
 import LoadingSpinner from '../LoadingSpinner';
 import { EmptyState } from '../ui/EmptyState';
+import type { InterviewPrep } from '../../types';
 
 interface InterviewHeaderProps {
   topic: string;
   setTopic: (t: string) => void;
-  generate: (e: any) => void;
+  generate: (e: React.FormEvent) => void;
   generating: boolean;
-  preps: any[];
+  preps: InterviewPrep[];
   viewPrep: (id: string) => void;
   deletePrep: (id: string) => void;
 }
@@ -43,7 +44,7 @@ export function InterviewHeader({
             <input
               aria-label="Interview topic"
               value={topic}
-              onChange={(e) => setTopic(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTopic(e.target.value)}
               placeholder="E.g. Senior Frontend Engineer, System Design..."
               className="flex-1 h-12 bg-transparent px-5 text-[15px] font-medium text-foreground outline-none placeholder:text-muted-foreground"
               maxLength={100}
@@ -66,7 +67,7 @@ export function InterviewHeader({
                     <span className={`px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${p.status === 'completed' ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-500 border border-amber-500/20'}`}>
                       {p.status}
                     </span>
-                    <button onClick={(e) => { e.stopPropagation(); deletePrep(p._id); }} className="p-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive rounded-lg transition-colors opacity-0 group-hover:opacity-100">
+                    <button onClick={(e: React.MouseEvent<HTMLButtonElement>) => { e.stopPropagation(); deletePrep(p._id); }} className="p-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive rounded-lg transition-colors opacity-0 group-hover:opacity-100">
                       <Trash2 className="h-4 w-4" />
                     </button>
                   </div>

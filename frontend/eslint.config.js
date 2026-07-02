@@ -40,4 +40,16 @@ export default defineConfig([
       'no-unused-vars': 'off',
     },
   },
+  {
+    // Context providers and custom hooks legitimately export both a
+    // component/provider and a same-file hook -- the official React pattern
+    // for context (https://react.dev/learn/scaling-up-with-reducer-and-context).
+    // This trades slightly slower Fast Refresh (a full reload instead of a
+    // hot swap when the file changes) for co-located, discoverable code,
+    // which is an accepted trade-off rather than a correctness issue.
+    files: ['**/contexts/**/*.{ts,tsx}', '**/hooks/**/*.{ts,tsx}'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
 ])

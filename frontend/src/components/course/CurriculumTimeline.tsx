@@ -4,18 +4,19 @@ import { useNavigate } from 'react-router-dom';
 import { CheckCircle2, ChevronDown, ChevronUp, Clock, Lock, PlayCircle, Bookmark, Layers3 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { calculatePercentage } from '../../utils/percentages';
+import type { PopulatedCourse, PopulatedModule, Lesson } from '../../types';
 
-const ModuleCard = ({ moduleDoc, moduleIndex, courseId }: { moduleDoc: any, moduleIndex: number, courseId: string }) => {
+const ModuleCard = ({ moduleDoc, moduleIndex, courseId }: { moduleDoc: PopulatedModule, moduleIndex: number, courseId: string }) => {
   const navigate = useNavigate();
   const [isExpanded, setIsExpanded] = useState(moduleIndex === 0);
   
   const totalLessons = moduleDoc.lessons?.length || 0;
-  const completedLessons = moduleDoc.lessons?.filter((l: any) => l.completedAt)?.length || 0;
+  const completedLessons = moduleDoc.lessons?.filter((l: Lesson) => l.completedAt)?.length || 0;
   const progress = calculatePercentage(completedLessons, totalLessons);
   const isCompleted = progress === 100;
 
   // Determine current lesson index (first uncompleted lesson)
-  const currentLessonIndex = moduleDoc.lessons?.findIndex((l: any) => !l.completedAt);
+  const currentLessonIndex = moduleDoc.lessons?.findIndex((l: Lesson) => !l.completedAt);
   const activeLessonIdx = currentLessonIndex === -1 ? totalLessons - 1 : currentLessonIndex;
 
   return (
@@ -64,7 +65,7 @@ const ModuleCard = ({ moduleDoc, moduleIndex, courseId }: { moduleDoc: any, modu
           >
             <div className="px-5 sm:px-6 pb-6 pt-2">
               <div className="relative pl-4 border-l-2 border-border/30 ml-4 space-y-4 py-2">
-                {moduleDoc.lessons?.map((lesson: any, lessonIndex: number) => {
+                {moduleDoc.lessons?.map((lesson: Lesson, lessonIndex: number) => {
                   const isLessonCompleted = !!lesson.completedAt;
                   const isCurrent = lessonIndex === activeLessonIdx;
                   const isLocked = lessonIndex > activeLessonIdx;
@@ -109,7 +110,7 @@ const ModuleCard = ({ moduleDoc, moduleIndex, courseId }: { moduleDoc: any, modu
                         {!isLocked && (
                           <div className="flex items-center gap-3 shrink-0">
                             {lesson.bookmarked && <Bookmark className="h-4 w-4 text-primary fill-primary/20" />}
-                            {lesson.quizBestScore > 0 && (
+                            {(lesson.quizBestScore ?? 0) > 0 && (
                               <span className="text-xs font-semibold text-foreground bg-foreground/10 px-2 py-0.5 rounded-full border border-border/30">
                                 {lesson.quizBestScore}/5 Score
                               </span>
@@ -132,7 +133,7 @@ const ModuleCard = ({ moduleDoc, moduleIndex, courseId }: { moduleDoc: any, modu
   );
 };
 
-export function CurriculumTimeline({ course, courseId }: { course: any, courseId: string | undefined }) {
+export function CurriculumTimeline({ course, courseId }: { course: PopulatedCourse, courseId: string | undefined }) {
   return (
     <motion.section
       initial={{ opacity: 0, y: 10 }}
@@ -145,7 +146,7 @@ export function CurriculumTimeline({ course, courseId }: { course: any, courseId
         </h2>
       </div>
       <div className="space-y-4">
-        {course.modules?.map((moduleDoc: any, moduleIndex: number) => (
+        {course.modules?.map((moduleDoc: PopulatedModule, moduleIndex: number) => (
           <ModuleCard key={moduleDoc._id} moduleDoc={moduleDoc} moduleIndex={moduleIndex} courseId={courseId || ''} />
         ))}
       </div>
