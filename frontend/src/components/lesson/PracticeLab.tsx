@@ -9,28 +9,10 @@ import type { PracticeLab as PracticeLabData } from '../../types';
 
 const PracticeLab = React.memo(({ lessonId, courseId, embedded = false }: { lessonId: string, courseId: string, embedded?: boolean }) => {
   const [lab, setLab] = useState<PracticeLabData | null>(null);
-  const [initialLoading, setInitialLoading] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showHint, setShowHint] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-
-  // Fetch or generate lab on mount
-  useState(() => {
-    let mounted = true;
-    async function fetchInitialLab() {
-      if (!mounted) return;
-      try {
-        const [data, fetchError] = await lessonService.generateLab(courseId, lessonId);
-        if (mounted && fetchError) setError(fetchError);
-        if (mounted && data) setLab((data as unknown as { lab: PracticeLabData }).lab);
-      } finally {
-        if (mounted) setInitialLoading(false);
-      }
-    }
-    fetchInitialLab();
-    return () => { mounted = false; };
-  });
 
   async function generateLab(forceRegenerate = false) {
     if (forceRegenerate) {
@@ -58,35 +40,9 @@ const PracticeLab = React.memo(({ lessonId, courseId, embedded = false }: { less
     }
   }
 
-  if (initialLoading) {
-    return (
-      <Card className={`overflow-hidden border-cyan-500/20 ${embedded ? 'border-none shadow-none bg-transparent' : ''}`}>
-        <CardHeader className="bg-cyan-500/5 border-b border-border/30 pb-6">
-          <div className="flex items-start justify-between gap-4">
-            <div className="w-full">
-              <div className="h-6 w-32 animate-pulse rounded bg-card mb-3" />
-              <div className="h-8 w-2/3 animate-pulse rounded bg-card" />
-            </div>
-          </div>
-          <div className="mt-4 h-4 w-full animate-pulse rounded bg-card" />
-          <div className="mt-2 h-4 w-5/6 animate-pulse rounded bg-card" />
-        </CardHeader>
-        <CardContent className="pt-6 space-y-8">
-          <div>
-            <div className="h-6 w-48 animate-pulse rounded bg-card mb-4" />
-            <div className="space-y-3">
-              <div className="h-12 w-full animate-pulse rounded-xl bg-card" />
-              <div className="h-12 w-full animate-pulse rounded-xl bg-card" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
-
   if (!lab) {
     return (
-      <div className={embedded ? '' : 'rounded-2xl border border-border bg-card p-6'}>
+      <div className={embedded ? '' : 'surface-card rounded-2xl p-6'}>
         <div className="flex flex-col items-center justify-center text-center py-8">
           <div className="h-16 w-16 rounded-2xl bg-cyan-500/10 flex items-center justify-center mb-6 border border-cyan-500/20">
             <FlaskConical className="h-8 w-8 text-cyan-500" />

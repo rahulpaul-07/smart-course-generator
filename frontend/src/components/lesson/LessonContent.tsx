@@ -4,8 +4,6 @@ import LoadingSpinner from '../LoadingSpinner';
 import LessonGenerator from './LessonGenerator';
 import LessonCompletion from './LessonCompletion';
 import VideoBlock from '../blocks/VideoBlock';
-import FlashcardDeck from './FlashcardDeck';
-import PracticeLab from './PracticeLab';
 import type { Lesson, LessonVideo, PopulatedCourse } from '../../types';
 const LessonRenderer = lazy(() => import('./LessonRenderer'));
 
@@ -35,7 +33,6 @@ export function LessonContent({
   lesson,
   course,
   courseId,
-  lessonId,
   isFocusMode,
   hasContent,
   generating,
@@ -140,44 +137,12 @@ export function LessonContent({
         </div>
       )}
 
-      {hasContent && !generating && streamStatus !== 'error' && courseId && (
-        <div className="mt-20 pt-12 border-t border-border/30">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-500/10 border border-indigo-500/20 shadow-[0_0_15px_rgba(99,102,241,0.15)]">
-              <svg className="h-5 w-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-              </svg>
-            </div>
-            <h2 className="text-2xl font-bold tracking-tight text-foreground font-display">
-              Master this Lesson
-            </h2>
-          </div>
-          <div className="grid lg:grid-cols-2 gap-8">
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                <BookOpen className="h-4 w-4 text-primary" /> Flashcards
-              </h3>
-              <FlashcardDeck lessonId={lessonId!} courseId={courseId} embedded={true} />
-            </div>
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                <svg className="h-4 w-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                </svg>
-                Practice Lab
-              </h3>
-              <PracticeLab lessonId={lessonId!} courseId={courseId} embedded={true} />
-            </div>
-          </div>
-        </div>
-      )}
-
       {!hasContent && !generating && streamStatus !== 'error' && (
         <div className="flex flex-col items-center justify-center py-24 text-center rounded-2xl border-2 border-dashed border-border/30 bg-card/10 backdrop-blur-sm mt-12 shadow-sm">
           <div className="h-24 w-24 bg-muted border border-border/30 rounded-[2rem] flex items-center justify-center mb-6 shadow-inner">
             <BookOpen className="h-10 w-10 text-muted-foreground/60" />
           </div>
-          <h3 className="text-2xl font-bold text-foreground mb-3 font-serif">Ready to Learn?</h3>
+          <h3 className="text-2xl font-bold text-foreground mb-3 font-display">Ready to Learn?</h3>
           <p className="text-base font-medium text-muted-foreground max-w-sm">Generate this lesson to get a beautifully formatted, personalized AI-crafted educational content.</p>
         </div>
       )}

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Bookmark, Check, FlaskConical, Layers3, Loader2, MessageCircle, NotebookPen, Play, Save, type LucideIcon } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { ArrowUpRight, Bookmark, Brain, Check, FlaskConical, Layers3, Loader2, MessageCircle, NotebookPen, Play, Save, type LucideIcon } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../../utils/api';
@@ -136,7 +137,7 @@ const StudyTools = React.memo(({
         <AnimatePresence>
           {activeTool === 'flashcards' && (
             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-              <div className="rounded-xl border border-border bg-card/50 p-4 mb-2 shadow-inner">
+              <div className="glass-card rounded-xl p-4 mb-2 shadow-inner">
                 <FlashcardDeck lessonId={lesson._id} courseId={(lesson as Lesson & { course?: string }).course as string} embedded />
               </div>
             </motion.div>
@@ -153,7 +154,7 @@ const StudyTools = React.memo(({
         <AnimatePresence>
           {activeTool === 'lab' && (
             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-              <div className="rounded-xl border border-border bg-card/50 p-4 mb-2 shadow-inner">
+              <div className="glass-card rounded-xl p-4 mb-2 shadow-inner">
                 <PracticeLab lessonId={lesson._id} courseId={(lesson as Lesson & { course?: string }).course as string} embedded />
               </div>
             </motion.div>
@@ -171,7 +172,7 @@ const StudyTools = React.memo(({
         <AnimatePresence>
           {activeTool === 'notes' && (
             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-              <div className="rounded-xl border border-border bg-card/50 p-4 mb-2 shadow-inner flex flex-col gap-3">
+              <div className="glass-card rounded-xl p-4 mb-2 shadow-inner flex flex-col gap-3">
                 <Textarea
                   value={notes}
                   onChange={(event) => setNotes(event.target.value)}
@@ -203,6 +204,22 @@ const StudyTools = React.memo(({
           disabled={addingVideos}
           onClick={onAddVideos}
         />
+
+        <Link
+          to="/interview-prep"
+          className="group relative flex w-full items-center gap-4 overflow-hidden rounded-xl border border-border/50 bg-card p-4 text-left transition-all duration-300 hover:-translate-y-0.5 hover:border-rose-500/30 hover:bg-accent/40 hover:shadow-lg"
+        >
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-border bg-muted text-muted-foreground transition-all duration-300 group-hover:scale-110 group-hover:border-rose-500/30 group-hover:bg-rose-500/10 group-hover:text-rose-500">
+            <Brain className="h-5 w-5" />
+          </span>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-1.5">
+              <span className="font-semibold text-sm text-foreground">Practice in a Mock Interview</span>
+              <ArrowUpRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+            </div>
+            <span className="mt-1 block text-xs leading-relaxed text-muted-foreground line-clamp-2">Test this topic under real interview conditions.</span>
+          </div>
+        </Link>
       </div>
 
       <div className="mt-auto pt-6 border-t border-border/30 flex flex-col gap-3 shrink-0 hidden lg:flex">
