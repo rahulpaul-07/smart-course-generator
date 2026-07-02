@@ -65,7 +65,7 @@ export function RoadmapWeekCard({
                 <LayoutGrid className="h-3 w-3" /> {week.topics?.length || 0} Topics
               </span>
             </div>
-            <h3 className={`font-serif text-xl font-bold truncate ${isCompleted ? 'text-foreground/70' : 'text-foreground'}`}>
+            <h3 className={`font-display text-xl font-bold truncate ${isCompleted ? 'text-foreground/70' : 'text-foreground'}`}>
               {week.title}
             </h3>
           </div>

@@ -2,8 +2,65 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Trophy, Flame, Clock, BookOpen, Star, Copy, Heart, Zap, Award } from 'lucide-react';
 import { collabService, type PublicProfileResponse } from '../services/collabService';
-import LoadingSpinner from '../components/LoadingSpinner';
 import { EmptyState } from '../components/ui/EmptyState';
+import { Skeleton } from '../components/ui/skeleton';
+
+function PublicProfileSkeleton() {
+  return (
+    <div className="page-shell max-w-5xl mx-auto">
+      <div className="glass-card rounded-2xl p-8 mb-8 relative overflow-hidden">
+        <div className="relative flex flex-col md:flex-row items-center md:items-start gap-6">
+          <Skeleton className="h-32 w-32 rounded-full shrink-0" />
+          <div className="text-center md:text-left flex-grow w-full">
+            <Skeleton className="h-8 w-56 rounded-md mx-auto md:mx-0" />
+            <Skeleton className="h-4 w-full max-w-md rounded-md mt-3 mx-auto md:mx-0" />
+            <div className="flex flex-wrap justify-center md:justify-start gap-4 mt-6">
+              <Skeleton className="h-9 w-28 rounded-lg" />
+              <Skeleton className="h-9 w-32 rounded-lg" />
+              <Skeleton className="h-9 w-36 rounded-lg" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid md:grid-cols-3 gap-8">
+        <div className="space-y-6">
+          <div className="glass-card rounded-2xl p-6">
+            <Skeleton className="h-5 w-32 rounded-md mb-4" />
+            <div className="space-y-4">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="flex gap-3 items-start">
+                  <Skeleton className="h-10 w-10 rounded-full shrink-0" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-4 w-3/4 rounded-md" />
+                    <Skeleton className="h-3 w-full rounded-md" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="md:col-span-2">
+          <Skeleton className="h-5 w-44 rounded-md mb-4" />
+          <div className="grid sm:grid-cols-2 gap-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="glass-card rounded-xl p-5">
+                <Skeleton className="h-4 w-3/4 rounded-md mb-3" />
+                <Skeleton className="h-3 w-full rounded-md mb-2" />
+                <Skeleton className="h-3 w-2/3 rounded-md mb-4" />
+                <div className="flex items-center justify-between border-t border-border/30 pt-3">
+                  <Skeleton className="h-3 w-10 rounded-md" />
+                  <Skeleton className="h-3 w-16 rounded-md" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function PublicProfilePage() {
   const { userId } = useParams();
@@ -21,7 +78,7 @@ export default function PublicProfilePage() {
       .finally(() => setLoading(false));
   }, [userId]);
 
-  if (loading) return <div className="page-shell py-20"><LoadingSpinner /></div>;
+  if (loading) return <PublicProfileSkeleton />;
   
   if (error || !profileData) {
     return (
