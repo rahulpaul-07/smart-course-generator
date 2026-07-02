@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { User, Save, Mail, Sparkles, Loader2, BookOpen, Trophy } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { userService } from '../services/userService';
+import { analyticsService } from '../services/analyticsService';
 import { useAuth } from '../hooks/useAuth';
 import { PageContainer } from '../components/layout/PageContainer';
 import { SectionHeader } from '../components/ui/SectionHeader';
@@ -25,6 +26,17 @@ export default function ProfilePage() {
     learningInterests: [] as string[],
   });
   const [saving, setSaving] = useState(false);
+  const [coursesGenerated, setCoursesGenerated] = useState(0);
+
+  useEffect(() => {
+    // Deferred to a microtask so this reads as a callback invocation rather
+    // than a synchronous setState call within the effect body.
+    queueMicrotask(() => {
+      analyticsService.getDashboard().then(([data]) => {
+        if (data) setCoursesGenerated(data.totalCourses);
+      });
+    });
+  }, []);
 
   useEffect(() => {
     if (!user) return;
@@ -190,7 +202,7 @@ export default function ProfilePage() {
                   </div>
                   <span className="font-medium">Courses Generated</span>
                 </div>
-                <span className="font-bold text-lg">0</span>
+                <span className="font-bold text-lg">{coursesGenerated}</span>
               </div>
               <div className="flex items-center justify-between p-3 rounded-xl bg-secondary/50">
                 <div className="flex items-center gap-3">
