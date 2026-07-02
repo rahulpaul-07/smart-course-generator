@@ -20,11 +20,69 @@ async function generateCourseContent(req, res) {
 
     const outline = await createCourseOutline(prompt, language);
     const course = await saveGeneratedCourse(outline, req.user._id, language);
+    course.difficulty = outline.difficulty;
+    course.skills = outline.skills;
+    await course.save();
 
     return res.status(201).json(course);
   } catch (error) {
     console.error("Generate Course Error:", error);
     return res.status(error.statusCode || 500).json({ error: error.message || "Failed to generate course" });
+  }
+}
+
+async function generateCourseContentStream(req, res) {
+  let closed = false;
+  let headersWritten = false;
+
+  function sendEvent(event, data) {
+    if (closed) return;
+    res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
+  }
+
+  try {
+    const prompt = String(req.body?.prompt || "").trim().slice(0, 2000);
+    const language = String(req.body?.language || "English").trim().slice(0, 80);
+
+    if (prompt.length < 10) {
+      return res.status(400).json({ error: "Describe the course in at least 10 characters" });
+    }
+
+    res.writeHead(200, {
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache",
+      Connection: "keep-alive",
+      "X-Accel-Buffering": "no",
+    });
+    headersWritten = true;
+
+    res.on("close", () => { closed = true; });
+
+    sendEvent("stage", { stage: "analyzing_topic" });
+
+    const outline = await createCourseOutline(prompt, language, (stage) => sendEvent("stage", { stage }));
+
+    sendEvent("stage", { stage: "saving_course" });
+
+    const course = await saveGeneratedCourse(outline, req.user._id, language);
+    course.difficulty = outline.difficulty;
+    course.skills = outline.skills;
+    await course.save();
+
+    sendEvent("stage", { stage: "ready" });
+    sendEvent("done", course);
+  } catch (error) {
+    console.error("Generate Course Stream Error:", error);
+    if (!headersWritten) {
+      return res.status(error.statusCode || 500).json({
+        error: error.message || "Failed to generate course",
+      });
+    }
+    sendEvent("error", {
+      error: error.message || "Failed to generate course",
+    });
+  } finally {
+    if (!closed) res.end();
   }
 }
 
@@ -495,6 +553,7 @@ async function addVideosToLesson(req, res) {
 
 module.exports = {
   generateCourseContent,
+  generateCourseContentStream,
   enrichLesson,
   enrichLessonStream,
   generateFlashcards,

@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import { ArrowRight, Loader2, Sparkles } from 'lucide-react';
+import { ArrowRight, Loader2, Sparkles, X, CheckCircle2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { ErrorState } from '@/components/ui/ErrorState';
+import type { CourseGenerationStage } from '../services/courseService';
 
 const EXAMPLES = [
   'A beginner React course with small projects',
@@ -10,12 +12,26 @@ const EXAMPLES = [
   'A DSA interview preparation course',
 ];
 
-export default function PromptForm({ onSubmit, isLoading = false }: { onSubmit: (val: string) => Promise<boolean>, isLoading?: boolean }) {
+const STAGES: { key: CourseGenerationStage; label: string }[] = [
+  { key: 'analyzing_topic', label: 'Analyzing your topic' },
+  { key: 'designing_curriculum', label: 'Designing curriculum' },
+  { key: 'saving_course', label: 'Saving your course' },
+  { key: 'ready', label: 'Ready' },
+];
+
+interface PromptFormProps {
+  onSubmit: (val: string) => Promise<boolean>;
+  isLoading?: boolean;
+  stage?: CourseGenerationStage | null;
+  error?: string | null;
+  onDismissError?: () => void;
+}
+
+export default function PromptForm({ onSubmit, isLoading = false, stage = null, error = null, onDismissError }: PromptFormProps) {
   const [prompt, setPrompt] = useState('');
   const [isFocused, setIsFocused] = useState(false);
 
-  async function handleSubmit(event: React.FormEvent) {
-    event.preventDefault();
+  async function submitPrompt() {
     const value = prompt.trim();
     if (!value) return;
 
@@ -23,7 +39,15 @@ export default function PromptForm({ onSubmit, isLoading = false }: { onSubmit: 
     if (succeeded !== false) setPrompt('');
   }
 
+  async function handleSubmit(event: React.FormEvent) {
+    event.preventDefault();
+    await submitPrompt();
+  }
+
+  const activeStageIndex = stage ? STAGES.findIndex((s) => s.key === stage) : -1;
+
   return (
+    <div className="space-y-4">
     <Card className={`relative overflow-hidden transition-all duration-300 bg-card/40 backdrop-blur-2xl border-white/5 ${isFocused ? 'ring-2 ring-primary/60 shadow-[0_8px_30px_rgb(0,0,0,0.12)] shadow-primary/20' : 'hover:border-primary/30 hover:bg-card/60'}`}>
       <form onSubmit={handleSubmit} className="flex flex-col">
         <div className="block p-4 sm:p-6 pb-2 relative">
@@ -109,25 +133,72 @@ export default function PromptForm({ onSubmit, isLoading = false }: { onSubmit: 
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-primary/20 rounded-full blur-[60px] animate-pulse" />
             <div className="absolute inset-0 z-0 bg-[linear-gradient(110deg,transparent,rgba(var(--primary),0.15),transparent)] bg-[length:200%_100%] animate-shimmer pointer-events-none" />
             
-            <div className="flex flex-col items-center gap-6 relative z-10">
+            <div className="flex flex-col items-center gap-6 relative z-10 px-6">
               <div className="relative">
                 <div className="absolute inset-0 rounded-full blur-xl bg-primary/40 animate-pulse" />
                 <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-card to-background border border-primary/30 flex items-center justify-center shadow-[0_0_30px_rgba(var(--primary),0.3)] relative z-10 animate-float">
                   <Sparkles className="h-7 w-7 text-primary animate-pulse" />
                 </div>
               </div>
-              
-              <div className="space-y-2 text-center">
-                <h4 className="text-xl font-bold text-foreground font-display bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70 animate-pulse">Crafting Your Journey</h4>
-                <p className="text-sm font-medium text-muted-foreground flex items-center justify-center gap-2">
-                  <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
-                  Generating AI curriculum...
-                </p>
+
+              <div className="space-y-1 text-center">
+                <h4 className="text-xl font-bold text-foreground font-display bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">Crafting Your Journey</h4>
+                <p className="text-xs text-muted-foreground">Real-time progress from the AI pipeline, not a fake spinner.</p>
               </div>
+
+              <ol className="flex flex-col gap-2.5 text-sm">
+                {STAGES.map((s, i) => {
+                  const isComplete = activeStageIndex > i;
+                  const isCurrent = activeStageIndex === i;
+                  return (
+                    <li key={s.key} className="flex items-center gap-2.5">
+                      {isComplete ? (
+                        <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-400" />
+                      ) : isCurrent ? (
+                        <Loader2 className="h-4 w-4 shrink-0 animate-spin text-primary" />
+                      ) : (
+                        <span className="h-4 w-4 shrink-0 rounded-full border border-border/60" />
+                      )}
+                      <span className={isComplete ? 'text-foreground/70 line-through decoration-emerald-400/50' : isCurrent ? 'font-semibold text-foreground' : 'text-muted-foreground'}>
+                        {s.label}
+                      </span>
+                    </li>
+                  );
+                })}
+              </ol>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
     </Card>
+
+    <AnimatePresence>
+      {error && !isLoading && (
+        <motion.div
+          initial={{ opacity: 0, y: -6 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -6 }}
+          transition={{ duration: 0.15 }}
+          className="relative"
+        >
+          {onDismissError && (
+            <button
+              type="button"
+              onClick={onDismissError}
+              aria-label="Dismiss error"
+              className="absolute right-3 top-3 z-10 flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
+          <ErrorState
+            title="Course generation failed"
+            description={error}
+            onRetry={submitPrompt}
+          />
+        </motion.div>
+      )}
+    </AnimatePresence>
+    </div>
   );
 }
