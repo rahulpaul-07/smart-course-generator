@@ -20,7 +20,9 @@ export function useApi() {
       console.warn('Failed to get token for API request', err);
       if (isAuth0LikeError(err) && (err.error === 'login_required' || err.error === 'consent_required')) {
         login();
-        throw new Error('Session expired. Redirecting to login...');
+        const sessionError = new Error('Session expired. Redirecting to login...');
+        (sessionError as Error & { cause?: unknown }).cause = err;
+        throw sessionError;
       }
     }
 
