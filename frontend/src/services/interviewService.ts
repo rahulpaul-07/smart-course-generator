@@ -13,10 +13,4 @@ export const interviewService = {
 
   submitAssessment: (sessionId: string, data: Record<string, unknown>) =>
     handleApi<InterviewPrep>(api.post(`/interviews/${sessionId}/submit`, data), { showErrorToast: true, fallbackMsg: 'Failed to submit assessment' }),
-
-  completeSession: (sessionId: string) =>
-    handleApi<InterviewPrep>(api.post(`/interviews/${sessionId}/complete`), { showErrorToast: true, fallbackMsg: 'Failed to complete interview' }),
-
-  getResults: (sessionId: string) =>
-    handleApi<InterviewPrep>(api.get(`/interviews/${sessionId}/results`), { showErrorToast: true, fallbackMsg: 'Failed to load results' }),
 };

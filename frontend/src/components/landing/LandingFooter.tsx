@@ -46,8 +46,8 @@ export function LandingFooter() {
       {/* Footer */}
       <footer className="border-t border-border/30 bg-background pt-16 pb-8">
         <div className="container px-4 md:px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-16">
-            <div className="col-span-2 lg:col-span-2">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
+            <div className="col-span-2">
               <div className="flex items-center gap-2 font-bold text-xl tracking-tight mb-4">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
                   <BrainCircuit className="h-5 w-5 text-primary-foreground" />
@@ -58,37 +58,29 @@ export function LandingFooter() {
                 The most advanced AI-powered platform for dynamic curriculum generation and interactive learning.
               </p>
             </div>
-            
+
             <div>
               <h4 className="font-semibold mb-4">Product</h4>
               <ul className="space-y-3 text-sm text-muted-foreground">
                 <li><Link to="/" className="hover:text-primary transition-colors">Features</Link></li>
                 <li><Link to="/community" className="hover:text-primary transition-colors">Community</Link></li>
-                <li><Link to="/pricing" className="hover:text-primary transition-colors">Pricing</Link></li>
-                <li><Link to="/changelog" className="hover:text-primary transition-colors">Changelog</Link></li>
               </ul>
             </div>
-            
+
             <div>
-              <h4 className="font-semibold mb-4">Resources</h4>
+              <h4 className="font-semibold mb-4">Account</h4>
               <ul className="space-y-3 text-sm text-muted-foreground">
-                <li><Link to="/docs" className="hover:text-primary transition-colors">Documentation</Link></li>
-                <li><Link to="/blog" className="hover:text-primary transition-colors">Blog</Link></li>
-                <li><Link to="/guides" className="hover:text-primary transition-colors">Guides</Link></li>
-                <li><Link to="/help" className="hover:text-primary transition-colors">Help Center</Link></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="font-semibold mb-4">Legal</h4>
-              <ul className="space-y-3 text-sm text-muted-foreground">
-                <li><Link to="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
-                <li><Link to="/terms" className="hover:text-primary transition-colors">Terms of Service</Link></li>
-                <li><Link to="/contact" className="hover:text-primary transition-colors">Contact Us</Link></li>
+                <li><Link to="/login" className="hover:text-primary transition-colors">Log In</Link></li>
+                <li><Link to="/signup" className="hover:text-primary transition-colors">Sign Up</Link></li>
+                <li>
+                  <a href="https://github.com/rahulpaul-07/smart-course-generator" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
+                    GitHub
+                  </a>
+                </li>
               </ul>
             </div>
           </div>
-          
+
           <div className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-border/30 text-sm text-muted-foreground">
             <p>© {new Date().getFullYear()} CourseAI Pro. All rights reserved.</p>
             <div className="flex items-center gap-2 mt-4 md:mt-0">
