@@ -27,7 +27,7 @@ export default function AiAgentsPage() {
     <div className="page-shell">
       <section className="mb-10">
         <p className="eyebrow"><Bot className="h-3.5 w-3.5" /> Multi-Agent System</p>
-        <h1 className="gradient-text mt-3 font-display text-3xl font-extrabold">AI Assistant Hub</h1>
+        <h1 className="gradient-text mt-3 font-display text-3xl font-extrabold">AI Insights</h1>
         <p className="mt-2 text-sm text-muted-foreground">Leverage specialized AI agents to accelerate your learning journey.</p>
       </section>
 
