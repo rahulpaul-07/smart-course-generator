@@ -30,7 +30,7 @@
     "jspdf": "^4.2.1",
     "jwt-decode": "^4.0.0",
     "katex": "^0.17.0",
-    "lucide-react": "1.22.0",
+    "lucide-react": "^1.23.0",
     "postcss": "8.5.16",
     "prism-react-renderer": "^2.4.1",
     "react": "^19.2.6",
