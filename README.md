@@ -2,7 +2,6 @@
 
 An AI-powered learning platform that generates full, structured courses on any topic in seconds, then teaches them back through streaming lessons, adaptive quizzes, flashcards, mock interviews, and a public leaderboard.
 
-[![Deployment CI Checks](https://github.com/rahulpaul-07/smart-course-generator/actions/workflows/deploy-checks.yml/badge.svg)](https://github.com/rahulpaul-07/smart-course-generator/actions/workflows/deploy-checks.yml)
 [![CI/CD Pipeline](https://github.com/rahulpaul-07/smart-course-generator/actions/workflows/ci.yml/badge.svg)](https://github.com/rahulpaul-07/smart-course-generator/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D18-339933?logo=node.js&logoColor=white)](./backend/package.json)
@@ -54,7 +53,7 @@ The frontend and backend are independently deployable: a React SPA (Vite, TypeSc
 | AI | Google Gemini, Groq, OpenRouter — routed with automatic fallback |
 | Auth | JWT (email/password), Google OAuth, Auth0 |
 | Testing | Jest + Supertest (backend), Vitest + Testing Library (frontend) |
-| Tooling | ESLint, TypeScript project references, GitHub Actions CI, Docker |
+| Tooling | ESLint, TypeScript project references, GitHub Actions CI |
 
 ## Getting started
 
@@ -81,16 +80,6 @@ With the backend running, interactive API docs (Swagger) are available at `http:
 
 Only `MONGO_URI` and `JWT_SECRET` are strictly required to boot; course generation additionally needs at least one of `GEMINI_API_KEY`, `GROQ_API_KEY`, or `OPENROUTER_API_KEY`. Google sign-in and Auth0 are both optional — the app falls back to email/password auth when their env vars are absent. See [`backend/.env.example`](./backend/.env.example) and [`frontend/.env.example`](./frontend/.env.example) for the full list.
 
-### Docker
-
-```bash
-cp backend/.env.example backend/.env
-cp frontend/.env.example frontend/.env
-docker-compose up --build
-```
-
-This starts the backend, frontend, and a local MongoDB container together.
-
 ## Testing
 
 ```bash
@@ -102,13 +91,11 @@ cd frontend && npm test   # Vitest + React Testing Library
 
 ## Deployment
 
-The repo is preconfigured for either a split Vercel/Render deployment or a single-host Docker deployment.
+The repo is preconfigured for a split Vercel/Render deployment.
 
 **Backend (Render):** root directory `backend`, build `npm install`, start `npm start`. Set `MONGO_URI`, `JWT_SECRET`, and your AI provider keys as environment variables. See [`render.yaml`](./render.yaml).
 
 **Frontend (Vercel):** root directory `frontend`, framework preset Vite. Set `VITE_API_BASE_URL` to the deployed backend URL — the frontend automatically appends `/api` if it's missing. `vercel.json` already handles SPA routing.
-
-**Docker Compose:** `docker-compose up -d --build` builds and runs backend, frontend, and MongoDB as a single stack; see [`docker-compose.yml`](./docker-compose.yml).
 
 Health probes for orchestrators: `GET /api/health/liveness` and `GET /api/health/readiness`.
 
