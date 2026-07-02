@@ -28,7 +28,7 @@ export function ResultsDashboard({ prep, readiness, strengths, weaknesses, aiRec
         <div className="inline-flex items-center justify-center h-24 w-24 rounded-2xl bg-gradient-to-br from-primary to-cyan-500 shadow-lg shadow-primary/20 mb-4 border border-white/10">
           <Trophy className="h-12 w-12 text-primary-foreground" />
         </div>
-        <h2 className="text-5xl font-extrabold font-serif tracking-tight text-foreground drop-shadow-sm">Assessment Complete</h2>
+        <h2 className="text-5xl font-extrabold font-display tracking-tight text-foreground drop-shadow-sm">Assessment Complete</h2>
         <p className="text-lg text-muted-foreground font-medium">Comprehensive evaluation and personalized feedback</p>
       </div>
 

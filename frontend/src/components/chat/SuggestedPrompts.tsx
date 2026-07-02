@@ -18,7 +18,7 @@ export function SuggestedPrompts({ onSelect }: SuggestedPromptsProps) {
       <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center mb-6 shadow-inner border border-primary/20">
         <Sparkles className="h-8 w-8 text-primary" />
       </div>
-      <h3 className="text-xl font-bold text-foreground mb-3 font-serif">How can I help you?</h3>
+      <h3 className="text-xl font-bold text-foreground mb-3 font-display">How can I help you?</h3>
       <p className="text-sm font-medium text-muted-foreground mb-10 leading-relaxed">
         Ask me to explain concepts, provide examples, or help you understand this lesson better.
       </p>

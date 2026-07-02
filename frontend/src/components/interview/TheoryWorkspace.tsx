@@ -20,7 +20,7 @@ export function TheoryWorkspace({ prep, theoryAnswers, setTheoryAnswers, submitt
   return (
     <div className="space-y-10">
       <div className="mb-10 pb-6 border-b border-border/30">
-        <h2 className="text-3xl font-extrabold font-serif tracking-tight text-foreground mb-2">Theory & Concepts</h2>
+        <h2 className="text-3xl font-extrabold font-display tracking-tight text-foreground mb-2">Theory & Concepts</h2>
         <p className="text-muted-foreground font-medium">Provide detailed, comprehensive answers.</p>
       </div>
 

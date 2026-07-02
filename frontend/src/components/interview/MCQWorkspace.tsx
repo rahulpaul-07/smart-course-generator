@@ -17,7 +17,7 @@ export function MCQWorkspace({ prep, mcqAnswers, setMcqAnswers, submitted, submi
   return (
     <div className="space-y-8">
       <div className="mb-10 pb-6 border-b border-border/30">
-        <h2 className="text-3xl font-extrabold font-serif tracking-tight text-foreground mb-2">Multiple Choice</h2>
+        <h2 className="text-3xl font-extrabold font-display tracking-tight text-foreground mb-2">Multiple Choice</h2>
         <p className="text-muted-foreground font-medium">Select the best answer for each question.</p>
       </div>
       

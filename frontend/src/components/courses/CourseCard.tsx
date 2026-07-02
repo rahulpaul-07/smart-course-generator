@@ -80,7 +80,7 @@ export function CourseCard({ course, viewMode, onDeleted }: CourseCardProps) {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-44 bg-card border-border" onClick={(e) => e.stopPropagation()}>
             <DropdownMenuItem
-              className="cursor-pointer text-red-500 focus:text-red-500 focus:bg-red-500/10"
+              className="cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10"
               onClick={handleDelete}
             >
               <Trash2 className="mr-2 h-4 w-4" /> Delete course

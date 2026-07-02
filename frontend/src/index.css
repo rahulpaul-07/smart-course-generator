@@ -190,60 +190,9 @@ select:focus-visible {
     background-size: 40px 40px;
   }
 
-  .btn-primary,
-  .btn-secondary {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    overflow: hidden;
-    border-radius: 0.75rem; /* rounded-xl */
-    padding: 0 1.25rem;
-    height: 2.75rem; /* h-11 default */
-    font-size: 0.875rem;
-    font-weight: 700;
-    transition: all 150ms ease;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
-  }
-
-  .btn-primary:focus-visible,
-  .btn-secondary:focus-visible,
   .icon-button:focus-visible {
     outline: none;
     box-shadow: 0 0 0 2px hsl(var(--background)), 0 0 0 4px hsl(var(--primary));
-  }
-
-  .btn-primary {
-    border: 1px solid transparent;
-    background: hsl(var(--primary));
-    color: hsl(var(--primary-foreground));
-  }
-
-  .btn-primary:hover {
-    background: hsl(var(--primary) / 0.9);
-    transform: translateY(-2px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
-  }
-
-  .btn-secondary {
-    border: 1px solid hsl(var(--border));
-    background: hsl(var(--card));
-    color: hsl(var(--foreground));
-  }
-
-  .btn-secondary:hover {
-    background: hsl(var(--muted));
-    transform: translateY(-2px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
-  }
-
-  .btn-primary:disabled,
-  .btn-secondary:disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
-    transform: none;
-    box-shadow: none;
   }
 
   .icon-button {

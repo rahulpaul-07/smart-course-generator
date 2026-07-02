@@ -14,12 +14,12 @@ export default function LandingPage() {
       {/* Navbar */}
       <header className="sticky top-0 z-50 w-full border-b border-border/30 bg-background/60 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
         <div className="container px-4 md:px-8 lg:px-12 flex h-16 items-center justify-between mx-auto">
-          <div className="flex items-center gap-2 font-bold text-xl tracking-tight">
+          <Link to="/" className="flex items-center gap-2 font-bold text-xl tracking-tight focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary shadow-lg shadow-primary/20">
               <BrainCircuit className="h-5 w-5 text-primary-foreground" />
             </div>
             CourseAI Pro
-          </div>
+          </Link>
           <nav className="flex items-center gap-6">
             <Link to="/login" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
               Sign In

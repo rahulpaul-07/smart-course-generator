@@ -1,5 +1,6 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Wrench, X } from 'lucide-react';
 import LoadingSpinner from '../LoadingSpinner';
 import LessonSidebar from './LessonSidebar';
 import ReadingProgressBar from './ReadingProgressBar';
@@ -46,6 +47,8 @@ export function LessonLayout({
   onSelectLesson,
   children
 }: LessonLayoutProps) {
+  const [mobileToolsOpen, setMobileToolsOpen] = useState(false);
+
   return (
     <div className={`grid overflow-hidden relative bg-background transition-all duration-300 ease-out ${isFocusMode ? 'fixed inset-0 z-50 h-screen w-screen block' : 'h-[calc(100vh-4.5rem)] lg:grid-cols-[auto_1fr_auto]'}`}>
       <ReadingProgressBar containerRef={lessonScrollRef as React.RefObject<HTMLElement>} />
@@ -105,18 +108,54 @@ export function LessonLayout({
 
       {/* Mobile Study Tools Slide-over */}
       {!isFocusMode && hasContent && !generating && (
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-background border-t border-border/30 p-4 max-h-[60vh] overflow-y-auto shadow-md">
-          <Suspense fallback={<div className="p-4 flex justify-center"><LoadingSpinner /></div>}>
-            <StudyTools 
-              lesson={{ title: lessonTitle, content: lessonContent, ...course?.modules?.flatMap((m) => m.lessons)?.find((l) => l._id === lessonId) } as Lesson} 
-              addingVideos={addingVideos} 
-              chatOpen={showChat} 
-              onAddVideos={addVideos} 
-              onLessonUpdate={updateCurrentLesson} 
-              onToggleChat={() => setShowChat((v) => !v)} 
-            />
-          </Suspense>
-        </div>
+        <AnimatePresence>
+          {mobileToolsOpen ? (
+            <motion.div
+              key="mobile-study-tools-panel"
+              initial={{ y: '100%', opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: '100%', opacity: 0 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="lg:hidden fixed bottom-0 left-0 right-0 z-40 max-h-[75vh] rounded-t-2xl border-t border-border/30 bg-background shadow-2xl"
+            >
+              <button
+                type="button"
+                onClick={() => setMobileToolsOpen(false)}
+                aria-label="Close study tools"
+                className="absolute right-4 top-4 z-20 flex h-8 w-8 items-center justify-center rounded-full border border-border/50 bg-card text-muted-foreground shadow-sm transition-colors hover:bg-muted hover:text-foreground"
+              >
+                <X className="h-4 w-4" />
+              </button>
+              <div className="max-h-[75vh] overflow-y-auto">
+                <Suspense fallback={<div className="p-4 flex justify-center"><LoadingSpinner /></div>}>
+                  <StudyTools
+                    lesson={{ title: lessonTitle, content: lessonContent, ...course?.modules?.flatMap((m) => m.lessons)?.find((l) => l._id === lessonId) } as Lesson}
+                    addingVideos={addingVideos}
+                    chatOpen={showChat}
+                    onAddVideos={addVideos}
+                    onLessonUpdate={updateCurrentLesson}
+                    onToggleChat={() => setShowChat((v) => !v)}
+                  />
+                </Suspense>
+              </div>
+            </motion.div>
+          ) : (
+            <motion.button
+              key="mobile-study-tools-fab"
+              type="button"
+              initial={{ opacity: 0, y: 20, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 20, scale: 0.9 }}
+              transition={{ type: 'spring', damping: 20, stiffness: 250 }}
+              onClick={() => setMobileToolsOpen(true)}
+              aria-label="Open study tools"
+              className="lg:hidden fixed bottom-5 right-5 z-40 flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20"
+            >
+              <Wrench className="h-4 w-4" />
+              Study Tools
+            </motion.button>
+          )}
+        </AnimatePresence>
       )}
 
       <Suspense fallback={null}>

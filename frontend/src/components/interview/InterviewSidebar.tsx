@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
-import { ArrowLeft, CheckCircle2, MessageSquare, Code2, BookOpen, User } from 'lucide-react';
+import { CheckCircle2, MessageSquare, Code2, BookOpen, User } from 'lucide-react';
+import { BackButton } from '../ui/back-button';
 import type { InterviewPrep } from '../../types';
 
 interface InterviewSidebarProps {
@@ -44,10 +45,8 @@ export function InterviewSidebar({ activePrep, activeTab, setActiveTab, setActiv
   return (
     <aside className="w-80 border-r border-border/30 bg-card/30 backdrop-blur-xl flex flex-col hidden lg:flex relative z-10 shadow-[4px_0_24px_rgb(0,0,0,0.02)]">
       <div className="p-6 border-b border-border/30">
-        <button onClick={() => setActivePrep(null)} className="flex items-center gap-2 text-[13px] font-bold uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors mb-6 w-fit bg-muted/50 px-3 py-1.5 rounded-lg hover:bg-muted">
-          <ArrowLeft className="h-4 w-4" /> Exit Session
-        </button>
-        <h2 className="font-serif text-xl font-bold tracking-tight text-foreground line-clamp-2">{activePrep.topic}</h2>
+        <BackButton onClick={() => setActivePrep(null)} label="Exit Session" className="mb-6 -ml-2 uppercase tracking-wider text-[13px]" />
+        <h2 className="font-display text-xl font-bold tracking-tight text-foreground line-clamp-2">{activePrep.topic}</h2>
         <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-border/30 bg-background/50 px-3 py-1 text-xs font-semibold text-muted-foreground shadow-sm">
           <div className={`h-2 w-2 rounded-full ${activePrep.status === 'pending' ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'}`} />
           {activePrep.status === 'pending' ? 'In Progress' : 'Completed'}

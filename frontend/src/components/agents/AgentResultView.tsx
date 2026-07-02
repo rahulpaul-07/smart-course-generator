@@ -100,14 +100,14 @@ export function AgentResultView({ activeTab, result, onRun }: AgentResultViewPro
               ))}
             </ul>
           </div>
-          <div className="rounded-xl bg-red-500/10 border border-red-500/20 p-5">
-            <h4 className="mb-3 font-bold text-red-400 flex items-center gap-2">
+          <div className="rounded-xl bg-destructive/10 border border-destructive/20 p-5">
+            <h4 className="mb-3 font-bold text-destructive flex items-center gap-2">
               <Target className="h-4 w-4" /> Weaknesses
             </h4>
             <ul className="space-y-2">
               {reviewerResult.weaknesses?.map((w: string, i: number) => (
-                <li key={i} className="text-sm text-red-100 flex items-start gap-2">
-                  <span className="mt-1 h-1.5 w-1.5 rounded-full bg-red-400 shrink-0" /> {w}
+                <li key={i} className="text-sm text-destructive/90 flex items-start gap-2">
+                  <span className="mt-1 h-1.5 w-1.5 rounded-full bg-destructive shrink-0" /> {w}
                 </li>
               ))}
             </ul>

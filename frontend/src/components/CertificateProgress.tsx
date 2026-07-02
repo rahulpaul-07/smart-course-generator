@@ -60,13 +60,13 @@ export default function CertificateProgress({
 
           <div className="flex shrink-0">
             {hasCertificate && onViewCertificate && (
-              <Button onClick={onViewCertificate} className="bg-emerald-600 hover:bg-emerald-700 text-foreground">
+              <Button onClick={onViewCertificate} className="bg-emerald-600 hover:bg-emerald-700 text-white">
                 <Award className="mr-2 h-4 w-4" />
                 View Certificate
               </Button>
             )}
             {lessonsCompleted && !hasCertificate && onTakeTest && (
-              <Button onClick={onTakeTest} className="bg-violet-600 hover:bg-violet-700 text-foreground">
+              <Button onClick={onTakeTest} className="bg-violet-600 hover:bg-violet-700 text-white">
                 <Award className="mr-2 h-4 w-4" />
                 Take Final Test
               </Button>
