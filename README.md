@@ -8,17 +8,15 @@ An AI-powered learning platform that generates full, structured courses on any t
 [![Node](https://img.shields.io/badge/node-%3E%3D18-339933?logo=node.js&logoColor=white)](./backend/package.json)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)](./frontend/tsconfig.app.json)
 
-**[Live demo →](https://smart-course-generator.vercel.app/)** (backend runs on Render's free tier — the first request after a period of inactivity can take 30-60s to cold-start; it's fast after that)
+**[Live demo →](https://smart-course-generator.vercel.app/)** — backend runs on Render's free tier, so the first request after a period of inactivity can take 30-60s to cold-start; it's fast after that.
+
+**Contents:** [Overview](#overview) · [Features](#features) · [Architecture](#architecture) · [Tech stack](#tech-stack) · [Getting started](#getting-started) · [Testing](#testing) · [Deployment](#deployment) · [Security](#security) · [Documentation](#documentation)
 
 ## Overview
 
 Static course platforms (Udemy, Coursera) can't adapt to what an individual learner already knows. General-purpose chat assistants can generate content, but produce a linear conversation, not a structured, resumable curriculum with progress tracking, spaced-repetition review, and assessment.
 
 CourseAI Pro sits between the two: give it a topic, and it generates a full multi-module course — streamed lesson-by-lesson over Server-Sent Events rather than a single blocking request — with quizzes, flashcards, and optional YouTube video enrichment per lesson. Progress, XP, and streaks are tracked per user, courses can be published to a community marketplace, and a separate interview-prep mode runs mock technical interviews (MCQ, theory, and coding rounds) with AI-scored feedback.
-
-## Screenshots
-
-Try it live: **[smart-course-generator.vercel.app](https://smart-course-generator.vercel.app/)**. Product screenshots are on the way — see [Getting Started](#getting-started) to run it locally in the meantime.
 
 ## Features
 
