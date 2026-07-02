@@ -9,6 +9,7 @@ interface Recommendation {
   label: string;
   icon: LucideIcon;
   desc: string;
+  url: string;
 }
 
 interface RecentActivityItem {
@@ -38,7 +39,11 @@ export function DashboardActivity({ recommendations, recentActivity = [] }: Dash
         </div>
         <div className="flex flex-col gap-4">
           {recommendations.map((rec, i) => (
-            <Card key={i} className="p-6 rounded-xl border border-border/30 bg-card shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 cursor-pointer flex items-center gap-4 group">
+            <Link
+              key={i}
+              to={rec.url}
+              className="p-6 rounded-xl border border-border/30 bg-card shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 cursor-pointer flex items-center gap-4 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            >
               <div className="h-10 w-10 shrink-0 rounded-lg bg-background border border-border/30 flex items-center justify-center transition-transform duration-200">
                 <rec.icon className="h-5 w-5 text-foreground" />
               </div>
@@ -47,7 +52,7 @@ export function DashboardActivity({ recommendations, recentActivity = [] }: Dash
                 <p className="text-xs text-muted-foreground truncate">{rec.desc}</p>
               </div>
               <ChevronRight className="h-4 w-4 text-muted-foreground/50 group-hover:text-primary transition-colors" />
-            </Card>
+            </Link>
           ))}
         </div>
       </motion.section>

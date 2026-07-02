@@ -42,16 +42,6 @@ export function DashboardContinueLearning({ data }: { data: ContinueLearningData
               </span>
             </div>
             <h3 className="text-lg font-semibold text-foreground truncate">{data.title}</h3>
-            
-            <div className="flex items-center gap-4 pt-2">
-              <div className="flex-1 h-2 bg-muted/60 rounded-full overflow-hidden border border-border/20">
-                <div className="h-full bg-primary rounded-full w-[45%]" />
-              </div>
-              <span className="text-sm font-medium text-foreground w-12 text-right">45%</span>
-            </div>
-            <div className="text-xs text-muted-foreground">
-              3 lessons remaining • ~45 mins left
-            </div>
           </div>
 
           <div className="w-full md:w-auto shrink-0 flex items-center justify-end">
