@@ -140,11 +140,11 @@ export default function LessonAudioPlayer({ lesson }: { lesson: Lesson }) {
 
   return (
     <section className="surface-card relative mb-8 overflow-hidden p-5 animate-enter-delay sm:p-6">
-      <div className="pointer-events-none absolute -right-16 -top-20 h-48 w-48 rounded-full bg-cyan-400/10 blur-3xl" />
+      <div className="pointer-events-none absolute -right-16 -top-20 h-48 w-48 rounded-full bg-primary/10 blur-3xl" />
 
       <div className="relative flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-cyan-400/20 bg-cyan-400/10 text-cyan-200">
+          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-primary/20 bg-primary/10 text-primary">
             <AudioLines className={`h-5 w-5 ${status === 'playing' ? 'animate-pulse' : ''}`} />
           </span>
           <div>
@@ -184,17 +184,17 @@ export default function LessonAudioPlayer({ lesson }: { lesson: Lesson }) {
 
       <div className="relative mt-4 h-1.5 overflow-hidden rounded-full bg-foreground/10">
         <div
-          className="h-full rounded-full bg-gradient-to-r from-violet-500 via-brand-400 to-cyan-400 transition-all duration-300"
+          className="h-full rounded-full bg-gradient-to-r from-primary/60 via-brand-400 to-primary transition-all duration-300"
           style={{ width: `${progress}%` }}
         />
       </div>
 
       {noVoice && (
-        <div className="relative mt-4 rounded-xl border border-amber-400/15 bg-amber-400/[0.06] px-4 py-3">
-          <p className="text-sm font-medium text-amber-200">
+        <div className="relative mt-4 rounded-xl border border-warning/15 bg-warning/[0.06] px-4 py-3">
+          <p className="text-sm font-medium text-warning">
             No {language} voice installed
           </p>
-          <p className="mt-1 text-xs leading-relaxed text-amber-200/70">
+          <p className="mt-1 text-xs leading-relaxed text-warning/70">
             Your device does not have a {language} voice pack. To listen to this lesson, install a {language} text-to-speech voice in your device settings, then reload this page.
           </p>
         </div>

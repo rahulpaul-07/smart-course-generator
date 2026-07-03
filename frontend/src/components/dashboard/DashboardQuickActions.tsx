@@ -23,7 +23,7 @@ export function DashboardQuickActions({ actions }: { actions: QuickAction[] }) {
     >
       <div className="flex items-center justify-between mb-6 px-2">
         <h2 className="text-xl font-semibold text-foreground flex items-center gap-3">
-          <Zap className="h-5 w-5 text-amber-500" /> Quick Actions
+          <Zap className="h-5 w-5 text-warning" /> Quick Actions
         </h2>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">

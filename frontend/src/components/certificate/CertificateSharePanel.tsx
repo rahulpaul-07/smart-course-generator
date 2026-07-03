@@ -35,7 +35,7 @@ export function CertificateSharePanel({
             <ExternalLink className="w-4 h-4 mr-2 text-[#1DA1F2]" /> Twitter
           </Button>
           <Button onClick={copyToClipboard} variant="outline" className="w-full h-11 font-bold rounded-xl border-border bg-background hover:bg-muted">
-            {copiedLink ? <Check className="w-4 h-4 mr-2 text-emerald-500" /> : <Share2 className="w-4 h-4 mr-2 text-muted-foreground" />}
+            {copiedLink ? <Check className="w-4 h-4 mr-2 text-success" /> : <Share2 className="w-4 h-4 mr-2 text-muted-foreground" />}
             {copiedLink ? 'Copied' : 'Link'}
           </Button>
         </div>

@@ -20,10 +20,19 @@ export default function CommunityTemplatesPage() {
     queueMicrotask(() => {
       setLoading(true);
       setError(false);
-      collabService.getTemplates()
-        .then(([data, err]) => {
-          if (err || !data) setError(true);
-          else setTemplates(data || []);
+      // getTemplates is a public, cache-shared-across-users response and
+      // can't safely carry a per-user "hasUpvoted" flag (see backend
+      // getCommunityTemplates), so the current user's upvoted set is
+      // fetched separately and merged in, atomically with the list itself
+      // to avoid a race where one resolves after the other overwrites it.
+      Promise.all([collabService.getTemplates(), collabService.getMyUpvotedTemplateIds()])
+        .then(([[data, err], [upvotedIds]]) => {
+          if (err || !data) {
+            setError(true);
+            return;
+          }
+          const upvotedSet = new Set(upvotedIds || []);
+          setTemplates(data.map(t => ({ ...t, hasUpvoted: upvotedSet.has(t._id) })));
         })
         .finally(() => setLoading(false));
     });
@@ -34,21 +43,25 @@ export default function CommunityTemplatesPage() {
   }, [fetchTemplates]);
 
   const handleUpvote = async (courseId: string) => {
-    // Optimistic UI Update
-    setTemplates(prev => prev.map(t => 
-      t._id === courseId 
-        ? { ...t, upvotesCount: (t.upvotesCount || 0) + 1, hasUpvoted: true } 
+    const target = templates.find(t => t._id === courseId);
+    const wasUpvoted = target?.hasUpvoted ?? false;
+    const delta = wasUpvoted ? -1 : 1;
+
+    // Optimistic UI Update (toggle, since upvoting is a one-per-user action)
+    setTemplates(prev => prev.map(t =>
+      t._id === courseId
+        ? { ...t, upvotesCount: Math.max(0, (t.upvotesCount || 0) + delta), hasUpvoted: !wasUpvoted }
         : t
     ));
     const [data, error] = await collabService.upvoteTemplate(courseId);
     if (data) {
-      setTemplates(prev => prev.map(t => 
-        t._id === courseId ? { ...t, upvotesCount: data.upvotesCount } : t
+      setTemplates(prev => prev.map(t =>
+        t._id === courseId ? { ...t, upvotesCount: data.upvotesCount, hasUpvoted: data.hasUpvoted } : t
       ));
     } else if (error) {
-      setTemplates(prev => prev.map(t => 
-        t._id === courseId 
-          ? { ...t, upvotesCount: Math.max(0, (t.upvotesCount || 1) - 1), hasUpvoted: false } 
+      setTemplates(prev => prev.map(t =>
+        t._id === courseId
+          ? { ...t, upvotesCount: Math.max(0, (t.upvotesCount || 0) - delta), hasUpvoted: wasUpvoted }
           : t
       ));
     }
@@ -114,7 +127,7 @@ export default function CommunityTemplatesPage() {
                   className="focus:outline-none transition-transform"
                 >
                   <Star 
-                    className={`h-3.5 w-3.5 ${(template.averageRating || 0) >= star ? 'text-yellow-400 fill-yellow-400' : 'text-muted-foreground'}`} 
+                    className={`h-3.5 w-3.5 ${(template.averageRating || 0) >= star ? 'text-primary fill-primary' : 'text-muted-foreground'}`}
                   />
                 </button>
               ))}
@@ -145,11 +158,12 @@ export default function CommunityTemplatesPage() {
                 </span>
               </Link>
               <div className="flex items-center gap-3">
-                <button 
+                <button
                   onClick={() => handleUpvote(template._id)}
-                  className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-pink-400 transition-colors"
+                  aria-pressed={template.hasUpvoted}
+                  className={`flex items-center gap-1.5 text-xs transition-colors ${template.hasUpvoted ? 'text-destructive' : 'text-muted-foreground hover:text-destructive'}`}
                 >
-                  <Heart className="h-4 w-4" /> {template.upvotesCount}
+                  <Heart className={`h-4 w-4 ${template.hasUpvoted ? 'fill-destructive' : ''}`} /> {template.upvotesCount}
                 </button>
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   <Copy className="h-4 w-4" /> {template.clonesCount}

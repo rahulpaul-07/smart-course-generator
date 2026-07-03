@@ -66,6 +66,24 @@ export function useRoadmap() {
     if (data) navigate(`/course/${data._id}`);
   }
 
+  async function toggleWeekCompletion(weekNumber: number) {
+    if (!activeRoadmap) return;
+    const roadmapId = activeRoadmap._id;
+    const previousCompleted = activeRoadmap.completedWeeks || [];
+    const optimisticCompleted = previousCompleted.includes(weekNumber)
+      ? previousCompleted.filter((w) => w !== weekNumber)
+      : [...previousCompleted, weekNumber];
+
+    setActiveRoadmap((prev) => (prev ? { ...prev, completedWeeks: optimisticCompleted } : prev));
+
+    const [data, err] = await roadmapService.toggleWeekCompletion(roadmapId, weekNumber);
+    if (err) {
+      setActiveRoadmap((prev) => (prev && prev._id === roadmapId ? { ...prev, completedWeeks: previousCompleted } : prev));
+    } else if (data) {
+      setActiveRoadmap((prev) => (prev && prev._id === roadmapId ? data : prev));
+    }
+  }
+
   return {
     roadmaps,
     loading,
@@ -77,6 +95,7 @@ export function useRoadmap() {
     viewRoadmap,
     deleteRoadmap,
     generateCourseFromTopic,
+    toggleWeekCompletion,
     refetch: loadRoadmaps
   };
 }

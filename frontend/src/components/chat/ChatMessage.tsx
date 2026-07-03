@@ -6,7 +6,7 @@ import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { Bot, UserRound, Copy, RefreshCw, ThumbsUp, ThumbsDown, Check } from 'lucide-react';
+import { AlertCircle, Bot, UserRound, Copy, RefreshCw, ThumbsUp, ThumbsDown, Check } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import type { AiConversationMessage } from '../../types';
@@ -31,8 +31,8 @@ const CodeBlock = ({ language, value }: { language: string, value: string }) => 
         >
           {copied ? (
             <>
-              <Check className="h-3 w-3 text-emerald-500" />
-              <span className="text-emerald-500">Copied</span>
+              <Check className="h-3 w-3 text-success" />
+              <span className="text-success">Copied</span>
             </>
           ) : (
             <>
@@ -105,15 +105,17 @@ interface ChatMessageProps {
   isUser: boolean;
   isStreamingThis: boolean;
   onRegenerate?: () => void;
+  canRetry?: boolean;
+  onRetry?: () => void;
 }
 
-export function ChatMessage({ message, isUser, isStreamingThis, onRegenerate }: ChatMessageProps) {
+export function ChatMessage({ message, isUser, isStreamingThis, onRegenerate, canRetry, onRetry }: ChatMessageProps) {
   const [feedback, setFeedback] = useState<'up' | 'down' | null>(null);
 
   function giveFeedback(value: 'up' | 'down') {
     setFeedback((current) => {
       const next = current === value ? null : value;
-      if (next) toast.success(next === 'up' ? 'Thanks for the feedback!' : "Thanks — we'll use this to improve responses.");
+      if (next) toast.success('Thanks for the feedback!');
       return next;
     });
   }
@@ -141,7 +143,21 @@ export function ChatMessage({ message, isUser, isStreamingThis, onRegenerate }: 
             ? <p className="whitespace-pre-wrap break-words text-[14px] font-medium leading-relaxed">{message.content}</p>
             : <AssistantMessageContent content={message.content} isStreaming={isStreamingThis} />}
         </div>
-        
+
+        {isUser && canRetry && (
+          <div className="flex items-center gap-1.5 mt-0.5">
+            <span className="flex items-center gap-1 text-[11px] text-destructive">
+              <AlertCircle className="h-3 w-3" /> Failed to send
+            </span>
+            <button
+              onClick={onRetry}
+              className="flex items-center gap-1 px-1.5 py-0.5 text-[11px] font-medium text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors"
+            >
+              <RefreshCw className="h-3 w-3" /> Retry
+            </button>
+          </div>
+        )}
+
         {!isUser && !isStreamingThis && (
           <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity mt-1">
             <button onClick={() => {
@@ -157,7 +173,7 @@ export function ChatMessage({ message, isUser, isStreamingThis, onRegenerate }: 
             <button
               onClick={() => giveFeedback('up')}
               aria-pressed={feedback === 'up'}
-              className={`p-1.5 rounded-md transition-colors ${feedback === 'up' ? 'text-emerald-500 bg-emerald-500/10' : 'text-muted-foreground hover:text-foreground hover:bg-muted'}`}
+              className={`p-1.5 rounded-md transition-colors ${feedback === 'up' ? 'text-success bg-success/10' : 'text-muted-foreground hover:text-foreground hover:bg-muted'}`}
               title="Helpful"
             >
               <ThumbsUp className="h-3 w-3" />

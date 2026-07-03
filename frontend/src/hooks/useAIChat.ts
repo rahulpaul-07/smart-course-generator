@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { lessonService } from '../services/lessonService';
+import { baseURL } from '../utils/api';
 import type { AiConversationMessage } from '../types';
 
 export function useAIChat(courseId: string, lessonId: string, isOpen: boolean) {
@@ -12,6 +13,8 @@ export function useAIChat(courseId: string, lessonId: string, isOpen: boolean) {
   const [historyError, setHistoryError] = useState<string | null>(null);
   
   const abortControllerRef = useRef<AbortController | null>(null);
+  const sendingRef = useRef(false);
+  const historyRef = useRef<AiConversationMessage[]>([]);
 
   useEffect(() => {
     let mounted = true;
@@ -39,9 +42,15 @@ export function useAIChat(courseId: string, lessonId: string, isOpen: boolean) {
     return () => { mounted = false; };
   }, [isOpen, courseId, lessonId, hasFetchedHistory]);
 
-  const clearChat = () => {
-    if (confirm("Are you sure you want to clear the chat history?")) {
-      setMessages([]);
+  const clearChat = async () => {
+    if (!confirm("Are you sure you want to clear the chat history?")) return;
+
+    const previousMessages = messages;
+    setMessages([]);
+
+    const [, err] = await lessonService.clearChat(courseId, lessonId);
+    if (err) {
+      setMessages(previousMessages);
     }
   };
 
@@ -53,12 +62,23 @@ export function useAIChat(courseId: string, lessonId: string, isOpen: boolean) {
     }
   };
 
-  async function sendMessage(text: string = input, scrollToBottom: (behavior: ScrollBehavior) => void, inputRef: React.RefObject<HTMLTextAreaElement | null>) {
+  async function sendMessage(text: string = input, scrollToBottom: (behavior: ScrollBehavior) => void, inputRef: React.RefObject<HTMLTextAreaElement | null>, options?: { replaceLastMessage?: boolean }) {
     const message = text.trim();
-    if (!message || sending) return;
+    if (!message || sendingRef.current) return;
+    sendingRef.current = true;
 
-    const history: AiConversationMessage[] = [...messages, { role: 'user' as const, content: message }];
-    setMessages([...history, { role: 'assistant' as const, content: '' }]);
+    // Build on the freshest state via the functional updater rather than the
+    // closured `messages` value -- callers (regenerate/retry) may have just
+    // truncated the array in the same tick, and a stale closure here would
+    // silently re-append after the old, supposedly-removed messages.
+    setMessages(prev => {
+      const base = options?.replaceLastMessage && prev.length && prev[prev.length - 1].role === 'user'
+        ? prev.slice(0, -1)
+        : prev;
+      const history: AiConversationMessage[] = [...base, { role: 'user' as const, content: message }];
+      historyRef.current = history;
+      return [...history, { role: 'assistant' as const, content: '' }];
+    });
     setInput('');
     if (inputRef.current) inputRef.current.style.height = 'auto';
     setSending(true);
@@ -67,13 +87,14 @@ export function useAIChat(courseId: string, lessonId: string, isOpen: boolean) {
     abortControllerRef.current = new AbortController();
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/courses/${courseId}/lessons/${lessonId}/chat`, {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${baseURL}/courses/${courseId}/lessons/${lessonId}/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
-        body: JSON.stringify({ message, history: messages.slice(-6) }),
+        body: JSON.stringify({ message, history: historyRef.current.slice(-6) }),
         signal: abortControllerRef.current.signal
       });
 
@@ -131,14 +152,21 @@ export function useAIChat(courseId: string, lessonId: string, isOpen: boolean) {
       if (error instanceof DOMException && error.name === 'AbortError') {
         // User aborted, keep what's completed
       } else {
-        setMessages(history); 
+        setMessages(historyRef.current);
         toast.error(error instanceof Error ? error.message : 'Could not answer that question.');
       }
     } finally {
       abortControllerRef.current = null;
+      sendingRef.current = false;
       setSending(false);
       setTimeout(() => inputRef.current?.focus(), 50);
     }
+  }
+
+  function retryLastMessage(scrollToBottom: (behavior: ScrollBehavior) => void, inputRef: React.RefObject<HTMLTextAreaElement | null>) {
+    const last = messages[messages.length - 1];
+    if (!last || last.role !== 'user' || sendingRef.current) return;
+    sendMessage(last.content, scrollToBottom, inputRef, { replaceLastMessage: true });
   }
 
   return {
@@ -151,6 +179,7 @@ export function useAIChat(courseId: string, lessonId: string, isOpen: boolean) {
     loadingHistory,
     historyError,
     sendMessage,
+    retryLastMessage,
     stopGenerating,
     clearChat
   };

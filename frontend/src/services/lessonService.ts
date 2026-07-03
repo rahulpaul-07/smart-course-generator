@@ -1,12 +1,9 @@
 import type { AxiosRequestConfig } from 'axios';
 import api from '../utils/api';
 import { handleApi } from './apiHelper';
-import type { Lesson, LessonVideo, PopulatedCourse } from '../types';
+import type { Flashcard, Lesson, LessonVideo, PopulatedCourse } from '../types';
 
-export interface Flashcard {
-  front: string;
-  back: string;
-}
+export type { Flashcard };
 
 export interface LessonProgressUpdate {
   opened?: boolean;
@@ -26,14 +23,17 @@ export const lessonService = {
   updateProgress: (lessonId: string, changes: LessonProgressUpdate, config?: AxiosRequestConfig) =>
     handleApi<Lesson>(api.patch(`/courses/lessons/${lessonId}/progress`, changes, config), { showErrorToast: true, fallbackMsg: 'Failed to update progress' }),
 
-  generateFlashcards: (courseId: string, lessonId: string) =>
-    handleApi<{ flashcards: Flashcard[] }>(api.post(`/courses/${courseId}/lessons/${lessonId}/flashcards`), { showErrorToast: true, fallbackMsg: 'Failed to generate flashcards' }),
+  generateFlashcards: (courseId: string, lessonId: string, force?: boolean) =>
+    handleApi<{ flashcards: Flashcard[] }>(api.post(`/courses/${courseId}/lessons/${lessonId}/flashcards${force ? '?force=true' : ''}`), { showErrorToast: true, fallbackMsg: 'Failed to generate flashcards' }),
 
   generateLab: (courseId: string, lessonId: string, force?: boolean) =>
     handleApi<Lesson>(api.post(`/courses/${courseId}/lessons/${lessonId}/lab${force ? '?force=true' : ''}`), { showErrorToast: true, fallbackMsg: 'Failed to generate lab' }),
 
   generateVideos: (courseId: string, lessonId: string) =>
     handleApi<{ lesson: Lesson; videos: LessonVideo[] }>(api.post(`/courses/${courseId}/lessons/${lessonId}/add-videos`), { showErrorToast: true, fallbackMsg: 'Could not add videos' }),
+
+  clearChat: (courseId: string, lessonId: string) =>
+    handleApi<{ success: boolean }>(api.delete(`/courses/${courseId}/lessons/${lessonId}/chat`), { showErrorToast: true, fallbackMsg: 'Failed to clear chat history' }),
 
   generateHinglishText: (lessonText: string) =>
     handleApi<{ data: { hinglishText: string } }>(api.post('/explanations/hinglish-text', { lessonText }), { showErrorToast: false }),
