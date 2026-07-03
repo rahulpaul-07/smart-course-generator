@@ -38,7 +38,7 @@ function ToolCard({
       aria-pressed={active}
       className={`group relative flex w-full flex-col overflow-hidden rounded-xl border p-4 text-left transition-all duration-300 ${
         active
-          ? 'border-primary bg-primary/10 shadow-[0_0_20px_rgba(var(--primary),0.15)] ring-1 ring-primary/50'
+          ? 'border-primary bg-primary/10 shadow-[0_0_20px_hsl(var(--primary)/0.15)] ring-1 ring-primary/50'
           : 'border-border/50 bg-card hover:bg-accent/40 hover:border-primary/30 hover:shadow-lg'
       } disabled:opacity-60 ${disabled ? 'cursor-progress' : 'cursor-pointer'} hover:-translate-y-0.5`}
     >
@@ -46,7 +46,7 @@ function ToolCard({
       <div className="relative flex items-start gap-4 z-10">
         <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border transition-all duration-300 ${
           active
-            ? 'border-primary bg-primary text-primary-foreground shadow-[0_0_15px_rgba(var(--primary),0.4)]'
+            ? 'border-primary bg-primary text-primary-foreground shadow-[0_0_15px_hsl(var(--primary)/0.4)]'
             : 'border-border bg-muted text-muted-foreground group-hover:text-primary group-hover:border-primary/30 group-hover:bg-primary/10 group-hover:scale-110'
         }`}>
           <Icon className="h-5 w-5" />
@@ -66,6 +66,7 @@ function ToolCard({
 interface StudyToolsProps {
   addingVideos: boolean;
   chatOpen: boolean;
+  courseId: string;
   lesson: Lesson;
   onAddVideos: () => void;
   onLessonUpdate: (lesson: Lesson) => void;
@@ -81,6 +82,7 @@ const INLINE_TOOLS: Record<string, { icon: LucideIcon; title: string }> = {
 const StudyTools = React.memo(({
   addingVideos,
   chatOpen,
+  courseId,
   lesson,
   onAddVideos,
   onLessonUpdate,
@@ -128,10 +130,22 @@ const StudyTools = React.memo(({
 
         <div className="flex-1 overflow-y-auto p-4">
           {activeTool === 'flashcards' && (
-            <FlashcardDeck lessonId={lesson._id} courseId={(lesson as Lesson & { course?: string }).course as string} embedded />
+            <FlashcardDeck
+              lessonId={lesson._id}
+              courseId={courseId}
+              initialFlashcards={lesson.flashcards}
+              onFlashcardsUpdate={(flashcards) => onLessonUpdate({ ...lesson, flashcards })}
+              embedded
+            />
           )}
           {activeTool === 'lab' && (
-            <PracticeLab lessonId={lesson._id} courseId={(lesson as Lesson & { course?: string }).course as string} embedded />
+            <PracticeLab
+              lessonId={lesson._id}
+              courseId={courseId}
+              initialLab={lesson.practiceLab}
+              onLabUpdate={(practiceLab) => onLessonUpdate({ ...lesson, practiceLab })}
+              embedded
+            />
           )}
           {activeTool === 'notes' && (
             <div className="flex flex-col gap-3">
@@ -217,9 +231,9 @@ const StudyTools = React.memo(({
 
         <Link
           to="/interview-prep"
-          className="group relative flex w-full items-center gap-4 overflow-hidden rounded-xl border border-border/50 bg-card p-4 text-left transition-all duration-300 hover:-translate-y-0.5 hover:border-rose-500/30 hover:bg-accent/40 hover:shadow-lg"
+          className="group relative flex w-full items-center gap-4 overflow-hidden rounded-xl border border-border/50 bg-card p-4 text-left transition-all duration-300 hover:-translate-y-0.5 hover:border-destructive/30 hover:bg-accent/40 hover:shadow-lg"
         >
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-border bg-muted text-muted-foreground transition-all duration-300 group-hover:scale-110 group-hover:border-rose-500/30 group-hover:bg-rose-500/10 group-hover:text-rose-500">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-border bg-muted text-muted-foreground transition-all duration-300 group-hover:scale-110 group-hover:border-destructive/30 group-hover:bg-destructive/10 group-hover:text-destructive">
             <Brain className="h-5 w-5" />
           </span>
           <div className="flex-1 min-w-0">

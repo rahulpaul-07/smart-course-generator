@@ -52,7 +52,7 @@ const ModuleCard = ({ moduleDoc, moduleIndex, courseId }: { moduleDoc: Populated
         className="w-full p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-left focus-visible:outline-none focus-visible:bg-muted/50"
       >
         <div className="flex items-center gap-4">
-          <div className={`shrink-0 w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg border shadow-inner ${isCompleted ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' : 'bg-primary/10 text-primary border-primary/20'}`}>
+          <div className={`shrink-0 w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg border shadow-inner ${isCompleted ? 'bg-success/10 text-success border-success/20' : 'bg-primary/10 text-primary border-primary/20'}`}>
             {isCompleted ? <CheckCircle2 className="h-6 w-6" /> : String(moduleIndex + 1).padStart(2, '0')}
           </div>
           <div>
@@ -71,7 +71,7 @@ const ModuleCard = ({ moduleDoc, moduleIndex, courseId }: { moduleDoc: Populated
           
           <div className="flex-1 sm:hidden">
             <div className="h-1.5 w-full bg-muted/60 rounded-full overflow-hidden">
-              <div className={`h-full rounded-full ${isCompleted ? 'bg-emerald-500' : 'bg-primary'}`} style={{ width: `${progress}%` }} />
+              <div className={`h-full rounded-full ${isCompleted ? 'bg-success' : 'bg-primary'}`} style={{ width: `${progress}%` }} />
             </div>
           </div>
           
@@ -101,7 +101,7 @@ const ModuleCard = ({ moduleDoc, moduleIndex, courseId }: { moduleDoc: Populated
                   let icon = <Lock className="h-3 w-3" />;
                   
                   if (isLessonCompleted) {
-                    nodeColor = 'bg-emerald-500 border-background';
+                    nodeColor = 'bg-success border-background';
                     textColor = 'text-foreground';
                     icon = <CheckCircle2 className="h-3.5 w-3.5 text-white" />;
                   } else if (isCurrent) {
@@ -141,7 +141,7 @@ const ModuleCard = ({ moduleDoc, moduleIndex, courseId }: { moduleDoc: Populated
                                 {lesson.quizBestScore}/5 Score
                               </span>
                             )}
-                            <div className={`h-8 w-8 rounded-full flex items-center justify-center border shadow-sm transition-colors ${isLessonCompleted ? 'bg-background border-border/30 text-emerald-500' : 'bg-primary/10 border-primary/20 text-primary'}`}>
+                            <div className={`h-8 w-8 rounded-full flex items-center justify-center border shadow-sm transition-colors ${isLessonCompleted ? 'bg-background border-border/30 text-success' : 'bg-primary/10 border-primary/20 text-primary'}`}>
                               <PlayCircle className="h-4 w-4" />
                             </div>
                           </div>

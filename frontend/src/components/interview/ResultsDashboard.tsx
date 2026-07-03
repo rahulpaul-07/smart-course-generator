@@ -25,7 +25,7 @@ export function ResultsDashboard({ prep, readiness, strengths, weaknesses, aiRec
   return (
     <div className="space-y-10 animate-enter pb-16">
       <div className="text-center space-y-4 mb-16 pt-4">
-        <div className="inline-flex items-center justify-center h-24 w-24 rounded-2xl bg-gradient-to-br from-primary to-cyan-500 shadow-lg shadow-primary/20 mb-4 border border-white/10">
+        <div className="inline-flex items-center justify-center h-24 w-24 rounded-2xl bg-gradient-to-br from-primary to-primary shadow-lg shadow-primary/20 mb-4 border border-white/10">
           <Trophy className="h-12 w-12 text-primary-foreground" />
         </div>
         <h2 className="text-5xl font-extrabold font-display tracking-tight text-foreground drop-shadow-sm">Assessment Complete</h2>
@@ -56,18 +56,18 @@ export function ResultsDashboard({ prep, readiness, strengths, weaknesses, aiRec
 
         <div className="flex flex-col gap-4">
           <ScoreBreakdown title="MCQ Accuracy" score={prep.mcqScore ?? 0} icon={CheckCircle2} color="primary" />
-          <ScoreBreakdown title="Theory Depth" score={prep.theoryScore ?? 0} icon={BookOpen} color="emerald" />
-          <ScoreBreakdown title="Code Quality" score={prep.codingQuestions?.reduce((s: number, q: CodingQuestion) => s + (q.score || 0), 0) / (prep.codingQuestions?.length || 1) * 10} icon={Code2} color="cyan" />
+          <ScoreBreakdown title="Theory Depth" score={prep.theoryScore ?? 0} icon={BookOpen} color="success" />
+          <ScoreBreakdown title="Code Quality" score={prep.codingQuestions?.reduce((s: number, q: CodingQuestion) => s + (q.score || 0), 0) / (prep.codingQuestions?.length || 1) * 10} icon={Code2} color="primary" />
         </div>
       </div>
 
       <div className="grid md:grid-cols-2 gap-6 pt-6">
-        <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-8 shadow-sm transition-all hover:shadow-md">
-          <h3 className="flex items-center gap-2 text-[13px] font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400 mb-6"><Zap className="h-4 w-4" /> Demonstrated Strengths</h3>
+        <div className="rounded-2xl border border-success/20 bg-success/5 p-8 shadow-sm transition-all hover:shadow-md">
+          <h3 className="flex items-center gap-2 text-[13px] font-bold uppercase tracking-widest text-success dark:text-success mb-6"><Zap className="h-4 w-4" /> Demonstrated Strengths</h3>
           <ul className="space-y-4">
             {strengths.length > 0 ? strengths.map((s: string, i: number) => (
               <li key={i} className="flex items-start gap-3 text-[14px] text-foreground/90 font-medium leading-relaxed">
-                <CheckCircle2 className="h-5 w-5 text-emerald-500 shrink-0 mt-0.5" /> {s}
+                <CheckCircle2 className="h-5 w-5 text-success shrink-0 mt-0.5" /> {s}
               </li>
             )) : <li className="text-muted-foreground text-[14px]">Not available</li>}
           </ul>

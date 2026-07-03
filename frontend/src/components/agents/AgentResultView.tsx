@@ -88,14 +88,14 @@ export function AgentResultView({ activeTab, result, onRun }: AgentResultViewPro
         </div>
         
         <div className="grid gap-6 md:grid-cols-2">
-          <div className="rounded-xl bg-emerald-500/10 border border-emerald-500/20 p-5">
-            <h4 className="mb-3 font-bold text-emerald-400 flex items-center gap-2">
+          <div className="rounded-xl bg-success/10 border border-success/20 p-5">
+            <h4 className="mb-3 font-bold text-success flex items-center gap-2">
               <CheckCircle2 className="h-4 w-4" /> Strengths
             </h4>
             <ul className="space-y-2">
               {reviewerResult.strengths?.map((s: string, i: number) => (
-                <li key={i} className="text-sm text-emerald-100 flex items-start gap-2">
-                  <span className="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-400 shrink-0" /> {s}
+                <li key={i} className="text-sm text-success flex items-start gap-2">
+                  <span className="mt-1 h-1.5 w-1.5 rounded-full bg-success shrink-0" /> {s}
                 </li>
               ))}
             </ul>
@@ -114,14 +114,14 @@ export function AgentResultView({ activeTab, result, onRun }: AgentResultViewPro
           </div>
         </div>
 
-        <div className="rounded-xl bg-blue-500/10 border border-blue-500/20 p-5">
-          <h4 className="mb-3 font-bold text-blue-400 flex items-center gap-2">
+        <div className="rounded-xl bg-success/10 border border-success/20 p-5">
+          <h4 className="mb-3 font-bold text-success flex items-center gap-2">
             <Lightbulb className="h-4 w-4" /> Suggested Improvements
           </h4>
           <ul className="space-y-2">
             {reviewerResult.suggestedImprovements?.map((s: string, i: number) => (
-              <li key={i} className="text-sm text-blue-100 flex items-start gap-2">
-                <ArrowRight className="h-4 w-4 shrink-0 text-blue-400" /> {s}
+              <li key={i} className="text-sm text-foreground/90 flex items-start gap-2">
+                <ArrowRight className="h-4 w-4 shrink-0 text-success" /> {s}
               </li>
             ))}
           </ul>
@@ -164,13 +164,13 @@ export function AgentResultView({ activeTab, result, onRun }: AgentResultViewPro
     return (
       <div className="space-y-6 animate-enter">
         <h3 className="text-xl font-bold text-foreground flex items-center gap-2">
-          <Map className="h-5 w-5 text-indigo-400" /> {plannerResult.planName || "Revision Plan"}
+          <Map className="h-5 w-5 text-primary" /> {plannerResult.planName || "Revision Plan"}
         </h3>
         <div className="space-y-3">
           {plannerResult.schedule?.map((item: RevisionPlanScheduleItem, i: number) => (
             <div key={i} className="flex items-center justify-between rounded-xl border border-border/30 bg-card/50 p-4">
               <div className="flex items-center gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-500/20 font-bold text-indigo-400">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/20 font-bold text-primary">
                   {item.day?.substring(0,3)}
                 </div>
                 <div>

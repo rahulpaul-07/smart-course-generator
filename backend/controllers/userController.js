@@ -1,16 +1,37 @@
 const User = require("../models/User");
 const Lesson = require("../models/Lesson");
 
+// Bookmarking (and checking bookmark status) reads lesson data back through
+// getBookmarks' populate chain, so it must not let a user attach an arbitrary
+// lessonId belonging to someone else's private course -- only lessons the
+// user owns or that belong to a published (isPublic) course are bookmarkable.
+async function assertLessonAccessible(res, lessonId, userId) {
+  const lesson = await Lesson.findById(lessonId).populate({
+    path: "module",
+    select: "course",
+    populate: { path: "course", select: "creator isPublic" },
+  });
+
+  if (!lesson?.module?.course) {
+    res.status(404);
+    throw new Error("Lesson not found");
+  }
+
+  const { course } = lesson.module;
+  const isOwner = String(course.creator) === String(userId);
+  if (!isOwner && !course.isPublic) {
+    res.status(403);
+    throw new Error("Forbidden");
+  }
+
+  return lesson;
+}
+
 async function toggleBookmark(req, res) {
   const { lessonId } = req.params;
   const userId = req.user._id;
 
-  // Verify the lesson exists
-  const lesson = await Lesson.findById(lessonId);
-  if (!lesson) {
-    res.status(404);
-    throw new Error("Lesson not found");
-  }
+  await assertLessonAccessible(res, lessonId, userId);
 
   const user = await User.findById(userId);
   if (!user) {
@@ -72,8 +93,11 @@ async function getBookmarks(req, res) {
 
 async function checkBookmark(req, res) {
   const { lessonId } = req.params;
+
+  await assertLessonAccessible(res, lessonId, req.user._id);
+
   const user = await User.findById(req.user._id);
-  
+
   if (!user) {
     res.status(404);
     throw new Error("User not found");

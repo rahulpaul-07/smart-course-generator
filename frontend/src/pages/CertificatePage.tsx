@@ -61,16 +61,16 @@ export default function CertificatePage() {
 
   return (
     <div className="min-h-screen bg-background pb-32">
-      <div className="w-full bg-emerald-500/10 border-b border-emerald-500/20 py-3 backdrop-blur-md sticky top-0 z-50">
+      <div className="w-full bg-success/10 border-b border-success/20 py-3 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2.5 text-emerald-600 dark:text-emerald-400 text-xs sm:text-sm font-bold uppercase tracking-widest">
+          <div className="flex items-center gap-2.5 text-success dark:text-success text-xs sm:text-sm font-bold uppercase tracking-widest">
             <ShieldCheck className="h-4 w-4 shrink-0" />
             <span>Official Verified Credential</span>
           </div>
           <BackButton
             to={certificate.course ? `/course/${certificate.course}` : '/'}
             label="Back"
-            className="shrink-0 text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 hover:bg-emerald-500/10 h-8 text-xs font-bold uppercase tracking-widest"
+            className="shrink-0 text-success dark:text-success hover:text-success dark:hover:text-success hover:bg-success/10 h-8 text-xs font-bold uppercase tracking-widest"
           />
         </div>
       </div>

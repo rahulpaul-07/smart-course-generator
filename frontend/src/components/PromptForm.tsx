@@ -97,7 +97,7 @@ export default function PromptForm({ onSubmit, isLoading = false, stage = null, 
           <Button 
             type="submit" 
             disabled={isLoading || !prompt.trim()}
-            className={`relative overflow-hidden group rounded-full px-6 transition-all ${isLoading ? 'cursor-progress opacity-90' : 'hover:shadow-[0_0_20px_rgba(var(--primary),0.3)] hover:-translate-y-0.5'}`}
+            className={`relative overflow-hidden group rounded-full px-6 transition-all ${isLoading ? 'cursor-progress opacity-90' : 'hover:shadow-[0_0_20px_hsl(var(--primary)/0.3)] hover:-translate-y-0.5'}`}
           >
             <span className="relative z-10 flex items-center font-semibold">
               {isLoading ? (
@@ -114,7 +114,7 @@ export default function PromptForm({ onSubmit, isLoading = false, stage = null, 
               )}
             </span>
             {/* Hover highlight effect */}
-            {!isLoading && <div className="absolute inset-0 bg-gradient-to-r from-primary to-indigo-500 opacity-0 transition-opacity group-hover:opacity-100" />}
+            {!isLoading && <div className="absolute inset-0 bg-gradient-to-r from-primary to-primary/60 opacity-0 transition-opacity group-hover:opacity-100" />}
             {!isLoading && <div className="absolute inset-0 bg-foreground/10 translate-y-full transition-transform group-hover:translate-y-0" />}
           </Button>
         </div>
@@ -131,12 +131,12 @@ export default function PromptForm({ onSubmit, isLoading = false, stage = null, 
           >
             {/* Moving gradient orb */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-primary/20 rounded-full blur-[60px] animate-pulse" />
-            <div className="absolute inset-0 z-0 bg-[linear-gradient(110deg,transparent,rgba(var(--primary),0.15),transparent)] bg-[length:200%_100%] animate-shimmer pointer-events-none" />
+            <div className="absolute inset-0 z-0 bg-[linear-gradient(110deg,transparent,hsl(var(--primary)/0.15),transparent)] bg-[length:200%_100%] animate-shimmer pointer-events-none" />
             
             <div className="flex flex-col items-center gap-6 relative z-10 px-6">
               <div className="relative">
                 <div className="absolute inset-0 rounded-full blur-xl bg-primary/40 animate-pulse" />
-                <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-card to-background border border-primary/30 flex items-center justify-center shadow-[0_0_30px_rgba(var(--primary),0.3)] relative z-10 animate-float">
+                <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-card to-background border border-primary/30 flex items-center justify-center shadow-[0_0_30px_hsl(var(--primary)/0.3)] relative z-10 animate-float">
                   <Sparkles className="h-7 w-7 text-primary animate-pulse" />
                 </div>
               </div>
@@ -153,13 +153,13 @@ export default function PromptForm({ onSubmit, isLoading = false, stage = null, 
                   return (
                     <li key={s.key} className="flex items-center gap-2.5">
                       {isComplete ? (
-                        <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-400" />
+                        <CheckCircle2 className="h-4 w-4 shrink-0 text-success" />
                       ) : isCurrent ? (
                         <Loader2 className="h-4 w-4 shrink-0 animate-spin text-primary" />
                       ) : (
                         <span className="h-4 w-4 shrink-0 rounded-full border border-border/60" />
                       )}
-                      <span className={isComplete ? 'text-foreground/70 line-through decoration-emerald-400/50' : isCurrent ? 'font-semibold text-foreground' : 'text-muted-foreground'}>
+                      <span className={isComplete ? 'text-foreground/70 line-through decoration-success/50' : isCurrent ? 'font-semibold text-foreground' : 'text-muted-foreground'}>
                         {s.label}
                       </span>
                     </li>

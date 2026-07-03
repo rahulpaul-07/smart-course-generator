@@ -68,7 +68,7 @@ export function useInterviewSession() {
     const [data] = await interviewService.getInterview(id);
     if (data) {
       setActivePrep(data);
-      setActiveTab('mcq');
+      setActiveTab(data.status === 'completed' ? 'results' : 'mcq');
     }
   }
 

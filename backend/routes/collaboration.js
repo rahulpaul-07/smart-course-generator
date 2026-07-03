@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { getUserProfile, updateUserProfile, getLeaderboard, getCommunityTemplates, upvoteTemplate, getPublicProfile, rateTemplate, cloneTemplate, getActivityFeed } = require("../controllers/collaborationController");
+const { getUserProfile, updateUserProfile, getLeaderboard, getCommunityTemplates, getMyUpvotedTemplateIds, upvoteTemplate, getPublicProfile, rateTemplate, cloneTemplate, getActivityFeed } = require("../controllers/collaborationController");
 const { verifyAuth0Token } = require("../middlewares/auth0Auth");
 const { validateRequest } = require("../middlewares/validateRequest");
 const { rateTemplateSchema, cloneTemplateSchema } = require("../validations/collaborationValidation");
@@ -20,6 +20,7 @@ router.get("/activity", communityLimiter, cacheMiddleware(30), getActivityFeed);
 router.use(verifyAuth0Token);
 router.get("/profile", getUserProfile);
 router.put("/profile", updateUserProfile);
+router.get("/templates/my-upvotes", getMyUpvotedTemplateIds);
 router.post("/templates/:courseId/upvote", communityLimiter, upvoteTemplate);
 router.post("/templates/:courseId/rate", communityLimiter, validateRequest(rateTemplateSchema), rateTemplate);
 router.post("/templates/:courseId/clone", communityLimiter, validateRequest(cloneTemplateSchema), cloneTemplate);

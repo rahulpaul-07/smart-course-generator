@@ -47,7 +47,8 @@ export interface PublicProfileResponse {
 export const collabService = {
   getActivity: () => handleApi<ActivityLogEntry[]>(api.get('/collab/activity'), { showErrorToast: false }),
   getTemplates: () => handleApi<CommunityTemplate[]>(api.get('/collab/templates'), { showErrorToast: false }),
-  upvoteTemplate: (courseId: string) => handleApi<{ success: boolean; upvotesCount: number }>(api.post(`/collab/templates/${courseId}/upvote`), { showErrorToast: true, fallbackMsg: 'Failed to upvote' }),
+  getMyUpvotedTemplateIds: () => handleApi<string[]>(api.get('/collab/templates/my-upvotes'), { showErrorToast: false }),
+  upvoteTemplate: (courseId: string) => handleApi<{ success: boolean; upvotesCount: number; hasUpvoted: boolean }>(api.post(`/collab/templates/${courseId}/upvote`), { showErrorToast: true, fallbackMsg: 'Failed to upvote' }),
   rateTemplate: (courseId: string, rating: number) => handleApi<{ success: boolean; averageRating: number }>(api.post(`/collab/templates/${courseId}/rate`, { rating }), { showErrorToast: true, fallbackMsg: 'Failed to rate' }),
   cloneTemplate: (courseId: string) => handleApi<{ success: boolean; courseId: string }>(api.post(`/collab/templates/${courseId}/clone`), { showErrorToast: true, fallbackMsg: 'Failed to clone' }),
   getLeaderboard: () => handleApi<LeaderboardUser[]>(api.get('/collab/leaderboard'), { showErrorToast: false }),

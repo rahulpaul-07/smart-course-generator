@@ -78,6 +78,7 @@ export default function LessonViewerPage() {
         course={course}
         courseId={courseId}
         lessonId={lessonId}
+        lesson={lesson}
         lessonTitle={lesson?.title || 'Lesson'}
         lessonContent={[]}
         hasContent={false}
@@ -132,6 +133,7 @@ export default function LessonViewerPage() {
       course={course}
       courseId={courseId}
       lessonId={lessonId}
+      lesson={lesson}
       lessonTitle={lesson.title}
       lessonContent={lesson.content}
       hasContent={hasContent}

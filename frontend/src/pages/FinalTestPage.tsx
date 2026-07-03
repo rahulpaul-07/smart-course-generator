@@ -31,7 +31,20 @@ export default function FinalTestPage() {
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<FinalTestResult | null>(null);
 
+  // useApi()'s fetchApi is a fresh closure every render (it isn't memoized),
+  // so this effect's dependency array would otherwise re-fire loadTest() on
+  // every unrelated re-render of this page -- e.g. every answer selection --
+  // and, worse, could fire it twice concurrently before either request
+  // resolves, sending two overlapping /generate-test calls (double AI cost,
+  // second write silently clobbering the first). This ref makes the load a
+  // true once-per-course-id operation regardless of how many times the
+  // effect itself re-runs.
+  const loadedForIdRef = useRef<string | null>(null);
+
   useEffect(() => {
+    if (!id || loadedForIdRef.current === id) return;
+    loadedForIdRef.current = id;
+
     async function loadTest() {
       try {
         let data = await fetchApi(`/courses/${id}`);
@@ -43,6 +56,7 @@ export default function FinalTestPage() {
         }
         setCourse(data);
       } catch (err: unknown) {
+        loadedForIdRef.current = null;
         const message = err instanceof Error ? err.message : 'Failed to load test';
         setError(message);
       } finally {
@@ -141,13 +155,13 @@ export default function FinalTestPage() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               className="mt-10 p-10 bg-card border border-border rounded-2xl text-center relative overflow-hidden shadow-lg"
             >
-              <div className={`absolute inset-0 opacity-20 pointer-events-none ${result.passed ? 'bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-500/40 via-background to-background' : 'bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-500/40 via-background to-background'}`} />
+              <div className={`absolute inset-0 opacity-20 pointer-events-none ${result.passed ? 'bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-success/40 via-background to-background' : 'bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-warning/40 via-background to-background'}`} />
               
               <div className="relative z-10 flex flex-col items-center">
                 <div className={`w-28 h-28 rounded-full flex items-center justify-center mb-8 border-4 shadow-lg ${
                   result.passed 
-                    ? 'bg-card border-emerald-500/50 text-emerald-500 shadow-[0_0_40px_rgba(16,185,129,0.3)]' 
-                    : 'bg-card border-amber-500/50 text-amber-500 shadow-[0_0_40px_rgba(245,158,11,0.3)]'
+                    ? 'bg-card border-success/50 text-success shadow-[0_0_40px_rgba(16,185,129,0.3)]' 
+                    : 'bg-card border-warning/50 text-warning shadow-[0_0_40px_rgba(245,158,11,0.3)]'
                 }`}>
                   {result.passed ? <Trophy className="w-14 h-14" /> : <RotateCcw className="w-14 h-14" />}
                 </div>
@@ -167,7 +181,7 @@ export default function FinalTestPage() {
                     <Button 
                       size="lg"
                       onClick={() => navigate(`/certificate/${result.certificateId}`)}
-                      className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-[0_0_20px_rgba(var(--primary),0.3)] h-14 px-8 text-lg rounded-xl"
+                      className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-[0_0_20px_hsl(var(--primary)/0.3)] h-14 px-8 text-lg rounded-xl"
                     >
                       <Sparkles className="w-5 h-5 mr-2" /> View Certificate
                     </Button>

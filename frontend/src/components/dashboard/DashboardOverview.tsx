@@ -35,10 +35,10 @@ export function DashboardOverview({ streak, statsList, weeklyProgress, overallCo
         
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
           <Card className="flex flex-col justify-between h-full p-6 rounded-2xl border border-border/30 bg-card shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 group overflow-hidden relative">
-            <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500/10 blur-2xl rounded-full -mr-8 -mt-8 pointer-events-none" />
+            <div className="absolute top-0 right-0 w-24 h-24 bg-destructive/10 blur-2xl rounded-full -mr-8 -mt-8 pointer-events-none" />
             <div className="flex justify-between items-start mb-4 relative z-10">
-              <div className="h-8 w-8 rounded-lg bg-orange-500/10 flex items-center justify-center">
-                <Flame className="h-4 w-4 text-orange-500" />
+              <div className="h-8 w-8 rounded-lg bg-destructive/10 flex items-center justify-center">
+                <Flame className="h-4 w-4 text-destructive" />
               </div>
             </div>
             <div className="relative z-10">
@@ -75,7 +75,7 @@ export function DashboardOverview({ streak, statsList, weeklyProgress, overallCo
       >
         <div className="flex items-center justify-between mb-6 px-2">
           <h2 className="text-xl font-semibold text-foreground flex items-center gap-3">
-            <Target className="h-5 w-5 text-emerald-500" /> Learning Progress
+            <Target className="h-5 w-5 text-success" /> Learning Progress
           </h2>
         </div>
         <Card className="p-6 rounded-2xl border border-border/30 bg-card shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
@@ -90,7 +90,7 @@ export function DashboardOverview({ streak, statsList, weeklyProgress, overallCo
               </div>
               <div className="w-full bg-muted/60 rounded-full h-2.5 overflow-hidden border border-border/20 shadow-inner">
                 <motion.div 
-                  className="bg-gradient-to-r from-emerald-400 to-emerald-500 h-full rounded-full" 
+                  className="bg-gradient-to-r from-success to-success h-full rounded-full" 
                   initial={{ width: 0 }}
                   animate={{ width: `${weeklyProgress}%` }}
                   transition={{ duration: 0.8, ease: "easeOut" }}
@@ -108,7 +108,7 @@ export function DashboardOverview({ streak, statsList, weeklyProgress, overallCo
               </div>
               <div className="w-full bg-muted/60 rounded-full h-2.5 overflow-hidden border border-border/20 shadow-inner">
                 <motion.div 
-                  className="bg-gradient-to-r from-blue-400 to-primary h-full rounded-full" 
+                  className="bg-gradient-to-r from-primary/60 to-primary h-full rounded-full" 
                   initial={{ width: 0 }}
                   animate={{ width: `${overallCompletion}%` }}
                   transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}

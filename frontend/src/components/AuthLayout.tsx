@@ -27,9 +27,9 @@ const TOPICS = [
 ];
 
 const COURSE_IDEAS = [
-  { icon: Code2, label: 'Build a full-stack app', color: 'text-cyan-200 bg-cyan-400/10 border-cyan-400/15' },
-  { icon: Microscope, label: 'Explore machine learning', color: 'text-violet-200 bg-violet-400/10 border-violet-400/15' },
-  { icon: LineChart, label: 'Understand personal finance', color: 'text-emerald-200 bg-emerald-400/10 border-emerald-400/15' },
+  { icon: Code2, label: 'Build a full-stack app', color: 'text-primary bg-primary/10 border-primary/15' },
+  { icon: Microscope, label: 'Explore machine learning', color: 'text-destructive bg-destructive/10 border-destructive/15' },
+  { icon: LineChart, label: 'Understand personal finance', color: 'text-success bg-success/10 border-success/15' },
 ];
 
 export function GoogleIcon() {
@@ -48,7 +48,7 @@ function LearningStudio() {
     <div className="auth-workspace relative mt-9 max-w-2xl overflow-hidden rounded-2xl border border-border bg-card/90 shadow-lg backdrop-blur-xl">
       <div className="flex items-center justify-between gap-3 border-b border-border bg-foreground/10 px-4 py-3">
         <div className="flex items-center gap-2">
-          <span className="grid h-7 w-7 place-items-center rounded-lg bg-gradient-to-br from-brand-500 to-cyan-400">
+          <span className="grid h-7 w-7 place-items-center rounded-lg bg-gradient-to-br from-brand-500 to-primary">
             <WandSparkles className="h-3.5 w-3.5" />
           </span>
           <div>
@@ -56,7 +56,7 @@ function LearningStudio() {
             <p className="text-[8px] uppercase tracking-[0.16em] text-muted-foreground">Designing your course</p>
           </div>
         </div>
-        <span className="auth-live-badge rounded-full border border-emerald-400/15 bg-emerald-400/10 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-emerald-300">
+        <span className="auth-live-badge rounded-full border border-success/15 bg-success/10 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-success">
           Generating
         </span>
       </div>
@@ -87,7 +87,7 @@ function LearningStudio() {
                   <span className="block truncate text-[10px] font-semibold text-foreground/90">{label}</span>
                   <span className="mt-0.5 block text-[8px] text-muted-foreground">Personalized path ready</span>
                 </span>
-                <Check className="h-3.5 w-3.5 text-emerald-400" />
+                <Check className="h-3.5 w-3.5 text-success" />
               </div>
             ))}
           </div>
@@ -113,12 +113,12 @@ function LearningStudio() {
             </div>
             <div className="relative grid h-11 w-11 place-items-center rounded-full bg-foreground/10">
               <svg viewBox="0 0 40 40" className="absolute inset-0 -rotate-90">
-                <circle cx="20" cy="20" r="17" fill="none" stroke="rgba(255,255,255,.06)" strokeWidth="3" />
+                <circle cx="20" cy="20" r="17" fill="none" stroke="hsl(var(--foreground) / 0.08)" strokeWidth="3" />
                 <circle className="auth-progress-ring" cx="20" cy="20" r="17" fill="none" stroke="url(#authProgress)" strokeWidth="3" strokeLinecap="round" />
                 <defs>
                   <linearGradient id="authProgress">
-                    <stop stopColor="#818cf8" />
-                    <stop offset="1" stopColor="#22d3ee" />
+                    <stop stopColor="hsl(var(--primary))" />
+                    <stop offset="1" stopColor="hsl(var(--warning))" />
                   </linearGradient>
                 </defs>
               </svg>
@@ -139,7 +139,7 @@ function LearningStudio() {
               >
                 <span className={`grid h-7 w-7 shrink-0 place-items-center rounded-lg text-[9px] font-bold ${
                   step.complete
-                    ? 'bg-emerald-400/10 text-emerald-300'
+                    ? 'bg-success/10 text-success'
                     : step.active
                       ? 'bg-brand-500 text-foreground shadow-lg shadow-brand-500/20'
                       : 'bg-foreground/10 text-muted-foreground'
@@ -154,9 +154,9 @@ function LearningStudio() {
             ))}
           </div>
 
-          <div className="mt-4 rounded-xl border border-cyan-400/15 bg-gradient-to-br from-cyan-400/[0.07] to-brand-500/[0.06] p-3">
+          <div className="mt-4 rounded-xl border border-primary/15 bg-gradient-to-br from-primary/[0.07] to-brand-500/[0.06] p-3">
             <div className="flex items-center gap-2">
-              <span className="grid h-7 w-7 place-items-center rounded-lg bg-cyan-400/10 text-cyan-200">
+              <span className="grid h-7 w-7 place-items-center rounded-lg bg-primary/10 text-primary">
                 <BrainCircuit className="h-3.5 w-3.5" />
               </span>
               <div>
@@ -190,13 +190,10 @@ export default function AuthLayout({
     <main className="auth-stage relative min-h-screen overflow-x-hidden text-foreground lg:grid lg:grid-cols-[minmax(0,1.12fr)_minmax(450px,0.88fr)]">
       <div className="auth-aurora auth-aurora-one pointer-events-none absolute" />
       <div className="auth-aurora auth-aurora-two pointer-events-none absolute" />
-      <div className="auth-particles pointer-events-none absolute inset-0" />
 
       <section className="relative hidden min-h-screen overflow-hidden border-r border-border p-10 lg:flex lg:flex-col xl:p-14">
-        <div className="auth-circuit pointer-events-none absolute inset-0 opacity-50" />
-
         <Link to="/" className="relative z-20 flex w-fit items-center gap-3 text-foreground">
-          <span className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-brand-500 to-cyan-400 shadow-lg shadow-brand-500/20">
+          <span className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-brand-500 to-primary shadow-lg shadow-brand-500/20">
             <BookOpen className="h-5 w-5" />
           </span>
           <span className="font-display text-lg font-bold tracking-tight">Course<span className="text-brand-300">AI</span></span>
@@ -234,16 +231,15 @@ export default function AuthLayout({
           <span>Any topic</span>
           <span className="h-1 w-1 rounded-full bg-brand-400" />
           <span>Your pace</span>
-          <span className="h-1 w-1 rounded-full bg-cyan-400" />
+          <span className="h-1 w-1 rounded-full bg-primary" />
           <span>Real outcomes</span>
         </div>
       </section>
 
       <section className="relative flex min-h-screen items-center justify-center px-4 py-8 sm:px-8 lg:px-10">
-        <div className="auth-circuit pointer-events-none absolute inset-0 opacity-20 lg:hidden" />
         <div className="w-full max-w-md animate-enter-delay">
           <Link to="/" className="mb-8 flex w-fit items-center gap-2.5 text-foreground lg:hidden">
-            <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-brand-500 to-cyan-400 shadow-lg shadow-brand-500/20">
+            <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-brand-500 to-primary shadow-lg shadow-brand-500/20">
               <BookOpen className="h-4 w-4" />
             </span>
             <span className="font-display font-bold tracking-tight">Course<span className="text-brand-300">AI</span></span>

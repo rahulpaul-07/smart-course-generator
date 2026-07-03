@@ -10,7 +10,7 @@ export function LandingFooter() {
       {/* 6. CTA */}
       <section className="py-32 relative overflow-hidden">
         <div className="absolute inset-0 bg-primary/5" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[800px] aspect-square bg-gradient-to-r from-primary/30 to-cyan-400/30 rounded-full opacity-30 blur-[100px] pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[800px] aspect-square bg-gradient-to-r from-primary/30 to-primary/30 rounded-full opacity-30 blur-[100px] pointer-events-none" />
         
         <div className="container relative z-10 px-4 md:px-6 text-center">
           <motion.div

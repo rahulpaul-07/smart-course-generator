@@ -128,7 +128,7 @@ export default function LessonSidebar({ course, currentLessonId, lessonContent, 
                     >
                       <div className={`shrink-0 flex items-center justify-center w-5 h-5 rounded-full border ${
                         lesson.completedAt 
-                          ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500' 
+                          ? 'bg-success/10 border-success/20 text-success' 
                           : isActive 
                             ? 'bg-primary/20 border-primary/30 text-primary'
                             : 'bg-background border-border text-muted-foreground/50'
