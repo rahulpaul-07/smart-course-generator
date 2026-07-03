@@ -25,6 +25,7 @@ export default function RoadmapPage() {
     viewRoadmap,
     deleteRoadmap,
     generateCourseFromTopic,
+    toggleWeekCompletion,
     refetch
   } = useRoadmap();
   
@@ -203,7 +204,7 @@ export default function RoadmapPage() {
               <RoadmapHero activeRoadmap={activeRoadmap} setActiveRoadmap={setActiveRoadmap} deleteRoadmap={deleteRoadmap} generateCourseFromTopic={generateCourseFromTopic} />
               <div className="rounded-2xl border border-border/30 bg-background/50 p-6 lg:p-10 shadow-sm relative">
                 <h3 className="text-xl font-bold text-foreground mb-8">Curriculum Timeline</h3>
-                <RoadmapTimeline roadmap={activeRoadmap} onGenerateCourse={generateCourseFromTopic} />
+                <RoadmapTimeline roadmap={activeRoadmap} onGenerateCourse={generateCourseFromTopic} onToggleWeekCompletion={toggleWeekCompletion} />
               </div>
             </div>
             <div className="lg:col-span-4 space-y-6 sticky top-24">

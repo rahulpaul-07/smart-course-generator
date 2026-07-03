@@ -39,7 +39,7 @@ export function InterviewHeader({
         </section>
 
         <form onSubmit={generate} className="max-w-2xl mx-auto relative group">
-          <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-primary/30 via-cyan-400/30 to-primary/30 opacity-20 blur-xl transition duration-200 group-hover:opacity-40" />
+          <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-primary/30 via-primary/30 to-primary/30 opacity-20 blur-xl transition duration-200 group-hover:opacity-40" />
           <div className="relative flex flex-col sm:flex-row gap-3 bg-card p-3 rounded-2xl border border-border shadow-md">
             <input
               aria-label="Interview topic"
@@ -64,7 +64,7 @@ export function InterviewHeader({
               <button type="button" key={p._id} onClick={() => viewPrep(p._id)} className="group cursor-pointer rounded-2xl border border-border/30 bg-card/40 p-6 transition-all duration-300 hover:bg-card hover:border-primary/40 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:-translate-y-1 flex flex-col justify-between min-h-[180px] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 w-full">
                 <div>
                   <div className="flex items-center justify-between mb-5">
-                    <span className={`px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${p.status === 'completed' ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-500 border border-amber-500/20'}`}>
+                    <span className={`px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${p.status === 'completed' ? 'bg-success/10 text-success border border-success/20' : 'bg-warning/10 text-warning border border-warning/20'}`}>
                       {p.status}
                     </span>
                     <button onClick={(e: React.MouseEvent<HTMLButtonElement>) => { e.stopPropagation(); deletePrep(p._id); }} className="p-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive rounded-lg transition-colors opacity-0 group-hover:opacity-100">
@@ -75,7 +75,7 @@ export function InterviewHeader({
                 </div>
                 {p.status === 'completed' && (
                   <div className="mt-6 flex items-center gap-2">
-                    <Trophy className="w-4 h-4 text-emerald-500" />
+                    <Trophy className="w-4 h-4 text-success" />
                     <p className="text-sm text-muted-foreground font-semibold">Score: <span className="text-foreground">{p.overallScore}%</span></p>
                   </div>
                 )}

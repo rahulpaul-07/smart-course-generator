@@ -12,7 +12,7 @@ export function CertificateMetadata({ certificate, issueDate, completionTime }: 
   return (
     <div className="grid md:grid-cols-4 gap-4">
       <div className="md:col-span-1 bg-card/60 backdrop-blur-md border border-border/30 rounded-2xl p-6 shadow-lg flex flex-col items-center justify-center text-center">
-        <div className="p-4 bg-emerald-500/10 rounded-2xl text-emerald-500 mb-4 ring-4 ring-emerald-500/5">
+        <div className="p-4 bg-success/10 rounded-2xl text-success mb-4 ring-4 ring-success/5">
           <ShieldCheck className="w-8 h-8" />
         </div>
         <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1">Status</p>

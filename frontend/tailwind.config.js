@@ -21,21 +21,22 @@ export default {
     extend: {
       fontFamily: {
         sans: ['"DM Sans"', 'system-ui', 'sans-serif'],
-        display: ['"Manrope"', '"DM Sans"', 'system-ui', 'sans-serif'],
+        display: ['"Fraunces"', '"DM Sans"', 'system-ui', 'serif'],
+        serif: ['"Fraunces"', 'ui-serif', 'serif'],
       },
       colors: {
         brand: {
-          50: "#f5f3ff",
-          100: "#ede9fe",
-          200: "#ddd6fe",
-          300: "#c4b5fd",
-          400: "#a78bfa",
-          500: "#8b5cf6",
-          600: "#7c3aed",
-          700: "#6d28d9",
-          800: "#5b21b6",
-          900: "#4c1d95",
-          950: "#2e1065",
+          50: "#FBF3E2",
+          100: "#F6E6C4",
+          200: "#EBCE93",
+          300: "#DFB363",
+          400: "#D2963D",
+          500: "#BD8628",
+          600: "#A16E1E",
+          700: "#7E561A",
+          800: "#5C3F16",
+          900: "#3E2A10",
+          950: "#241A0A",
         },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -53,6 +54,14 @@ export default {
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
+        },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          foreground: "hsl(var(--warning-foreground))",
         },
         muted: {
           DEFAULT: "hsl(var(--muted))",

@@ -7,33 +7,33 @@ export default function CalloutBlock({ block }: { block: LessonContentBlock }) {
   
   const styles = {
     info: {
-      container: 'border-blue-500/20 bg-gradient-to-br from-blue-500/10 to-blue-400/[0.02]',
-      iconBg: 'bg-blue-500/10 border-blue-500/20 text-blue-500',
-      title: 'text-blue-500',
+      container: 'border-primary/20 bg-gradient-to-br from-primary/10 to-primary/[0.02]',
+      iconBg: 'bg-primary/10 border-primary/20 text-primary',
+      title: 'text-primary',
       icon: <Info className="h-5 w-5" />
     },
     warning: {
-      container: 'border-amber-500/20 bg-gradient-to-br from-amber-500/10 to-amber-400/[0.02]',
-      iconBg: 'bg-amber-500/10 border-amber-500/20 text-amber-500',
-      title: 'text-amber-500',
+      container: 'border-warning/20 bg-gradient-to-br from-warning/10 to-warning/[0.02]',
+      iconBg: 'bg-warning/10 border-warning/20 text-warning',
+      title: 'text-warning',
       icon: <AlertTriangle className="h-5 w-5" />
     },
     tip: {
-      container: 'border-fuchsia-500/20 bg-gradient-to-br from-fuchsia-500/10 to-purple-400/[0.02]',
-      iconBg: 'bg-fuchsia-500/10 border-fuchsia-500/20 text-fuchsia-500',
-      title: 'text-fuchsia-500',
+      container: 'border-primary/20 bg-gradient-to-br from-primary/10 to-primary/[0.02]',
+      iconBg: 'bg-primary/10 border-primary/20 text-primary',
+      title: 'text-primary',
       icon: <Lightbulb className="h-5 w-5" />
     },
     success: {
-      container: 'border-emerald-500/20 bg-gradient-to-br from-emerald-500/10 to-emerald-400/[0.02]',
-      iconBg: 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500',
-      title: 'text-emerald-500',
+      container: 'border-success/20 bg-gradient-to-br from-success/10 to-success/[0.02]',
+      iconBg: 'bg-success/10 border-success/20 text-success',
+      title: 'text-success',
       icon: <CheckCircle2 className="h-5 w-5" />
     },
     example: {
-      container: 'border-indigo-500/20 bg-gradient-to-br from-indigo-500/10 to-indigo-400/[0.02]',
-      iconBg: 'bg-indigo-500/10 border-indigo-500/20 text-indigo-500',
-      title: 'text-indigo-500',
+      container: 'border-success/20 bg-gradient-to-br from-success/10 to-success/[0.02]',
+      iconBg: 'bg-success/10 border-success/20 text-success',
+      title: 'text-success',
       icon: <FileCode2 className="h-5 w-5" />
     }
   };

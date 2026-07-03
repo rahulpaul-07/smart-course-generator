@@ -5,19 +5,19 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { calculatePercentage } from '../../utils/percentages';
 
-const FlashcardDeck = React.memo(({ lessonId, courseId, embedded = false }: { lessonId: string, courseId: string, embedded?: boolean }) => {
-  const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
+const FlashcardDeck = React.memo(({ lessonId, courseId, initialFlashcards = [], embedded = false, onFlashcardsUpdate }: { lessonId: string, courseId: string, initialFlashcards?: Flashcard[], embedded?: boolean, onFlashcardsUpdate?: (flashcards: Flashcard[]) => void }) => {
+  const [flashcards, setFlashcards] = useState<Flashcard[]>(initialFlashcards);
   const [index, setIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [sessionDeck, setSessionDeck] = useState<Flashcard[]>([]);
+  const [sessionDeck, setSessionDeck] = useState<Flashcard[]>(initialFlashcards);
 
-  async function generateFlashcards() {
+  async function generateFlashcards(force = false) {
     setLoading(true);
     setError('');
 
-    const [data, fetchError] = await lessonService.generateFlashcards(courseId, lessonId);
+    const [data, fetchError] = await lessonService.generateFlashcards(courseId, lessonId, force);
     setLoading(false);
 
     if (fetchError) {
@@ -27,6 +27,7 @@ const FlashcardDeck = React.memo(({ lessonId, courseId, embedded = false }: { le
       setSessionDeck([...data.flashcards]);
       setIndex(0);
       setShowAnswer(false);
+      onFlashcardsUpdate?.(data.flashcards);
     }
   }
 
@@ -58,7 +59,7 @@ const FlashcardDeck = React.memo(({ lessonId, courseId, embedded = false }: { le
             Turn this lesson into an interactive review deck. Great for memorizing key concepts.
           </p>
           {error && <p className="text-sm font-medium text-destructive">{error}</p>}
-          <Button variant="outline" onClick={generateFlashcards} disabled={loading} className={`w-full rounded-full shadow-sm hover:shadow-md transition-all ${loading ? 'cursor-progress opacity-90' : 'hover:-translate-y-0.5 border-primary/30 hover:bg-primary/5 hover:text-primary'}`}>
+          <Button variant="outline" onClick={() => generateFlashcards()} disabled={loading} className={`w-full rounded-full shadow-sm hover:shadow-md transition-all ${loading ? 'cursor-progress opacity-90' : 'hover:-translate-y-0.5 border-primary/30 hover:bg-primary/5 hover:text-primary'}`}>
             {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Layers3 className="mr-2 h-4 w-4" />}
             {loading ? 'Creating Deck...' : 'Generate Flashcards'}
           </Button>
@@ -69,7 +70,7 @@ const FlashcardDeck = React.memo(({ lessonId, courseId, embedded = false }: { le
       <div className="surface-card rounded-2xl p-6">
         <div className="flex flex-col items-center justify-center text-center py-10 relative">
           <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:14px_14px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
-          <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center mb-6 border border-primary/20 shadow-[0_0_30px_rgba(var(--primary),0.15)] relative z-10 animate-float">
+          <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center mb-6 border border-primary/20 shadow-[0_0_30px_hsl(var(--primary)/0.15)] relative z-10 animate-float">
             <Layers3 className="h-10 w-10 text-primary" />
           </div>
           <h3 className="text-2xl font-bold text-foreground mb-3 font-display relative z-10">AI Flashcards</h3>
@@ -77,7 +78,7 @@ const FlashcardDeck = React.memo(({ lessonId, courseId, embedded = false }: { le
             Turn this lesson into an interactive review deck. Great for memorizing key concepts.
           </p>
           {error && <p className="mb-4 text-sm font-medium text-destructive">{error}</p>}
-          <Button variant="outline" onClick={generateFlashcards} disabled={loading} size="lg" className={`w-full sm:w-auto relative z-10 rounded-full px-8 shadow-sm hover:shadow-md transition-all ${loading ? 'cursor-progress opacity-90' : 'hover:-translate-y-0.5 border-primary/30 hover:bg-primary/5 hover:text-primary'}`}>
+          <Button variant="outline" onClick={() => generateFlashcards()} disabled={loading} size="lg" className={`w-full sm:w-auto relative z-10 rounded-full px-8 shadow-sm hover:shadow-md transition-all ${loading ? 'cursor-progress opacity-90' : 'hover:-translate-y-0.5 border-primary/30 hover:bg-primary/5 hover:text-primary'}`}>
             {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Layers3 className="mr-2 h-4 w-4" />}
             {loading ? 'Creating Deck...' : 'Generate Flashcards'}
           </Button>
@@ -99,8 +100,8 @@ const FlashcardDeck = React.memo(({ lessonId, courseId, embedded = false }: { le
           </div>
           <Progress value={progress} className="h-2" />
         </div>
-        <Button variant="ghost" size="icon" onClick={generateFlashcards} title="Create a new deck" className="text-muted-foreground shrink-0">
-          <RefreshCw className="h-4 w-4" />
+        <Button variant="ghost" size="icon" onClick={() => generateFlashcards(true)} disabled={loading} title="Create a new deck" className="text-muted-foreground shrink-0">
+          <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
         </Button>
       </div>
 
@@ -180,13 +181,13 @@ const FlashcardDeck = React.memo(({ lessonId, courseId, embedded = false }: { le
           <Button variant="outline" className="w-20 bg-destructive/10 text-destructive hover:bg-destructive/20 hover:text-destructive border-destructive/20" onClick={() => handleConfidence('again')}>
             Again
           </Button>
-          <Button variant="outline" className="w-20 bg-orange-500/10 text-orange-500 hover:bg-orange-500/20 hover:text-orange-500 border-orange-500/20" onClick={() => handleConfidence('hard')}>
+          <Button variant="outline" className="w-20 bg-warning/10 text-warning hover:bg-warning/20 hover:text-warning border-warning/20" onClick={() => handleConfidence('hard')}>
             Hard
           </Button>
-          <Button variant="outline" className="w-20 bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 hover:text-emerald-500 border-emerald-500/20" onClick={() => handleConfidence('good')}>
+          <Button variant="outline" className="w-20 bg-success/10 text-success hover:bg-success/20 hover:text-success border-success/20" onClick={() => handleConfidence('good')}>
             Good
           </Button>
-          <Button variant="outline" className="w-20 bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 hover:text-blue-500 border-blue-500/20" onClick={() => handleConfidence('easy')}>
+          <Button variant="outline" className="w-20 bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary border-primary/20" onClick={() => handleConfidence('easy')}>
             Easy
           </Button>
         </div>

@@ -7,8 +7,8 @@ export default function ListBlock({ block }: { block: LessonContentBlock & { sty
     <Tag
       className={`my-6 space-y-3 pl-6 text-foreground/90 ${
         block.style === 'numbered'
-          ? 'list-decimal marker:text-indigo-400 marker:font-semibold'
-          : 'list-disc marker:text-indigo-400'
+          ? 'list-decimal marker:text-primary marker:font-semibold'
+          : 'list-disc marker:text-primary'
       }`}
     >
       {block.items.map((item: string, index: number) => (

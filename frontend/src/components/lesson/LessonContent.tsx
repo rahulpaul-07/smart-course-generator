@@ -57,7 +57,7 @@ export function LessonContent({
         </h1>
         <div className="flex flex-wrap items-center gap-3 border-b border-border/30 pb-8">
           {lesson.completedAt && (
-            <span className="flex items-center gap-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 text-xs font-medium text-emerald-500 shadow-sm">
+            <span className="flex items-center gap-1.5 rounded-lg bg-success/10 border border-success/20 px-3 py-1.5 text-xs font-medium text-success shadow-sm">
               <CheckCircle2 className="w-3.5 h-3.5" /> Completed
             </span>
           )}
@@ -85,15 +85,15 @@ export function LessonContent({
       />
 
       {streamStatus === 'success' && !generating && (
-        <div className="bg-emerald-500/10 border border-emerald-500/20 p-4 rounded-2xl my-8 flex items-center justify-center gap-3 text-emerald-500 shadow-sm backdrop-blur-sm">
+        <div className="bg-success/10 border border-success/20 p-4 rounded-2xl my-8 flex items-center justify-center gap-3 text-success shadow-sm backdrop-blur-sm">
           <Sparkles className="w-5 h-5" />
           <span className="font-bold">Lesson generated successfully!</span>
         </div>
       )}
 
       {streamStatus === 'interrupted' && (
-        <div className="bg-amber-500/10 border border-amber-500/20 p-8 rounded-2xl my-8 flex flex-col items-center justify-center text-center shadow-sm backdrop-blur-sm">
-          <h3 className="text-xl font-bold text-amber-500 mb-2">Connection Lost</h3>
+        <div className="bg-warning/10 border border-warning/20 p-8 rounded-2xl my-8 flex flex-col items-center justify-center text-center shadow-sm backdrop-blur-sm">
+          <h3 className="text-xl font-bold text-warning mb-2">Connection Lost</h3>
           <p className="text-muted-foreground font-medium mb-6">The AI stream was disconnected. The backend may have finished saving the lesson.</p>
           <div className="flex gap-4">
             <button onClick={() => window.location.reload()} className="bg-background border border-border/30 text-foreground px-6 py-2.5 rounded-xl font-bold shadow-sm hover:shadow-md transition-all">Reload Page</button>
@@ -119,7 +119,7 @@ export function LessonContent({
       {lesson.videos && lesson.videos.length > 0 && (
         <div className="mt-20 pt-12 border-t border-border/30">
           <div className="flex items-center gap-3 mb-8">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 border border-primary/20 shadow-[0_0_15px_rgba(var(--primary),0.15)]">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 border border-primary/20 shadow-[0_0_15px_hsl(var(--primary)/0.15)]">
               <svg className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />

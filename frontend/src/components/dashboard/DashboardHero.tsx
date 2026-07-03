@@ -17,7 +17,7 @@ export function DashboardHero({ name, continueUrl = '/courses', onNavigate }: Da
       transition={{ duration: 0.2 }}
       className="relative w-full rounded-2xl border border-border/30 bg-card/60 backdrop-blur-2xl shadow-md shadow-foreground/5 overflow-hidden p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-12"
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-cyan-500/5 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5 pointer-events-none" />
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
       
       <div className="relative z-10 max-w-2xl text-center md:text-left space-y-6">
@@ -45,7 +45,7 @@ export function DashboardHero({ name, continueUrl = '/courses', onNavigate }: Da
       </div>
 
       <div className="relative z-10 w-full max-w-[320px] hidden lg:block aspect-square">
-        <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-cyan-400/20 rounded-full blur-[80px]" />
+        <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-primary/20 rounded-full blur-[80px]" />
         <motion.div 
           initial={{ y: 0 }}
           animate={{ y: [-10, 10, -10] }}
@@ -76,8 +76,8 @@ export function DashboardHero({ name, continueUrl = '/courses', onNavigate }: Da
         >
           <div className="flex justify-between items-center mb-3">
             <div className="h-2 w-16 bg-muted-foreground/30 rounded" />
-            <div className="h-4 w-12 bg-emerald-500/20 rounded-full flex items-center justify-center">
-              <div className="h-1.5 w-6 bg-emerald-500/50 rounded-full" />
+            <div className="h-4 w-12 bg-success/20 rounded-full flex items-center justify-center">
+              <div className="h-1.5 w-6 bg-success/50 rounded-full" />
             </div>
           </div>
           <div className="h-24 w-full bg-muted/40 rounded-lg border border-border/30 flex items-end p-2 gap-1">

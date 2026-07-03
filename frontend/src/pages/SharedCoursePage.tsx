@@ -51,7 +51,7 @@ export default function SharedCoursePage() {
       <header className="sticky top-0 z-20 border-b border-border bg-background/80 px-4 py-4 backdrop-blur-2xl lg:px-8">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
-            <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-brand-500 to-cyan-400 shadow-lg shadow-brand-500/20">
+            <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-brand-500 to-primary shadow-lg shadow-brand-500/20">
               <BookOpen className="h-4 w-4 text-white" />
             </span>
             <div>
@@ -59,7 +59,7 @@ export default function SharedCoursePage() {
               <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Shared learning path</p>
             </div>
           </div>
-          <span className="flex items-center gap-1.5 rounded-full border border-cyan-400/15 bg-cyan-400/[0.07] px-3 py-1.5 text-xs text-cyan-200">
+          <span className="flex items-center gap-1.5 rounded-full border border-primary/15 bg-primary/[0.07] px-3 py-1.5 text-xs text-primary">
             <Globe2 className="h-3.5 w-3.5" />
             Read only
           </span>

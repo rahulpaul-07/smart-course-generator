@@ -13,6 +13,7 @@ interface LessonLayoutProps {
   course: PopulatedCourse | null;
   courseId: string | undefined;
   lessonId: string | undefined;
+  lesson: Lesson | null;
   lessonTitle: string;
   lessonContent: LessonContentBlock[];
   hasContent: boolean;
@@ -33,6 +34,7 @@ export function LessonLayout({
   course,
   courseId,
   lessonId,
+  lesson,
   lessonTitle,
   lessonContent,
   hasContent,
@@ -84,8 +86,8 @@ export function LessonLayout({
 
       {/* Right Sidebar (Study Tools) */}
       <AnimatePresence>
-        {!isFocusMode && hasContent && !generating && (
-          <motion.div 
+        {!isFocusMode && hasContent && !generating && lesson && (
+          <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
@@ -93,13 +95,14 @@ export function LessonLayout({
             className="hidden lg:block h-full border-l border-border/30 bg-card overflow-y-auto w-[340px] xl:w-[380px] shrink-0"
           >
             <Suspense fallback={<div className="flex items-center justify-center h-full"><LoadingSpinner text="Loading study tools..." /></div>}>
-              <StudyTools 
-                lesson={{ title: lessonTitle, content: lessonContent, ...course?.modules?.flatMap((m) => m.lessons)?.find((l) => l._id === lessonId) } as Lesson} 
-                addingVideos={addingVideos} 
-                chatOpen={showChat} 
-                onAddVideos={addVideos} 
-                onLessonUpdate={updateCurrentLesson} 
-                onToggleChat={() => setShowChat((v) => !v)} 
+              <StudyTools
+                lesson={lesson}
+                courseId={courseId!}
+                addingVideos={addingVideos}
+                chatOpen={showChat}
+                onAddVideos={addVideos}
+                onLessonUpdate={updateCurrentLesson}
+                onToggleChat={() => setShowChat((v) => !v)}
               />
             </Suspense>
           </motion.div>
@@ -107,7 +110,7 @@ export function LessonLayout({
       </AnimatePresence>
 
       {/* Mobile Study Tools Slide-over */}
-      {!isFocusMode && hasContent && !generating && (
+      {!isFocusMode && hasContent && !generating && lesson && (
         <AnimatePresence>
           {mobileToolsOpen ? (
             <motion.div
@@ -129,7 +132,8 @@ export function LessonLayout({
               <div className="max-h-[75vh] overflow-y-auto">
                 <Suspense fallback={<div className="p-4 flex justify-center"><LoadingSpinner /></div>}>
                   <StudyTools
-                    lesson={{ title: lessonTitle, content: lessonContent, ...course?.modules?.flatMap((m) => m.lessons)?.find((l) => l._id === lessonId) } as Lesson}
+                    lesson={lesson}
+                    courseId={courseId!}
                     addingVideos={addingVideos}
                     chatOpen={showChat}
                     onAddVideos={addVideos}

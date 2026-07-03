@@ -40,10 +40,10 @@ export default function LearningSummary({ courses }: { courses: PopulatedCourse[
   const streak = user?.studyStreak || 0;
 
   const stats = [
-    { label: 'Active Courses', value: courses.length, icon: BookOpen, color: 'text-violet-500', bg: 'bg-violet-500/10' },
-    { label: 'Lessons Completed', value: completedLessons, icon: CheckCircle2, color: 'text-cyan-500', bg: 'bg-cyan-500/10' },
-    { label: 'Learning Streak', value: `${streak} Days`, icon: Trophy, color: 'text-amber-500', bg: 'bg-amber-500/10' },
-    { label: 'Overall Progress', value: `${completion}%`, icon: Target, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+    { label: 'Active Courses', value: courses.length, icon: BookOpen, color: 'text-primary', bg: 'bg-primary/10' },
+    { label: 'Lessons Completed', value: completedLessons, icon: CheckCircle2, color: 'text-primary', bg: 'bg-primary/10' },
+    { label: 'Learning Streak', value: `${streak} Days`, icon: Trophy, color: 'text-warning', bg: 'bg-warning/10' },
+    { label: 'Overall Progress', value: `${completion}%`, icon: Target, color: 'text-success', bg: 'bg-success/10' },
   ];
 
   return (

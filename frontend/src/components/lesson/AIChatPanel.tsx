@@ -24,6 +24,7 @@ export default function AIChatPanel({ lessonId, courseId, lessonTitle, isOpen, o
     loadingHistory,
     historyError,
     sendMessage,
+    retryLastMessage,
     stopGenerating,
     clearChat
   } = useAIChat(courseId, lessonId, isOpen);
@@ -84,8 +85,9 @@ export default function AIChatPanel({ lessonId, courseId, lessonTitle, isOpen, o
               onRegenerate={(index) => {
                 const previousMessages = messages.slice(0, index);
                 setMessages(previousMessages);
-                sendMessage(messages[index - 1].content, scrollToBottom, inputRef);
-              }} 
+                sendMessage(messages[index - 1].content, scrollToBottom, inputRef, { replaceLastMessage: true });
+              }}
+              onRetry={() => retryLastMessage(scrollToBottom, inputRef)}
             />
           </>
         )}

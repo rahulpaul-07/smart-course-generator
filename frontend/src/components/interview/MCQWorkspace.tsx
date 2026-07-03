@@ -39,7 +39,7 @@ export function MCQWorkspace({ prep, mcqAnswers, setMcqAnswers, submitted, submi
                 
                 let cls = 'border-border/30 bg-background hover:border-primary/40 hover:bg-muted/50 text-foreground';
                 if (submitted) {
-                  if (isCorrect) cls = 'border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-medium';
+                  if (isCorrect) cls = 'border-success bg-success/10 text-success dark:text-success font-medium';
                   else if (isWrong) cls = 'border-destructive bg-destructive/10 text-destructive font-medium';
                   else cls = 'border-border/30 bg-background/50 opacity-40';
                 } else if (isSelected) {
@@ -53,11 +53,11 @@ export function MCQWorkspace({ prep, mcqAnswers, setMcqAnswers, submitted, submi
                     disabled={submitted}
                     className={`group relative flex w-full items-start gap-4 rounded-xl border p-4 text-left text-[14px] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${cls}`}
                   >
-                    <span className={`shrink-0 flex h-6 w-6 items-center justify-center rounded-full border text-[11px] font-bold transition-colors ${isSelected && !submitted ? 'bg-primary border-primary text-primary-foreground' : 'border-border/30 text-muted-foreground'} ${isCorrect ? 'bg-emerald-500 border-emerald-500 text-background' : ''} ${isWrong ? 'bg-destructive border-destructive text-background' : ''}`}>
+                    <span className={`shrink-0 flex h-6 w-6 items-center justify-center rounded-full border text-[11px] font-bold transition-colors ${isSelected && !submitted ? 'bg-primary border-primary text-primary-foreground' : 'border-border/30 text-muted-foreground'} ${isCorrect ? 'bg-success border-success text-background' : ''} ${isWrong ? 'bg-destructive border-destructive text-background' : ''}`}>
                       {String.fromCharCode(65 + oi)}
                     </span>
                     <span className="pt-0.5 flex-1 leading-relaxed">{opt}</span>
-                    {isCorrect && <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-500 absolute right-4 top-4" />}
+                    {isCorrect && <CheckCircle2 className="h-5 w-5 shrink-0 text-success absolute right-4 top-4" />}
                     {isWrong && <XCircle className="h-5 w-5 shrink-0 text-destructive absolute right-4 top-4" />}
                   </button>
                 );

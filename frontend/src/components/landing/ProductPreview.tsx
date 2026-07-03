@@ -23,8 +23,8 @@ const PreviewDashboard = () => (
           <p className="text-xs text-muted-foreground mb-1">Current Streak</p>
           <p className="text-2xl font-bold">5 Days</p>
         </div>
-        <div className="h-10 w-10 rounded-full bg-amber-500/10 flex items-center justify-center">
-          <Zap className="h-5 w-5 text-amber-500" />
+        <div className="h-10 w-10 rounded-full bg-warning/10 flex items-center justify-center">
+          <Zap className="h-5 w-5 text-warning" />
         </div>
       </div>
     </div>
@@ -35,8 +35,8 @@ const PreviewDashboard = () => (
         <span className="text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded-full">In Progress</span>
       </div>
       <div className="flex items-start gap-4 mb-4">
-        <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shrink-0 shadow-inner">
-          <BrainCircuit className="h-6 w-6 text-white" />
+        <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center shrink-0 shadow-inner">
+          <BrainCircuit className="h-6 w-6 text-primary-foreground" />
         </div>
         <div>
           <h4 className="text-sm font-semibold text-foreground">Advanced React Architecture</h4>
@@ -53,7 +53,7 @@ const PreviewDashboard = () => (
             initial={{ width: 0 }}
             animate={{ width: "68%" }}
             transition={{ duration: 1 }}
-            className="h-full bg-gradient-to-r from-primary to-cyan-400 rounded-full" 
+            className="h-full bg-gradient-to-r from-primary to-primary rounded-full" 
           />
         </div>
       </div>
@@ -197,15 +197,15 @@ const PreviewCertificate = () => (
       className="relative w-full max-w-sm aspect-[1.414/1] bg-card rounded-sm shadow-lg border border-border/30 p-6 flex flex-col items-center text-center overflow-hidden"
     >
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(251,191,36,0.06),transparent_70%)]" />
-      <div className="absolute -inset-[1px] border-2 border-amber-500/20 rounded-sm pointer-events-none" />
-      <div className="absolute top-0 left-0 w-16 h-16 border-t-2 border-l-2 border-amber-500/40 rounded-tl-sm pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 border-amber-500/40 rounded-br-sm pointer-events-none" />
+      <div className="absolute -inset-[1px] border-2 border-warning/20 rounded-sm pointer-events-none" />
+      <div className="absolute top-0 left-0 w-16 h-16 border-t-2 border-l-2 border-warning/40 rounded-tl-sm pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 border-warning/40 rounded-br-sm pointer-events-none" />
       
-      <Award className="h-10 w-10 text-amber-500 mb-3 drop-shadow-md relative z-10" />
+      <Award className="h-10 w-10 text-warning mb-3 drop-shadow-md relative z-10" />
       <h2 className="text-[9px] uppercase tracking-[0.25em] text-muted-foreground font-bold mb-1.5 relative z-10">Certificate of Completion</h2>
       <h1 className="text-lg font-display font-bold text-foreground mb-4 relative z-10">
         Advanced React Architecture
-        <div className="absolute -bottom-2 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-amber-500/50 to-transparent" />
+        <div className="absolute -bottom-2 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-warning/50 to-transparent" />
       </h1>
       
       <p className="text-[9px] text-muted-foreground max-w-[85%] leading-relaxed relative z-10">
@@ -277,13 +277,13 @@ export const ProductPreview = () => {
         {/* Browser Header */}
         <div className="h-12 border-b border-border/30 bg-muted/20 flex items-center px-4 gap-4">
           <div className="flex gap-2">
-            <div className="w-3 h-3 rounded-full bg-rose-500/80 border border-rose-500" />
-            <div className="w-3 h-3 rounded-full bg-amber-500/80 border border-amber-500" />
-            <div className="w-3 h-3 rounded-full bg-emerald-500/80 border border-emerald-500" />
+            <div className="w-3 h-3 rounded-full bg-destructive/80 border border-destructive" />
+            <div className="w-3 h-3 rounded-full bg-warning/80 border border-warning" />
+            <div className="w-3 h-3 rounded-full bg-success/80 border border-success" />
           </div>
           <div className="flex-1 max-w-md mx-auto bg-background/50 border border-border/30 h-7 rounded-md flex items-center px-3 justify-center shadow-inner">
             <span className="text-[11px] font-medium text-muted-foreground flex items-center gap-1.5">
-              <ShieldCheck className="h-3 w-3 text-emerald-500" /> app.courseai.com
+              <ShieldCheck className="h-3 w-3 text-success" /> app.courseai.com
             </span>
           </div>
           <div className="w-[52px]" />

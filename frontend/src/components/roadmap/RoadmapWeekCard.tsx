@@ -10,14 +10,13 @@ interface RoadmapWeekCardProps {
   isExpanded: boolean;
   isCompleted: boolean;
   isCurrent: boolean;
-  isSaving?: boolean;
   toggleWeek: (num: number) => void;
   toggleCompletion: (e: React.MouseEvent<HTMLButtonElement>, num: number) => void;
   onGenerateCourse: (topic: string) => void;
 }
 
 export function RoadmapWeekCard({
-  roadmap, week, index, isExpanded, isCompleted, isCurrent, isSaving, toggleWeek, toggleCompletion, onGenerateCourse
+  roadmap, week, index, isExpanded, isCompleted, isCurrent, toggleWeek, toggleCompletion, onGenerateCourse
 }: RoadmapWeekCardProps) {
   const [generatingTopic, setGeneratingTopic] = React.useState<string | null>(null);
 
@@ -34,7 +33,7 @@ export function RoadmapWeekCard({
       <div 
         className={`absolute left-4 top-5 h-8 w-8 rounded-full border-2 flex items-center justify-center z-10 transition-colors shadow-sm ${
           isCompleted 
-            ? 'bg-emerald-500 border-emerald-500 text-background shadow-emerald-500/20' 
+            ? 'bg-success border-success text-background shadow-success/20' 
             : isCurrent 
               ? 'bg-primary border-primary text-primary-foreground shadow-primary/20 ring-4 ring-primary/10' 
               : 'bg-background border-border text-muted-foreground'
@@ -58,7 +57,7 @@ export function RoadmapWeekCard({
         >
           <div className="flex-1 min-w-0 pr-4">
             <div className="flex items-center gap-3 mb-1.5">
-              <p className={`text-[11px] font-bold uppercase tracking-widest ${isCurrent ? 'text-primary' : isCompleted ? 'text-emerald-500' : 'text-muted-foreground'}`}>
+              <p className={`text-[11px] font-bold uppercase tracking-widest ${isCurrent ? 'text-primary' : isCompleted ? 'text-success' : 'text-muted-foreground'}`}>
                 Week {week.weekNumber}
               </p>
               <span className="text-[10px] text-muted-foreground font-medium px-2 py-0.5 rounded border border-border bg-background/50 flex items-center gap-1">
@@ -71,16 +70,14 @@ export function RoadmapWeekCard({
           </div>
           
           <div className="flex items-center gap-4 shrink-0">
-            <button 
+            <button
               onClick={(e) => toggleCompletion(e, week.weekNumber)}
-              disabled={isSaving}
               className={`h-9 px-3 rounded-lg text-xs font-bold transition-colors border shadow-sm flex items-center gap-2 ${
-                isCompleted 
-                  ? 'bg-background border-border text-muted-foreground hover:bg-muted' 
+                isCompleted
+                  ? 'bg-background border-border text-muted-foreground hover:bg-muted'
                   : 'bg-background border-border text-foreground hover:border-primary/50 hover:text-primary'
-              } ${isSaving ? 'cursor-progress opacity-70' : ''}`}
+              }`}
             >
-              {isSaving ? <Loader2 className="h-3 w-3 animate-spin" /> : null}
               {isCompleted ? 'Completed' : 'Mark Complete'}
             </button>
             <div className={`h-8 w-8 rounded-full flex items-center justify-center transition-transform duration-300 ${isExpanded ? 'bg-muted rotate-180' : 'hover:bg-muted'}`}>
@@ -135,14 +132,14 @@ export function RoadmapWeekCard({
                 <div className="grid md:grid-cols-2 gap-6">
                   {/* Milestones */}
                   {(week.milestones?.length ?? 0) > 0 && (
-                    <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-5 shadow-sm">
-                      <h4 className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400 mb-4">
+                    <div className="rounded-2xl border border-success/20 bg-success/5 p-5 shadow-sm">
+                      <h4 className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-success dark:text-success mb-4">
                         <Flag className="h-4 w-4" /> Milestones
                       </h4>
                       <ul className="space-y-3">
                         {week.milestones?.map((m: string, i: number) => (
                           <li key={i} className="flex items-start gap-3 text-[14px] text-foreground/90 font-medium leading-relaxed">
-                            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
+                            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-success" />
                             {m}
                           </li>
                         ))}
@@ -152,8 +149,8 @@ export function RoadmapWeekCard({
 
                   {/* Project */}
                   {week.project?.title && (
-                    <div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 p-5 shadow-sm flex flex-col h-full">
-                      <h4 className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-amber-600 dark:text-amber-500 mb-3">
+                    <div className="rounded-2xl border border-warning/20 bg-warning/5 p-5 shadow-sm flex flex-col h-full">
+                      <h4 className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-warning dark:text-warning mb-3">
                         <Rocket className="h-4 w-4" /> Weekly Project
                       </h4>
                       <p className="text-[15px] font-bold text-foreground mb-2">{week.project.title}</p>
@@ -165,7 +162,7 @@ export function RoadmapWeekCard({
                       <button
                         disabled={generatingTopic === week.project.title}
                         onClick={() => handleGenerateCourse(week.project?.title ?? '')}
-                        className={`mt-auto flex items-center justify-center gap-2 w-full h-10 rounded-xl bg-background border border-amber-500/30 text-[13px] font-bold text-amber-600 dark:text-amber-500 hover:bg-amber-500/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 ${generatingTopic === week.project.title ? 'cursor-progress opacity-70' : ''}`}
+                        className={`mt-auto flex items-center justify-center gap-2 w-full h-10 rounded-xl bg-background border border-warning/30 text-[13px] font-bold text-warning dark:text-warning hover:bg-warning/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-warning ${generatingTopic === week.project.title ? 'cursor-progress opacity-70' : ''}`}
                       >
                         {generatingTopic === week.project.title ? (
                           <><Loader2 className="h-3.5 w-3.5 animate-spin" /> Preparing...</>

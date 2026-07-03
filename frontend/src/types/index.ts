@@ -112,6 +112,11 @@ export interface PracticeLab {
   hint?: string;
 }
 
+export interface Flashcard {
+  front: string;
+  back: string;
+}
+
 export interface AiConversationMessage {
   role: 'user' | 'assistant';
   content: string;
@@ -143,6 +148,7 @@ export interface Lesson {
   module: ID;
   videos?: LessonVideo[];
   practiceLab?: PracticeLab | null;
+  flashcards?: Flashcard[];
   aiConversation?: AiConversationMessage[];
   createdAt?: string;
   updatedAt?: string;
@@ -224,6 +230,7 @@ export interface Roadmap {
   skillLevel: 'beginner' | 'intermediate' | 'advanced';
   summary?: string;
   weeks: RoadmapWeek[];
+  completedWeeks?: number[];
   createdAt?: string;
   updatedAt?: string;
 }

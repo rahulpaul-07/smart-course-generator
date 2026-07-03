@@ -78,9 +78,9 @@ export default function LeaderboardPage() {
             >
               <div className="col-span-2 flex items-center justify-between sm:justify-center">
                 <span className="sm:hidden text-xs font-bold text-muted-foreground uppercase tracking-wider">Rank</span>
-                {idx === 0 ? <Trophy className="h-8 w-8 text-yellow-400 drop-shadow-[0_0_15px_rgba(250,204,21,0.5)]" /> :
+                {idx === 0 ? <Trophy className="h-8 w-8 text-primary drop-shadow-[0_0_15px_hsl(var(--primary)/0.5)]" /> :
                  idx === 1 ? <Trophy className="h-7 w-7 text-foreground/90 drop-shadow-md" /> :
-                 idx === 2 ? <Trophy className="h-6 w-6 text-amber-600 drop-shadow-md" /> :
+                 idx === 2 ? <Trophy className="h-6 w-6 text-warning drop-shadow-md" /> :
                  <span className="font-display font-bold text-lg text-muted-foreground">#{idx + 1}</span>}
               </div>
               
@@ -94,16 +94,16 @@ export default function LeaderboardPage() {
                 </div>
                 <div>
                   <span className="font-medium text-foreground group-hover:text-brand-300 transition-colors block">{user.name || 'Anonymous'}</span>
-                  <div className="flex items-center gap-1.5 text-xs font-medium text-orange-400 mt-0.5">
+                  <div className="flex items-center gap-1.5 text-xs font-medium text-destructive mt-0.5">
                     <Flame className="h-3 w-3" /> {user.studyStreak || 0} day streak
                   </div>
                 </div>
               </div>
-              
+
               <div className="col-span-3 flex flex-wrap items-center gap-2">
                 {user.achievements?.slice(0, 4).map((ach) => (
-                  <div key={ach.badge} title={ach.name} className="h-7 w-7 rounded-full bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 flex items-center justify-center">
-                    <Award className="h-4 w-4 text-indigo-400" />
+                  <div key={ach.badge} title={ach.name} className="h-7 w-7 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/30 flex items-center justify-center">
+                    <Award className="h-4 w-4 text-primary" />
                   </div>
                 ))}
                 {(user.achievements?.length || 0) > 4 && (
@@ -113,8 +113,8 @@ export default function LeaderboardPage() {
               
               <div className="col-span-2 flex items-center justify-between sm:justify-end gap-2 pr-2">
                 <span className="sm:hidden text-xs font-bold text-muted-foreground uppercase tracking-wider">XP</span>
-                <div className="flex items-center gap-1.5 font-display text-xl font-bold text-amber-400 group-hover:text-amber-300 transition-colors drop-shadow-sm">
-                  <Zap className="h-5 w-5 fill-amber-400/20" /> 
+                <div className="flex items-center gap-1.5 font-display text-xl font-bold text-warning group-hover:text-warning transition-colors drop-shadow-sm">
+                  <Zap className="h-5 w-5 fill-warning/20" /> 
                   {user.xp || 0}
                 </div>
               </div>

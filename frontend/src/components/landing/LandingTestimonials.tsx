@@ -30,12 +30,12 @@ export function LandingTestimonials() {
               <Card className="p-8 bg-card border border-border/30 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between h-full">
                 <div className="mb-8">
                   <div className="flex gap-1 mb-5">
-                    {[1,2,3,4,5].map(star => <Sparkles key={star} className="h-4 w-4 fill-amber-500 text-amber-500" />)}
+                    {[1,2,3,4,5].map(star => <Sparkles key={star} className="h-4 w-4 fill-warning text-warning" />)}
                   </div>
                   <p className="text-muted-foreground leading-7">"{t.quote}"</p>
                 </div>
                 <div className="flex items-center gap-4 pt-5 border-t border-border/30 mt-auto">
-                  <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary/20 to-cyan-400/20 flex items-center justify-center font-bold text-foreground ring-1 ring-border shadow-sm">
+                  <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/20 flex items-center justify-center font-bold text-foreground ring-1 ring-border shadow-sm">
                     {t.name.charAt(0)}
                   </div>
                   <div>

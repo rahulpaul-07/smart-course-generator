@@ -49,7 +49,7 @@ export function TheoryWorkspace({ prep, theoryAnswers, setTheoryAnswers, submitt
               {!submitted && (
                 <div className="absolute bottom-4 right-4 flex items-center gap-4 text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-background/80 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-border/30 shadow-sm pointer-events-none">
                   <span className="flex items-center gap-1.5"><Clock className="w-3 h-3" /> ~{readTime}m read</span>
-                  <span className={`flex items-center gap-1.5 ${wordCount < 30 ? 'text-amber-500' : 'text-emerald-500'}`}>
+                  <span className={`flex items-center gap-1.5 ${wordCount < 30 ? 'text-warning' : 'text-success'}`}>
                     <BookOpen className="w-3 h-3" /> {wordCount} words
                   </span>
                 </div>
@@ -60,7 +60,7 @@ export function TheoryWorkspace({ prep, theoryAnswers, setTheoryAnswers, submitt
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-4 ml-12 space-y-5 rounded-2xl border border-border bg-card p-6 shadow-sm">
                 <div className="flex items-center justify-between border-b border-border/30 pb-4">
                   <span className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2"><Sparkles className="w-4 h-4 text-primary" /> AI Evaluation</span>
-                  <span className={`px-3 py-1 rounded-md text-xs font-bold ${(q.score ?? 0) >= 7 ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' : (q.score ?? 0) >= 4 ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' : 'bg-destructive/10 text-destructive border border-destructive/20'}`}>
+                  <span className={`px-3 py-1 rounded-md text-xs font-bold ${(q.score ?? 0) >= 7 ? 'bg-success/10 text-success border border-success/20' : (q.score ?? 0) >= 4 ? 'bg-warning/10 text-warning border border-warning/20' : 'bg-destructive/10 text-destructive border border-destructive/20'}`}>
                     Score: {q.score}/10
                   </span>
                 </div>
