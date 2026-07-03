@@ -41,8 +41,22 @@ const PracticeLab = React.memo(({ lessonId, courseId, embedded = false }: { less
   }
 
   if (!lab) {
+    if (embedded) {
+      return (
+        <div className="flex flex-col items-center gap-3 py-2 text-center">
+          <p className="text-sm text-muted-foreground max-w-sm">
+            Generate a realistic mini-project or hands-on challenge to apply what you've learned.
+          </p>
+          {error && <p className="text-sm font-medium text-destructive">{error}</p>}
+          <Button aria-label="Create Practice Lab" disabled={loading} onClick={() => generateLab()} className={`w-full bg-cyan-600 hover:bg-cyan-700 text-foreground ${loading ? 'cursor-progress' : ''}`}>
+            {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <FlaskConical className="mr-2 h-4 w-4" />}
+            {loading ? 'Designing Lab...' : 'Create Practice Lab'}
+          </Button>
+        </div>
+      );
+    }
     return (
-      <div className={embedded ? '' : 'surface-card rounded-2xl p-6'}>
+      <div className="surface-card rounded-2xl p-6">
         <div className="flex flex-col items-center justify-center text-center py-8">
           <div className="h-16 w-16 rounded-2xl bg-cyan-500/10 flex items-center justify-center mb-6 border border-cyan-500/20">
             <FlaskConical className="h-8 w-8 text-cyan-500" />
