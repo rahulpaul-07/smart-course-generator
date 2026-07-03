@@ -49,7 +49,7 @@ export function CourseHero({ course, courseId, difficulty, estimatedHours, progr
           </div>
           <div className="h-2 w-full bg-muted/60 rounded-full overflow-hidden shadow-inner">
             <div 
-              className={`h-full rounded-full transition-all duration-200 ease-out ${progress.percentage === 100 ? 'bg-emerald-500' : 'bg-primary'}`} 
+              className={`h-full rounded-full transition-all duration-200 ease-out ${progress.percentage === 100 ? 'bg-success' : 'bg-primary'}`} 
               style={{ width: `${progress.percentage}%` }} 
             />
           </div>
@@ -71,7 +71,7 @@ export function CourseHero({ course, courseId, difficulty, estimatedHours, progr
               className="h-10 px-6 rounded-lg text-sm font-semibold border border-border/30 hover:bg-muted/50 backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5 shadow-sm" 
               onClick={() => navigate(`/course/${courseId}/certificate`)}
             >
-              <Award className="mr-2 h-4 w-4 text-emerald-500" />
+              <Award className="mr-2 h-4 w-4 text-success" />
               View Certificate
             </Button>
           )}

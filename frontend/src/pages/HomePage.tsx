@@ -103,10 +103,10 @@ export default function HomePage() {
 
   const quickActions = [
     { label: "Generate Course", icon: Sparkles, url: "#course-generator", desc: "Instantly create a new curriculum", color: "from-primary/20 to-primary/5", text: "text-primary", border: "group-hover:border-primary/50" },
-    { label: "Generate Roadmap", icon: Map, url: "/roadmaps", desc: "Plan your learning path", color: "from-blue-500/20 to-blue-500/5", text: "text-blue-500", border: "group-hover:border-blue-500/50" },
-    { label: "Interview Prep", icon: Brain, url: "/interview-prep", desc: "Practice with AI voice", color: "from-rose-500/20 to-rose-500/5", text: "text-rose-500", border: "group-hover:border-rose-500/50" },
-    { label: "AI Insights", icon: MessageSquare, url: "/agents", desc: "Specialized agents for reviews & planning", color: "from-amber-500/20 to-amber-500/5", text: "text-amber-500", border: "group-hover:border-amber-500/50" },
-    { label: "Certificates", icon: Award, url: "/certificates", desc: "View your achievements", color: "from-emerald-500/20 to-emerald-500/5", text: "text-emerald-500", border: "group-hover:border-emerald-500/50" }
+    { label: "Generate Roadmap", icon: Map, url: "/roadmaps", desc: "Plan your learning path", color: "from-brand-400/20 to-brand-400/5", text: "text-brand-400", border: "group-hover:border-brand-400/50" },
+    { label: "Interview Prep", icon: Brain, url: "/interview-prep", desc: "Practice with AI voice", color: "from-destructive/20 to-destructive/5", text: "text-destructive", border: "group-hover:border-destructive/50" },
+    { label: "AI Insights", icon: MessageSquare, url: "/agents", desc: "Specialized agents for reviews & planning", color: "from-warning/20 to-warning/5", text: "text-warning", border: "group-hover:border-warning/50" },
+    { label: "Certificates", icon: Award, url: "/certificates", desc: "View your achievements", color: "from-success/20 to-success/5", text: "text-success", border: "group-hover:border-success/50" }
   ];
   
   const recommendations = [

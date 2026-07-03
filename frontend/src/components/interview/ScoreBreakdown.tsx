@@ -5,20 +5,18 @@ interface ScoreBreakdownProps {
   title: string;
   score: number;
   icon: React.ElementType;
-  color: 'primary' | 'emerald' | 'cyan';
+  color: 'primary' | 'success';
 }
 
 export function ScoreBreakdown({ title, score, icon: Icon, color }: ScoreBreakdownProps) {
   const displayScore = Math.round(score || 0);
   const colors: Record<string, string> = {
     primary: 'text-primary bg-primary/10 border-primary/20',
-    emerald: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20',
-    cyan: 'text-cyan-500 bg-cyan-500/10 border-cyan-500/20'
+    success: 'text-success bg-success/10 border-success/20',
   };
   const barColors: Record<string, string> = {
     primary: 'bg-primary',
-    emerald: 'bg-emerald-500',
-    cyan: 'bg-cyan-500'
+    success: 'bg-success',
   };
   
   return (

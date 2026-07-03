@@ -75,7 +75,7 @@ export default function CourseOverviewPage() {
       {/* Background Ambience */}
       <div className="absolute top-0 left-0 right-0 h-[600px] overflow-hidden pointer-events-none -z-10">
         <div className="absolute -top-[20%] -left-[10%] w-[60%] h-[100%] rounded-full bg-primary/5 blur-[120px] mix-blend-screen opacity-70" />
-        <div className="absolute -top-[10%] -right-[10%] w-[50%] h-[100%] rounded-full bg-blue-500/5 blur-[120px] mix-blend-screen opacity-50" />
+        <div className="absolute -top-[10%] -right-[10%] w-[50%] h-[100%] rounded-full bg-warning/5 blur-[120px] mix-blend-screen opacity-50" />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-background" />
       </div>
 

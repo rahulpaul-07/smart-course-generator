@@ -23,7 +23,7 @@ export function LandingFeatures() {
 
       {/* 2. Metrics */}
       <section className="py-24 relative overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[1000px] aspect-square bg-gradient-to-tr from-primary/10 to-cyan-400/10 rounded-full blur-[120px] -z-10" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[1000px] aspect-square bg-gradient-to-tr from-primary/10 to-primary/10 rounded-full blur-[120px] -z-10" />
         <div className="container px-4 md:px-6">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {[

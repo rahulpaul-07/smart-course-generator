@@ -66,7 +66,7 @@ export default function CertificatesPage() {
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-8">
           {certificates.map((cert) => (
             <div key={cert._id} className="glass-card p-6 rounded-2xl flex flex-col items-center text-center">
-              <Award className="h-12 w-12 text-amber-500 mb-4" />
+              <Award className="h-12 w-12 text-warning mb-4" />
               <h3 className="font-bold text-foreground mb-2">{cert.courseTitle || 'Course Certificate'}</h3>
               <Button 
                 variant="secondary"

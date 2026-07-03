@@ -90,7 +90,7 @@ export default function InterviewPrepPage() {
         />
 
         <div className="flex-1 px-5 py-8 md:p-10 lg:p-16 w-full max-w-4xl mx-auto">
-          {activePrep.status === 'completed' ? (
+          {activePrep.status === 'completed' && activeTab === 'results' ? (
             <ResultsDashboard prep={activePrep} readiness={readiness} strengths={strengths} weaknesses={weaknesses} aiRec={aiRec} />
           ) : (
             <AnimatePresence mode="sync" initial={false}>
@@ -116,7 +116,11 @@ export default function InterviewPrepPage() {
                 <WorkspaceRouter
                   activeTab={activeTab}
                   prep={activePrep}
-                  onUpdate={setActivePrep}
+                  onUpdate={(value) => {
+                    setActivePrep(value);
+                    const next = typeof value === 'function' ? value(activePrep) : value;
+                    if (next?.status === 'completed') setActiveTab('results');
+                  }}
                 />
               </motion.div>
             </AnimatePresence>
@@ -128,13 +132,13 @@ export default function InterviewPrepPage() {
         <div className="h-full flex flex-col shadow-lg lg:shadow-none bg-background lg:bg-transparent">
           <div className="flex items-center justify-between px-6 py-5 border-b border-border/30 bg-card/50 backdrop-blur-md">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary to-cyan-500 flex items-center justify-center shadow-lg shadow-primary/20">
+              <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary to-primary flex items-center justify-center shadow-lg shadow-primary/20">
                 <Brain className="h-5 w-5 text-primary-foreground" />
               </div>
               <div>
                 <h3 className="font-bold text-sm text-foreground leading-tight tracking-tight">AI Interview Coach</h3>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-500 flex items-center gap-1.5 mt-0.5">
-                  <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" /> Active
+                <p className="text-[10px] font-bold uppercase tracking-widest text-success flex items-center gap-1.5 mt-0.5">
+                  <span className="w-1.5 h-1.5 bg-success rounded-full animate-pulse" /> Active
                 </p>
               </div>
             </div>

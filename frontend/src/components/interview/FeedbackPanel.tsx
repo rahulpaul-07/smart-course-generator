@@ -24,7 +24,7 @@ const CodeBlock = ({ language, value }: { language: string, value: string }) => 
       <div className="flex items-center justify-between px-4 py-2 bg-[#1a1a1a] border-b border-white/5">
         <span className="text-[10px] font-mono font-bold text-muted-foreground uppercase tracking-widest">{language || 'code'}</span>
         <button onClick={handleCopy} className="text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded">
-          {copied ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3" />}
+          {copied ? <Check className="h-3 w-3 text-success" /> : <Copy className="h-3 w-3" />}
         </button>
       </div>
       <div className="text-[12px] overflow-x-auto tab-size-4">

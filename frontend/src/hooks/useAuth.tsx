@@ -117,6 +117,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setSyncingAuth0(false);
           auth0SyncStarted.current = false;
         }
+      })
+      .catch((error) => {
+        // getAccessTokenSilently itself can reject (stale session, revoked
+        // consent, expired refresh token) before the .then above ever runs --
+        // without this, syncingAuth0 (part of `loading`) would stay true
+        // forever and strand the user on a full-screen spinner.
+        console.warn('Auth0 silent token retrieval failed', error);
+        setSyncingAuth0(false);
+        auth0SyncStarted.current = false;
       });
   }, [getAccessTokenSilently, hasAuth0Session, loadingSession, user]);
 

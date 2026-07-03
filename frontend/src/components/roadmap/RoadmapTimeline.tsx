@@ -6,11 +6,13 @@ import type { Roadmap, RoadmapWeek } from '../../types';
 interface RoadmapTimelineProps {
   roadmap: Roadmap;
   onGenerateCourse: (topic: string) => void;
+  onToggleWeekCompletion: (weekNumber: number) => void;
 }
 
-export function RoadmapTimeline({ roadmap, onGenerateCourse }: RoadmapTimelineProps) {
-  const { expandedWeeks, completedWeeks, savingWeeks, toggleWeek, toggleCompletion } = useRoadmapProgress(new Set([1]));
+export function RoadmapTimeline({ roadmap, onGenerateCourse, onToggleWeekCompletion }: RoadmapTimelineProps) {
+  const { expandedWeeks, toggleWeek } = useRoadmapProgress(new Set([1]));
   const weeks = roadmap.weeks || [];
+  const completedWeeks = new Set(roadmap.completedWeeks || []);
 
   return (
     <div className="relative">
@@ -21,9 +23,8 @@ export function RoadmapTimeline({ roadmap, onGenerateCourse }: RoadmapTimelinePr
         {weeks.map((week: RoadmapWeek, index: number) => {
           const isExpanded = expandedWeeks.has(week.weekNumber);
           const isCompleted = completedWeeks.has(week.weekNumber);
-          const isSaving = savingWeeks.has(week.weekNumber);
           const isCurrent = !isCompleted && (index === 0 || completedWeeks.has(weeks[index - 1]?.weekNumber));
-          
+
           return (
             <RoadmapWeekCard
               key={`${roadmap._id}-${index}`}
@@ -33,9 +34,8 @@ export function RoadmapTimeline({ roadmap, onGenerateCourse }: RoadmapTimelinePr
               isExpanded={isExpanded}
               isCompleted={isCompleted}
               isCurrent={isCurrent}
-              isSaving={isSaving}
               toggleWeek={toggleWeek}
-              toggleCompletion={toggleCompletion}
+              toggleCompletion={(e) => { e.stopPropagation(); onToggleWeekCompletion(week.weekNumber); }}
               onGenerateCourse={onGenerateCourse}
             />
           );

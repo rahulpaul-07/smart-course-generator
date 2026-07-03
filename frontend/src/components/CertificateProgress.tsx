@@ -20,20 +20,20 @@ export default function CertificateProgress({
   return (
     <Card className={`relative overflow-hidden transition-colors ${
       hasCertificate
-        ? 'border-emerald-500/30 bg-emerald-500/5'
+        ? 'border-success/30 bg-success/5'
         : lessonsCompleted
-          ? 'border-violet-500/30 bg-violet-500/5'
+          ? 'border-warning/30 bg-warning/5'
           : 'border-primary/25 bg-primary/5'
     }`}>
       <div className={`pointer-events-none absolute -right-16 -top-20 h-44 w-44 rounded-full blur-3xl ${
-        hasCertificate ? 'bg-emerald-400/15' : lessonsCompleted ? 'bg-violet-400/15' : 'bg-primary/15'
+        hasCertificate ? 'bg-success/15' : lessonsCompleted ? 'bg-warning/15' : 'bg-primary/15'
       }`} />
       
       <CardContent className="p-6">
         <div className="flex flex-wrap items-start justify-between gap-6">
           <div className="flex gap-4 flex-1">
             <div className={`shrink-0 h-12 w-12 rounded-xl flex items-center justify-center border ${
-              hasCertificate ? 'border-emerald-400/20 bg-emerald-500/15 text-emerald-500' : lessonsCompleted ? 'border-violet-400/20 bg-violet-500/15 text-violet-500' : 'border-primary/20 bg-primary/15 text-primary'
+              hasCertificate ? 'border-success/20 bg-success/15 text-success' : lessonsCompleted ? 'border-warning/20 bg-warning/15 text-warning' : 'border-primary/20 bg-primary/15 text-primary'
             }`}>
               {hasCertificate ? <Award className="h-6 w-6" /> : lessonsCompleted ? <Award className="h-6 w-6" /> : <Lock className="h-6 w-6" />}
             </div>
@@ -60,13 +60,13 @@ export default function CertificateProgress({
 
           <div className="flex shrink-0">
             {hasCertificate && onViewCertificate && (
-              <Button onClick={onViewCertificate} className="bg-emerald-600 hover:bg-emerald-700 text-white">
+              <Button onClick={onViewCertificate} className="bg-success hover:bg-success/90 text-success-foreground">
                 <Award className="mr-2 h-4 w-4" />
                 View Certificate
               </Button>
             )}
             {lessonsCompleted && !hasCertificate && onTakeTest && (
-              <Button onClick={onTakeTest} className="bg-violet-600 hover:bg-violet-700 text-white">
+              <Button onClick={onTakeTest} className="bg-warning hover:bg-warning/90 text-warning-foreground">
                 <Award className="mr-2 h-4 w-4" />
                 Take Final Test
               </Button>
@@ -86,7 +86,7 @@ export default function CertificateProgress({
         </div>
         <Progress 
           value={progress.percentage} 
-          className={`h-2 ${hasCertificate ? '[&>div]:bg-emerald-500' : lessonsCompleted ? '[&>div]:bg-violet-500' : ''}`} 
+          className={`h-2 ${hasCertificate ? '[&>div]:bg-success' : lessonsCompleted ? '[&>div]:bg-warning' : ''}`} 
         />
       </CardContent>
     </Card>
