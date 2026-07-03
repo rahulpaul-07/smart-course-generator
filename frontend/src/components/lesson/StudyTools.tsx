@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowUpRight, Bookmark, Brain, Check, FlaskConical, Layers3, Loader2, MessageCircle, NotebookPen, Play, Save, type LucideIcon } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight, Bookmark, Brain, Check, FlaskConical, Layers3, Loader2, MessageCircle, NotebookPen, Play, Save, type LucideIcon } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { motion, AnimatePresence } from 'framer-motion';
 import api from '../../utils/api';
 import FlashcardDeck from './FlashcardDeck';
 import PracticeLab from './PracticeLab';
@@ -73,6 +72,12 @@ interface StudyToolsProps {
   onToggleChat: () => void;
 }
 
+const INLINE_TOOLS: Record<string, { icon: LucideIcon; title: string }> = {
+  flashcards: { icon: Layers3, title: 'Flashcards' },
+  lab: { icon: FlaskConical, title: 'Practice Lab' },
+  notes: { icon: NotebookPen, title: 'My Notes' },
+};
+
 const StudyTools = React.memo(({
   addingVideos,
   chatOpen,
@@ -99,8 +104,60 @@ const StudyTools = React.memo(({
     }
   }
 
-  function toggleTool(tool: string) {
-    setActiveTool((current) => current === tool ? '' : tool);
+  // Focused mode: exactly one tool visible, using the full panel, so nothing
+  // stacks and scrolls behind it. Browse mode (activeTool === '') shows the
+  // compact list of everything available instead.
+  if (activeTool && INLINE_TOOLS[activeTool]) {
+    const { icon: Icon, title } = INLINE_TOOLS[activeTool];
+    return (
+      <aside className="h-full flex flex-col relative overflow-hidden">
+        <div className="shrink-0 flex items-center gap-3 px-4 py-4 border-b border-border/30 bg-card">
+          <button
+            type="button"
+            onClick={() => setActiveTool('')}
+            aria-label="Back to study tools"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </button>
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-primary bg-primary text-primary-foreground">
+            <Icon className="h-4 w-4" />
+          </span>
+          <h2 className="font-semibold text-foreground">{title}</h2>
+        </div>
+
+        <div className="flex-1 overflow-y-auto p-4">
+          {activeTool === 'flashcards' && (
+            <FlashcardDeck lessonId={lesson._id} courseId={(lesson as Lesson & { course?: string }).course as string} embedded />
+          )}
+          {activeTool === 'lab' && (
+            <PracticeLab lessonId={lesson._id} courseId={(lesson as Lesson & { course?: string }).course as string} embedded />
+          )}
+          {activeTool === 'notes' && (
+            <div className="flex flex-col gap-3">
+              <Textarea
+                value={notes}
+                onChange={(event) => setNotes(event.target.value)}
+                maxLength={12000}
+                rows={12}
+                placeholder="Capture thoughts here..."
+                className="w-full resize-y"
+              />
+              <Button
+                variant="default"
+                size="lg"
+                disabled={saving}
+                onClick={() => updateProgress({ notes }, 'Notes saved')}
+                className={`w-full ${saving ? 'cursor-progress' : ''}`}
+              >
+                {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
+                {saving ? 'Saving...' : 'Save Notes'}
+              </Button>
+            </div>
+          )}
+        </div>
+      </aside>
+    );
   }
 
   return (
@@ -108,8 +165,8 @@ const StudyTools = React.memo(({
       {/* Premium subtle background texture */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:16px_16px] [mask-image:radial-gradient(ellipse_80%_30%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
       <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
-      
-      <div className="relative z-10 px-6 py-8 mb-4">
+
+      <div className="relative z-10 px-6 py-8 mb-4 shrink-0">
         <p className="text-xs font-bold tracking-wider uppercase text-primary mb-1">Study Toolkit</p>
         <h2 className="text-2xl font-bold text-foreground font-display">Lesson Tools</h2>
         <p className="mt-1 text-sm text-muted-foreground font-medium">
@@ -117,7 +174,7 @@ const StudyTools = React.memo(({
         </p>
       </div>
 
-      <div className="flex flex-col gap-4 flex-1 overflow-y-auto pr-1 pb-20 lg:pb-0 scrollbar-none">
+      <div className="flex flex-col gap-3 flex-1 overflow-y-auto px-4 pb-20 lg:pb-4">
         <ToolCard
           icon={MessageCircle}
           title="AI Tutor"
@@ -126,75 +183,28 @@ const StudyTools = React.memo(({
           active={chatOpen}
           onClick={onToggleChat}
         />
-        
+
         <ToolCard
           icon={Layers3}
           title="Flashcards"
           description="Test your memory with an AI-generated deck."
-          active={activeTool === 'flashcards'}
-          onClick={() => toggleTool('flashcards')}
+          onClick={() => setActiveTool('flashcards')}
         />
-        <AnimatePresence>
-          {activeTool === 'flashcards' && (
-            <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-              <div className="glass-card rounded-xl p-4 mb-2 shadow-inner">
-                <FlashcardDeck lessonId={lesson._id} courseId={(lesson as Lesson & { course?: string }).course as string} embedded />
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         <ToolCard
           icon={FlaskConical}
           title="Practice Lab"
           description="Apply your knowledge with a hands-on coding lab or exercise."
-          active={activeTool === 'lab'}
-          onClick={() => toggleTool('lab')}
+          onClick={() => setActiveTool('lab')}
         />
-        <AnimatePresence>
-          {activeTool === 'lab' && (
-            <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-              <div className="glass-card rounded-xl p-4 mb-2 shadow-inner">
-                <PracticeLab lessonId={lesson._id} courseId={(lesson as Lesson & { course?: string }).course as string} embedded />
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         <ToolCard
           icon={NotebookPen}
           title="My Notes"
           description="Save private notes, formulas, or takeaways."
           status={lesson.notes ? 'Saved' : ''}
-          active={activeTool === 'notes'}
-          onClick={() => toggleTool('notes')}
+          onClick={() => setActiveTool('notes')}
         />
-        <AnimatePresence>
-          {activeTool === 'notes' && (
-            <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-              <div className="glass-card rounded-xl p-4 mb-2 shadow-inner flex flex-col gap-3">
-                <Textarea
-                  value={notes}
-                  onChange={(event) => setNotes(event.target.value)}
-                  maxLength={12000}
-                  rows={6}
-                  placeholder="Capture thoughts here..."
-                  className="w-full resize-y"
-                />
-                <Button
-                  variant="default"
-                  size="lg"
-                  disabled={saving}
-                  onClick={() => updateProgress({ notes }, 'Notes saved')}
-                  className={`w-full ${saving ? 'cursor-progress' : ''}`}
-                >
-                  {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
-                  {saving ? 'Saving...' : 'Save Notes'}
-                </Button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         <ToolCard
           icon={Play}
@@ -220,23 +230,23 @@ const StudyTools = React.memo(({
             <span className="mt-1 block text-xs leading-relaxed text-muted-foreground line-clamp-2">Test this topic under real interview conditions.</span>
           </div>
         </Link>
-      </div>
 
-      <div className="mt-auto pt-6 border-t border-border/30 flex flex-col gap-3 shrink-0 hidden lg:flex">
-        <button
-          type="button"
-          disabled={saving}
-          onClick={() => updateProgress(
-            { bookmarked: !lesson.bookmarked },
-            lesson.bookmarked ? 'Bookmark removed' : 'Lesson bookmarked',
-          )}
-          className={`flex items-center justify-center gap-2 w-full h-11 rounded-xl text-sm font-medium transition-colors border ${lesson.bookmarked ? 'bg-primary/10 border-primary text-primary' : 'bg-card border-border text-foreground hover:bg-muted'} ${saving ? 'cursor-progress opacity-60' : ''}`}
-        >
-          {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : lesson.bookmarked ? <Check className="h-4 w-4" /> : <Bookmark className="h-4 w-4" />}
-          {lesson.bookmarked ? 'Bookmarked' : 'Bookmark Lesson'}
-        </button>
-        <div className="w-full flex justify-center">
-          <LessonPDFExporter lesson={lesson} />
+        <div className="pt-3 mt-1 border-t border-border/30 flex-col gap-3 shrink-0 hidden lg:flex">
+          <button
+            type="button"
+            disabled={saving}
+            onClick={() => updateProgress(
+              { bookmarked: !lesson.bookmarked },
+              lesson.bookmarked ? 'Bookmark removed' : 'Lesson bookmarked',
+            )}
+            className={`flex items-center justify-center gap-2 w-full h-11 rounded-xl text-sm font-medium transition-colors border ${lesson.bookmarked ? 'bg-primary/10 border-primary text-primary' : 'bg-card border-border text-foreground hover:bg-muted'} ${saving ? 'cursor-progress opacity-60' : ''}`}
+          >
+            {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : lesson.bookmarked ? <Check className="h-4 w-4" /> : <Bookmark className="h-4 w-4" />}
+            {lesson.bookmarked ? 'Bookmarked' : 'Bookmark Lesson'}
+          </button>
+          <div className="w-full flex justify-center">
+            <LessonPDFExporter lesson={lesson} />
+          </div>
         </div>
       </div>
     </aside>
