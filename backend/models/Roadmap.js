@@ -19,6 +19,7 @@ const roadmapSchema = new mongoose.Schema(
     skillLevel: { type: String, required: true, enum: ["beginner", "intermediate", "advanced"], default: "beginner" },
     summary: { type: String, default: "", maxlength: 1000 },
     weeks: [weekSchema],
+    completedWeeks: { type: [Number], default: [] },
   },
   { timestamps: true }
 );

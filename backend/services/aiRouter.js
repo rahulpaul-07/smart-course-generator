@@ -2,7 +2,6 @@ const gemini = require("./geminiService");
 const groq = require("./groqService");
 const openrouter = require("./openrouterService");
 const AiTelemetry = require("../models/AiTelemetry");
-const { structuredAiLog } = require("./aiValidator");
 
 function logTelemetry(data) {
   try {

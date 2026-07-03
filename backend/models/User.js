@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
     maxlength: 254,
     match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Email is invalid"],
   },
-  password: { type: String, maxlength: 128 },
+  password: { type: String, maxlength: 128, select: false },
   auth0Id: { type: String, maxlength: 255 },
   googleId: { type: String, maxlength: 255 },
   role: { type: String, enum: ['user', 'admin'], default: 'user' },
