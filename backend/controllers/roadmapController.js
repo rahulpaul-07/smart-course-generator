@@ -8,7 +8,9 @@ const aiRouter = require("../services/aiRouter");
  */
 async function generateRoadmap(req, res) {
   try {
-    const { goal, duration, skillLevel } = req.body;
+    const goal = String(req.body?.goal || "").trim().slice(0, 300);
+    const duration = String(req.body?.duration || "").trim().slice(0, 50);
+    const { skillLevel } = req.body;
 
     if (!goal || !duration || !skillLevel) {
       return res.status(400).json({ error: "Goal, duration, and skillLevel are required." });
@@ -131,6 +133,38 @@ async function getRoadmapById(req, res) {
 }
 
 /**
+ * PATCH /api/roadmaps/:id/progress
+ * Toggles a week's completion state.
+ */
+async function toggleWeekCompletion(req, res) {
+  try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ error: "Invalid roadmap id." });
+    }
+
+    const weekNumber = Number(req.body?.weekNumber);
+    if (!Number.isInteger(weekNumber)) {
+      return res.status(400).json({ error: "weekNumber is required." });
+    }
+
+    const roadmap = await Roadmap.findOne({ _id: req.params.id, user: req.user._id });
+    if (!roadmap) return res.status(404).json({ error: "Roadmap not found" });
+
+    if (roadmap.completedWeeks.includes(weekNumber)) {
+      roadmap.completedWeeks = roadmap.completedWeeks.filter((w) => w !== weekNumber);
+    } else {
+      roadmap.completedWeeks.push(weekNumber);
+    }
+
+    await roadmap.save();
+    return res.json(roadmap);
+  } catch (error) {
+    console.error("Toggle roadmap week error:", error);
+    return res.status(500).json({ error: "Failed to update roadmap progress" });
+  }
+}
+
+/**
  * DELETE /api/roadmaps/:id
  */
 async function deleteRoadmap(req, res) {
@@ -147,4 +181,4 @@ async function deleteRoadmap(req, res) {
   }
 }
 
-module.exports = { generateRoadmap, getMyRoadmaps, getRoadmapById, deleteRoadmap };
+module.exports = { generateRoadmap, getMyRoadmaps, getRoadmapById, toggleWeekCompletion, deleteRoadmap };
