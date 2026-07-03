@@ -51,8 +51,22 @@ const FlashcardDeck = React.memo(({ lessonId, courseId, embedded = false }: { le
   }
 
   if (!flashcards.length) {
+    if (embedded) {
+      return (
+        <div className="flex flex-col items-center gap-3 py-2 text-center">
+          <p className="text-sm text-muted-foreground max-w-sm">
+            Turn this lesson into an interactive review deck. Great for memorizing key concepts.
+          </p>
+          {error && <p className="text-sm font-medium text-destructive">{error}</p>}
+          <Button variant="outline" onClick={generateFlashcards} disabled={loading} className={`w-full rounded-full shadow-sm hover:shadow-md transition-all ${loading ? 'cursor-progress opacity-90' : 'hover:-translate-y-0.5 border-primary/30 hover:bg-primary/5 hover:text-primary'}`}>
+            {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Layers3 className="mr-2 h-4 w-4" />}
+            {loading ? 'Creating Deck...' : 'Generate Flashcards'}
+          </Button>
+        </div>
+      );
+    }
     return (
-      <div className={embedded ? '' : 'surface-card rounded-2xl p-6'}>
+      <div className="surface-card rounded-2xl p-6">
         <div className="flex flex-col items-center justify-center text-center py-10 relative">
           <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:14px_14px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
           <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center mb-6 border border-primary/20 shadow-[0_0_30px_rgba(var(--primary),0.15)] relative z-10 animate-float">
