@@ -50,7 +50,7 @@ async function login(req, res) {
     throw new Error("Please provide email and password");
   }
 
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }).select("+password");
   if (!user) {
     res.status(401);
     throw new Error("Invalid email or password");

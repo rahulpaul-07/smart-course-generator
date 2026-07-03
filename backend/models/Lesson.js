@@ -36,6 +36,13 @@ const lessonSchema = new mongoose.Schema(
       },
       default: null
     },
+    flashcards: {
+      type: [{
+        front: String,
+        back: String,
+      }],
+      default: []
+    },
     aiConversation: {
       type: [{
         role: { type: String, enum: ['user', 'assistant'], required: true },

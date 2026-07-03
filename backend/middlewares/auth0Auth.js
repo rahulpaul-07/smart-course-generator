@@ -22,7 +22,7 @@ async function verifyAuth0Token(req, res, next) {
 
   // 1. Try verifying as local JWT
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET, { algorithms: ["HS256"] });
     const user = await User.findById(decoded.id);
     if (user) {
       req.user = user;

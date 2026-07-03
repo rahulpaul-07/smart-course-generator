@@ -2,6 +2,17 @@ const agents = require("../services/agents/index");
 const Course = require("../models/Course");
 const User = require("../models/User");
 
+// Caps free-typed list input (goals/interests) before it's embedded in an AI
+// prompt, mirroring the .trim().slice(0, N) bound already applied to
+// roadmap/course generation input elsewhere.
+function sanitizeStringList(input, maxItems = 10, maxLen = 200) {
+  if (!Array.isArray(input)) return [];
+  return input
+    .filter((item) => typeof item === "string" && item.trim())
+    .slice(0, maxItems)
+    .map((item) => item.trim().slice(0, maxLen));
+}
+
 async function runCourseReviewer(req, res) {
   try {
     const { courseId } = req.body;
@@ -71,8 +82,8 @@ async function runLearningCoach(req, res) {
 
 async function runRevisionPlanner(req, res) {
   try {
-    const { upcomingGoals } = req.body;
-    
+    const upcomingGoals = sanitizeStringList(req.body.upcomingGoals);
+
     // Extract weak topics
     const courses = await Course.find({ creator: req.user._id })
       .populate({ path: "modules", populate: { path: "lessons", select: "title quizBestScore quizAttempts" } })
@@ -91,7 +102,7 @@ async function runRevisionPlanner(req, res) {
     
     if (weakTopics.length === 0) weakTopics = ["General Review"];
 
-    const result = await agents.revisionPlannerAgent(weakTopics, upcomingGoals || ["Improve overall score"]);
+    const result = await agents.revisionPlannerAgent(weakTopics, upcomingGoals.length ? upcomingGoals : ["Improve overall score"]);
     res.json(result);
   } catch (error) {
     console.error("RevisionPlanner Error:", error);
@@ -101,12 +112,12 @@ async function runRevisionPlanner(req, res) {
 
 async function runRecommendationAgent(req, res) {
   try {
-    const { interests } = req.body;
-    
+    const interests = sanitizeStringList(req.body.interests);
+
     const courses = await Course.find({ creator: req.user._id }).select("title").lean();
     const completedCourses = courses.map(c => c.title);
 
-    const result = await agents.recommendationAgent(completedCourses, interests || ["General Programming"]);
+    const result = await agents.recommendationAgent(completedCourses, interests.length ? interests : ["General Programming"]);
     res.json(result);
   } catch (error) {
     console.error("RecommendationAgent Error:", error);

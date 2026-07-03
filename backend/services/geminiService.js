@@ -21,6 +21,7 @@ async function generateJson(systemPrompt, userPrompt, maxTokens = 4096, modelNam
         responseMimeType: "application/json",
         temperature: 0.3,
         maxOutputTokens: maxTokens,
+        abortSignal: signal || undefined,
       }
     });
     return parseRobustJson(response.text || "");
@@ -40,6 +41,7 @@ async function* generateJsonStream(systemPrompt, userPrompt, maxTokens = 4096, m
         systemInstruction: systemPrompt,
         temperature: 0.3,
         maxOutputTokens: maxTokens,
+        abortSignal: signal || undefined,
       }
     });
 
@@ -73,6 +75,9 @@ async function generateText(messages, maxTokens = 1024, modelName = "gemini-1.5-
   };
   if (systemInstruction) {
     config.systemInstruction = systemInstruction;
+  }
+  if (signal) {
+    config.abortSignal = signal;
   }
 
   const { client, apiKey } = getAiClient();
@@ -111,6 +116,9 @@ async function* generateTextStream(messages, maxTokens = 1024, modelName = "gemi
   };
   if (systemInstruction) {
     config.systemInstruction = systemInstruction;
+  }
+  if (signal) {
+    config.abortSignal = signal;
   }
 
   const { client, apiKey } = getAiClient();

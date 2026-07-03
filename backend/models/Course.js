@@ -7,6 +7,7 @@ const courseSchema = new mongoose.Schema(
     isFeatured: { type: Boolean, default: false },
     clonesCount: { type: Number, default: 0 },
     upvotesCount: { type: Number, default: 0 },
+    upvotedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     creator: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
