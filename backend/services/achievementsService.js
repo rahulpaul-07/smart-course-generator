@@ -111,9 +111,7 @@ async function checkAndUnlockAchievements(user) {
       }
     }
 
-    if (newlyUnlocked) {
-      await user.save();
-    }
+    // Note: The caller (recordActivity) handles user.save() to avoid ParallelSaveError.
   } catch (error) {
     console.error("Error checking achievements:", error);
   }

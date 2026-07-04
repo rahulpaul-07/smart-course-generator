@@ -24,6 +24,7 @@ const codingSchema = new mongoose.Schema({
   solutionHint: { type: String, default: "" },
   userSolution: { type: String, default: "" },
   feedback: { type: String, default: "" },
+  score: { type: Number, default: 0, min: 0, max: 10 },
   passed: { type: Boolean, default: false },
 }, { _id: false });
 
