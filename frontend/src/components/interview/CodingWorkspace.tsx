@@ -75,19 +75,19 @@ export function CodingWorkspace({ prep, codingSolutions, setCodingSolutions, sub
                 onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => updateSolution(i, e.target.value)}
                 disabled={submitted}
                 rows={12}
-                className="w-full bg-[#0D0D0D] p-5 pt-16 text-[14px] font-mono leading-relaxed text-emerald-400 outline-none resize-y disabled:opacity-90 placeholder:text-muted-foreground/30 relative z-0"
+                className="w-full bg-[#0D0D0D] p-5 pt-16 text-[14px] font-mono leading-relaxed text-success outline-none resize-y disabled:opacity-90 placeholder:text-muted-foreground/30 relative z-0"
                 placeholder="// Write your optimized solution here..."
                 spellCheck={false}
               />
             </div>
             
             {q.solutionHint && !submitted && (
-              <details className="group border border-amber-500/30 bg-amber-500/5 rounded-xl overflow-hidden transition-all duration-300">
-                <summary className="cursor-pointer text-[13px] font-bold uppercase tracking-wider text-amber-500 p-4 hover:bg-amber-500/10 transition-colors list-none flex items-center justify-between focus-visible:outline-none focus-visible:bg-amber-500/10">
+              <details className="group border border-warning/30 bg-warning/5 rounded-xl overflow-hidden transition-all duration-300">
+                <summary className="cursor-pointer text-[13px] font-bold uppercase tracking-wider text-warning p-4 hover:bg-warning/10 transition-colors list-none flex items-center justify-between focus-visible:outline-none focus-visible:bg-warning/10">
                   <span className="flex items-center gap-2"><Sparkles className="h-4 w-4" /> Need a hint?</span>
                   <ChevronRight className="h-4 w-4 transition-transform group-open:rotate-90" />
                 </summary>
-                <div className="px-5 pb-5 text-[14px] text-foreground/80 leading-relaxed border-t border-amber-500/10 pt-4">
+                <div className="px-5 pb-5 text-[14px] text-foreground/80 leading-relaxed border-t border-warning/10 pt-4">
                   {q.solutionHint}
                 </div>
               </details>
@@ -102,7 +102,7 @@ export function CodingWorkspace({ prep, codingSolutions, setCodingSolutions, sub
                 <p className="text-[14px] text-foreground/90 leading-relaxed mb-6">{q.feedback}</p>
                 {q.idealSolution && (
                   <div className="rounded-2xl overflow-hidden border border-border/30 shadow-lg bg-[#0D0D0D]">
-                    <div className="bg-[#1a1a1a] px-5 py-3 text-[11px] font-mono font-bold uppercase tracking-widest text-emerald-500 border-b border-white/5 flex items-center justify-between">
+                    <div className="bg-[#1a1a1a] px-5 py-3 text-[11px] font-mono font-bold uppercase tracking-widest text-success border-b border-white/5 flex items-center justify-between">
                       <span className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5" /> Ideal Solution</span>
                       <span>JavaScript</span>
                     </div>

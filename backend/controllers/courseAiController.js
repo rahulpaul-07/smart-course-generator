@@ -1,13 +1,25 @@
 const Course = require("../models/Course");
 const { createCourseOutline } = require("../services/courseGeneration");
 const { streamLessonContent, createLessonContent, answerLessonQuestion, answerLessonQuestionStream, createLessonIntro, createLessonMainContent } = require("../services/lessonGeneration");
-const { saveGeneratedCourse } = require("../services/coursePersistence");
+const { saveGeneratedCourse, generateCourseBanner } = require("../services/coursePersistence");
 const { getOwnedLesson } = require("../services/lessonAccessService");
 const { findLessonVideos } = require("../services/youtubeService");
 const { createLessonFlashcards, createPracticeLab, createLessonQuiz } = require("../services/studyGeneration");
 const { recordActivity } = require("../services/achievementsService");
 
 const VALID_DEPTHS = new Set(["brief", "standard", "deep"]);
+
+// Deliberately-thrown errors (statusCode < 500) carry a safe, user-facing
+// message. Anything that surfaces as an unclassified 500 is an unexpected
+// exception (DB driver, AI provider SDK, network) whose raw text shouldn't
+// reach the client in production.
+function safeErrorMessage(error, fallback) {
+  const statusCode = error.statusCode || 500;
+  if (statusCode >= 500 && process.env.NODE_ENV === "production") {
+    return fallback;
+  }
+  return error.message || fallback;
+}
 
 async function generateCourseContent(req, res) {
   try {
@@ -24,10 +36,12 @@ async function generateCourseContent(req, res) {
     course.skills = outline.skills;
     await course.save();
 
+    generateCourseBanner(course);
+
     return res.status(201).json(course);
   } catch (error) {
     console.error("Generate Course Error:", error);
-    return res.status(error.statusCode || 500).json({ error: error.message || "Failed to generate course" });
+    return res.status(error.statusCode || 500).json({ error: safeErrorMessage(error, "Failed to generate course") });
   }
 }
 
@@ -69,20 +83,23 @@ async function generateCourseContentStream(req, res) {
     course.skills = outline.skills;
     await course.save();
 
+    sendEvent("stage", { stage: "generating_banner" });
+    generateCourseBanner(course, (bannerUrl) => sendEvent("banner", { bannerUrl }));
+
     sendEvent("stage", { stage: "ready" });
     sendEvent("done", course);
   } catch (error) {
     console.error("Generate Course Stream Error:", error);
+    const message = safeErrorMessage(error, "Failed to generate course");
     if (!headersWritten) {
-      return res.status(error.statusCode || 500).json({
-        error: error.message || "Failed to generate course",
-      });
+      return res.status(error.statusCode || 500).json({ error: message });
     }
-    sendEvent("error", {
-      error: error.message || "Failed to generate course",
-    });
+    sendEvent("error", { error: message });
   } finally {
-    if (!closed) res.end();
+    if (!closed) {
+      closed = true;
+      res.end();
+    }
   }
 }
 
@@ -141,7 +158,7 @@ async function enrichLesson(req, res) {
     return res.json(context.lesson.toObject({ depopulate: true }));
   } catch (error) {
     console.error("Enrich Lesson Error:", error);
-    return res.status(error.statusCode || 500).json({ error: error.message || "Failed to enrich lesson" });
+    return res.status(error.statusCode || 500).json({ error: safeErrorMessage(error, "Failed to enrich lesson") });
   }
 }
 
@@ -239,14 +256,11 @@ async function enrichLessonStream(req, res) {
     sendEvent("done", context.lesson.toObject({ depopulate: true }));
   } catch (error) {
     console.error("Enrich Lesson Stream Error:", error);
+    const message = safeErrorMessage(error, "Failed to generate lesson content.");
     if (!headersWritten) {
-      return res.status(error.statusCode || 500).json({
-        error: error.message || "Failed to generate lesson content.",
-      });
+      return res.status(error.statusCode || 500).json({ error: message });
     }
-    sendEvent("error", {
-      error: error.message || "Failed to generate lesson content.",
-    });
+    sendEvent("error", { error: message });
   } finally {
     if (!closed) res.end();
   }
@@ -255,21 +269,31 @@ async function enrichLessonStream(req, res) {
 async function generateFlashcards(req, res) {
   try {
     const { lesson } = await getOwnedLesson(req.params.lessonId, req.user._id);
+    const force = req.query.force === "true";
+
+    if (!force && lesson.flashcards && lesson.flashcards.length > 0) {
+      return res.json({ flashcards: lesson.flashcards });
+    }
+
     const flashcards = await createLessonFlashcards(lesson);
+
+    lesson.flashcards = flashcards;
+    await lesson.save();
 
     await recordActivity(req.user._id, "GENERATED_FLASHCARDS", "Lesson", lesson._id, { title: lesson.title });
 
     return res.json({ flashcards });
   } catch (error) {
-    return res.status(error.statusCode || 500).json({ error: error.message || "Failed to generate flashcards" });
+    return res.status(error.statusCode || 500).json({ error: safeErrorMessage(error, "Failed to generate flashcards") });
   }
 }
 
 async function generatePracticeLab(req, res) {
   try {
     const context = await getOwnedLesson(req.params.lessonId, req.user._id);
+    const force = req.query.force === "true";
 
-    if (context.lesson.practiceLab && context.lesson.practiceLab.title) {
+    if (!force && context.lesson.practiceLab && context.lesson.practiceLab.title) {
       return res.json({ lab: context.lesson.practiceLab });
     }
 
@@ -280,11 +304,12 @@ async function generatePracticeLab(req, res) {
 
     return res.json({ lab });
   } catch (error) {
-    return res.status(error.statusCode || 500).json({ error: error.message || "Failed to generate lab" });
+    return res.status(error.statusCode || 500).json({ error: safeErrorMessage(error, "Failed to generate lab") });
   }
 }
 
 async function chatAboutLesson(req, res) {
+  let closed = false;
   try {
     const message = String(req.body?.message || "").trim().slice(0, 2000);
     if (!message) return res.status(400).json({ error: "Message is required." });
@@ -298,7 +323,6 @@ async function chatAboutLesson(req, res) {
       "X-Accel-Buffering": "no",
     });
 
-    let closed = false;
     res.on("close", () => { closed = true; });
 
     function sendEvent(event, data) {
@@ -353,15 +377,29 @@ async function chatAboutLesson(req, res) {
     await context.lesson.save();
     
     sendEvent("done", { status: "complete" });
-    res.end();
 
   } catch (error) {
+    const message = safeErrorMessage(error, "Failed to chat");
     if (!res.headersSent) {
-      return res.status(error.statusCode || 500).json({ error: error.message || "Failed to chat" });
+      return res.status(error.statusCode || 500).json({ error: message });
     } else {
-      res.write(`event: error\ndata: ${JSON.stringify({ error: error.message || "Failed to chat" })}\n\n`);
-      res.end();
+      res.write(`event: error\ndata: ${JSON.stringify({ error: message })}\n\n`);
     }
+  } finally {
+    if (!closed) res.end();
+  }
+}
+
+async function clearLessonChat(req, res) {
+  try {
+    const { lesson } = await getOwnedLesson(req.params.lessonId, req.user._id);
+
+    lesson.aiConversation = [];
+    await lesson.save();
+
+    return res.json({ success: true });
+  } catch (error) {
+    return res.status(error.statusCode || 500).json({ error: safeErrorMessage(error, "Failed to clear chat") });
   }
 }
 
@@ -540,14 +578,14 @@ async function addVideosToLesson(req, res) {
       const newVideos = videos.filter(v => !existingUrls.has(v.url));
       if (newVideos.length > 0) {
         context.lesson.videos.push(...newVideos);
-        await context.course.save();
+        await context.lesson.save();
       }
     }
     
     return res.json({ lesson: context.lesson, videos });
   } catch (error) {
     console.error("Add Videos Error:", error);
-    return res.status(error.statusCode || 500).json({ error: error.message || "Failed to add videos" });
+    return res.status(error.statusCode || 500).json({ error: safeErrorMessage(error, "Failed to add videos") });
   }
 }
 
@@ -559,6 +597,7 @@ module.exports = {
   generateFlashcards,
   generatePracticeLab,
   chatAboutLesson,
+  clearLessonChat,
   chatAboutCourse,
   generateLessonOutline,
   generateLessonChunk,

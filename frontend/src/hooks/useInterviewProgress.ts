@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { useSessionStorage } from './useStorage';
+import { baseURL } from '../utils/api';
 import type { InterviewPrep, InterviewChatMessage } from '../types';
 import type { FormEvent } from 'react';
 
@@ -31,12 +32,12 @@ export function useInterviewProgress(prep: InterviewPrep | null) {
       setChatError(false);
       setTimeout(scrollToBottom, 50);
     });
-  }, [prep?._id]);
+  }, [prep]);
 
-  async function sendMessage(e?: FormEvent) {
+  async function sendMessage(e?: FormEvent, overrideText?: string) {
     e?.preventDefault();
-    if (!message.trim() || sending || !prep) return;
-    const text = message.trim();
+    const text = (overrideText ?? message).trim();
+    if (!text || sending || !prep) return;
     setMessage('');
     
     const newChat: InterviewChatMessage[] = [...chat, { role: 'candidate' as const, content: text }];
@@ -49,7 +50,7 @@ export function useInterviewProgress(prep: InterviewPrep | null) {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/interviews/${prep._id}/chat`, {
+      const response = await fetch(`${baseURL}/interviews/${prep._id}/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -119,9 +120,8 @@ export function useInterviewProgress(prep: InterviewPrep | null) {
     if (chatError && chat.length > 0 && chat[chat.length - 1].role === 'candidate') {
       const lastMessage = chat[chat.length - 1].content;
       setChat(prev => prev.slice(0, -1));
-      setMessage(lastMessage);
       setChatError(false);
-      setTimeout(() => sendMessage(), 0);
+      sendMessage(undefined, lastMessage);
     }
   }
 

@@ -3,7 +3,7 @@ const Groq = require("groq-sdk");
 const KeyManager = require("./keyManager");
 const groqKeys = new KeyManager("GROQ_API_KEY");
 
-const { parseRobustJson, structuredAiLog } = require("./aiValidator");
+const { parseRobustJson } = require("./aiValidator");
 async function generateJson(
   systemPrompt,
   userPrompt,
@@ -38,7 +38,7 @@ Respond with valid JSON only.`,
       response_format: { type: "json_object" },
       temperature: 0.3,
       max_tokens: maxTokens,
-    });
+    }, { signal });
 
     return parseRobustJson(completion.choices[0]?.message?.content || "");
   } catch (error) {
@@ -49,7 +49,7 @@ Respond with valid JSON only.`,
   }
 }
 
-async function* generateJsonStream(systemPrompt, userPrompt, maxTokens = 4096, modelName = "llama-3.1-8b-instant") {
+async function* generateJsonStream(systemPrompt, userPrompt, maxTokens = 4096, modelName = "llama-3.1-8b-instant", signal) {
   const apiKey = groqKeys.getKey();
   const groq = new Groq({ apiKey });
 
@@ -77,7 +77,7 @@ Respond with valid JSON only.`,
       temperature: 0.3,
       max_tokens: maxTokens,
       stream: true,
-    });
+    }, { signal });
 
     for await (const chunk of stream) {
       const delta = chunk.choices[0]?.delta?.content;
@@ -91,7 +91,7 @@ Respond with valid JSON only.`,
   }
 }
 
-async function generateText(messages, maxTokens = 1024, modelName = "llama-3.1-8b-instant") {
+async function generateText(messages, maxTokens = 1024, modelName = "llama-3.1-8b-instant", signal) {
   const apiKey = groqKeys.getKey();
   const groq = new Groq({ apiKey });
 
@@ -101,7 +101,7 @@ async function generateText(messages, maxTokens = 1024, modelName = "llama-3.1-8
       messages,
       temperature: 0.7,
       max_tokens: maxTokens,
-    });
+    }, { signal });
     return completion.choices[0]?.message?.content || "";
   } catch (error) {
     if (error.status === 429 || (error.response && error.response.status === 429)) {
@@ -111,7 +111,7 @@ async function generateText(messages, maxTokens = 1024, modelName = "llama-3.1-8
   }
 }
 
-async function* generateTextStream(messages, maxTokens = 1024, modelName = "llama-3.1-8b-instant") {
+async function* generateTextStream(messages, maxTokens = 1024, modelName = "llama-3.1-8b-instant", signal) {
   const apiKey = groqKeys.getKey();
   const groq = new Groq({ apiKey });
 
@@ -122,7 +122,7 @@ async function* generateTextStream(messages, maxTokens = 1024, modelName = "llam
       temperature: 0.7,
       max_tokens: maxTokens,
       stream: true,
-    });
+    }, { signal });
 
     for await (const chunk of stream) {
       const delta = chunk.choices[0]?.delta?.content;

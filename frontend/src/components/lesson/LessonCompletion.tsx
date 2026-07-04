@@ -39,14 +39,14 @@ const LessonCompletion = React.memo(({ course, courseId, lesson, onLessonUpdate 
   return (
     <section className={`relative mt-10 overflow-hidden rounded-2xl border p-6 shadow-md shadow-black/10 ${
       lesson.completedAt
-        ? 'border-emerald-500/30 bg-gradient-to-br from-emerald-500/15 to-slate-950/60'
-        : 'border-brand-500/25 bg-gradient-to-br from-brand-500/12 to-slate-950/60'
+        ? 'border-success/30 bg-gradient-to-br from-success/15 to-background/60'
+        : 'border-brand-500/25 bg-gradient-to-br from-brand-500/12 to-background/60'
     }`}
     >
-      <div className={`pointer-events-none absolute -right-16 -top-20 h-48 w-48 rounded-full blur-3xl ${lesson.completedAt ? 'bg-emerald-400/15' : 'bg-brand-500/15'}`} />
+      <div className={`pointer-events-none absolute -right-16 -top-20 h-48 w-48 rounded-full blur-3xl ${lesson.completedAt ? 'bg-success/15' : 'bg-brand-500/15'}`} />
       <div className="flex items-start gap-3">
         {lesson.completedAt
-          ? <CheckCircle2 className="mt-0.5 h-6 w-6 text-emerald-400" />
+          ? <CheckCircle2 className="mt-0.5 h-6 w-6 text-success" />
           : <Circle className="mt-0.5 h-6 w-6 text-brand-400" />}
         <div>
           <h2 className="relative font-display text-xl font-bold text-foreground">

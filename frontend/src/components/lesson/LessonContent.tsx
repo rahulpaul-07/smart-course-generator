@@ -3,8 +3,7 @@ import { Sparkles, LayoutTemplate, CheckCircle2, BookOpen } from 'lucide-react';
 import LoadingSpinner from '../LoadingSpinner';
 import LessonGenerator from './LessonGenerator';
 import LessonCompletion from './LessonCompletion';
-import VideoBlock from '../blocks/VideoBlock';
-import type { Lesson, LessonVideo, PopulatedCourse } from '../../types';
+import type { Lesson, PopulatedCourse } from '../../types';
 const LessonRenderer = lazy(() => import('./LessonRenderer'));
 
 interface LessonContentProps {
@@ -49,6 +48,27 @@ export function LessonContent({
   onDepthChange,
   updateCurrentLesson
 }: LessonContentProps) {
+  const interleavedContent = React.useMemo(() => {
+    if (!lesson.content || !lesson.videos || lesson.videos.length === 0) return lesson.content;
+    const content = [...lesson.content];
+    let videoIndex = 0;
+    const interval = Math.max(3, Math.floor(content.length / (lesson.videos.length + 1)));
+    
+    const newContent = [];
+    for (let i = 0; i < content.length; i++) {
+      newContent.push(content[i]);
+      if ((i + 1) % interval === 0 && videoIndex < lesson.videos.length && i !== content.length - 1) {
+        const video = lesson.videos[videoIndex++];
+        newContent.push({ type: 'video', url: video.url, title: video.title });
+      }
+    }
+    while (videoIndex < lesson.videos.length) {
+      const video = lesson.videos[videoIndex++];
+      newContent.push({ type: 'video', url: video.url, title: video.title });
+    }
+    return newContent;
+  }, [lesson.content, lesson.videos]);
+
   return (
     <article data-reading-content className={`mx-auto w-full transition-all duration-300 px-5 py-12 lg:py-16 ${isFocusMode ? 'max-w-[900px]' : 'max-w-[820px] lg:px-12'}`}>
       <header className="mb-14">
@@ -57,7 +77,7 @@ export function LessonContent({
         </h1>
         <div className="flex flex-wrap items-center gap-3 border-b border-border/30 pb-8">
           {lesson.completedAt && (
-            <span className="flex items-center gap-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 text-xs font-medium text-emerald-500 shadow-sm">
+            <span className="flex items-center gap-1.5 rounded-lg bg-success/10 border border-success/20 px-3 py-1.5 text-xs font-medium text-success shadow-sm">
               <CheckCircle2 className="w-3.5 h-3.5" /> Completed
             </span>
           )}
@@ -85,15 +105,15 @@ export function LessonContent({
       />
 
       {streamStatus === 'success' && !generating && (
-        <div className="bg-emerald-500/10 border border-emerald-500/20 p-4 rounded-2xl my-8 flex items-center justify-center gap-3 text-emerald-500 shadow-sm backdrop-blur-sm">
+        <div className="bg-success/10 border border-success/20 p-4 rounded-2xl my-8 flex items-center justify-center gap-3 text-success shadow-sm backdrop-blur-sm">
           <Sparkles className="w-5 h-5" />
           <span className="font-bold">Lesson generated successfully!</span>
         </div>
       )}
 
       {streamStatus === 'interrupted' && (
-        <div className="bg-amber-500/10 border border-amber-500/20 p-8 rounded-2xl my-8 flex flex-col items-center justify-center text-center shadow-sm backdrop-blur-sm">
-          <h3 className="text-xl font-bold text-amber-500 mb-2">Connection Lost</h3>
+        <div className="bg-warning/10 border border-warning/20 p-8 rounded-2xl my-8 flex flex-col items-center justify-center text-center shadow-sm backdrop-blur-sm">
+          <h3 className="text-xl font-bold text-warning mb-2">Connection Lost</h3>
           <p className="text-muted-foreground font-medium mb-6">The AI stream was disconnected. The backend may have finished saving the lesson.</p>
           <div className="flex gap-4">
             <button onClick={() => window.location.reload()} className="bg-background border border-border/30 text-foreground px-6 py-2.5 rounded-xl font-bold shadow-sm hover:shadow-md transition-all">Reload Page</button>
@@ -112,30 +132,11 @@ export function LessonContent({
 
       <Suspense fallback={<div className="py-32 flex flex-col items-center justify-center gap-4"><LoadingSpinner text="Rendering premium content..." /></div>}>
         <div className="mt-8 [&_pre]:!p-6 [&_.my-8]:!my-10 [&_.my-8]:!shadow-sm [&_.my-8]:!border-border/30 [&_.bg-\[\#161b22\]]:!py-3 [&_.bg-\[\#161b22\]]:!px-5 [&_ul]:!pl-6 [&_ul]:!list-disc [&_ul]:!mb-6 [&_ol]:!pl-6 [&_ol]:!list-decimal [&_ol]:!mb-6 [&_li]:!mb-2 [&_blockquote]:!border-l-4 [&_blockquote]:!border-primary/40 [&_blockquote]:!pl-5 [&_blockquote]:!py-1 [&_blockquote]:!italic [&_blockquote]:!text-muted-foreground [&_blockquote]:!bg-muted/10 [&_blockquote]:!rounded-r-lg [&_blockquote]:!mb-6 [&_table]:!w-full [&_table]:!mb-8 [&_table]:!border-collapse [&_table]:!text-sm [&_th]:!bg-muted/30 [&_th]:!p-3 [&_th]:!font-semibold [&_th]:!text-left [&_th]:!border [&_th]:!border-border/30 [&_td]:!p-3 [&_td]:!border [&_td]:!border-border/30">
-          <LessonRenderer content={lesson.content} isStreaming={generating} />
+          <LessonRenderer content={interleavedContent} isStreaming={generating} />
         </div>
       </Suspense>
 
-      {lesson.videos && lesson.videos.length > 0 && (
-        <div className="mt-20 pt-12 border-t border-border/30">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 border border-primary/20 shadow-[0_0_15px_rgba(var(--primary),0.15)]">
-              <svg className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <h2 className="text-2xl font-bold tracking-tight text-foreground font-display">
-              Recommended Videos
-            </h2>
-          </div>
-          <div className="grid sm:grid-cols-2 gap-6">
-            {lesson.videos.map((video: LessonVideo, idx: number) => (
-              <VideoBlock key={idx} block={{ type: 'video', url: video.url, title: video.title }} />
-            ))}
-          </div>
-        </div>
-      )}
+
 
       {!hasContent && !generating && streamStatus !== 'error' && (
         <div className="flex flex-col items-center justify-center py-24 text-center rounded-2xl border-2 border-dashed border-border/30 bg-card/10 backdrop-blur-sm mt-12 shadow-sm">

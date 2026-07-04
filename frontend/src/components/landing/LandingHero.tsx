@@ -48,7 +48,7 @@ export function LandingHero() {
               className="text-5xl font-bold tracking-tight text-foreground leading-[1.1] max-w-[700px] mx-auto lg:mx-0"
             >
               Generate Your Next <br className="hidden sm:block" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-violet-400 to-cyan-400">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-brand-300 to-primary">
                 AI Course
               </span>{' '}
               <br className="hidden sm:block" />
@@ -114,7 +114,7 @@ export function LandingHero() {
             transition={{ duration: 0.2, delay: 0.15 }}
             className="relative mx-auto w-full max-w-[600px] lg:max-w-none pt-10 lg:pt-0"
           >
-            <div className="absolute -inset-4 rounded-2xl bg-gradient-to-tr from-primary/20 via-transparent to-cyan-400/15 opacity-60 blur-3xl -z-10" />
+            <div className="absolute -inset-4 rounded-2xl bg-gradient-to-tr from-primary/20 via-transparent to-primary/15 opacity-60 blur-3xl -z-10" />
             <ProductPreview />
           </motion.div>
 

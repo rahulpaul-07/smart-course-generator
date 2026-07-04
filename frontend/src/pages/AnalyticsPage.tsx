@@ -118,20 +118,20 @@ export default function AnalyticsPage() {
 
       {/* Stat Cards */}
       <section className="mb-10 grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-7 animate-enter-delay">
-        <StatCard icon={Zap} label="Total XP" value={data.xp || 0} color="from-yellow-400 to-amber-500" />
-        <StatCard icon={Flame} label="Study Streak" value={`${data.studyStreak} days`} color="from-orange-500 to-amber-500" />
-        <StatCard icon={Clock} label="Study Hours" value={`${data.totalStudyHours}h`} color="from-cyan-500 to-blue-500" />
-        <StatCard icon={BookOpen} label="Courses" value={data.totalCourses} color="from-violet-500 to-purple-500" />
-        <StatCard icon={Target} label="Completion" value={`${data.overallCompletion}%`} color="from-emerald-500 to-green-500" />
-        <StatCard icon={Trophy} label="Lessons Done" value={`${data.completedLessons}/${data.totalLessons}`} color="from-pink-500 to-rose-500" />
-        <StatCard icon={Brain} label="Avg Quiz" value={`${data.avgQuizScore}/${data.maxQuizScore}`} color="from-indigo-500 to-blue-500" />
+        <StatCard icon={Zap} label="Total XP" value={data.xp || 0} color="from-primary to-primary/60" />
+        <StatCard icon={Flame} label="Study Streak" value={`${data.studyStreak} days`} color="from-brand-400 to-primary" />
+        <StatCard icon={Clock} label="Study Hours" value={`${data.totalStudyHours}h`} color="from-success to-success/70" />
+        <StatCard icon={BookOpen} label="Courses" value={data.totalCourses} color="from-primary to-primary/60" />
+        <StatCard icon={Target} label="Completion" value={`${data.overallCompletion}%`} color="from-success to-success/70" />
+        <StatCard icon={Trophy} label="Lessons Done" value={`${data.completedLessons}/${data.totalLessons}`} color="from-brand-400 to-primary" />
+        <StatCard icon={Brain} label="Avg Quiz" value={`${data.avgQuizScore}/${data.maxQuizScore}`} color="from-success to-success/70" />
       </section>
 
       {/* Charts Section */}
       {chartData.length > 0 && (
         <section className="mb-10 animate-enter-delay">
           <h2 className="mb-4 flex items-center gap-2 font-display text-xl font-bold text-foreground">
-            <BarChart3 className="h-5 w-5 text-indigo-400" /> Completion by Course
+            <BarChart3 className="h-5 w-5 text-primary" /> Completion by Course
           </h2>
           <div className="glass-card rounded-2xl p-6 h-[300px] shadow-lg">
             <ResponsiveContainer width="100%" height="100%">
@@ -170,14 +170,14 @@ export default function AnalyticsPage() {
                   <p className="truncate text-sm font-bold text-foreground">{course.title}</p>
                   <p className="mt-1 text-xs text-muted-foreground font-medium">
                     {course.completedLessons}/{course.totalLessons} lessons
-                    {course.hasCertificate && <span className="ml-2 text-amber-500 font-bold tracking-wider">🏆 CERTIFIED</span>}
+                    {course.hasCertificate && <span className="ml-2 text-primary font-bold tracking-wider">🏆 CERTIFIED</span>}
                   </p>
                 </div>
                 <span className="text-sm font-bold text-brand-300">{course.completionPct}%</span>
               </div>
               <div className="mt-3 h-2 overflow-hidden rounded-full bg-foreground/10 border border-border/20">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-brand-500 to-cyan-400 transition-all duration-200 shadow-[0_0_10px_currentColor] opacity-80"
+                  className="h-full rounded-full bg-gradient-to-r from-primary to-primary/70 transition-all duration-200 shadow-[0_0_10px_currentColor] opacity-80"
                   style={{ width: `${course.completionPct}%` }}
                 />
               </div>
@@ -201,7 +201,7 @@ export default function AnalyticsPage() {
       {/* Activity Calendar */}
       <section className="mb-10 animate-enter-delay">
         <h2 className="mb-4 flex items-center gap-2 font-display text-xl font-bold text-foreground">
-          <Flame className="h-5 w-5 text-orange-400" /> Activity Calendar
+          <Flame className="h-5 w-5 text-destructive" /> Activity Calendar
         </h2>
         <div className="glass-card rounded-2xl p-6 shadow-sm overflow-x-auto">
           <ActivityGrid activityHistory={data.activityHistory} />
@@ -212,12 +212,12 @@ export default function AnalyticsPage() {
       <div className="grid gap-6 lg:grid-cols-2">
         <section className="animate-enter-delay">
           <h2 className="mb-4 flex items-center gap-2 font-display text-xl font-bold text-foreground">
-            <TrendingUp className="h-5 w-5 text-emerald-400" /> Strong Topics
+            <TrendingUp className="h-5 w-5 text-success" /> Strong Topics
           </h2>
           <div className="space-y-2">
             {data.strongTopics.length > 0 ? data.strongTopics.map((t: TopicScore, i: number) => (
               <div key={i} className="glass-card flex items-center gap-3 rounded-xl p-3">
-                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-emerald-500/15 text-xs font-bold text-emerald-400">
+                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-success/15 text-xs font-bold text-success">
                   {t.score}/5
                 </span>
                 <div className="min-w-0">
@@ -236,12 +236,12 @@ export default function AnalyticsPage() {
 
         <section className="animate-enter-delay">
           <h2 className="mb-4 flex items-center gap-2 font-display text-xl font-bold text-foreground">
-            <TrendingDown className="h-5 w-5 text-rose-400" /> Needs Improvement
+            <TrendingDown className="h-5 w-5 text-destructive" /> Needs Improvement
           </h2>
           <div className="space-y-2">
             {data.weakTopics.length > 0 ? data.weakTopics.map((t: TopicScore, i: number) => (
               <div key={i} className="glass-card flex items-center gap-3 rounded-xl p-3">
-                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-rose-500/15 text-xs font-bold text-rose-400">
+                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-destructive/15 text-xs font-bold text-destructive">
                   {t.score}/5
                 </span>
                 <div className="min-w-0">
@@ -334,7 +334,7 @@ function ActivityGrid({ activityHistory }: { activityHistory: string[] }) {
               key={day.date}
               className={`h-[14px] w-[14px] rounded-[3px] transition-colors ${
                 day.active
-                  ? 'bg-emerald-500 shadow-sm shadow-emerald-500/30'
+                  ? 'bg-success shadow-sm shadow-success/30'
                   : 'bg-foreground/10 hover:bg-foreground/10'
               }`}
               title={`${day.date}${day.active ? ' — Active' : ''}`}

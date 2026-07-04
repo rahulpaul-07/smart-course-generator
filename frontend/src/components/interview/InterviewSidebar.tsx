@@ -48,12 +48,12 @@ export function InterviewSidebar({ activePrep, activeTab, setActiveTab, setActiv
         <BackButton onClick={() => setActivePrep(null)} label="Exit Session" className="mb-6 -ml-2 uppercase tracking-wider text-[13px]" />
         <h2 className="font-display text-xl font-bold tracking-tight text-foreground line-clamp-2">{activePrep.topic}</h2>
         <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-border/30 bg-background/50 px-3 py-1 text-xs font-semibold text-muted-foreground shadow-sm">
-          <div className={`h-2 w-2 rounded-full ${activePrep.status === 'pending' ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'}`} />
+          <div className={`h-2 w-2 rounded-full ${activePrep.status === 'pending' ? 'bg-warning animate-pulse' : 'bg-success'}`} />
           {activePrep.status === 'pending' ? 'In Progress' : 'Completed'}
         </div>
       </div>
       <div 
-        className="flex-1 overflow-y-auto p-4 space-y-2"
+        className="flex-1 min-h-0 overflow-y-auto p-4 space-y-2"
         role="tablist"
         aria-orientation="vertical"
         aria-label="Interview Navigation"

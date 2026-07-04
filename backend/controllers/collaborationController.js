@@ -53,21 +53,42 @@ async function getCommunityTemplates(req, res) {
   res.json(templates);
 }
 
+// getCommunityTemplates is a public, 60s-cached (by URL only, no user identity
+// in the key -- see cacheMiddleware) response shared across every caller, so
+// it must never carry a per-user field like "did I upvote this". Instead the
+// current user's upvoted set is fetched separately, uncached, and merged
+// client-side.
+async function getMyUpvotedTemplateIds(req, res) {
+  const upvoted = await Course.find({ isPublic: true, upvotedBy: req.user._id }).select("_id").lean();
+  res.json(upvoted.map((c) => String(c._id)));
+}
+
 async function upvoteTemplate(req, res) {
-  const template = await Course.findOneAndUpdate(
-    { _id: req.params.courseId, isPublic: true },
-    { $inc: { upvotesCount: 1 } },
-    { new: true }
-  );
+  const template = await Course.findOne({ _id: req.params.courseId, isPublic: true });
   if (!template) {
     res.status(404);
     throw new Error("Template not found");
   }
-  
-  await recordActivity(req.user._id, "UPVOTED_COURSE", "Course", template._id, { title: template.title });
-  await recordActivity(template.creator, "COURSE_UPVOTED_BY_OTHER", "Course", template._id, { title: template.title, upvotedBy: req.user._id });
-  
-  res.json({ success: true, upvotesCount: template.upvotesCount });
+
+  const userId = String(req.user._id);
+  const alreadyUpvoted = template.upvotedBy.some((id) => String(id) === userId);
+
+  if (alreadyUpvoted) {
+    template.upvotedBy = template.upvotedBy.filter((id) => String(id) !== userId);
+    template.upvotesCount = Math.max(0, template.upvotesCount - 1);
+  } else {
+    template.upvotedBy.push(req.user._id);
+    template.upvotesCount += 1;
+  }
+
+  await template.save();
+
+  if (!alreadyUpvoted) {
+    await recordActivity(req.user._id, "UPVOTED_COURSE", "Course", template._id, { title: template.title });
+    await recordActivity(template.creator, "COURSE_UPVOTED_BY_OTHER", "Course", template._id, { title: template.title, upvotedBy: req.user._id });
+  }
+
+  res.json({ success: true, upvotesCount: template.upvotesCount, hasUpvoted: !alreadyUpvoted });
 }
 
 async function rateTemplate(req, res) {
@@ -84,7 +105,7 @@ async function rateTemplate(req, res) {
   }
 
   // Check if user already rated
-  const existingRatingIndex = template.ratings.findIndex(r => r.user.toString() === req.user._id);
+  const existingRatingIndex = template.ratings.findIndex(r => r.user.toString() === String(req.user._id));
   if (existingRatingIndex >= 0) {
     template.ratings[existingRatingIndex].rating = rating;
   } else {
@@ -215,6 +236,7 @@ module.exports = {
   getLeaderboard: asyncHandler(getLeaderboard),
   getPublicProfile: asyncHandler(getPublicProfile),
   getCommunityTemplates: asyncHandler(getCommunityTemplates),
+  getMyUpvotedTemplateIds: asyncHandler(getMyUpvotedTemplateIds),
   upvoteTemplate: asyncHandler(upvoteTemplate),
   rateTemplate: asyncHandler(rateTemplate),
   cloneTemplate: asyncHandler(cloneTemplate),

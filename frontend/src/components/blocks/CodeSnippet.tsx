@@ -51,9 +51,9 @@ export default function CodeSnippet({ block }: { block: LessonContentBlock }) {
       <div className="flex items-center justify-between border-b border-border/30 bg-[#161b22] px-4 py-2">
         <div className="flex items-center gap-4">
           <div className="flex gap-1.5 hidden sm:flex">
-            <div className="h-3 w-3 rounded-full bg-rose-500/80" />
-            <div className="h-3 w-3 rounded-full bg-amber-500/80" />
-            <div className="h-3 w-3 rounded-full bg-emerald-500/80" />
+            <div className="h-3 w-3 rounded-full bg-destructive/80" />
+            <div className="h-3 w-3 rounded-full bg-warning/80" />
+            <div className="h-3 w-3 rounded-full bg-success/80" />
           </div>
 
           <div className="flex gap-2">
@@ -79,14 +79,14 @@ export default function CodeSnippet({ block }: { block: LessonContentBlock }) {
           className={clsx(
             "flex items-center gap-1.5 px-2 py-1.5 rounded-md transition-colors text-xs font-medium",
             hasCopied 
-              ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30" 
+              ? "bg-success/20 text-success border border-success/30" 
               : "hover:bg-foreground/10 text-muted-foreground hover:text-foreground border border-transparent"
           )}
           title="Copy code"
         >
           {hasCopied ? (
             <>
-              <Check size={14} className="text-emerald-400" />
+              <Check size={14} className="text-success" />
               <span>Copied</span>
             </>
           ) : (

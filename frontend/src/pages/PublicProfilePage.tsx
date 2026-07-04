@@ -101,7 +101,7 @@ export default function PublicProfilePage() {
     <div className="page-shell max-w-5xl mx-auto">
       {/* Profile Header */}
       <div className="glass-card rounded-2xl p-8 mb-8 relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-r from-brand-500/20 to-cyan-500/20"></div>
+        <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-r from-brand-500/20 to-primary/20"></div>
         
         <div className="relative flex flex-col md:flex-row items-center md:items-start gap-6 mt-12">
           <div className="h-32 w-32 rounded-full bg-card border-4 border-border flex items-center justify-center text-4xl text-foreground font-bold shadow-lg overflow-hidden shrink-0">
@@ -118,17 +118,17 @@ export default function PublicProfilePage() {
             
             <div className="flex flex-wrap justify-center md:justify-start gap-4 mt-6">
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-foreground/10 border border-border/30 text-sm">
-                <Zap className="h-4 w-4 text-amber-400" />
+                <Zap className="h-4 w-4 text-warning" />
                 <span className="text-foreground font-bold">{user.xp || 0}</span>
                 <span className="text-muted-foreground text-xs uppercase tracking-wider">XP</span>
               </div>
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-foreground/10 border border-border/30 text-sm">
-                <Flame className="h-4 w-4 text-orange-400" />
+                <Flame className="h-4 w-4 text-destructive" />
                 <span className="text-foreground font-bold">{user.studyStreak || 0}</span>
                 <span className="text-muted-foreground text-xs uppercase tracking-wider">Day Streak</span>
               </div>
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-foreground/10 border border-border/30 text-sm">
-                <Clock className="h-4 w-4 text-cyan-400" />
+                <Clock className="h-4 w-4 text-primary" />
                 <span className="text-foreground font-bold">{Math.floor((user.totalStudyMinutes || 0) / 60)}</span>
                 <span className="text-muted-foreground text-xs uppercase tracking-wider">Hours Studied</span>
               </div>
@@ -142,7 +142,7 @@ export default function PublicProfilePage() {
         <div className="space-y-6">
           <div className="glass-card rounded-2xl p-6">
             <h3 className="text-lg font-display font-bold text-foreground mb-4 flex items-center gap-2">
-              <Trophy className="h-5 w-5 text-yellow-400" /> Achievements
+              <Trophy className="h-5 w-5 text-primary" /> Achievements
             </h3>
             
             {(!user.achievements || user.achievements.length === 0) ? (
@@ -156,8 +156,8 @@ export default function PublicProfilePage() {
               <div className="space-y-4">
                 {user.achievements.map((ach) => (
                   <div key={ach.badge} className="flex gap-3 items-start bg-foreground/10 p-3 rounded-xl border border-border/30">
-                    <div className="h-10 w-10 shrink-0 rounded-full bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 flex items-center justify-center">
-                      <Award className="h-5 w-5 text-indigo-400" />
+                    <div className="h-10 w-10 shrink-0 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/30 flex items-center justify-center">
+                      <Award className="h-5 w-5 text-primary" />
                     </div>
                     <div>
                       <p className="text-sm font-bold text-foreground leading-tight">{ach.name}</p>
@@ -194,7 +194,7 @@ export default function PublicProfilePage() {
                   
                   <div className="mt-4 flex items-center justify-between border-t border-border/30 pt-3">
                     <div className="flex items-center gap-1">
-                      <Star className="h-3.5 w-3.5 text-yellow-400 fill-yellow-400" />
+                      <Star className="h-3.5 w-3.5 text-primary fill-primary" />
                       <span className="text-xs text-foreground/90 font-medium">{(course.averageRating || 0).toFixed(1)}</span>
                     </div>
                     <div className="flex items-center gap-3">

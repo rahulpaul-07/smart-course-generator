@@ -11,4 +11,7 @@ export const roadmapService = {
     handleApi<Roadmap>(api.post('/roadmaps/generate', data), { showErrorToast: true, fallbackMsg: 'Failed to generate roadmap' }),
 
   deleteRoadmap: (id: string) => handleApi<void>(api.delete(`/roadmaps/${id}`), { showErrorToast: true, fallbackMsg: 'Failed to delete roadmap' }),
+
+  toggleWeekCompletion: (id: string, weekNumber: number) =>
+    handleApi<Roadmap>(api.patch(`/roadmaps/${id}/progress`, { weekNumber }), { showErrorToast: true, fallbackMsg: 'Failed to update progress' }),
 };

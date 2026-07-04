@@ -32,7 +32,14 @@ const errorHandler = (err, req, res, next) => {
     code = "VALIDATION_ERROR";
   }
 
-  logger.error(`[TraceID: ${req.traceId}] ${statusCode} - ${message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
+  // Anything that reaches here as an unclassified 500 wasn't a deliberate,
+  // safe user-facing message (those set res.status(4xx) before throwing) --
+  // don't leak raw driver/provider exception text to the client.
+  if (statusCode === 500 && process.env.NODE_ENV === "production") {
+    message = "An unexpected error occurred. Please try again later.";
+  }
+
+  logger.error(`[TraceID: ${req.traceId}] ${statusCode} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
   if (process.env.NODE_ENV !== "production") {
     logger.error(`[TraceID: ${req.traceId}] ${err.stack}`);
   }

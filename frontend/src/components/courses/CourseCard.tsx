@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { BookOpen, Sparkles, MoreVertical, Layers, Clock, ArrowRight, Trash2 } from 'lucide-react';
+import { Sparkles, MoreVertical, Layers, Clock, ArrowRight, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useNavigate } from 'react-router-dom';
@@ -54,10 +54,11 @@ export function CourseCard({ course, viewMode, onDeleted }: CourseCardProps) {
     >
       {/* Cover Thumbnail */}
       <div className={`relative bg-muted/30 border-b border-border/30 overflow-hidden shrink-0 flex items-center justify-center ${viewMode === 'list' ? 'w-full sm:w-[280px] sm:border-r sm:border-b-0' : 'h-40'}`}>
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent mix-blend-overlay group-hover:opacity-100 transition-opacity duration-200" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(var(--primary),0.15),transparent_50%)]" />
-        
-        <BookOpen className="h-12 w-12 text-primary/20 group-hover:text-primary/40 transition-all duration-200" />
+        <img
+          src={course.bannerUrl || `https://picsum.photos/seed/${course._id}/800/600`}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover"
+        />
         
         <div className="absolute top-3 left-3 flex flex-wrap gap-2">
           <span className="inline-flex items-center gap-1 rounded-md bg-background/90 backdrop-blur-md px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-primary shadow-sm border border-border/30">
@@ -112,7 +113,7 @@ export function CourseCard({ course, viewMode, onDeleted }: CourseCardProps) {
             </div>
             <div className="h-1.5 w-full bg-muted/60 rounded-full overflow-hidden border border-border/30">
               <div 
-                className={`h-full rounded-full transition-all duration-200 ease-out ${progress === 100 ? 'bg-emerald-500' : 'bg-primary'}`} 
+                className={`h-full rounded-full transition-all duration-200 ease-out ${progress === 100 ? 'bg-success' : 'bg-primary'}`} 
                 style={{ width: `${progress}%` }} 
               />
             </div>
