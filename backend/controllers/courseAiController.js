@@ -1,7 +1,7 @@
 const Course = require("../models/Course");
 const { createCourseOutline } = require("../services/courseGeneration");
 const { streamLessonContent, createLessonContent, answerLessonQuestion, answerLessonQuestionStream, createLessonIntro, createLessonMainContent } = require("../services/lessonGeneration");
-const { saveGeneratedCourse } = require("../services/coursePersistence");
+const { saveGeneratedCourse, generateCourseBanner } = require("../services/coursePersistence");
 const { getOwnedLesson } = require("../services/lessonAccessService");
 const { findLessonVideos } = require("../services/youtubeService");
 const { createLessonFlashcards, createPracticeLab, createLessonQuiz } = require("../services/studyGeneration");
@@ -35,6 +35,8 @@ async function generateCourseContent(req, res) {
     course.difficulty = outline.difficulty;
     course.skills = outline.skills;
     await course.save();
+
+    generateCourseBanner(course);
 
     return res.status(201).json(course);
   } catch (error) {
@@ -81,6 +83,9 @@ async function generateCourseContentStream(req, res) {
     course.skills = outline.skills;
     await course.save();
 
+    sendEvent("stage", { stage: "generating_banner" });
+    generateCourseBanner(course, (bannerUrl) => sendEvent("banner", { bannerUrl }));
+
     sendEvent("stage", { stage: "ready" });
     sendEvent("done", course);
   } catch (error) {
@@ -91,7 +96,10 @@ async function generateCourseContentStream(req, res) {
     }
     sendEvent("error", { error: message });
   } finally {
-    if (!closed) res.end();
+    if (!closed) {
+      closed = true;
+      res.end();
+    }
   }
 }
 

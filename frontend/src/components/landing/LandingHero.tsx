@@ -48,7 +48,7 @@ export function LandingHero() {
               className="text-5xl font-bold tracking-tight text-foreground leading-[1.1] max-w-[700px] mx-auto lg:mx-0"
             >
               Generate Your Next <br className="hidden sm:block" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-warning to-primary">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-brand-300 to-primary">
                 AI Course
               </span>{' '}
               <br className="hidden sm:block" />
