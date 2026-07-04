@@ -3,8 +3,7 @@ import { Sparkles, LayoutTemplate, CheckCircle2, BookOpen } from 'lucide-react';
 import LoadingSpinner from '../LoadingSpinner';
 import LessonGenerator from './LessonGenerator';
 import LessonCompletion from './LessonCompletion';
-import VideoBlock from '../blocks/VideoBlock';
-import type { Lesson, LessonVideo, PopulatedCourse } from '../../types';
+import type { Lesson, PopulatedCourse } from '../../types';
 const LessonRenderer = lazy(() => import('./LessonRenderer'));
 
 interface LessonContentProps {
