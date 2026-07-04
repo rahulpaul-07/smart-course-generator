@@ -105,7 +105,7 @@ async function rateTemplate(req, res) {
   }
 
   // Check if user already rated
-  const existingRatingIndex = template.ratings.findIndex(r => r.user.toString() === req.user._id);
+  const existingRatingIndex = template.ratings.findIndex(r => r.user.toString() === String(req.user._id));
   if (existingRatingIndex >= 0) {
     template.ratings[existingRatingIndex].rating = rating;
   } else {

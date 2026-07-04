@@ -49,6 +49,27 @@ export function LessonContent({
   onDepthChange,
   updateCurrentLesson
 }: LessonContentProps) {
+  const interleavedContent = React.useMemo(() => {
+    if (!lesson.content || !lesson.videos || lesson.videos.length === 0) return lesson.content;
+    const content = [...lesson.content];
+    let videoIndex = 0;
+    const interval = Math.max(3, Math.floor(content.length / (lesson.videos.length + 1)));
+    
+    const newContent = [];
+    for (let i = 0; i < content.length; i++) {
+      newContent.push(content[i]);
+      if ((i + 1) % interval === 0 && videoIndex < lesson.videos.length && i !== content.length - 1) {
+        const video = lesson.videos[videoIndex++];
+        newContent.push({ type: 'video', url: video.url, title: video.title });
+      }
+    }
+    while (videoIndex < lesson.videos.length) {
+      const video = lesson.videos[videoIndex++];
+      newContent.push({ type: 'video', url: video.url, title: video.title });
+    }
+    return newContent;
+  }, [lesson.content, lesson.videos]);
+
   return (
     <article data-reading-content className={`mx-auto w-full transition-all duration-300 px-5 py-12 lg:py-16 ${isFocusMode ? 'max-w-[900px]' : 'max-w-[820px] lg:px-12'}`}>
       <header className="mb-14">
@@ -112,30 +133,11 @@ export function LessonContent({
 
       <Suspense fallback={<div className="py-32 flex flex-col items-center justify-center gap-4"><LoadingSpinner text="Rendering premium content..." /></div>}>
         <div className="mt-8 [&_pre]:!p-6 [&_.my-8]:!my-10 [&_.my-8]:!shadow-sm [&_.my-8]:!border-border/30 [&_.bg-\[\#161b22\]]:!py-3 [&_.bg-\[\#161b22\]]:!px-5 [&_ul]:!pl-6 [&_ul]:!list-disc [&_ul]:!mb-6 [&_ol]:!pl-6 [&_ol]:!list-decimal [&_ol]:!mb-6 [&_li]:!mb-2 [&_blockquote]:!border-l-4 [&_blockquote]:!border-primary/40 [&_blockquote]:!pl-5 [&_blockquote]:!py-1 [&_blockquote]:!italic [&_blockquote]:!text-muted-foreground [&_blockquote]:!bg-muted/10 [&_blockquote]:!rounded-r-lg [&_blockquote]:!mb-6 [&_table]:!w-full [&_table]:!mb-8 [&_table]:!border-collapse [&_table]:!text-sm [&_th]:!bg-muted/30 [&_th]:!p-3 [&_th]:!font-semibold [&_th]:!text-left [&_th]:!border [&_th]:!border-border/30 [&_td]:!p-3 [&_td]:!border [&_td]:!border-border/30">
-          <LessonRenderer content={lesson.content} isStreaming={generating} />
+          <LessonRenderer content={interleavedContent} isStreaming={generating} />
         </div>
       </Suspense>
 
-      {lesson.videos && lesson.videos.length > 0 && (
-        <div className="mt-20 pt-12 border-t border-border/30">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 border border-primary/20 shadow-[0_0_15px_hsl(var(--primary)/0.15)]">
-              <svg className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <h2 className="text-2xl font-bold tracking-tight text-foreground font-display">
-              Recommended Videos
-            </h2>
-          </div>
-          <div className="grid sm:grid-cols-2 gap-6">
-            {lesson.videos.map((video: LessonVideo, idx: number) => (
-              <VideoBlock key={idx} block={{ type: 'video', url: video.url, title: video.title }} />
-            ))}
-          </div>
-        </div>
-      )}
+
 
       {!hasContent && !generating && streamStatus !== 'error' && (
         <div className="flex flex-col items-center justify-center py-24 text-center rounded-2xl border-2 border-dashed border-border/30 bg-card/10 backdrop-blur-sm mt-12 shadow-sm">
