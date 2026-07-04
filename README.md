@@ -57,13 +57,14 @@ Aligned with the principles of Talent Intelligence and skills-based learning, pr
 <div align="center">
   <h3>Platform Dashboard</h3>
   <a href="https://smart-course-generator.vercel.app/">
-    <img src="./docs/images/dashboard.png" alt="Platform Dashboard" width="80%" style="border-radius: 12px; box-shadow: 0 4px 14px rgba(0,0,0,0.1); margin-bottom: 24px;" />
+    <img src="https://smart-course-generator.vercel.app/og-image.jpg" alt="Platform Dashboard" width="80%" style="border-radius: 12px; box-shadow: 0 4px 14px rgba(0,0,0,0.1); margin-bottom: 24px;" />
   </a>
   
   <h3>Interactive Learning Environment</h3>
   <a href="https://smart-course-generator.vercel.app/">
-    <img src="./docs/images/course.png" alt="Course View" width="80%" style="border-radius: 12px; box-shadow: 0 4px 14px rgba(0,0,0,0.1);" />
+    <img src="./docs/images/course_view_real.png" alt="Course View" width="80%" style="border-radius: 12px; box-shadow: 0 4px 14px rgba(0,0,0,0.1);" />
   </a>
+  <p><i>(User: Please save a real screenshot of the course view as <code>docs/images/course_view_real.png</code> to populate this image!)</i></p>
 </div>
 
 
