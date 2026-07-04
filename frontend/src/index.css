@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,56 +6,56 @@
 
 @layer base {
   :root {
-    --background: 40 30% 96%;
-    --foreground: 24 30% 14%;
-    --card: 40 45% 98%;
-    --card-foreground: 24 30% 14%;
-    --popover: 40 45% 98%;
-    --popover-foreground: 24 30% 14%;
-    --primary: 38 72% 40%;
-    --primary-foreground: 40 30% 97%;
-    --secondary: 35 25% 91%;
-    --secondary-foreground: 24 25% 18%;
-    --muted: 35 20% 92%;
-    --muted-foreground: 25 12% 42%;
-    --accent: 38 45% 90%;
-    --accent-foreground: 24 30% 14%;
-    --destructive: 14 65% 42%;
-    --destructive-foreground: 40 20% 96%;
-    --success: 132 32% 34%;
-    --success-foreground: 40 30% 97%;
-    --warning: 30 70% 42%;
-    --warning-foreground: 40 30% 97%;
-    --border: 35 20% 85%;
-    --input: 35 20% 85%;
-    --ring: 38 72% 40%;
-    --radius: 0.625rem;
+    --background: 0 0% 97%;
+    --foreground: 240 10% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 10%;
+    --primary: 243 75% 59%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 5% 94%;
+    --secondary-foreground: 240 10% 15%;
+    --muted: 240 5% 94%;
+    --muted-foreground: 240 4% 46%;
+    --accent: 240 5% 94%;
+    --accent-foreground: 240 10% 15%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 142 71% 35%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 38 30% 12%;
+    --border: 240 6% 88%;
+    --input: 240 6% 88%;
+    --ring: 243 75% 59%;
+    --radius: 0.5rem;
   }
 
   .dark {
-    --background: 24 24% 7%;
-    --foreground: 40 20% 92%;
-    --card: 24 20% 10%;
-    --card-foreground: 40 20% 92%;
-    --popover: 24 20% 10%;
-    --popover-foreground: 40 20% 92%;
-    --primary: 38 68% 58%;
-    --primary-foreground: 24 30% 14%;
-    --secondary: 24 14% 16%;
-    --secondary-foreground: 40 20% 92%;
-    --muted: 24 12% 14%;
-    --muted-foreground: 30 10% 62%;
-    --accent: 38 35% 16%;
-    --accent-foreground: 40 20% 92%;
-    --destructive: 14 62% 47%;
-    --destructive-foreground: 40 20% 95%;
-    --success: 132 30% 48%;
-    --success-foreground: 24 30% 14%;
-    --warning: 32 75% 54%;
-    --warning-foreground: 24 30% 14%;
-    --border: 24 14% 18%;
-    --input: 24 14% 18%;
-    --ring: 38 68% 58%;
+    --background: 240 10% 6%;
+    --foreground: 0 0% 96%;
+    --card: 240 8% 9%;
+    --card-foreground: 0 0% 96%;
+    --popover: 240 8% 9%;
+    --popover-foreground: 0 0% 96%;
+    --primary: 239 84% 67%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 6% 14%;
+    --secondary-foreground: 0 0% 92%;
+    --muted: 240 6% 14%;
+    --muted-foreground: 240 5% 60%;
+    --accent: 240 6% 16%;
+    --accent-foreground: 0 0% 92%;
+    --destructive: 0 65% 55%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 142 60% 45%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 55%;
+    --warning-foreground: 38 30% 10%;
+    --border: 240 6% 16%;
+    --input: 240 6% 16%;
+    --ring: 239 84% 67%;
   }
 
   * {
@@ -98,11 +98,7 @@ body::before {
 }
 
 h1,
-h2 {
-  font-family: "Fraunces", "DM Sans", system-ui, serif;
-  letter-spacing: -0.01em;
-}
-
+h2,
 h3,
 h4,
 h5,

@@ -1,5 +1,4 @@
 import { useRef } from 'react';
-import { motion } from 'framer-motion';
 import { ArrowDown } from 'lucide-react';
 import { useAIChat } from '../../hooks/useAIChat';
 import { useAutoScroll } from '../../hooks/useAutoScroll';
@@ -11,9 +10,9 @@ import { SuggestedPrompts } from '../chat/SuggestedPrompts';
 import { Skeleton } from '../ui/skeleton';
 import { ErrorState } from '../ui/ErrorState';
 
-export default function AIChatPanel({ lessonId, courseId, lessonTitle, isOpen, onClose }: { lessonId: string, courseId: string, lessonTitle: string, isOpen: boolean, onClose: () => void }) {
+export default function AIChatPanel({ lessonId, courseId, lessonTitle, onBack, onClose }: { lessonId: string, courseId: string, lessonTitle: string, onBack: () => void, onClose: () => void }) {
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  
+
   const {
     messages,
     setMessages,
@@ -27,7 +26,7 @@ export default function AIChatPanel({ lessonId, courseId, lessonTitle, isOpen, o
     retryLastMessage,
     stopGenerating,
     clearChat
-  } = useAIChat(courseId, lessonId, isOpen);
+  } = useAIChat(courseId, lessonId, true);
 
   const {
     messagesEndRef,
@@ -35,29 +34,22 @@ export default function AIChatPanel({ lessonId, courseId, lessonTitle, isOpen, o
     showScrollBottom,
     scrollToBottom,
     handleScroll
-  } = useAutoScroll(isOpen, hasFetchedHistory, messages, sending);
-
-  if (!isOpen) return null;
+  } = useAutoScroll(true, hasFetchedHistory, messages, sending);
 
   return (
-    <motion.aside 
-      initial={{ x: '100%', opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
-      exit={{ x: '100%', opacity: 0 }}
-      transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-      className="fixed bottom-0 right-0 top-[4.5rem] z-50 flex w-full max-w-md flex-col border-l border-border/30 bg-background shadow-lg"
-    >
-      <ChatHeader 
+    <aside className="h-full flex flex-col relative overflow-hidden">
+      <ChatHeader
         lessonTitle={lessonTitle}
         hasMessages={messages.length > 0}
         onClearChat={clearChat}
+        onBack={onBack}
         onClose={onClose}
       />
 
       <div 
         ref={scrollAreaRef}
         onScroll={handleScroll}
-        className="flex-1 space-y-6 overflow-y-auto p-5 scroll-smooth relative" 
+        className="flex-1 min-h-0 space-y-6 overflow-y-auto p-5 scroll-smooth relative"
         aria-live="polite"
       >
         {loadingHistory ? (
@@ -114,6 +106,6 @@ export default function AIChatPanel({ lessonId, courseId, lessonTitle, isOpen, o
         onStopGenerating={stopGenerating}
         inputRef={inputRef}
       />
-    </motion.aside>
+    </aside>
   );
 }

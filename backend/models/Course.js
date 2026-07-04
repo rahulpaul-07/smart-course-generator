@@ -5,6 +5,8 @@ const courseSchema = new mongoose.Schema(
     title: { type: String, required: true, trim: true, maxlength: 160 },
     description: { type: String, default: "", maxlength: 600 },
     isFeatured: { type: Boolean, default: false },
+    bannerUrl: { type: String, default: null },
+    bannerStatus: { type: String, enum: ["pending", "ready", "failed"], default: "pending" },
     clonesCount: { type: Number, default: 0 },
     upvotesCount: { type: Number, default: 0 },
     upvotedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
