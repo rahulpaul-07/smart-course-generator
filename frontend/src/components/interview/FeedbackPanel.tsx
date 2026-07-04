@@ -60,7 +60,7 @@ export function FeedbackPanel({ prep }: FeedbackPanelProps) {
 
   return (
     <div className="flex h-full flex-col bg-background/50">
-      <div className="flex-1 overflow-y-auto p-5 space-y-6 scroll-smooth">
+      <div className="flex-1 min-h-0 overflow-y-auto p-5 space-y-6 scroll-smooth">
         <AnimatePresence initial={false}>
           {chat.map((msg: InterviewChatMessage, i: number) => (
             <motion.div 

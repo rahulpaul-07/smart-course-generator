@@ -11,7 +11,7 @@ import { useFocusMode } from '../hooks/useFocusMode';
 import { useLessonNavigation } from '../hooks/useLessonNavigation';
 import { useLessonProgress } from '../hooks/useLessonProgress';
 
-import { LessonLayout } from '../components/lesson/LessonLayout';
+import { LessonLayout, type ActivePanel } from '../components/lesson/LessonLayout';
 import { LessonHeader } from '../components/lesson/LessonHeader';
 import { LessonContent } from '../components/lesson/LessonContent';
 
@@ -19,7 +19,8 @@ export default function LessonViewerPage() {
   const { id: lessonId, courseId } = useParams();
   const navigate = useNavigate();
   const lessonScrollRef = useRef<HTMLDivElement>(null);
-  const [showChat, setShowChat] = useState(false);
+  const [toolsOpen, setToolsOpen] = useState(false);
+  const [activePanel, setActivePanel] = useState<ActivePanel>(null);
 
   const { isFocusMode, setIsFocusMode } = useFocusMode();
   
@@ -84,8 +85,10 @@ export default function LessonViewerPage() {
         hasContent={false}
         generating={false}
         addingVideos={false}
-        showChat={showChat}
-        setShowChat={setShowChat}
+        toolsOpen={toolsOpen}
+        onToolsOpenChange={setToolsOpen}
+        activePanel={activePanel}
+        onActivePanelChange={setActivePanel}
         lessonScrollRef={lessonScrollRef}
         addVideos={() => {}}
         updateCurrentLesson={updateCurrentLesson}
@@ -101,6 +104,9 @@ export default function LessonViewerPage() {
           nextLesson={nextLesson}
           isFocusMode={isFocusMode}
           setIsFocusMode={setIsFocusMode}
+          toolsAvailable={false}
+          toolsOpen={toolsOpen}
+          onToggleTools={() => setToolsOpen((v) => !v)}
         />
         <div className="py-24 px-4 max-w-4xl mx-auto w-full">
           {error ? (
@@ -139,8 +145,10 @@ export default function LessonViewerPage() {
       hasContent={hasContent}
       generating={generating}
       addingVideos={addingVideos}
-      showChat={showChat}
-      setShowChat={setShowChat}
+      toolsOpen={toolsOpen}
+      onToolsOpenChange={setToolsOpen}
+      activePanel={activePanel}
+      onActivePanelChange={setActivePanel}
       lessonScrollRef={lessonScrollRef}
       addVideos={addVideos}
       updateCurrentLesson={updateCurrentLesson}
@@ -156,6 +164,9 @@ export default function LessonViewerPage() {
         nextLesson={nextLesson}
         isFocusMode={isFocusMode}
         setIsFocusMode={setIsFocusMode}
+        toolsAvailable={hasContent && !generating}
+        toolsOpen={toolsOpen}
+        onToggleTools={() => setToolsOpen((v) => !v)}
       />
 
       <LessonContent

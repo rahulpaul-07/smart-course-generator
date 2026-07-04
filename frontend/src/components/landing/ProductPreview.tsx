@@ -205,7 +205,7 @@ const PreviewCertificate = () => (
       <h2 className="text-[9px] uppercase tracking-[0.25em] text-muted-foreground font-bold mb-1.5 relative z-10">Certificate of Completion</h2>
       <h1 className="text-lg font-display font-bold text-foreground mb-4 relative z-10">
         Advanced React Architecture
-        <div className="absolute -bottom-2 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-warning/50 to-transparent" />
+        <div className="absolute -bottom-2 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
       </h1>
       
       <p className="text-[9px] text-muted-foreground max-w-[85%] leading-relaxed relative z-10">

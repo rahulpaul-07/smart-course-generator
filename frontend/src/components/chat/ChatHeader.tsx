@@ -1,18 +1,27 @@
 import React from 'react';
-import { Bot, Trash2, X } from 'lucide-react';
+import { ArrowLeft, Bot, Trash2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface ChatHeaderProps {
   lessonTitle: string;
   hasMessages: boolean;
   onClearChat: () => void;
+  onBack: () => void;
   onClose: () => void;
 }
 
-export function ChatHeader({ lessonTitle, hasMessages, onClearChat, onClose }: ChatHeaderProps) {
+export function ChatHeader({ lessonTitle, hasMessages, onClearChat, onBack, onClose }: ChatHeaderProps) {
   return (
     <header className="flex flex-shrink-0 items-center justify-between gap-3 border-b border-border/30 bg-card/50 backdrop-blur-xl px-5 py-4 z-10">
       <div className="flex min-w-0 items-center gap-3">
+        <button
+          type="button"
+          onClick={onBack}
+          aria-label="Back to study tools"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+        >
+          <ArrowLeft className="h-4 w-4" />
+        </button>
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
           <Bot className="h-5 w-5" />
         </div>

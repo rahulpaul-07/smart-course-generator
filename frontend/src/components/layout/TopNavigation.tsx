@@ -146,7 +146,7 @@ export function TopNavigation() {
                 </Button>
               </div>
 
-              <div className="flex-1 overflow-y-auto space-y-5">
+              <div className="flex-1 min-h-0 overflow-y-auto space-y-5">
                 {navGroups.map((group) => {
                   const groupItems = navItems.filter((item) => item.group === group.key);
                   if (groupItems.length === 0) return null;

@@ -81,7 +81,7 @@ export default function InterviewPrepPage() {
         setActivePrep={setActivePrep}
       />
 
-      <main className="flex-1 overflow-y-auto bg-background/95 scroll-smooth relative flex flex-col">
+      <main className="flex-1 min-h-0 overflow-y-auto bg-background/95 scroll-smooth relative flex flex-col">
         <InterviewToolbar
           activePrep={activePrep}
           setActivePrep={setActivePrep}

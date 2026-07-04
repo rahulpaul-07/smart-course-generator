@@ -58,6 +58,8 @@ export interface Course {
   title: string;
   description?: string;
   isFeatured?: boolean;
+  bannerUrl?: string;
+  bannerStatus?: 'pending' | 'ready' | 'failed';
   clonesCount?: number;
   upvotesCount?: number;
   creator: ID | Pick<User, '_id' | 'name' | 'avatar'>;

@@ -37,7 +37,7 @@ export function LessonViewerSkeleton() {
             <Skeleton className="h-full w-1/3" />
           </div>
           
-          <div className="flex-1 overflow-y-auto p-6 lg:p-12">
+          <div className="flex-1 min-h-0 overflow-y-auto p-6 lg:p-12">
             <div className="max-w-4xl mx-auto space-y-8">
               <Skeleton className="h-10 w-3/4" />
               

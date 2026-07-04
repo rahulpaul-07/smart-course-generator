@@ -119,11 +119,11 @@ export default function AnalyticsPage() {
       {/* Stat Cards */}
       <section className="mb-10 grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-7 animate-enter-delay">
         <StatCard icon={Zap} label="Total XP" value={data.xp || 0} color="from-primary to-primary/60" />
-        <StatCard icon={Flame} label="Study Streak" value={`${data.studyStreak} days`} color="from-destructive to-primary" />
+        <StatCard icon={Flame} label="Study Streak" value={`${data.studyStreak} days`} color="from-brand-400 to-primary" />
         <StatCard icon={Clock} label="Study Hours" value={`${data.totalStudyHours}h`} color="from-success to-success/70" />
         <StatCard icon={BookOpen} label="Courses" value={data.totalCourses} color="from-primary to-primary/60" />
         <StatCard icon={Target} label="Completion" value={`${data.overallCompletion}%`} color="from-success to-success/70" />
-        <StatCard icon={Trophy} label="Lessons Done" value={`${data.completedLessons}/${data.totalLessons}`} color="from-destructive to-primary" />
+        <StatCard icon={Trophy} label="Lessons Done" value={`${data.completedLessons}/${data.totalLessons}`} color="from-brand-400 to-primary" />
         <StatCard icon={Brain} label="Avg Quiz" value={`${data.avgQuizScore}/${data.maxQuizScore}`} color="from-success to-success/70" />
       </section>
 

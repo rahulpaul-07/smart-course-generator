@@ -2,6 +2,7 @@ const Course = require("../models/Course");
 const Module = require("../models/Module");
 const Lesson = require("../models/Lesson");
 const User = require("../models/User");
+const { generateCourseImage } = require("./geminiService");
 
 async function deleteCourseRecords(course) {
   const modules = await Module.find({ course: course._id }).select("_id");
@@ -57,4 +58,38 @@ async function saveGeneratedCourse(outline, userId, language = "English") {
   }
 }
 
-module.exports = { deleteCourseRecords, saveGeneratedCourse };
+function buildBannerPrompt(course) {
+  const skills = Array.isArray(course.skills) && course.skills.length > 0
+    ? course.skills.slice(0, 5).join(", ")
+    : "";
+  const topic = [course.title, skills].filter(Boolean).join(" — ");
+  return `A flat, modern, minimalist editorial illustration representing "${topic}". `
+    + "Clean geometric shapes, professional tech-education style, wide banner composition, "
+    + "no text, no letters, no logos.";
+}
+
+// Fire-and-forget: never let banner generation delay or fail course creation.
+// Imagen calls commonly take longer than the rest of course generation, so
+// `onBannerReady` (used to emit an SSE event) may fire after the response
+// has already ended — callers must tolerate that no-op case.
+function generateCourseBanner(course, onBannerReady) {
+  const prompt = buildBannerPrompt(course);
+  generateCourseImage(prompt)
+    .then(async (bannerUrl) => {
+      course.bannerUrl = bannerUrl;
+      course.bannerStatus = "ready";
+      await course.save();
+      if (onBannerReady) onBannerReady(bannerUrl);
+    })
+    .catch(async (error) => {
+      console.error("Course banner generation failed:", error.message);
+      try {
+        course.bannerStatus = "failed";
+        await course.save();
+      } catch (saveError) {
+        console.error("Failed to persist banner failure status:", saveError.message);
+      }
+    });
+}
+
+module.exports = { deleteCourseRecords, saveGeneratedCourse, generateCourseBanner };
