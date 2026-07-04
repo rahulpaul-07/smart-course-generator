@@ -10,7 +10,7 @@ interface AppShellProps {
 export function AppShell({ children }: AppShellProps) {
   return (
     <LayoutProvider>
-      <div className="flex min-h-screen w-full bg-background text-foreground font-sans selection:bg-primary/30">
+      <div className="flex h-screen w-full bg-background text-foreground font-sans selection:bg-primary/30">
         <Sidebar />
         <div className="flex flex-col flex-1 min-w-0">
           <TopNavigation />
