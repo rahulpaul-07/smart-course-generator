@@ -60,16 +60,12 @@ export function ChatComposer({
     }
   };
 
-  const autoGrowTextarea = () => {
+  useEffect(() => {
     if (inputRef.current) {
       inputRef.current.style.height = 'auto';
       inputRef.current.style.height = `${Math.min(inputRef.current.scrollHeight, 160)}px`;
     }
-  };
-
-  useEffect(() => {
-    autoGrowTextarea();
-  }, [input]);
+  }, [input, inputRef]);
 
   function handleKeyDown(event: React.KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
