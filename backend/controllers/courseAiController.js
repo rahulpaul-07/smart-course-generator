@@ -309,6 +309,7 @@ async function generatePracticeLab(req, res) {
 }
 
 async function chatAboutLesson(req, res) {
+  let closed = false;
   try {
     const message = String(req.body?.message || "").trim().slice(0, 2000);
     if (!message) return res.status(400).json({ error: "Message is required." });
@@ -322,7 +323,6 @@ async function chatAboutLesson(req, res) {
       "X-Accel-Buffering": "no",
     });
 
-    let closed = false;
     res.on("close", () => { closed = true; });
 
     function sendEvent(event, data) {
