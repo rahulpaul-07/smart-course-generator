@@ -86,10 +86,12 @@ export function LessonLayout({
         )}
       </AnimatePresence>
 
-      {/* Center Reading Area */}
-      <div 
-        ref={lessonScrollRef} 
-        className={`flex-1 overflow-y-auto scroll-smooth relative bg-background ${isFocusMode ? 'px-4 sm:px-8' : ''}`}
+      {/* Center Reading Area. Shrinks (rather than being covered) when the
+          tools drawer is open on desktop, so nothing behind it -- e.g. the
+          right column of a video grid -- becomes unreachable. */}
+      <div
+        ref={lessonScrollRef}
+        className={`flex-1 overflow-y-auto scroll-smooth relative bg-background transition-[margin-right] duration-200 ${isFocusMode ? 'px-4 sm:px-8' : ''} ${toolsAvailable && toolsOpen ? 'lg:mr-[380px] xl:mr-[400px]' : ''}`}
       >
         {children}
       </div>
@@ -122,7 +124,7 @@ export function LessonLayout({
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: '100%', opacity: 0 }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed inset-x-0 bottom-0 top-[4.5rem] z-40 flex flex-col rounded-t-2xl border-t border-border/30 bg-background shadow-2xl lg:inset-x-auto lg:right-0 lg:w-[380px] xl:w-[400px] lg:rounded-none lg:border-l lg:border-t-0"
+            className="fixed inset-x-0 bottom-0 z-40 flex h-[75vh] flex-col rounded-t-2xl border-t border-border/30 bg-background shadow-2xl lg:inset-x-auto lg:right-0 lg:top-[4.5rem] lg:h-auto lg:rounded-none lg:border-l lg:border-t-0 lg:w-[380px] xl:w-[400px]"
           >
             <Suspense fallback={<div className="flex items-center justify-center h-full"><LoadingSpinner text="Loading study tools..." /></div>}>
               {activePanel === 'chat' ? (
