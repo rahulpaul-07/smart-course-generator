@@ -4,15 +4,13 @@
   <h1>🚀 CourseAI Pro</h1>
   <p><strong>An AI-powered talent upskilling platform that bridges skill gaps by generating full, structured courses on any topic in seconds, then teaches them back through streaming lessons, adaptive quizzes, and AI-scored mock interviews.</strong></p>
 
-  <div>
-    <a href="https://smart-course-generator.vercel.app/"><img src="https://img.shields.io/badge/demo-live-brightgreen?logo=vercel&logoColor=white" alt="Live Demo" /></a>
-    <a href="https://github.com/rahulpaul-07/smart-course-generator/actions/workflows/ci.yml"><img src="https://github.com/rahulpaul-07/smart-course-generator/actions/workflows/ci.yml/badge.svg" alt="CI/CD Pipeline" /></a>
-    <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT" /></a>
-    <a href="./backend/package.json"><img src="https://img.shields.io/badge/node-%3E%3D18-339933?logo=node.js&logoColor=white" alt="Node" /></a>
-    <a href="./frontend/tsconfig.app.json"><img src="https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white" alt="TypeScript" /></a>
+  <div style="display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-top: 12px; margin-bottom: 24px;">
+    <a href="https://smart-course-generator.vercel.app/"><img src="https://img.shields.io/badge/Status-Live_Demo-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" /></a>
+    <a href="https://github.com/rahulpaul-07/smart-course-generator/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/rahulpaul-07/smart-course-generator/ci.yml?style=for-the-badge&logo=githubactions&logoColor=white" alt="CI/CD Pipeline" /></a>
+    <a href="./frontend/tsconfig.app.json"><img src="https://img.shields.io/badge/TypeScript-Strict-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" /></a>
+    <a href="./backend/package.json"><img src="https://img.shields.io/badge/Node.js-%3E%3D18-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node" /></a>
+    <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge" alt="License: MIT" /></a>
   </div>
-
-  <br />
 
   <p>
     <b><a href="https://smart-course-generator.vercel.app/">Try the Live Demo →</a></b><br/>
@@ -52,15 +50,16 @@ Aligned with the principles of Talent Intelligence and skills-based learning, pr
 - 🎥 **Engaging Pedagogy:** Curated YouTube videos interleave seamlessly within generated text content to maximize retention and engagement.
 - 🎨 **Premium UI/UX:** Built with Tailwind CSS and Radix UI for an accessible, buttery-smooth, and strictly typed user experience.
 
-## 📸 Screenshots
+## 📸 Product Preview
 
-> **Note to Recruiters:** You can try the [Live Demo](https://smart-course-generator.vercel.app/) to experience the platform yourself!
+> 🌟 **Note to Recruiters & Reviewers:** The best way to experience CourseAI Pro is to try the [Live Demo](https://smart-course-generator.vercel.app/)! 
 
-*(Add your beautiful dashboard and course screenshots here!)*
-<!--
-![Dashboard](/docs/images/dashboard.png)
-![Course View](/docs/images/course.png)
--->
+<div align="center">
+  <a href="https://smart-course-generator.vercel.app/">
+    <img src="https://smart-course-generator.vercel.app/og-image.jpg" alt="Platform Dashboard" width="80%" style="border-radius: 12px; box-shadow: 0 4px 14px rgba(0,0,0,0.1);" />
+  </a>
+</div>
+
 
 ## 🔥 Key Features
 
@@ -95,16 +94,26 @@ The frontend and backend are independently deployable: a React SPA (Vite, TypeSc
 
 ## 🛠️ Tech Stack
 
-<p align="center">
+### Frontend
+<p>
   <img src="https://img.shields.io/badge/React_19-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
   <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
   <img src="https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E" alt="Vite" />
   <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind" />
-  <br />
+</p>
+
+### Backend & DB
+<p>
   <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js" />
   <img src="https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express" />
   <img src="https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB" />
+</p>
+
+### AI Providers
+<p>
   <img src="https://img.shields.io/badge/Google_Gemini-8E75B2?style=for-the-badge&logo=google&logoColor=white" alt="Gemini" />
+  <img src="https://img.shields.io/badge/Groq-F55036?style=for-the-badge&logo=groq&logoColor=white" alt="Groq" />
+  <img src="https://img.shields.io/badge/OpenRouter-000000?style=for-the-badge&logo=openai&logoColor=white" alt="OpenRouter" />
 </p>
 
 ## 🚀 Getting Started
