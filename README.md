@@ -10,13 +10,38 @@ An AI-powered learning platform that generates full, structured courses on any t
 
 **[Live demo →](https://smart-course-generator.vercel.app/)** — backend runs on Render's free tier, so the first request after a period of inactivity can take 30-60s to cold-start; it's fast after that.
 
-**Contents:** [Overview](#overview) · [Features](#features) · [Architecture](#architecture) · [Tech stack](#tech-stack) · [Getting started](#getting-started) · [Testing](#testing) · [Deployment](#deployment) · [Security](#security) · [Documentation](#documentation)
+## Table of Contents
+- [Overview](#overview)
+- [Why CourseAI Pro?](#why-courseai-pro)
+- [Screenshots](#screenshots)
+- [Features](#features)
+- [Architecture](#architecture)
+- [Tech stack](#tech-stack)
+- [Getting started](#getting-started)
+- [Testing](#testing)
+- [Deployment](#deployment)
+- [Security](#security)
+- [Documentation](#documentation)
 
 ## Overview
 
 Static course platforms (Udemy, Coursera) can't adapt to what an individual learner already knows. General-purpose chat assistants can generate content, but produce a linear conversation, not a structured, resumable curriculum with progress tracking, spaced-repetition review, and assessment.
 
 CourseAI Pro sits between the two: give it a topic, and it generates a full multi-module course — streamed lesson-by-lesson over Server-Sent Events rather than a single blocking request — with quizzes, flashcards, and optional YouTube video enrichment per lesson. Progress, XP, and streaks are tracked per user, courses can be published to a community marketplace, and a separate interview-prep mode runs mock technical interviews (MCQ, theory, and coding rounds) with AI-scored feedback.
+
+## Why CourseAI Pro?
+
+- **Real-time Streaming Engine:** Unlike traditional AI wrappers, CourseAI streams robust curricula in real-time. No waiting minutes for generation.
+- **Resilient AI Routing:** Built-in multi-provider failover guarantees uptime. If Gemini rate-limits, Groq takes over seamlessly.
+- **Engaging Pedagogy:** Videos interleave seamlessly within generated content to maximize retention and engagement.
+
+## Screenshots
+
+*(Screenshots coming soon - Add your images here!)*
+<!--
+![Dashboard](/docs/images/dashboard.png)
+![Course View](/docs/images/course.png)
+-->
 
 ## Features
 

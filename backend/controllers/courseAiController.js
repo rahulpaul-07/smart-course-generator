@@ -377,7 +377,6 @@ async function chatAboutLesson(req, res) {
     await context.lesson.save();
     
     sendEvent("done", { status: "complete" });
-    res.end();
 
   } catch (error) {
     const message = safeErrorMessage(error, "Failed to chat");
@@ -385,8 +384,9 @@ async function chatAboutLesson(req, res) {
       return res.status(error.statusCode || 500).json({ error: message });
     } else {
       res.write(`event: error\ndata: ${JSON.stringify({ error: message })}\n\n`);
-      res.end();
     }
+  } finally {
+    if (!closed) res.end();
   }
 }
 

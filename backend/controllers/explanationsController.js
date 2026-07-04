@@ -54,8 +54,6 @@ exports.getHinglishAudio = async (req, res) => {
     res.type('audio/mp3').send(finalBuffer);
   } catch (err) {
     console.error("Hinglish audio generation error:", err);
-    // Send empty mp3 on fail to prevent frontend crashing
-    const emptyWav = Buffer.from('RIFF$$$$WAVEfmt ', 'utf-8'); 
-    res.type('audio/wav').send(emptyWav);
+    res.status(500).json({ error: "Failed to generate Hinglish audio" });
   }
 };
