@@ -9,9 +9,9 @@ export function LandingHero() {
   return (
     <section className="relative min-h-[calc(100vh-64px)] flex items-center overflow-hidden">
       {/* ── Layered Background ── */}
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_60%_50%_at_50%_0%,hsl(262_83%_57%/0.15),transparent_70%)]" />
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_50%_40%_at_100%_100%,hsl(191_97%_77%/0.1),transparent_65%)]" />
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_40%_40%_at_0%_100%,hsl(262_83%_57%/0.08),transparent_60%)]" />
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_60%_50%_at_50%_0%,rgba(120,40,200,0.15),transparent_70%)]" />
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_50%_40%_at_100%_100%,rgba(255,100,150,0.1),transparent_65%)]" />
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_40%_40%_at_0%_100%,rgba(50,150,255,0.1),transparent_60%)]" />
       
       {/* Subtle grid texture */}
       <div
@@ -37,7 +37,7 @@ export function LandingHero() {
               className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-xs text-primary w-fit mx-auto lg:mx-0 shadow-sm backdrop-blur-sm hover:bg-primary/15 transition-colors"
             >
               <Sparkles className="h-4 w-4" />
-              ✨ AI-Powered Learning Platform
+              ✨ AI-Powered Talent Upskilling
             </motion.div>
 
             {/* Headline */}
@@ -47,9 +47,9 @@ export function LandingHero() {
               transition={{ duration: 0.25, delay: 0.05 }}
               className="text-5xl font-bold tracking-tight text-foreground leading-[1.1] max-w-[700px] mx-auto lg:mx-0"
             >
-              Generate Your Next <br className="hidden sm:block" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-brand-300 to-primary">
-                AI Course
+              Bridge Skill Gaps with <br className="hidden sm:block" />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#7828C8] via-[#FF6496] to-[#3296FF]">
+                AI-Generated Curricula
               </span>{' '}
               <br className="hidden sm:block" />
               in Minutes.
@@ -62,7 +62,7 @@ export function LandingHero() {
               transition={{ duration: 0.25, delay: 0.1 }}
               className="max-w-[600px] mx-auto lg:mx-0 text-muted-foreground leading-7"
             >
-              CourseAI Pro generates complete personalized courses with interactive lessons, quizzes, practice projects, mock interviews, spaced-repetition flashcards, and verifiable certificates.
+              CourseAI Pro generates complete personalized upskilling paths with interactive lessons, quizzes, mock interviews for screening, and verifiable certificates.
             </motion.p>
 
             {/* CTAs */}
@@ -94,10 +94,10 @@ export function LandingHero() {
               className="pt-6 flex flex-wrap gap-3 justify-center lg:justify-start"
             >
               {[
-                { label: 'AI Generated', icon: BrainCircuit },
-                { label: 'Interactive Lessons', icon: BookOpen },
-                { label: 'Interview Prep', icon: Code },
-                { label: 'Certificates', icon: Award },
+                { label: 'Skills-Based', icon: BrainCircuit },
+                { label: 'Adaptive Learning', icon: BookOpen },
+                { label: 'AI Screening', icon: Code },
+                { label: 'Workforce Readiness', icon: Award },
               ].map((badge, i) => (
                 <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-muted/50 border border-border/30 text-xs text-muted-foreground">
                   <badge.icon className="h-4 w-4 text-primary" />

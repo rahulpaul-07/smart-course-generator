@@ -27,11 +27,11 @@ export function LandingFeatures() {
         <div className="container px-4 md:px-6">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {[
-              { label: "AI Courses Generated", value: 100, suffix: "+" },
+              { label: "Skills Bridged", value: 100, suffix: "+" },
               { label: "Lessons Created", value: 2500, suffix: "+" },
-              { label: "Interview Sessions", value: 500, suffix: "+" },
+              { label: "Talent Screenings", value: 500, suffix: "+" },
               { label: "Completion Rate", value: 98, suffix: "%" },
-              { label: "User Satisfaction", value: 4.9, decimals: 1, suffix: "★" },
+              { label: "Workforce Satisfaction", value: 4.9, decimals: 1, suffix: "★" },
               { label: "AI Personalized", value: 100, suffix: "%" }
             ].map((metric, i) => (
               <motion.div
@@ -57,17 +57,17 @@ export function LandingFeatures() {
         <div className="container px-4 md:px-6">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-3xl font-bold tracking-tight mb-4 text-foreground">Why CourseAI Pro?</h2>
-            <p className="text-muted-foreground leading-7">Everything you need to master complex subjects, unified in one premium platform.</p>
+            <p className="text-muted-foreground leading-7">The ultimate talent intelligence platform to build workforce readiness and master complex skills.</p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { icon: BrainCircuit, title: "AI Course Generation", desc: "Instantly create structured curriculums from a single prompt." },
-              { icon: BookOpen, title: "Interactive Lessons", desc: "Rich markdown, LaTeX math, and embedded video support." },
-              { icon: FileText, title: "Flashcards", desc: "Spaced-repetition study tools automatically extracted." },
-              { icon: Code, title: "Interview Preparation", desc: "Mock interviews with real-time AI voice and text feedback." },
-              { icon: Map, title: "Roadmaps", desc: "AI-generated learning paths to guide you step-by-step." },
-              { icon: Award, title: "Certificates", desc: "Earn verifiable certificates upon course completion." }
+              { icon: BrainCircuit, title: "Skills-based Generation", desc: "Instantly create structured curriculums mapped to specific skill gaps." },
+              { icon: BookOpen, title: "Adaptive Lessons", desc: "Rich markdown, LaTeX math, and embedded video support tailored to the learner." },
+              { icon: FileText, title: "Skills Reinforcement", desc: "Spaced-repetition study tools automatically extracted to ensure retention." },
+              { icon: Code, title: "AI Talent Screening", desc: "Mock interviews with real-time AI voice and text feedback for assessment." },
+              { icon: Map, title: "Career Roadmaps", desc: "AI-generated learning paths to guide workforce development step-by-step." },
+              { icon: Award, title: "Verifiable Badges", desc: "Earn verifiable certificates upon demonstrating skill mastery." }
             ].map((feature, i) => (
               <motion.div
                 key={i}
@@ -98,12 +98,12 @@ export function LandingFeatures() {
           
           <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 max-w-5xl mx-auto">
             {[
-              { title: "Topic", icon: Sparkles },
-              { title: "AI Generation", icon: BrainCircuit },
-              { title: "Interactive Lessons", icon: BookOpen },
-              { title: "Practice", icon: Code },
-              { title: "Interview Prep", icon: MessageSquare },
-              { title: "Certificate", icon: Award }
+              { title: "Skill Gap", icon: Sparkles },
+              { title: "AI Curriculum", icon: BrainCircuit },
+              { title: "Adaptive Lessons", icon: BookOpen },
+              { title: "Reinforcement", icon: Code },
+              { title: "AI Screening", icon: MessageSquare },
+              { title: "Mastery", icon: Award }
             ].map((step, i, arr) => (
               <React.Fragment key={i}>
                 <motion.div

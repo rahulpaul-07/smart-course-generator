@@ -2,7 +2,7 @@
   <img src="https://smart-course-generator.vercel.app/og-image.jpg" alt="CourseAI Pro Banner" width="100%" style="border-radius: 12px; margin-bottom: 20px;" />
 
   <h1>🚀 CourseAI Pro</h1>
-  <p><strong>An AI-powered learning platform that generates full, structured courses on any topic in seconds, then teaches them back through streaming lessons, adaptive quizzes, flashcards, mock interviews, and a public leaderboard.</strong></p>
+  <p><strong>An AI-powered talent upskilling platform that bridges skill gaps by generating full, structured courses on any topic in seconds, then teaches them back through streaming lessons, adaptive quizzes, and AI-scored mock interviews.</strong></p>
 
   <div>
     <a href="https://smart-course-generator.vercel.app/"><img src="https://img.shields.io/badge/demo-live-brightgreen?logo=vercel&logoColor=white" alt="Live Demo" /></a>
@@ -41,9 +41,9 @@
 
 Static course platforms (Udemy, Coursera) can't adapt to what an individual learner already knows. General-purpose chat assistants (like ChatGPT) can generate content, but they produce a linear conversation—not a structured, resumable curriculum with progress tracking, spaced-repetition review, and assessments.
 
-**CourseAI Pro bridges the gap:** Give it a topic, and it generates a full multi-module course—streamed lesson-by-lesson over Server-Sent Events (SSE) rather than a single blocking request—with quizzes, flashcards, and optional YouTube video enrichment per lesson. 
+**CourseAI Pro bridges the gap as an AI-powered talent upskilling platform:** Designed to address workforce skill gaps, it leverages AI to generate full multi-module courses—streamed lesson-by-lesson over Server-Sent Events (SSE). It acts as an adaptive learning engine featuring quizzes, flashcards, and optional YouTube video enrichment per lesson.
 
-Progress, XP, and streaks are tracked per user, courses can be published to a community marketplace, and a dedicated **Interview Prep** mode runs mock technical interviews (MCQ, theory, and coding rounds) with AI-scored feedback.
+Aligned with the principles of Talent Intelligence and skills-based learning, progress, XP, and streaks are tracked per user. Courses can be published to a community marketplace, and a dedicated **Interview Prep** mode acts as an AI screening tool by running mock technical interviews (MCQ, theory, and coding rounds) with detailed strengths and weaknesses feedback.
 
 ## 🎯 Why CourseAI Pro?
 
