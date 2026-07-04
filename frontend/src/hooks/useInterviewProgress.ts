@@ -32,7 +32,7 @@ export function useInterviewProgress(prep: InterviewPrep | null) {
       setChatError(false);
       setTimeout(scrollToBottom, 50);
     });
-  }, [prep?._id]);
+  }, [prep]);
 
   async function sendMessage(e?: FormEvent, overrideText?: string) {
     e?.preventDefault();
