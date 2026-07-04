@@ -54,10 +54,20 @@ export function CourseCard({ course, viewMode, onDeleted }: CourseCardProps) {
     >
       {/* Cover Thumbnail */}
       <div className={`relative bg-muted/30 border-b border-border/30 overflow-hidden shrink-0 flex items-center justify-center ${viewMode === 'list' ? 'w-full sm:w-[280px] sm:border-r sm:border-b-0' : 'h-40'}`}>
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent mix-blend-overlay group-hover:opacity-100 transition-opacity duration-200" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,hsl(var(--primary)/0.15),transparent_50%)]" />
-        
-        <BookOpen className="h-12 w-12 text-primary/20 group-hover:text-primary/40 transition-all duration-200" />
+        {course.bannerUrl ? (
+          <img
+            src={course.bannerUrl}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        ) : (
+          <>
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent mix-blend-overlay group-hover:opacity-100 transition-opacity duration-200" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,hsl(var(--primary)/0.15),transparent_50%)]" />
+
+            <BookOpen className="h-12 w-12 text-primary/20 group-hover:text-primary/40 transition-all duration-200" />
+          </>
+        )}
         
         <div className="absolute top-3 left-3 flex flex-wrap gap-2">
           <span className="inline-flex items-center gap-1 rounded-md bg-background/90 backdrop-blur-md px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-primary shadow-sm border border-border/30">

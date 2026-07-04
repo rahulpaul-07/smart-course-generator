@@ -38,6 +38,9 @@ interface LessonHeaderProps {
   nextLesson: Lesson | null;
   isFocusMode: boolean;
   setIsFocusMode: (v: boolean) => void;
+  toolsAvailable: boolean;
+  toolsOpen: boolean;
+  onToggleTools: () => void;
 }
 
 export function LessonHeader({
@@ -47,7 +50,10 @@ export function LessonHeader({
   prevLesson,
   nextLesson,
   isFocusMode,
-  setIsFocusMode
+  setIsFocusMode,
+  toolsAvailable,
+  toolsOpen,
+  onToggleTools
 }: LessonHeaderProps) {
   const estimatedMinutes = estimateLessonMinutes(lesson?.content);
 
@@ -80,7 +86,13 @@ export function LessonHeader({
 
         <div className="flex items-center gap-2 sm:gap-4 shrink-0">
           <LessonNavigation courseId={courseId} prevLesson={prevLesson} nextLesson={nextLesson} />
-          <LessonActions isFocusMode={isFocusMode} setIsFocusMode={setIsFocusMode} />
+          <LessonActions
+            isFocusMode={isFocusMode}
+            setIsFocusMode={setIsFocusMode}
+            toolsAvailable={toolsAvailable}
+            toolsOpen={toolsOpen}
+            onToggleTools={onToggleTools}
+          />
         </div>
       </div>
     </div>
