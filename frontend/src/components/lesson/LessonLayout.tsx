@@ -62,7 +62,7 @@ export function LessonLayout({
   };
 
   return (
-    <div className={`grid overflow-hidden relative bg-background transition-all duration-300 ease-out ${isFocusMode ? 'fixed inset-0 z-50 h-screen w-screen block' : 'h-[calc(100vh-4.5rem)] lg:grid-cols-[auto_1fr]'}`}>
+    <div className={`flex overflow-hidden relative bg-background transition-all duration-300 ease-out ${isFocusMode ? 'fixed inset-0 z-50 h-screen w-screen flex-col' : 'h-[calc(100vh-4.5rem)] flex-row'}`}>
       <ReadingProgressBar containerRef={lessonScrollRef as React.RefObject<HTMLElement>} />
 
       {/* Left Sidebar (Course Navigation & TOC) */}
@@ -91,7 +91,7 @@ export function LessonLayout({
           right column of a video grid -- becomes unreachable. */}
       <div
         ref={lessonScrollRef}
-        className={`flex-1 overflow-y-auto scroll-smooth relative bg-background transition-[margin-right] duration-200 ${isFocusMode ? 'px-4 sm:px-8' : ''} ${toolsAvailable && toolsOpen ? 'lg:mr-[380px] xl:mr-[400px]' : ''}`}
+        className={`flex-1 min-h-0 min-w-0 overflow-y-auto scroll-smooth relative bg-background transition-[margin-right] duration-200 ${isFocusMode ? 'px-4 sm:px-8' : ''} ${toolsAvailable && toolsOpen ? 'lg:mr-[380px] xl:mr-[400px]' : ''}`}
       >
         {children}
       </div>
