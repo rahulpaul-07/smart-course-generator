@@ -23,7 +23,7 @@
 ## 📑 Table of Contents
 - [✨ Overview](#-overview)
 - [🎯 Why CourseAI Pro?](#-why-courseai-pro)
-- [📸 Screenshots](#-screenshots)
+- [📸 Product Preview](#-product-preview)
 - [🔥 Key Features](#-key-features)
 - [🏗️ Architecture](#️-architecture)
 - [🛠️ Tech Stack](#️-tech-stack)
@@ -55,8 +55,14 @@ Aligned with the principles of Talent Intelligence and skills-based learning, pr
 > 🌟 **Note to Recruiters & Reviewers:** The best way to experience CourseAI Pro is to try the [Live Demo](https://smart-course-generator.vercel.app/)! 
 
 <div align="center">
+  <h3>Platform Dashboard</h3>
   <a href="https://smart-course-generator.vercel.app/">
-    <img src="https://smart-course-generator.vercel.app/og-image.jpg" alt="Platform Dashboard" width="80%" style="border-radius: 12px; box-shadow: 0 4px 14px rgba(0,0,0,0.1);" />
+    <img src="./docs/images/dashboard.png" alt="Platform Dashboard" width="80%" style="border-radius: 12px; box-shadow: 0 4px 14px rgba(0,0,0,0.1); margin-bottom: 24px;" />
+  </a>
+  
+  <h3>Interactive Learning Environment</h3>
+  <a href="https://smart-course-generator.vercel.app/">
+    <img src="./docs/images/course.png" alt="Course View" width="80%" style="border-radius: 12px; box-shadow: 0 4px 14px rgba(0,0,0,0.1);" />
   </a>
 </div>
 
