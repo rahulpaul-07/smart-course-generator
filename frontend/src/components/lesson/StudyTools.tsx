@@ -37,7 +37,7 @@ function ToolCard({
       disabled={disabled}
       onClick={onClick}
       aria-pressed={active}
-      className={`group relative flex w-full flex-col overflow-hidden rounded-xl border p-4 text-left transition-all duration-300 ${
+      className={`group relative flex w-full shrink-0 flex-col overflow-hidden rounded-xl border p-4 text-left transition-all duration-300 ${
         active
           ? 'border-primary bg-primary/10 shadow-[0_0_20px_hsl(var(--primary)/0.15)] ring-1 ring-primary/50'
           : 'border-border/50 bg-card hover:bg-accent/40 hover:border-primary/30 hover:shadow-lg'
@@ -249,7 +249,7 @@ const StudyTools = React.memo(({
 
         <Link
           to="/interview-prep"
-          className="group relative flex w-full items-center gap-4 overflow-hidden rounded-xl border border-border/50 bg-card p-4 text-left transition-all duration-300 hover:-translate-y-0.5 hover:border-destructive/30 hover:bg-accent/40 hover:shadow-lg"
+          className="group relative flex w-full shrink-0 items-center gap-4 overflow-hidden rounded-xl border border-border/50 bg-card p-4 text-left transition-all duration-300 hover:-translate-y-0.5 hover:border-destructive/30 hover:bg-accent/40 hover:shadow-lg"
         >
           <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-border bg-muted text-muted-foreground transition-all duration-300 group-hover:scale-110 group-hover:border-destructive/30 group-hover:bg-destructive/10 group-hover:text-destructive">
             <Brain className="h-5 w-5" />
