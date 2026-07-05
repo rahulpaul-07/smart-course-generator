@@ -113,8 +113,15 @@ async function getMyCertificates(req, res) {
 async function getCertificate(req, res) {
   try {
     const { certificateId } = req.params;
-    const certificate = await Certificate.findOne({ certificateId });
-    
+    // Public verification endpoint (no auth middleware) -- only expose the
+    // fields needed to confirm a certificate is genuine. The full document
+    // also carries `answers` (the holder's private quiz responses) and
+    // internal `user`/`course` ObjectId references, none of which belong
+    // on a page anyone with the link can view.
+    const certificate = await Certificate.findOne({ certificateId }).select(
+      "certificateId userName courseTitle averageScore passed issuedAt"
+    );
+
     if (!certificate) return res.status(404).json({ error: "Certificate not found" });
 
     res.json(certificate);

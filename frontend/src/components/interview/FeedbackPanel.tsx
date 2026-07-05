@@ -6,7 +6,7 @@ import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import SyntaxHighlighter from '../../lib/syntaxHighlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useInterviewProgress } from '../../hooks/useInterviewProgress';
 import { ErrorState } from '../ui/ErrorState';

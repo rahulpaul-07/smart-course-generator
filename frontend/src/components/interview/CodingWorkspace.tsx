@@ -1,6 +1,6 @@
 import React from 'react';
 import { Code2, AlertTriangle, Sparkles, ChevronRight, Brain, CheckCircle2 } from 'lucide-react';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import SyntaxHighlighter from '../../lib/syntaxHighlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import type { InterviewPrep, CodingQuestion } from '../../types';
 

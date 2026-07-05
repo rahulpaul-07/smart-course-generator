@@ -32,7 +32,7 @@ async function getMyCourses(req, res) {
 
 async function getCourseById(req, res) {
   const course = await Course.findOne({ _id: req.params.courseId, creator: req.user._id })
-    .select("title description modules isPublic shareId creator finalTest")
+    .select("title description modules isPublic shareId creator finalTest difficulty skills createdAt updatedAt")
     .populate(COURSE_OUTLINE)
     .lean();
 
