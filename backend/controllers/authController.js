@@ -127,7 +127,17 @@ async function googleLogin(req, res) {
     throw new Error("Invalid Google token", { cause: verifyError });
   }
 
-  const { sub: googleId, email, name, picture } = payload;
+  const { sub: googleId, email, email_verified: emailVerified, name, picture } = payload;
+
+  // Google lets an account exist with an unverified email (e.g. a custom
+  // domain address that was never confirmed). Without this check, someone
+  // could sign in with an unverified address that matches an existing local
+  // account's email and get silently linked into it via the `!user.googleId`
+  // branch below -- an account-takeover path. Reject until Google confirms it.
+  if (!emailVerified) {
+    res.status(401);
+    throw new Error("Google account email is not verified");
+  }
 
   let user = await User.findOne({ email });
   if (!user) {

@@ -45,3 +45,16 @@ declare module 'html2canvas' {
 
   export default html2canvas;
 }
+
+/**
+ * @types/react-syntax-highlighter@15 only ships declarations for the
+ * `languages/hljs/*` submodules, not `languages/prism/*` -- even though the
+ * app (and this DefinitelyTyped package itself) uses the Prism-flavored
+ * theme (`vscDarkPlus`). Without this, importing individual Prism languages
+ * for the lightweight `prism-light` build (see src/lib/syntaxHighlighter.ts)
+ * fails to typecheck even though it works fine at runtime.
+ */
+declare module "react-syntax-highlighter/dist/esm/languages/prism/*" {
+  const language: unknown;
+  export default language;
+}
