@@ -1,16 +1,14 @@
 <div align="center">
-  <img src="https://smart-course-generator.vercel.app/og-image.jpg" alt="CourseAI Pro Banner" width="100%" style="border-radius: 12px; margin-bottom: 20px;" />
-
   <h1>🚀 CourseAI Pro</h1>
   <p><strong>An AI-powered talent upskilling platform that bridges skill gaps by generating full, structured courses on any topic in seconds, then teaches them back through streaming lessons, adaptive quizzes, and AI-scored mock interviews.</strong></p>
 
-  <div style="display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-top: 12px; margin-bottom: 24px;">
+  <p>
     <a href="https://smart-course-generator.vercel.app/"><img src="https://img.shields.io/badge/Status-Live_Demo-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" /></a>
     <a href="https://github.com/rahulpaul-07/smart-course-generator/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/rahulpaul-07/smart-course-generator/ci.yml?style=for-the-badge&logo=githubactions&logoColor=white" alt="CI/CD Pipeline" /></a>
     <a href="./frontend/tsconfig.app.json"><img src="https://img.shields.io/badge/TypeScript-Strict-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" /></a>
     <a href="./backend/package.json"><img src="https://img.shields.io/badge/Node.js-%3E%3D18-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node" /></a>
     <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge" alt="License: MIT" /></a>
-  </div>
+  </p>
 
   <p>
     <b><a href="https://smart-course-generator.vercel.app/">Try the Live Demo →</a></b><br/>
@@ -23,7 +21,6 @@
 ## 📑 Table of Contents
 - [✨ Overview](#-overview)
 - [🎯 Why CourseAI Pro?](#-why-courseai-pro)
-- [📸 Product Preview](#-product-preview)
 - [🔥 Key Features](#-key-features)
 - [🏗️ Architecture](#️-architecture)
 - [🛠️ Tech Stack](#️-tech-stack)
@@ -49,24 +46,6 @@ Aligned with the principles of Talent Intelligence and skills-based learning, pr
 - 🛡️ **Resilient AI Routing:** Built-in multi-provider failover guarantees uptime. If Gemini rate-limits, Groq takes over seamlessly.
 - 🎥 **Engaging Pedagogy:** Curated YouTube videos interleave seamlessly within generated text content to maximize retention and engagement.
 - 🎨 **Premium UI/UX:** Built with Tailwind CSS and Radix UI for an accessible, buttery-smooth, and strictly typed user experience.
-
-## 📸 Product Preview
-
-> 🌟 **Note to Recruiters & Reviewers:** The best way to experience CourseAI Pro is to try the [Live Demo](https://smart-course-generator.vercel.app/)! 
-
-<div align="center">
-  <h3>Platform Dashboard</h3>
-  <a href="https://smart-course-generator.vercel.app/">
-    <img src="https://smart-course-generator.vercel.app/og-image.jpg" alt="Platform Dashboard" width="80%" style="border-radius: 12px; box-shadow: 0 4px 14px rgba(0,0,0,0.1); margin-bottom: 24px;" />
-  </a>
-  
-  <h3>Interactive Learning Environment</h3>
-  <a href="https://smart-course-generator.vercel.app/">
-    <img src="./docs/images/course_view_real.png" alt="Course View" width="80%" style="border-radius: 12px; box-shadow: 0 4px 14px rgba(0,0,0,0.1);" />
-  </a>
-  <p><i>(User: Please save a real screenshot of the course view as <code>docs/images/course_view_real.png</code> to populate this image!)</i></p>
-</div>
-
 
 ## 🔥 Key Features
 
