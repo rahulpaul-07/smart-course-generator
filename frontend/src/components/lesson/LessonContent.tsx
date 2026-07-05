@@ -70,7 +70,7 @@ export function LessonContent({
   }, [lesson.content, lesson.videos]);
 
   return (
-    <article data-reading-content className={`mx-auto w-full transition-all duration-300 px-5 py-12 lg:py-16 ${isFocusMode ? 'max-w-[900px]' : 'max-w-[820px] lg:px-12'}`}>
+    <article data-reading-content className={`mx-auto w-full transition-all duration-300 px-5 py-12 lg:py-16 ${isFocusMode ? 'max-w-[1400px] lg:px-16' : 'max-w-[820px] lg:px-12'}`}>
       <header className="mb-14">
         <h1 className="text-3xl md:text-4xl lg:text-[2.5rem] font-bold tracking-tight text-foreground mb-6 leading-[1.15]">
           {lesson.title}
