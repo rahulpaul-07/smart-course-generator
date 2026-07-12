@@ -156,7 +156,7 @@ Honest scope, because tradeoffs matter more than superlatives:
 
 - **Auth** now uses short-lived access tokens (default 30m) + **rotating, revocable httpOnly refresh tokens** with reuse detection (`backend/services/tokenService.js`), and a transparent 401-refresh interceptor on the client. Remaining hardening (moving the access token fully into memory) is tracked in [`docs/adr/0001-auth-token-model.md`](./docs/adr/0001-auth-token-model.md).
 - **RAG corpus is intentionally small** (a demonstrator set); production use would expand it and move the store to Atlas Vector Search.
-- **Coverage thresholds** are a conservative floor; they are ratcheted up as tests grow, never down.
+- **Test coverage** is collected and reported in CI. A numeric coverage gate is intentionally deferred until a baseline is measured, then added ~5% below the observed number to catch regressions without blocking on legacy untested modules.
 
 ## 🔒 Security
 

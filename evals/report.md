@@ -1,6 +1,6 @@
 # CourseAI Pro — Eval Scorecard
 
-_Generated: 2026-07-11T23:56:52.480Z · mode: mock (no AI keys — deterministic checks only)_
+_Generated: 2026-07-12T04:47:00.757Z · mode: mock (no AI keys — deterministic checks only)_
 
 | Prompt | Structure | Coverage | Faithfulness |
 |---|---|---|---|
