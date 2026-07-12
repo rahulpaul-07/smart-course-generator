@@ -1,4 +1,5 @@
 const { generateJson, generateJsonStream } = require("./aiRouter");
+const { buildGroundedContext } = require("./retrieval/grounding");
 
 const LESSON_DEPTHS = {
   brief: { words: "700-1000", blocks: 5, characters: 2000, maxTokens: 3000 },
@@ -113,6 +114,13 @@ Write roughly ${size.words} words using substantial paragraphs and useful exampl
 Teach the topic fully and end with a practical conclusion.
 Write in ${language}. Do not include quizzes, markdown, or videos.
   `.trim();
+
+  // RAG grounding (no-op unless RAG_ENABLED=true): retrieve vetted source
+  // excerpts for this lesson topic and prepend them so generation stays factual.
+  const grounding = await buildGroundedContext(`${lesson.title} ${moduleDoc.title}`);
+  const groundedInstructions = grounding.used
+    ? `${instructions}\n\nSOURCES:\n${grounding.contextText}`
+    : instructions;
   const context = `
 Lesson: ${lesson.title}
 Module: ${moduleDoc.title}
@@ -129,7 +137,7 @@ Course description: ${course.description || "Not provided"}
     }
   };
 
-  const blocks = formatBlocks(await generateJson(instructions, context, size.maxTokens, validator));
+  const blocks = formatBlocks(await generateJson(groundedInstructions, context, size.maxTokens, validator));
 
   return blocks;
 }
