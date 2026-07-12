@@ -82,8 +82,8 @@ jobs:
       - name: Run Linter
         run: npm run lint
 
-      - name: Run Unit Tests (with coverage)
-        run: npm run test -- --coverage
+      - name: Run Unit Tests
+        run: npm run test
 
       - name: Dependency Audit
         run: npm audit --audit-level=high
