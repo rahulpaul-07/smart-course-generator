@@ -2,15 +2,9 @@ module.exports = {
   testEnvironment: 'node',
   setupFilesAfterEnv: ['./tests/setup.js'],
   testTimeout: 120000,
-  collectCoverage: true,
-  collectCoverageFrom: [
-    'controllers/**/*.js',
-    'middlewares/**/*.js',
-    'routes/**/*.js',
-    'services/**/*.js',
-  ],
-  coveragePathIgnorePatterns: ['/node_modules/'],
-  // Coverage is collected and printed in CI for visibility. A numeric gate is
-  // intentionally omitted until a baseline is measured (`npm run test -- --coverage`),
-  // then add a coverageThreshold ~5% below the observed numbers to catch regressions.
+  // NOTE: coverage instrumentation is currently disabled. The repo pins
+  // minimatch@^10 via package.json "overrides", and istanbul's test-exclude
+  // calls minimatch() as a function (removed in v10), which crashes coverage
+  // runs. Re-enable collectCoverage + a coverageThreshold once that override
+  // is resolved (e.g. drop the override or align test-exclude).
 };
