@@ -15,6 +15,10 @@ if (!process.env.JWT_SECRET) {
   console.error("FATAL ERROR: JWT_SECRET environment variable is not set.");
   process.exit(1);
 }
+if (process.env.NODE_ENV === "production" && process.env.JWT_SECRET.length < 32) {
+  console.error("FATAL ERROR: JWT_SECRET is too weak (min 32 chars in production).");
+  process.exit(1);
+}
 
 const routes = require("./routes/index");
 
@@ -24,6 +28,10 @@ const { apiLimiter } = require("./middlewares/rateLimit");
 const logger = require("./utils/logger");
 
 const app = express();
+
+// Behind Render/Vercel/other proxies: trust the first hop so req.ip and
+// express-rate-limit see the real client IP instead of the proxy's.
+app.set("trust proxy", 1);
 
 // Security headers
 app.use(helmet());

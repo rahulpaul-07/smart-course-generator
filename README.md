@@ -5,8 +5,9 @@
   <p>
     <a href="https://smart-course-generator.vercel.app/"><img src="https://img.shields.io/badge/Status-Live_Demo-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" /></a>
     <a href="https://github.com/rahulpaul-07/smart-course-generator/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/rahulpaul-07/smart-course-generator/ci.yml?style=for-the-badge&logo=githubactions&logoColor=white" alt="CI/CD Pipeline" /></a>
+    <a href="https://github.com/rahulpaul-07/smart-course-generator/actions/workflows/codeql.yml"><img src="https://img.shields.io/github/actions/workflow/status/rahulpaul-07/smart-course-generator/codeql.yml?style=for-the-badge&logo=github&logoColor=white&label=CodeQL" alt="CodeQL" /></a>
     <a href="./frontend/tsconfig.app.json"><img src="https://img.shields.io/badge/TypeScript-Strict-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" /></a>
-    <a href="./backend/package.json"><img src="https://img.shields.io/badge/Node.js-%3E%3D18-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node" /></a>
+    <a href="./backend/package.json"><img src="https://img.shields.io/badge/Node.js-%3E%3D20-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node" /></a>
     <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge" alt="License: MIT" /></a>
   </p>
 
@@ -43,7 +44,7 @@ Aligned with the principles of Talent Intelligence and skills-based learning, pr
 ## 🎯 Why CourseAI Pro?
 
 - ⚡ **Real-time Streaming Engine:** Unlike traditional AI wrappers, CourseAI streams robust curricula in real-time. No more waiting minutes for generation.
-- 🛡️ **Resilient AI Routing:** Built-in multi-provider failover guarantees uptime. If Gemini rate-limits, Groq takes over seamlessly.
+- 🛡️ **Resilient AI Routing:** A custom router fails over across three LLM providers with retry-with-backoff, per-provider circuit breakers, and API-key rotation, so a single provider rate-limiting or timing out degrades gracefully instead of failing the request.
 - 🎥 **Engaging Pedagogy:** Curated YouTube videos interleave seamlessly within generated text content to maximize retention and engagement.
 - 🎨 **Premium UI/UX:** Built with Tailwind CSS and Radix UI for an accessible, buttery-smooth, and strictly typed user experience.
 
@@ -141,6 +142,22 @@ The repo is preconfigured for a split Vercel/Render deployment.
 - **Backend (Render):** root directory `backend`, build `npm install`, start `npm start`. Set `MONGO_URI`, `JWT_SECRET`, and your AI provider keys as environment variables. See [`render.yaml`](./render.yaml).
 - **Frontend (Vercel):** root directory `frontend`, framework preset Vite. Set `VITE_API_BASE_URL` to the deployed backend URL. `vercel.json` already handles SPA routing.
 
+## 🧪 AI Quality, Grounding & Evals
+
+Because "AI wrapper" projects are only as trustworthy as their output, generation quality is **measured**, not assumed:
+
+- **Eval harness** ([`evals/`](./evals)) scores generated courses on structural validity, subtopic coverage, and — with AI keys — an LLM-as-judge **faithfulness** rating. It runs in CI on every push (mock mode, no keys) as a regression smoke test, and as a real quality gate when keys are present. Run locally: `npm run eval` (from `backend/`). Latest scorecard: [`evals/report.md`](./evals/report.md).
+- **RAG grounding** ([`backend/services/retrieval/`](./backend/services/retrieval)) retrieves vetted source excerpts from a curated corpus and injects them into lesson prompts so content stays factual and citeable. Pluggable vector store (in-memory today, Atlas Vector Search ready). Off by default; enable with `RAG_ENABLED=true`. Measure the faithfulness lift by running the evals with grounding on vs. off.
+- **Provider resilience** ([`backend/services/aiRouter.js`](./backend/services/aiRouter.js)) — retry-with-backoff, per-provider circuit breaker, and telemetry, all covered by unit tests in [`backend/tests/aiRouter.test.js`](./backend/tests/aiRouter.test.js).
+
+## ⚠️ Known Limitations & Roadmap
+
+Honest scope, because tradeoffs matter more than superlatives:
+
+- **Auth** now uses short-lived access tokens (default 30m) + **rotating, revocable httpOnly refresh tokens** with reuse detection (`backend/services/tokenService.js`), and a transparent 401-refresh interceptor on the client. Remaining hardening (moving the access token fully into memory) is tracked in [`docs/adr/0001-auth-token-model.md`](./docs/adr/0001-auth-token-model.md).
+- **RAG corpus is intentionally small** (a demonstrator set); production use would expand it and move the store to Atlas Vector Search.
+- **Coverage thresholds** are a conservative floor; they are ratcheted up as tests grow, never down.
+
 ## 🔒 Security
 
 - Helmet security headers, MongoDB query sanitization, and XSS input sanitization on every request.
@@ -159,6 +176,7 @@ Detailed documentation is available in the [`docs/`](./docs) folder:
 | [`docs/database/er-diagram.md`](./docs/database/er-diagram.md) | Full entity-relationship diagram with indexes. |
 | [`docs/deployment.md`](./docs/deployment.md) | Production deployment guide (Vercel, Render, MongoDB Atlas). |
 | [`docs/engineering_decisions.md`](./docs/engineering_decisions.md) | Rationale behind key technical choices. |
+| [`docs/adr/`](./docs/adr/) | Architecture Decision Records (e.g., auth token model). |
 
 ## 🤝 Contributing
 
