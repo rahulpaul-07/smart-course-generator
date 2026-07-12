@@ -2,6 +2,7 @@ const gemini = require("./geminiService");
 const groq = require("./groqService");
 const openrouter = require("./openrouterService");
 const AiTelemetry = require("../models/AiTelemetry");
+const circuitBreaker = require("./circuitBreaker");
 
 function logTelemetry(data) {
   try {
@@ -26,7 +27,7 @@ const fallbackChain = [
 ];
 
 function getProviderChain() {
-  return fallbackChain.filter(item => !!process.env[item.key]);
+  return fallbackChain.filter(item => !!process.env[item.key] && !circuitBreaker.isOpen(item.provider.name));
 }
 
 function getMockResponse(systemPrompt, userPrompt) {
@@ -286,7 +287,7 @@ function getMockResponse(systemPrompt, userPrompt) {
 }
 
 const FRIENDLY_ERROR = "Our AI service is temporarily busy. Please try again in a minute.";
-const MAX_RETRIES_PER_PROVIDER = 1; 
+const MAX_ATTEMPTS_PER_PROVIDER = 2; 
 const REQUEST_TIMEOUT_MS = 20000;
 
 function shouldRetry(error) {
@@ -345,7 +346,7 @@ async function generateJson(systemPrompt, userPrompt, maxTokens = 4096, validato
   const activeChain = chain.length > 0 ? chain : [{ provider: gemini, model: "gemini-2.5-flash" }];
   
   for (const { provider, model } of activeChain) {
-    for (let attempt = 0; attempt < MAX_RETRIES_PER_PROVIDER; attempt++) {
+    for (let attempt = 0; attempt < MAX_ATTEMPTS_PER_PROVIDER; attempt++) {
       try {
         const result = await executeWithTimeout(
           (signal) => provider.generateJson(systemPrompt, userPrompt, maxTokens, model, signal),
@@ -354,17 +355,19 @@ async function generateJson(systemPrompt, userPrompt, maxTokens = 4096, validato
         
         if (validator) await validator(result);
         
+        circuitBreaker.onSuccess(provider.name);
         logTelemetry({ provider: provider.name, model, endpoint: 'generateJson', status: 'success' });
         return result;
       } catch (error) {
         console.error(`[AI Router] generateJson ${provider.name} attempt ${attempt + 1} failed:`, error.stack || error);
+        circuitBreaker.onFailure(provider.name);
         logTelemetry({ provider: provider.name, model, endpoint: 'generateJson', status: 'failure', reason: error.message || String(error) });
         
         if (!shouldRetry(error)) {
           break;
         }
 
-        if (attempt < MAX_RETRIES_PER_PROVIDER - 1) {
+        if (attempt < MAX_ATTEMPTS_PER_PROVIDER - 1) {
           await sleep(getExponentialBackoff(attempt));
         }
       }
@@ -391,7 +394,7 @@ async function* generateJsonStream(systemPrompt, userPrompt, maxTokens = 4096) {
   const activeChain = chain.length > 0 ? chain : [{ provider: gemini, model: "gemini-2.5-flash" }];
   
   for (const { provider, model } of activeChain) {
-    for (let attempt = 0; attempt < MAX_RETRIES_PER_PROVIDER; attempt++) {
+    for (let attempt = 0; attempt < MAX_ATTEMPTS_PER_PROVIDER; attempt++) {
       let yieldedChunk = false;
       try {
         const stream = await executeWithTimeout(
@@ -404,10 +407,12 @@ async function* generateJsonStream(systemPrompt, userPrompt, maxTokens = 4096) {
           yield chunk;
         }
         
+        circuitBreaker.onSuccess(provider.name);
         logTelemetry({ provider: provider.name, model, endpoint: 'generateJsonStream', status: 'success' });
         return;
       } catch (error) {
         console.error(`[AI Router] generateJsonStream ${provider.name} attempt ${attempt + 1} failed:`, error.stack || error);
+        circuitBreaker.onFailure(provider.name);
         logTelemetry({ provider: provider.name, model, endpoint: 'generateJsonStream', status: 'failure', reason: error.message || String(error) });
         
         if (yieldedChunk) {
@@ -418,7 +423,7 @@ async function* generateJsonStream(systemPrompt, userPrompt, maxTokens = 4096) {
           break;
         }
 
-        if (attempt < MAX_RETRIES_PER_PROVIDER - 1) {
+        if (attempt < MAX_ATTEMPTS_PER_PROVIDER - 1) {
           await sleep(getExponentialBackoff(attempt));
         }
       }
@@ -442,23 +447,25 @@ async function generateText(messages, maxTokens = 1024) {
   const activeChain = chain.length > 0 ? chain : [{ provider: gemini, model: "gemini-2.5-flash" }];
   
   for (const { provider, model } of activeChain) {
-    for (let attempt = 0; attempt < MAX_RETRIES_PER_PROVIDER; attempt++) {
+    for (let attempt = 0; attempt < MAX_ATTEMPTS_PER_PROVIDER; attempt++) {
       try {
         const result = await executeWithTimeout(
           (signal) => provider.generateText(messages, maxTokens, model, signal),
           REQUEST_TIMEOUT_MS
         );
         
+        circuitBreaker.onSuccess(provider.name);
         logTelemetry({ provider: provider.name, model, endpoint: 'generateText', status: 'success' });
         return result;
       } catch (error) {
         console.error(`[AI Router] generateText ${provider.name} attempt ${attempt + 1} failed:`, error.stack || error);
+        circuitBreaker.onFailure(provider.name);
         logTelemetry({ provider: provider.name, model, endpoint: 'generateText', status: 'failure', reason: error.message || String(error) });
         if (!shouldRetry(error)) {
           break;
         }
 
-        if (attempt < MAX_RETRIES_PER_PROVIDER - 1) {
+        if (attempt < MAX_ATTEMPTS_PER_PROVIDER - 1) {
           await sleep(getExponentialBackoff(attempt));
         }
       }
@@ -487,7 +494,7 @@ async function* generateTextStream(messages, maxTokens = 1024) {
   const activeChain = chain.length > 0 ? chain : [{ provider: gemini, model: "gemini-2.5-flash" }];
   
   for (const { provider, model } of activeChain) {
-    for (let attempt = 0; attempt < MAX_RETRIES_PER_PROVIDER; attempt++) {
+    for (let attempt = 0; attempt < MAX_ATTEMPTS_PER_PROVIDER; attempt++) {
       let yieldedChunk = false;
       try {
         const stream = await executeWithTimeout(
@@ -500,10 +507,12 @@ async function* generateTextStream(messages, maxTokens = 1024) {
           yield chunk;
         }
         
+        circuitBreaker.onSuccess(provider.name);
         logTelemetry({ provider: provider.name, model, endpoint: 'generateTextStream', status: 'success' });
         return;
       } catch (error) {
         console.error(`[AI Router] generateTextStream ${provider.name} attempt ${attempt + 1} failed:`, error.stack || error);
+        circuitBreaker.onFailure(provider.name);
         logTelemetry({ provider: provider.name, model, endpoint: 'generateTextStream', status: 'failure', reason: error.message || String(error) });
         
         if (yieldedChunk) {
@@ -514,7 +523,7 @@ async function* generateTextStream(messages, maxTokens = 1024) {
           break;
         }
 
-        if (attempt < MAX_RETRIES_PER_PROVIDER - 1) {
+        if (attempt < MAX_ATTEMPTS_PER_PROVIDER - 1) {
           await sleep(getExponentialBackoff(attempt));
         }
       }

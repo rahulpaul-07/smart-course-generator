@@ -1,0 +1,10 @@
+[
+  { "id": "json-basics", "prompt": "Create a course that teaches JSON fundamentals for beginners",
+    "expectedSubtopics": ["syntax", "data types", "parsing"] },
+  { "id": "http-methods", "prompt": "Create a course on HTTP request methods and REST APIs",
+    "expectedSubtopics": ["get", "post", "idempotent"] },
+  { "id": "react-hooks", "prompt": "Create a course teaching React hooks and state management",
+    "expectedSubtopics": ["usestate", "useeffect", "rules of hooks"] },
+  { "id": "algorithms", "prompt": "Create a course on algorithmic complexity and Big-O notation",
+    "expectedSubtopics": ["big-o", "time complexity", "binary search"] }
+]

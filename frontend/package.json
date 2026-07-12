@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
-    "typecheck": "tsc -b"
+    "typecheck": "tsc -b",
+    "e2e": "playwright test"
   },
   "dependencies": {
     "@auth0/auth0-react": "^2.19.0",
@@ -74,5 +75,11 @@
     "typescript-eslint": "^8.62.0",
     "vite": "^8.1.3",
     "vitest": "^4.1.9"
+  },
+  "description": "React/TypeScript frontend for CourseAI Pro.",
+  "author": "Rahul Paul",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20.0.0"
   }
 }
