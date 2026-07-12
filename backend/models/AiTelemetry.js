@@ -35,5 +35,7 @@ const aiTelemetrySchema = new mongoose.Schema({
 aiTelemetrySchema.index({ provider: 1, model: 1 });
 aiTelemetrySchema.index({ status: 1 });
 aiTelemetrySchema.index({ timestamp: -1 });
+// TTL index: auto-expire telemetry after 30 days to bound collection growth.
+aiTelemetrySchema.index({ timestamp: 1 }, { expireAfterSeconds: 60 * 60 * 24 * 30 });
 
 module.exports = mongoose.model('AiTelemetry', aiTelemetrySchema);

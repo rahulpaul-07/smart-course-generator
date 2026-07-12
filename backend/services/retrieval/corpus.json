@@ -1,0 +1,14 @@
+[
+  { "id": "json-1", "source": "MDN Web Docs", "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON",
+    "text": "JSON (JavaScript Object Notation) is a lightweight, text-based, language-independent data interchange format. Keys must be double-quoted strings; values may be strings, numbers, booleans, null, arrays, or objects. Comments and trailing commas are not allowed." },
+  { "id": "http-1", "source": "MDN Web Docs", "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods",
+    "text": "HTTP defines request methods with distinct semantics. GET is safe and idempotent and must not change server state. POST creates or submits data and is not idempotent. PUT is idempotent and replaces a resource. DELETE removes a resource." },
+  { "id": "react-hooks-1", "source": "React Docs", "url": "https://react.dev/reference/react/useState",
+    "text": "React hooks let function components use state and lifecycle features. useState returns a stateful value and a setter. Hooks must be called at the top level of a component, never inside loops, conditions, or nested functions, so React can preserve hook order between renders." },
+  { "id": "bigo-1", "source": "CLRS (Introduction to Algorithms)", "url": "https://en.wikipedia.org/wiki/Big_O_notation",
+    "text": "Big-O notation describes the asymptotic upper bound of an algorithm's growth. Binary search on a sorted array runs in O(log n) time. Linear search is O(n). A nested loop over the same collection is typically O(n^2)." },
+  { "id": "tcp-1", "source": "RFC 9293 (TCP)", "url": "https://www.rfc-editor.org/rfc/rfc9293",
+    "text": "TCP establishes a connection with a three-way handshake: the client sends SYN, the server replies SYN-ACK, and the client responds ACK. TCP provides reliable, ordered, byte-stream delivery with retransmission and flow control." },
+  { "id": "index-1", "source": "PostgreSQL Docs", "url": "https://www.postgresql.org/docs/current/indexes-intro.html",
+    "text": "A database index speeds up lookups at the cost of extra writes and storage. A B-tree index supports equality and range queries. A clustered index determines the physical row order; a non-clustered index stores a separate structure pointing to rows." }
+]
