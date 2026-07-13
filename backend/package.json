@@ -1,7 +1,7 @@
 {
   "name": "courseai-pro-backend",
   "version": "1.0.0",
-  "description": "Node/Express API for CourseAI Pro: multi-provider AI course generation with failover, SSE streaming, gamification, and telemetry.",
+  "description": "Node/Express API for CourseAI: multi-provider AI course generation with failover, SSE streaming, gamification, and telemetry.",
   "main": "index.js",
   "scripts": {
     "start": "node server.js",

@@ -1,6 +1,6 @@
 # Test Coverage
 
-**Product:** CourseAI Pro
+**Product:** CourseAI
 
 This document describes the automated test coverage that actually exists in this repository, rather than a manual QA sign-off. No dedicated end-to-end (browser-driven) test suite exists yet — this document previously implied otherwise and has been rewritten.
 

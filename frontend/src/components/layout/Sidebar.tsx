@@ -31,7 +31,7 @@ export function Sidebar() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
-              CourseAI Pro
+              CourseAI
             </motion.span>
           )}
         </Link>
