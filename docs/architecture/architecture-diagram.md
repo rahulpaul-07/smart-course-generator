@@ -1,6 +1,6 @@
 # System Architecture Diagram
 
-This document illustrates the high-level architecture of **CourseAI Pro**, highlighting the data flow from the client application through the Express backend, the AI Router, and the persistence layer.
+This document illustrates the high-level architecture of **CourseAI**, highlighting the data flow from the client application through the Express backend, the AI Router, and the persistence layer.
 
 ## System Architecture
 

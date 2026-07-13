@@ -76,7 +76,7 @@
     "vite": "^8.1.3",
     "vitest": "^4.1.9"
   },
-  "description": "React/TypeScript frontend for CourseAI Pro.",
+  "description": "React/TypeScript frontend for CourseAI.",
   "author": "Rahul Paul",
   "license": "MIT",
   "engines": {

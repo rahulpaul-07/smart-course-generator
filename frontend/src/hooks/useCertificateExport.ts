@@ -76,7 +76,7 @@ export function useCertificateExport(certificateRef: React.RefObject<HTMLDivElem
   };
 
   const shareToTwitter = () => {
-    const text = `I just earned a certificate in ${certificate?.courseTitle} on CourseAI Pro!`;
+    const text = `I just earned a certificate in ${certificate?.courseTitle} on CourseAI!`;
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(verifyUrl)}`, '_blank');
   };
 

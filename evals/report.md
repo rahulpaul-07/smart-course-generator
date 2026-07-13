@@ -1,14 +1,14 @@
-# CourseAI Pro — Eval Scorecard
+# Eval Scorecard
 
-_Generated: 2026-07-12T04:47:00.757Z · mode: mock (no AI keys — deterministic checks only)_
+_Generated: 2026-07-12T23:35:38.328Z · mode: mock (no AI keys — deterministic checks only)_
 
 | Prompt | Structure | Coverage | Faithfulness |
 |---|---|---|---|
-| json-basics | 100% | 100% | n/a |
-| http-methods | 100% | 0% | n/a |
-| react-hooks | 100% | 0% | n/a |
-| algorithms | 100% | 0% | n/a |
+| json-basics | 100% | n/a | n/a |
+| http-methods | 100% | n/a | n/a |
+| react-hooks | 100% | n/a | n/a |
+| algorithms | 100% | n/a | n/a |
 
-**Aggregate** — structure 100%, coverage 25%, faithfulness n/a (mock mode).
+**Aggregate** — structure 100%, coverage n/a, faithfulness n/a.
 
-> Tip: run with real AI keys + `RAG_ENABLED=true` to measure the faithfulness lift from RAG grounding, and commit the before/after numbers.
+> **Mock mode** (no AI keys): this is a structural-contract smoke test only. `coverage` and `faithfulness` require a real LLM — run `npm run eval` locally with a provider key (and `RAG_ENABLED=true`) to record real quality numbers, and commit the result here.

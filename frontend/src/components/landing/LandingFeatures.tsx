@@ -56,7 +56,7 @@ export function LandingFeatures() {
       <section className="py-24 bg-muted/20 border-y border-border/30">
         <div className="container px-4 md:px-6">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-3xl font-bold tracking-tight mb-4 text-foreground">Why CourseAI Pro?</h2>
+            <h2 className="text-3xl font-bold tracking-tight mb-4 text-foreground">Why CourseAI?</h2>
             <p className="text-muted-foreground leading-7">The ultimate talent intelligence platform to build workforce readiness and master complex skills.</p>
           </div>
 
