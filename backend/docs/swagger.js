@@ -4,7 +4,7 @@ const options = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "CourseAI Pro API",
+      title: "CourseAI API",
       version: "1.0.0",
       description: "API documentation for the Unified Course Platform",
     },

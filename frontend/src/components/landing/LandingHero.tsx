@@ -62,7 +62,7 @@ export function LandingHero() {
               transition={{ duration: 0.25, delay: 0.1 }}
               className="max-w-[600px] mx-auto lg:mx-0 text-muted-foreground leading-7"
             >
-              CourseAI Pro generates complete personalized upskilling paths with interactive lessons, quizzes, mock interviews for screening, and verifiable certificates.
+              CourseAI generates complete personalized upskilling paths with interactive lessons, quizzes, mock interviews for screening, and verifiable certificates.
             </motion.p>
 
             {/* CTAs */}

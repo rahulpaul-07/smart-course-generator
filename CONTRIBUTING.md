@@ -1,6 +1,6 @@
-# Contributing to CourseAI Pro
+# Contributing to CourseAI
 
-First off, thank you for considering contributing to CourseAI Pro! It's people like you that make the open-source community such a fantastic place to learn, inspire, and create.
+First off, thank you for considering contributing to CourseAI! It's people like you that make the open-source community such a fantastic place to learn, inspire, and create.
 
 ## Getting Started
 

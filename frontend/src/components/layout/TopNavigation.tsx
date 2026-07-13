@@ -139,7 +139,7 @@ export function TopNavigation() {
                   <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary shadow-lg shadow-primary/20 shrink-0">
                     <BrainCircuit className="h-5 w-5 text-primary-foreground" />
                   </div>
-                  CourseAI Pro
+                  CourseAI
                 </Link>
                 <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(false)}>
                   <X className="h-5 w-5" />

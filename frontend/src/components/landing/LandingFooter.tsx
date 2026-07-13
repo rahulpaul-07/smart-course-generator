@@ -52,7 +52,7 @@ export function LandingFooter() {
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
                   <BrainCircuit className="h-5 w-5 text-primary-foreground" />
                 </div>
-                CourseAI Pro
+                CourseAI
               </div>
               <p className="text-muted-foreground text-sm max-w-xs mb-6">
                 The most advanced AI-powered platform for dynamic curriculum generation and interactive learning.
@@ -82,7 +82,7 @@ export function LandingFooter() {
           </div>
 
           <div className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-border/30 text-sm text-muted-foreground">
-            <p>© {new Date().getFullYear()} CourseAI Pro. All rights reserved.</p>
+            <p>© {new Date().getFullYear()} CourseAI. All rights reserved.</p>
             <div className="flex items-center gap-2 mt-4 md:mt-0">
               <span className="flex h-2 w-2 rounded-full bg-green-500 animate-pulse" />
               All systems operational
