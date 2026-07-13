@@ -1,6 +1,6 @@
 # API Architecture Diagram
 
-This document presents the API design for **CourseAI Pro**, mapping out the routes, access-control states, and parameters.
+This document presents the API design for **CourseAI**, mapping out the routes, access-control states, and parameters.
 
 ## API Endpoint Relationships
 

@@ -1,6 +1,6 @@
 # Production Deployment Guide
 
-This guide covers deploying CourseAI Pro across Vercel (Frontend), Render (Backend), and MongoDB Atlas (Database).
+This guide covers deploying CourseAI across Vercel (Frontend), Render (Backend), and MongoDB Atlas (Database).
 
 ## 1. Database Deployment: MongoDB Atlas
 1. Create an account at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas).

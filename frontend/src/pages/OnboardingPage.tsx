@@ -101,7 +101,7 @@ export default function OnboardingPage() {
                 className="space-y-8"
               >
                 <div className="text-center space-y-2">
-                  <h1 className="gradient-text font-display text-3xl font-extrabold tracking-tight">Welcome to CourseAI Pro</h1>
+                  <h1 className="gradient-text font-display text-3xl font-extrabold tracking-tight">Welcome to CourseAI</h1>
                   <p className="text-muted-foreground text-lg">Let's personalize your learning experience.</p>
                 </div>
 

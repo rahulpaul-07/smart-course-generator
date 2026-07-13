@@ -18,7 +18,7 @@ export default function LandingPage() {
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary shadow-lg shadow-primary/20">
               <BrainCircuit className="h-5 w-5 text-primary-foreground" />
             </div>
-            CourseAI Pro
+            CourseAI
           </Link>
           <nav className="flex items-center gap-6">
             <Link to="/login" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">

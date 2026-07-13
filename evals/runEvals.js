@@ -14,7 +14,12 @@ const { scoreStructure, scoreFaithfulness } = require("./judge");
 
 const prompts = JSON.parse(fs.readFileSync(path.join(__dirname, "prompts.json"), "utf8"));
 
-function pct(x) { return `${Math.round(x * 100)}%`; }
+// Coverage and faithfulness only mean something against a real LLM. In mock mode
+// (no keys) the router returns a fixed stub course, so we report those as n/a and
+// keep only the structural-contract check — which stays meaningful everywhere.
+const HAS_KEYS = !!(process.env.GEMINI_API_KEY || process.env.GROQ_API_KEY || process.env.OPENROUTER_API_KEY);
+
+function pct(x) { return x == null ? "n/a" : `${Math.round(x * 100)}%`; }
 
 async function run() {
   const rows = [];
@@ -28,9 +33,9 @@ async function run() {
     }
     const structure = course ? scoreStructure(course, p.expectedSubtopics) : { structure: 0, coverage: 0, issues: [error] };
     const faith = course ? await scoreFaithfulness(p.prompt, course) : null;
-    rows.push({ id: p.id, error, ...structure, faithfulness: faith ? faith.faithfulness : null });
-    const f = faith ? pct(faith.faithfulness) : "n/a (mock)";
-    console.log(`• ${p.id.padEnd(16)} structure=${pct(structure.structure)} coverage=${pct(structure.coverage)} faithfulness=${f}${error ? "  ERROR: " + error : ""}`);
+    const coverage = HAS_KEYS ? structure.coverage : null; // n/a in mock mode
+    rows.push({ id: p.id, error, structure: structure.structure, coverage, faithfulness: faith ? faith.faithfulness : null });
+    console.log(`• ${p.id.padEnd(16)} structure=${pct(structure.structure)} coverage=${pct(coverage)} faithfulness=${faith ? pct(faith.faithfulness) : "n/a"}${error ? "  ERROR: " + error : ""}`);
   }
 
   const avg = (key) => {
@@ -41,17 +46,19 @@ async function run() {
 
   const mockMode = rows.every((r) => r.faithfulness === null);
   const report = [
-    "# CourseAI Pro — Eval Scorecard",
+    "# Eval Scorecard",
     "",
     `_Generated: ${new Date().toISOString()} · mode: ${mockMode ? "mock (no AI keys — deterministic checks only)" : "live LLM judge"}_`,
     "",
     "| Prompt | Structure | Coverage | Faithfulness |",
     "|---|---|---|---|",
-    ...rows.map((r) => `| ${r.id} | ${pct(r.structure)} | ${pct(r.coverage)} | ${r.faithfulness == null ? "n/a" : pct(r.faithfulness)} |`),
+    ...rows.map((r) => `| ${r.id} | ${pct(r.structure)} | ${pct(r.coverage)} | ${pct(r.faithfulness)} |`),
     "",
-    `**Aggregate** — structure ${pct(aggregate.structure)}, coverage ${pct(aggregate.coverage)}, faithfulness ${aggregate.faithfulness == null ? "n/a (mock mode)" : pct(aggregate.faithfulness)}.`,
+    `**Aggregate** — structure ${pct(aggregate.structure)}, coverage ${pct(aggregate.coverage)}, faithfulness ${pct(aggregate.faithfulness)}.`,
     "",
-    "> Tip: run with real AI keys + `RAG_ENABLED=true` to measure the faithfulness lift from RAG grounding, and commit the before/after numbers.",
+    mockMode
+      ? "> **Mock mode** (no AI keys): this is a structural-contract smoke test only. `coverage` and `faithfulness` require a real LLM — run `npm run eval` locally with a provider key (and `RAG_ENABLED=true`) to record real quality numbers, and commit the result here."
+      : "> Live LLM judge. Re-run with `RAG_ENABLED=true` vs off to measure the faithfulness lift from RAG grounding.",
     "",
   ].join("\n");
   fs.writeFileSync(path.join(__dirname, "report.md"), report);
