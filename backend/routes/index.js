@@ -12,6 +12,7 @@ const collaborationRoutes = require("./collaboration");
 const dashboardRoutes = require("./dashboard");
 const { getHealth } = require("../controllers/healthController");
 const { getAiStatus } = require("../controllers/aiStatusController");
+const { getEvalReport } = require("../controllers/evalsController");
 const { getPublicCourse } = require("../controllers/courseController");
 
 const router = Router();
@@ -33,6 +34,9 @@ router.get("/health", getHealth);
 // Public read-only view of the AI router: provider chain, circuit-breaker
 // state and recent success/latency. Exposes no keys and no prompt content.
 router.get("/ai/status", getAiStatus);
+// Read-only view of the committed eval scorecard (evals/report.md). Reports
+// the last recorded run; it never triggers one.
+router.get("/evals/report", getEvalReport);
 
 module.exports = router;
 

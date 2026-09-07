@@ -1,5 +1,5 @@
 import type { ElementType } from "react";
-import { Home, BookOpen, Compass, Award, Layers, Brain, Bot, BarChart3, Trophy, User, Settings, Waypoints } from "lucide-react";
+import { Home, BookOpen, Compass, Award, Layers, Brain, Bot, BarChart3, Trophy, User, Settings, Waypoints, FlaskConical } from "lucide-react";
 
 export type NavGroup = "learn" | "progress" | "community";
 
@@ -25,6 +25,7 @@ export const navItems: NavItem[] = [
   { name: "AI Insights", href: "/agents", icon: Bot, group: "learn" },
   { name: "Analytics", href: "/analytics", icon: BarChart3, group: "progress" },
   { name: "AI Router", href: "/ai-router", icon: Waypoints, group: "progress" },
+  { name: "Evals", href: "/evals", icon: FlaskConical, group: "progress" },
   { name: "Certificates", href: "/certificates", icon: Award, group: "progress" },
   { name: "Community", href: "/community", icon: Compass, group: "community" },
   { name: "Leaderboard", href: "/leaderboard", icon: Trophy, group: "community" },
