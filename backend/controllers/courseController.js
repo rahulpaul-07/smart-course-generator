@@ -6,6 +6,7 @@ const { getOwnedLesson } = require("../services/lessonAccessService");
 const aiRouter = require("../services/aiRouter");
 const Certificate = require("../models/Certificate");
 const { recordActivity } = require("../services/achievementsService");
+const { applyStreak } = require("../services/streakService");
 
 const COURSE_OUTLINE = {
   path: "modules",
@@ -114,20 +115,11 @@ async function updateLessonProgress(req, res) {
     await recordActivity(req.user._id, "COMPLETED_QUIZ", "Lesson", lesson._id, { title: lesson.title, score: lesson.quizBestScore });
   }
 
-  // Update user activity streak (fire-and-forget)
+  // Update user activity streak. Best-effort: a streak write must never fail a
+  // lesson save the user already completed.
   try {
-    const today = new Date().toISOString().slice(0, 10);
     const user = await User.findById(req.user._id);
-    if (user && user.lastActiveDate !== today) {
-      const yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
-      const yesterdayStr = yesterday.toISOString().slice(0, 10);
-      user.studyStreak = user.lastActiveDate === yesterdayStr ? (user.studyStreak || 0) + 1 : 1;
-      user.lastActiveDate = today;
-      if (!user.activityHistory.includes(today)) {
-        user.activityHistory.push(today);
-        if (user.activityHistory.length > 365) user.activityHistory = user.activityHistory.slice(-365);
-      }
+    if (applyStreak(user, { timeZone: req.body?.timezone })) {
       await user.save();
     }
   } catch (streakErr) {

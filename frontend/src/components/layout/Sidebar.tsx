@@ -66,7 +66,7 @@ export function Sidebar() {
                   >
                     {isActive && (
                       <motion.div
-                        layoutId="sidebar-active"
+                        layoutId="sidebar-active-main"
                         className="absolute left-0 top-1 bottom-1 w-1 bg-primary rounded-r-full"
                       />
                     )}
@@ -106,7 +106,7 @@ export function Sidebar() {
             >
               {isActive && (
                 <motion.div
-                  layoutId="sidebar-active"
+                  layoutId="sidebar-active-account"
                   className="absolute left-0 top-1 bottom-1 w-1 bg-primary rounded-r-full"
                 />
               )}

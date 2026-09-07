@@ -9,7 +9,9 @@
     "test": "jest",
     "lint": "eslint .",
     "eval": "node ../evals/runEvals.js",
-    "load-test": "node ../perf/load-test.js"
+    "load-test": "node ../perf/load-test.js",
+    "test:unit": "jest --selectProjects unit",
+    "test:integration": "jest --selectProjects integration"
   },
   "keywords": [],
   "author": "Rahul Paul",

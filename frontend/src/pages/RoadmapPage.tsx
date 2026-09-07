@@ -49,7 +49,7 @@ export default function RoadmapPage() {
             <h1 className="font-bold text-foreground tracking-tight text-lg">Career Roadmaps</h1>
           </div>
         </header>
-        <main className="p-6 lg:p-10 max-w-7xl mx-auto w-full space-y-10">
+        <main className="page-shell w-full space-y-10">
           <RoadmapSkeleton />
         </main>
       </div>
@@ -67,7 +67,7 @@ export default function RoadmapPage() {
             <h1 className="font-bold text-foreground tracking-tight text-lg">Career Roadmaps</h1>
           </div>
         </header>
-        <main className="p-6 lg:p-10 max-w-7xl mx-auto w-full space-y-10 flex items-center justify-center min-h-[60vh]">
+        <main className="page-shell w-full space-y-10 flex items-center justify-center min-h-[60vh]">
           <ErrorState 
             title="Unable to load roadmap" 
             description="We couldn't load your roadmap. Please try again." 
@@ -94,7 +94,7 @@ export default function RoadmapPage() {
         )}
       </header>
 
-      <main className="p-6 lg:p-10 max-w-7xl mx-auto w-full space-y-10">
+      <main className="page-shell w-full space-y-10">
         <AnimatePresence>
           {showForm && (
             <motion.form 

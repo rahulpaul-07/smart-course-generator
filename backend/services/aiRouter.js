@@ -30,6 +30,36 @@ function getProviderChain() {
   return fallbackChain.filter(item => !!process.env[item.key] && !circuitBreaker.isOpen(item.provider.name));
 }
 
+/**
+ * True only when the deployment has no AI credentials at all.
+ *
+ * The mock-response fallback used to be guarded by
+ * `chain.length === 0 && !process.env.GEMINI_API_KEY`. On a Groq-only or
+ * OpenRouter-only deployment that condition is satisfied the moment the
+ * circuit breaker opens -- so a transient provider outage silently served
+ * users fabricated placeholder course content instead of an error. The mock
+ * path is a local-development affordance and must depend on configuration
+ * only, never on runtime health.
+ */
+function hasNoConfiguredProvider() {
+  return !fallbackChain.some(item => !!process.env[item.key]);
+}
+
+/**
+ * Providers are benched for being unhealthy, not for being handed a prompt they
+ * answered badly. A 400/401/403 or a schema-validation failure says nothing
+ * about provider availability, and counting those toward the breaker took a
+ * perfectly healthy provider offline for the cooldown.
+ */
+function countsAgainstProviderHealth(error) {
+  const status = error?.status || error?.statusCode;
+  if (status === 400 || status === 401 || status === 403 || status === 404) return false;
+  if (error?.failureCategory === "invalid_json" || error?.failureCategory === "empty_response") return false;
+  const msg = String(error?.message || error).toLowerCase();
+  if (msg.includes("validation") || msg.includes("invalid json") || msg.includes("malformed")) return false;
+  return true;
+}
+
 function getMockResponse(systemPrompt, userPrompt) {
   const sys = String(systemPrompt || "").toLowerCase();
   const usr = String(userPrompt || "").toLowerCase();
@@ -286,6 +316,20 @@ function getMockResponse(systemPrompt, userPrompt) {
   };
 }
 
+/**
+ * Last-resort chain when every breaker is open.
+ *
+ * This used to hard-code a single Gemini entry, which both ignored the breaker
+ * *and* pointed at a provider the deployment may have no key for -- a
+ * guaranteed 401 on any Groq-only or OpenRouter-only install. Fall back to the
+ * providers that are actually configured instead, breaker state relaxed, so an
+ * expired cooldown still gets one honest attempt.
+ */
+function resolveChain(chain) {
+  if (chain.length > 0) return chain;
+  return fallbackChain.filter(item => !!process.env[item.key]);
+}
+
 const FRIENDLY_ERROR = "Our AI service is temporarily busy. Please try again in a minute.";
 const MAX_ATTEMPTS_PER_PROVIDER = 2; 
 const REQUEST_TIMEOUT_MS = 20000;
@@ -313,29 +357,44 @@ function getExponentialBackoff(attempt) {
 
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
+/**
+ * Races `promiseFn` against a deadline and aborts the underlying request if the
+ * deadline wins.
+ *
+ * The previous version created two timers -- one to abort, one to reject -- and
+ * only ever cleared the first. The reject timer stayed armed for the full
+ * timeout after a fast success, holding the event loop open (which is why Jest
+ * reported "did not exit one second after the test run"). Worse, for the
+ * streaming callers this function resolves as soon as the *stream object*
+ * exists; the abort timer then fired `timeoutMs` later and killed a stream that
+ * was healthily mid-flight. `settled` now disarms both timers the moment the
+ * race resolves either way.
+ */
 async function executeWithTimeout(promiseFn, timeoutMs) {
   const abortController = new AbortController();
-  const timeoutId = setTimeout(() => abortController.abort(), timeoutMs);
-  
+  let rejectId;
+
+  const disarm = () => clearTimeout(rejectId);
+
   try {
-    const result = await Promise.race([
+    return await Promise.race([
       promiseFn(abortController.signal),
       new Promise((_, reject) => {
-        setTimeout(() => reject(new Error("Request timed out")), timeoutMs);
-      })
+        rejectId = setTimeout(() => {
+          abortController.abort();
+          reject(new Error("Request timed out"));
+        }, timeoutMs);
+      }),
     ]);
-    clearTimeout(timeoutId);
-    return result;
-  } catch (error) {
-    clearTimeout(timeoutId);
-    throw error;
+  } finally {
+    disarm();
   }
 }
 
 async function generateJson(systemPrompt, userPrompt, maxTokens = 4096, validator = null) {
   const chain = getProviderChain();
   
-  if (chain.length === 0 && !process.env.GEMINI_API_KEY) {
+  if (hasNoConfiguredProvider()) {
     const mockResult = getMockResponse(systemPrompt, userPrompt);
     if (validator) {
       try { await validator(mockResult); } catch (err) { /* ignore validator error for mock */ }
@@ -343,7 +402,7 @@ async function generateJson(systemPrompt, userPrompt, maxTokens = 4096, validato
     return mockResult;
   }
 
-  const activeChain = chain.length > 0 ? chain : [{ provider: gemini, model: "gemini-2.5-flash" }];
+  const activeChain = resolveChain(chain);
   
   for (const { provider, model } of activeChain) {
     for (let attempt = 0; attempt < MAX_ATTEMPTS_PER_PROVIDER; attempt++) {
@@ -360,7 +419,7 @@ async function generateJson(systemPrompt, userPrompt, maxTokens = 4096, validato
         return result;
       } catch (error) {
         console.error(`[AI Router] generateJson ${provider.name} attempt ${attempt + 1} failed:`, error.stack || error);
-        circuitBreaker.onFailure(provider.name);
+        if (countsAgainstProviderHealth(error)) circuitBreaker.onFailure(provider.name);
         logTelemetry({ provider: provider.name, model, endpoint: 'generateJson', status: 'failure', reason: error.message || String(error) });
         
         if (!shouldRetry(error)) {
@@ -381,7 +440,7 @@ async function generateJson(systemPrompt, userPrompt, maxTokens = 4096, validato
 async function* generateJsonStream(systemPrompt, userPrompt, maxTokens = 4096) {
   const chain = getProviderChain();
   
-  if (chain.length === 0 && !process.env.GEMINI_API_KEY) {
+  if (hasNoConfiguredProvider()) {
     const mockData = getMockResponse(systemPrompt, userPrompt);
     const blocks = mockData.contentBlocks || mockData.blocks || [];
     for (const block of blocks) {
@@ -391,7 +450,7 @@ async function* generateJsonStream(systemPrompt, userPrompt, maxTokens = 4096) {
     return;
   }
 
-  const activeChain = chain.length > 0 ? chain : [{ provider: gemini, model: "gemini-2.5-flash" }];
+  const activeChain = resolveChain(chain);
   
   for (const { provider, model } of activeChain) {
     for (let attempt = 0; attempt < MAX_ATTEMPTS_PER_PROVIDER; attempt++) {
@@ -412,7 +471,7 @@ async function* generateJsonStream(systemPrompt, userPrompt, maxTokens = 4096) {
         return;
       } catch (error) {
         console.error(`[AI Router] generateJsonStream ${provider.name} attempt ${attempt + 1} failed:`, error.stack || error);
-        circuitBreaker.onFailure(provider.name);
+        if (countsAgainstProviderHealth(error)) circuitBreaker.onFailure(provider.name);
         logTelemetry({ provider: provider.name, model, endpoint: 'generateJsonStream', status: 'failure', reason: error.message || String(error) });
         
         if (yieldedChunk) {
@@ -437,14 +496,14 @@ async function* generateJsonStream(systemPrompt, userPrompt, maxTokens = 4096) {
 async function generateText(messages, maxTokens = 1024) {
   const chain = getProviderChain();
   
-  if (chain.length === 0 && !process.env.GEMINI_API_KEY) {
+  if (hasNoConfiguredProvider()) {
     if (messages.some(m => m.content && m.content.toLowerCase().includes("mock interview"))) {
       return "That's an interesting approach. What are the trade-offs of your chosen design?";
     }
     return "This is a friendly response from your AI tutor! Let's continue working on this lesson together.";
   }
 
-  const activeChain = chain.length > 0 ? chain : [{ provider: gemini, model: "gemini-2.5-flash" }];
+  const activeChain = resolveChain(chain);
   
   for (const { provider, model } of activeChain) {
     for (let attempt = 0; attempt < MAX_ATTEMPTS_PER_PROVIDER; attempt++) {
@@ -459,7 +518,7 @@ async function generateText(messages, maxTokens = 1024) {
         return result;
       } catch (error) {
         console.error(`[AI Router] generateText ${provider.name} attempt ${attempt + 1} failed:`, error.stack || error);
-        circuitBreaker.onFailure(provider.name);
+        if (countsAgainstProviderHealth(error)) circuitBreaker.onFailure(provider.name);
         logTelemetry({ provider: provider.name, model, endpoint: 'generateText', status: 'failure', reason: error.message || String(error) });
         if (!shouldRetry(error)) {
           break;
@@ -479,7 +538,7 @@ async function generateText(messages, maxTokens = 1024) {
 async function* generateTextStream(messages, maxTokens = 1024) {
   const chain = getProviderChain();
   
-  if (chain.length === 0 && !process.env.GEMINI_API_KEY) {
+  if (hasNoConfiguredProvider()) {
     const text = messages.some(m => m.content && m.content.toLowerCase().includes("mock interview"))
       ? "That's an interesting approach. What are the trade-offs of your chosen design?"
       : "This is a friendly response from your AI tutor! Let's continue working on this lesson together.";
@@ -491,7 +550,7 @@ async function* generateTextStream(messages, maxTokens = 1024) {
     return;
   }
 
-  const activeChain = chain.length > 0 ? chain : [{ provider: gemini, model: "gemini-2.5-flash" }];
+  const activeChain = resolveChain(chain);
   
   for (const { provider, model } of activeChain) {
     for (let attempt = 0; attempt < MAX_ATTEMPTS_PER_PROVIDER; attempt++) {
@@ -512,7 +571,7 @@ async function* generateTextStream(messages, maxTokens = 1024) {
         return;
       } catch (error) {
         console.error(`[AI Router] generateTextStream ${provider.name} attempt ${attempt + 1} failed:`, error.stack || error);
-        circuitBreaker.onFailure(provider.name);
+        if (countsAgainstProviderHealth(error)) circuitBreaker.onFailure(provider.name);
         logTelemetry({ provider: provider.name, model, endpoint: 'generateTextStream', status: 'failure', reason: error.message || String(error) });
         
         if (yieldedChunk) {
@@ -535,3 +594,12 @@ async function* generateTextStream(messages, maxTokens = 1024) {
 }
 
 module.exports = { generateJson, generateJsonStream, generateText, generateTextStream };
+
+// Exported for unit tests: these two predicates encode the rules that decide
+// whether users see fabricated mock content and whether a provider gets benched.
+module.exports._internal = {
+  hasNoConfiguredProvider,
+  countsAgainstProviderHealth,
+  resolveChain,
+  getProviderChain,
+};

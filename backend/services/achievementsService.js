@@ -5,6 +5,9 @@ const Module = require("../models/Module");
 const Lesson = require("../models/Lesson");
 const Certificate = require("../models/Certificate");
 
+/** Quizzes are generated as fixed 5-question sets; see studyGeneration.js. */
+const PERFECT_QUIZ_SCORE = 5;
+
 const ACHIEVEMENTS_LIST = [
   {
     badge: "streak-3",
@@ -62,19 +65,30 @@ const ACHIEVEMENTS_LIST = [
   }
 ];
 
-async function checkAndUnlockAchievements(user) {
+/**
+ * Works out which badges `user` has just earned.
+ *
+ * This used to mutate `user.achievements` in place and leave the caller to
+ * `save()` the whole document. Combined with the read-modify-write on `xp` in
+ * recordActivity, two activities finishing close together (finish a lesson,
+ * finish its quiz) both read the same starting XP and the second save
+ * overwrote the first -- silently losing XP. It now returns the new badges and
+ * writes nothing, so the caller can persist them with an atomic update.
+ *
+ * @returns {Promise<Array<{badge: string, name: string, description: string, unlockedAt: Date}>>}
+ */
+async function findNewlyUnlockedAchievements(user) {
   try {
-    // Gather stats
     const certificatesCount = await Certificate.countDocuments({ user: user._id, passed: true });
-    
+
     const courses = await Course.find({ creator: user._id }).select("_id isPublic upvotesCount");
     const publishedCoursesCount = courses.filter(c => c.isPublic).length;
     const totalUpvotes = courses.reduce((sum, c) => sum + (c.upvotesCount || 0), 0);
-    
+
     const modules = await Module.find({ course: { $in: courses.map(c => c._id) } }).select("_id");
-    const perfectQuizzesCount = await Lesson.countDocuments({ 
-      module: { $in: modules.map(m => m._id) }, 
-      quizBestScore: 5 
+    const perfectQuizzesCount = await Lesson.countDocuments({
+      module: { $in: modules.map(m => m._id) },
+      quizBestScore: PERFECT_QUIZ_SCORE
     });
 
     const stats = {
@@ -84,37 +98,39 @@ async function checkAndUnlockAchievements(user) {
       perfectQuizzesCount
     };
 
-    let newlyUnlocked = false;
-    const currentBadges = user.achievements.map(a => a.badge);
+    const currentBadges = new Set((user.achievements || []).map(a => a.badge));
 
-    for (const achievement of ACHIEVEMENTS_LIST) {
-      if (!currentBadges.includes(achievement.badge)) {
-        if (achievement.check(user, stats)) {
-          user.achievements.push({
-            badge: achievement.badge,
-            name: achievement.name,
-            description: achievement.description,
-            unlockedAt: new Date()
-          });
-          newlyUnlocked = true;
-          
-          // Optionally record achievement unlock to feed
-          await AuditLog.create({
-            userId: user._id,
-            action: "UNLOCKED_ACHIEVEMENT",
-            resourceType: "Achievement",
-            resourceId: achievement.badge,
-            metadata: { name: achievement.name, description: achievement.description },
-            xpEarned: 0
-          });
-        }
-      }
-    }
-
-    // Note: The caller (recordActivity) handles user.save() to avoid ParallelSaveError.
+    return ACHIEVEMENTS_LIST
+      .filter(a => !currentBadges.has(a.badge) && a.check(user, stats))
+      .map(a => ({
+        badge: a.badge,
+        name: a.name,
+        description: a.description,
+        unlockedAt: new Date()
+      }));
   } catch (error) {
     console.error("Error checking achievements:", error);
+    return [];
   }
+}
+
+/**
+ * Back-compat wrapper for callers that hold a document and save it themselves.
+ * @returns {Promise<boolean>} whether anything was appended.
+ */
+async function checkAndUnlockAchievements(user) {
+  const unlocked = await findNewlyUnlockedAchievements(user);
+  if (unlocked.length === 0) return false;
+  user.achievements.push(...unlocked);
+  await Promise.all(unlocked.map(a => AuditLog.create({
+    userId: user._id,
+    action: "UNLOCKED_ACHIEVEMENT",
+    resourceType: "Achievement",
+    resourceId: a.badge,
+    metadata: { name: a.name, description: a.description },
+    xpEarned: 0
+  })));
+  return true;
 }
 
 async function recordActivity(userId, action, resourceType, resourceId, metadata = {}) {
@@ -127,7 +143,7 @@ async function recordActivity(userId, action, resourceType, resourceId, metadata
         break;
       case "COMPLETED_QUIZ":
         xpToAdd = 25;
-        if (metadata.score === 5) {
+        if (metadata.score === PERFECT_QUIZ_SCORE) {
           xpToAdd += 20; // 5/5 perfect score bonus!
         }
         break;
@@ -169,13 +185,35 @@ async function recordActivity(userId, action, resourceType, resourceId, metadata
       xpEarned: xpToAdd
     });
 
-    // 3. Award XP and check achievements
+    // 3. Award XP and check achievements.
+    //
+    // $inc is applied server-side, so concurrent activities accumulate instead
+    // of clobbering each other. The badge write is a separate $push guarded by
+    // a $ne on the badge, which makes a double-unlock impossible even if two
+    // requests evaluate the same condition at the same time.
     if (xpToAdd > 0 || action.includes("UNLOCKED")) {
-      const user = await User.findById(userId);
+      const user = xpToAdd > 0
+        ? await User.findByIdAndUpdate(userId, { $inc: { xp: xpToAdd } }, { new: true })
+        : await User.findById(userId);
+
       if (user) {
-        user.xp = (user.xp || 0) + xpToAdd;
-        await checkAndUnlockAchievements(user);
-        await user.save();
+        const unlocked = await findNewlyUnlockedAchievements(user);
+        for (const achievement of unlocked) {
+          const res = await User.updateOne(
+            { _id: userId, "achievements.badge": { $ne: achievement.badge } },
+            { $push: { achievements: achievement } }
+          );
+          if (res.modifiedCount > 0) {
+            await AuditLog.create({
+              userId,
+              action: "UNLOCKED_ACHIEVEMENT",
+              resourceType: "Achievement",
+              resourceId: achievement.badge,
+              metadata: { name: achievement.name, description: achievement.description },
+              xpEarned: 0
+            });
+          }
+        }
       }
     }
   } catch (error) {
@@ -185,5 +223,8 @@ async function recordActivity(userId, action, resourceType, resourceId, metadata
 
 module.exports = {
   recordActivity,
-  checkAndUnlockAchievements
+  checkAndUnlockAchievements,
+  findNewlyUnlockedAchievements,
+  ACHIEVEMENTS_LIST,
+  PERFECT_QUIZ_SCORE
 };

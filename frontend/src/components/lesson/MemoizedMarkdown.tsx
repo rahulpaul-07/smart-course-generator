@@ -13,7 +13,7 @@ export const MemoizedMarkdown = memo(({ text }: { text: string }) => (
       leading-[1.8] 
       prose 
       prose-lg 
-      prose-invert 
+      dark:prose-invert 
       max-w-none 
       break-words 
       overflow-wrap-anywhere 

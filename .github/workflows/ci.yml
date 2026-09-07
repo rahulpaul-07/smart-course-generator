@@ -82,8 +82,13 @@ jobs:
       - name: Run Linter
         run: npm run lint
 
-      - name: Run Unit Tests
-        run: npm run test
+      # Split so a logic regression fails in seconds rather than after the
+      # mongodb-memory-server binary download.
+      - name: Run Unit Tests (no database)
+        run: npm run test:unit
+
+      - name: Run Integration Tests (mongodb-memory-server)
+        run: npm run test:integration
 
       - name: Dependency Audit
         run: npm audit --audit-level=high

@@ -153,6 +153,9 @@ select:focus-visible {
 }
 
 @layer components {
+  /* Mirrors components/layout/PageContainer.tsx exactly: same max-width, same
+     gutter scale, same vertical rhythm. If you change one, change the other,
+     otherwise the content edge shifts between routes. */
   .page-shell {
     width: 100%;
     max-width: 80rem;

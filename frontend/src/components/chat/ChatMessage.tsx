@@ -59,7 +59,7 @@ const CodeBlock = ({ language, value }: { language: string, value: string }) => 
 
 export const AssistantMessageContent = memo(function AssistantMessageContent({ content, isStreaming }: { content: string, isStreaming?: boolean }) {
   return (
-    <div className="min-w-0 text-[15px] leading-relaxed text-foreground/90 prose prose-invert max-w-none 
+    <div className="min-w-0 text-[15px] leading-relaxed text-foreground/90 prose dark:prose-invert max-w-none 
       prose-p:leading-relaxed prose-p:my-3 
       prose-pre:p-0 prose-pre:bg-transparent prose-pre:border-none prose-pre:my-0
       prose-a:text-primary prose-a:underline-offset-2 hover:prose-a:text-primary/80 

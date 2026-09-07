@@ -97,7 +97,7 @@ exports.getDashboardSummary = async (req, res) => {
 
     // User stats
     const User = require("../models/User");
-    const userDoc = await User.findById(userId).select('studyStreak lastActiveDate activityHistory');
+    const userDoc = await User.findById(userId).select('studyStreak longestStreak lastActiveDate activityHistory');
 
     // Aggregate real lesson-level stats across the user's courses
     const coursesWithLessons = await Course.find({ creator: userId })
@@ -160,7 +160,9 @@ exports.getDashboardSummary = async (req, res) => {
 
     const streak = {
       current: userDoc?.studyStreak || 0,
-      longest: userDoc?.studyStreak || 0,
+      // Was `userDoc?.studyStreak` -- the same number twice, so the "longest"
+      // card reset to 0 with the current streak. Now a persisted high-water mark.
+      longest: Math.max(userDoc?.longestStreak || 0, userDoc?.studyStreak || 0),
       lastActive: userDoc?.lastActiveDate || new Date().toISOString()
     };
 
