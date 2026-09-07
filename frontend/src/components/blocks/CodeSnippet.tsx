@@ -50,7 +50,7 @@ export default function CodeSnippet({ block }: { block: LessonContentBlock }) {
     >
       <div className="flex items-center justify-between border-b border-border/30 bg-[#161b22] px-4 py-2">
         <div className="flex items-center gap-4">
-          <div className="flex gap-1.5 hidden sm:flex">
+          <div className="hidden gap-1.5 sm:flex">
             <div className="h-3 w-3 rounded-full bg-destructive/80" />
             <div className="h-3 w-3 rounded-full bg-warning/80" />
             <div className="h-3 w-3 rounded-full bg-success/80" />
@@ -109,18 +109,30 @@ export default function CodeSnippet({ block }: { block: LessonContentBlock }) {
               style={{ ...style, backgroundColor: 'transparent', margin: 0 }}
             >
               <div className="inline-block min-w-full">
-                {tokens.map((line, i) => (
-                  <div key={i} {...getLineProps({ line, key: i })} className="table-row">
-                    <span className="table-cell select-none pr-5 text-right text-muted-foreground font-mono text-[13px] w-[1%]">
-                      {i + 1}
-                    </span>
-                    <span className="table-cell font-mono">
-                      {line.map((token, key) => (
-                        <span key={key} {...getTokenProps({ token, key })} />
-                      ))}
-                    </span>
-                  </div>
-                ))}
+                {tokens.map((line, i) => {
+                  // `key` must not go through getLineProps/getTokenProps: those
+                  // return it inside the props object, and spreading a `key`
+                  // into JSX is a React warning. The className they return also
+                  // has to be merged rather than overwritten -- the explicit
+                  // className used to replace Prism's token classes, which is
+                  // what actually carries the syntax colouring.
+                  const { className: lineClass, ...lineProps } = getLineProps({ line });
+                  return (
+                    <div key={i} {...lineProps} className={clsx(lineClass, 'table-row')}>
+                      <span className="table-cell select-none pr-5 text-right text-muted-foreground font-mono text-[13px] w-[1%]">
+                        {i + 1}
+                      </span>
+                      <span className="table-cell font-mono">
+                        {line.map((token, tokenIndex) => {
+                          const { className: tokenClass, ...tokenProps } = getTokenProps({ token });
+                          return (
+                            <span key={tokenIndex} {...tokenProps} className={tokenClass} />
+                          );
+                        })}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
             </pre>
           )}

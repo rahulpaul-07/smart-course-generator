@@ -1,5 +1,6 @@
 const Course = require("../models/Course");
 const User = require("../models/User");
+const { applyStreak } = require("../services/streakService");
 
 /**
  * GET /api/analytics/dashboard
@@ -11,7 +12,7 @@ async function getDashboard(req, res) {
 
     // Fetch user analytics fields
     const user = await User.findById(userId)
-      .select("studyStreak lastActiveDate activityHistory totalStudyMinutes xp achievements")
+      .select("studyStreak longestStreak lastActiveDate activityHistory totalStudyMinutes xp achievements")
       .lean();
 
     // Fetch all courses with populated modules/lessons
@@ -101,38 +102,20 @@ async function recordStudyTime(req, res) {
   try {
     const userId = req.user._id;
     const minutes = Math.min(Math.max(Number(req.body?.minutes) || 1, 1), 30);
-    const today = new Date().toISOString().slice(0, 10);
 
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ error: "User not found" });
 
     user.totalStudyMinutes = (user.totalStudyMinutes || 0) + minutes;
 
-    // Update streak
-    if (user.lastActiveDate !== today) {
-      const yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
-      const yesterdayStr = yesterday.toISOString().slice(0, 10);
-
-      if (user.lastActiveDate === yesterdayStr) {
-        user.studyStreak = (user.studyStreak || 0) + 1;
-      } else if (user.lastActiveDate !== today) {
-        user.studyStreak = 1;
-      }
-      user.lastActiveDate = today;
-
-      // Add to activity history (deduplicated)
-      if (!user.activityHistory.includes(today)) {
-        user.activityHistory.push(today);
-        // Keep only the last 365 days
-        if (user.activityHistory.length > 365) {
-          user.activityHistory = user.activityHistory.slice(-365);
-        }
-      }
-    }
+    applyStreak(user, { timeZone: req.body?.timezone });
 
     await user.save();
-    return res.json({ totalStudyMinutes: user.totalStudyMinutes, studyStreak: user.studyStreak });
+    return res.json({
+      totalStudyMinutes: user.totalStudyMinutes,
+      studyStreak: user.studyStreak,
+      longestStreak: user.longestStreak,
+    });
   } catch (error) {
     console.error("Record study time error:", error);
     return res.status(500).json({ error: "Failed to record study time" });

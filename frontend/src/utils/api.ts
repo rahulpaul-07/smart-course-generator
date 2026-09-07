@@ -24,6 +24,12 @@ const api = axios.create({
 
 const pendingRequests = new Map<string, boolean>();
 
+// The SSE lesson-generation flow in useLessonProgress keeps its own lock under
+// 'active_generation_job'. This interceptor used the same slot with a different
+// value shape, so a POST /generate would overwrite a running stream's lock and
+// the stream's finally block would then clear the POST's. Separate slots.
+const AXIOS_GENERATION_JOB_KEY = 'axios_active_generation_job';
+
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
@@ -34,7 +40,7 @@ api.interceptors.request.use((config) => {
   if (config.method === 'post' && config.url && (config.url.includes('/generate') || config.url.includes('/certificates/claim'))) {
     const key = `${config.method}:${config.url}:${JSON.stringify(config.data || {})}`;
     
-    const activeStr = sessionStorage.getItem('active_generation_job');
+    const activeStr = sessionStorage.getItem(AXIOS_GENERATION_JOB_KEY);
     if (activeStr) {
       try {
         const activeJob = JSON.parse(activeStr);
@@ -55,7 +61,7 @@ api.interceptors.request.use((config) => {
     config.metadata = { key };
     
     // Save active generation job for recovery
-    sessionStorage.setItem('active_generation_job', JSON.stringify({ key, timestamp: Date.now() }));
+    sessionStorage.setItem(AXIOS_GENERATION_JOB_KEY, JSON.stringify({ key, timestamp: Date.now() }));
   }
 
   return config;
@@ -95,7 +101,7 @@ api.interceptors.response.use(
   (response) => {
     if (response.config?.metadata?.key) {
       pendingRequests.delete(response.config.metadata.key);
-      sessionStorage.removeItem('active_generation_job');
+      sessionStorage.removeItem(AXIOS_GENERATION_JOB_KEY);
     }
     return response;
   },
@@ -137,9 +143,20 @@ api.interceptors.response.use(
 
     if (error.response) {
       const status = error.response.status;
-      let msg = error.response.data?.error || 'An unexpected server error occurred';
-      if (typeof msg === 'object') msg = msg.message || 'Error';
-      
+      const body = error.response.data;
+      const rawMsg = (body && typeof body === 'object' && 'error' in body)
+        ? (body as Record<string, unknown>).error
+        : undefined;
+
+      let msg: string;
+      if (typeof rawMsg === 'string' && rawMsg) {
+        msg = rawMsg;
+      } else if (rawMsg && typeof rawMsg === 'object') {
+        msg = (rawMsg as { message?: string }).message || 'Error';
+      } else {
+        msg = 'An unexpected server error occurred';
+      }
+
       // Global toasts for specific status codes
       if (status === 403) {
         toast.error('You do not have permission to perform this action.');
@@ -147,8 +164,15 @@ api.interceptors.response.use(
         toast.error('Rate limit exceeded. Please wait a moment and try again.');
       }
 
-      // Prevent React Error 31 by ensuring error messages are always strings
-      error.response.data.error = msg;
+      // Normalize to a string so components can render it directly (React
+      // throws error #31 on an object child). The body is only writable when
+      // it is an object — a gateway HTML page or an empty 204 body is not,
+      // and assigning onto those threw in strict mode.
+      if (body && typeof body === 'object') {
+        (body as Record<string, unknown>).error = msg;
+      } else {
+        error.response.data = { error: msg };
+      }
     } else if (error.request) {
       toast.error('Network error. Please check your connection.');
     }

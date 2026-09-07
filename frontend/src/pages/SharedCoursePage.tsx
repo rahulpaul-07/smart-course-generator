@@ -48,7 +48,7 @@ export default function SharedCoursePage() {
 
   return (
     <main className="min-h-screen text-foreground">
-      <header className="sticky top-0 z-20 border-b border-border bg-background/80 px-4 py-4 backdrop-blur-2xl lg:px-8">
+      <header className="sticky top-0 z-20 border-b border-border bg-background/80 px-4 py-4 backdrop-blur-2xl sm:px-6 lg:px-8">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
             <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-brand-500 to-primary shadow-lg shadow-brand-500/20">
@@ -66,7 +66,7 @@ export default function SharedCoursePage() {
         </div>
       </header>
 
-      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-8 lg:grid-cols-[21rem_1fr] lg:px-8 lg:py-10">
+      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[21rem_1fr] lg:px-8 lg:py-10">
         <aside className="surface-card rounded-2xl border border-border/30 h-fit p-5 animate-enter lg:sticky lg:top-28 shadow-sm">
           <p className="eyebrow"><Sparkles className="h-3.5 w-3.5" /> Explore course</p>
           <h1 className="gradient-text mt-4 font-display text-2xl font-extrabold leading-tight">{course.title}</h1>

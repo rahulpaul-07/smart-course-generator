@@ -21,11 +21,17 @@ export function TopNavigation() {
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
-    if (val) {
-      setSearchParams({ search: val });
-    } else {
-      setSearchParams({});
-    }
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        if (val) next.set('search', val);
+        else next.delete('search');
+        return next;
+      },
+      // Typing is not navigation: replace the entry so Back leaves the page
+      // rather than replaying the query one character at a time.
+      { replace: true }
+    );
   };
 
   return (
@@ -74,7 +80,9 @@ export function TopNavigation() {
             <div className="flex items-center gap-3">
               <div className="hidden md:flex flex-col items-end">
                 <span className="text-sm font-medium leading-none">{user?.name || "Guest"}</span>
-                <span className="text-xs text-muted-foreground mt-1">Pro Member</span>
+                <span className="text-xs text-muted-foreground mt-1">
+                  {user ? "Signed in" : "Not signed in"}
+                </span>
               </div>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

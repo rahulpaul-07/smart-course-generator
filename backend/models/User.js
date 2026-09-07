@@ -38,6 +38,13 @@ const userSchema = new mongoose.Schema({
     ref: "Certificate"
   }],
   studyStreak: { type: Number, default: 0 },
+  // Tracked separately because the dashboard reports "longest streak"; it used
+  // to echo studyStreak, so it collapsed to 0 whenever a streak broke.
+  longestStreak: { type: Number, default: 0 },
+  // IANA zone used to decide which calendar day an activity falls on. Streaks
+  // were previously computed on UTC days, which shifted the cutoff by 5.5h for
+  // users in IST.
+  timezone: { type: String, default: "", maxlength: 64 },
   lastActiveDate: { type: String, default: "" },
   activityHistory: [{ type: String }],
   totalStudyMinutes: { type: Number, default: 0 },

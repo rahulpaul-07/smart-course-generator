@@ -4,9 +4,11 @@ import type { InterviewPrep } from '../types';
 export function useInterviewTimer(activePrep: InterviewPrep | null) {
   const [elapsedTime, setElapsedTime] = useState(0);
 
+  const prepId = activePrep?._id;
+  const isRunning = activePrep?.status === 'pending';
+
   useEffect(() => {
-    if (!(activePrep && activePrep.status === 'pending')) return;
-    const prepId = activePrep._id;
+    if (!isRunning || !prepId) return;
 
     // The initial setElapsedTime(Number(saved)) is deferred to a microtask
     // so it reads as a callback invocation rather than a synchronous
@@ -24,7 +26,7 @@ export function useInterviewTimer(activePrep: InterviewPrep | null) {
       });
     }, 1000);
     return () => clearInterval(interval);
-  }, [activePrep]);
+  }, [prepId, isRunning]);
 
   const formatTime = (seconds: number) => {
     const h = Math.floor(seconds / 3600).toString().padStart(2, '0');

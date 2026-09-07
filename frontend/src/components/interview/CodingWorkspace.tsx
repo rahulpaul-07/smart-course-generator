@@ -42,7 +42,7 @@ export function CodingWorkspace({ prep, codingSolutions, setCodingSolutions, sub
           </div>
           
           <div className="p-8 space-y-6">
-            <div className="prose prose-sm prose-invert max-w-none text-foreground/90 leading-relaxed text-[15px]">
+            <div className="prose prose-sm dark:prose-invert max-w-none text-foreground/90 leading-relaxed text-[15px]">
               <p>{q.problemStatement}</p>
             </div>
             

@@ -78,7 +78,7 @@ export function FeedbackPanel({ prep }: FeedbackPanelProps) {
                 {msg.role === 'candidate' ? (
                   msg.content
                 ) : (
-                  <div className="prose prose-sm prose-invert max-w-none prose-p:my-1.5 prose-p:leading-relaxed prose-pre:my-0 prose-pre:p-0 prose-pre:bg-transparent">
+                  <div className="prose prose-sm dark:prose-invert max-w-none prose-p:my-1.5 prose-p:leading-relaxed prose-pre:my-0 prose-pre:p-0 prose-pre:bg-transparent">
                     <ReactMarkdown
                       remarkPlugins={[remarkGfm, remarkMath]}
                       rehypePlugins={[rehypeKatex]}
