@@ -25,6 +25,19 @@ const aiTelemetrySchema = new mongoose.Schema({
     type: String,
     default: null,
   },
+  // Wall-clock duration of the provider call. Without this the telemetry could
+  // say which provider answered but not whether it answered quickly.
+  latencyMs: {
+    type: Number,
+    default: null,
+  },
+  // 0 for the first provider in the chain, 1 for the first failover, and so on.
+  // This is what makes a failover visible after the fact rather than only in
+  // the logs at the moment it happened.
+  attempt: {
+    type: Number,
+    default: 0,
+  },
   timestamp: {
     type: Date,
     default: Date.now,

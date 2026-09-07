@@ -406,6 +406,7 @@ async function generateJson(systemPrompt, userPrompt, maxTokens = 4096, validato
   
   for (const { provider, model } of activeChain) {
     for (let attempt = 0; attempt < MAX_ATTEMPTS_PER_PROVIDER; attempt++) {
+      const startedAt = Date.now();
       try {
         const result = await executeWithTimeout(
           (signal) => provider.generateJson(systemPrompt, userPrompt, maxTokens, model, signal),
@@ -415,12 +416,12 @@ async function generateJson(systemPrompt, userPrompt, maxTokens = 4096, validato
         if (validator) await validator(result);
         
         circuitBreaker.onSuccess(provider.name);
-        logTelemetry({ provider: provider.name, model, endpoint: 'generateJson', status: 'success' });
+        logTelemetry({ provider: provider.name, model, endpoint: 'generateJson', status: 'success', latencyMs: Date.now() - startedAt, attempt });
         return result;
       } catch (error) {
         console.error(`[AI Router] generateJson ${provider.name} attempt ${attempt + 1} failed:`, error.stack || error);
         if (countsAgainstProviderHealth(error)) circuitBreaker.onFailure(provider.name);
-        logTelemetry({ provider: provider.name, model, endpoint: 'generateJson', status: 'failure', reason: error.message || String(error) });
+        logTelemetry({ provider: provider.name, model, endpoint: 'generateJson', status: 'failure', reason: error.message || String(error), latencyMs: Date.now() - startedAt, attempt });
         
         if (!shouldRetry(error)) {
           break;
@@ -454,6 +455,7 @@ async function* generateJsonStream(systemPrompt, userPrompt, maxTokens = 4096) {
   
   for (const { provider, model } of activeChain) {
     for (let attempt = 0; attempt < MAX_ATTEMPTS_PER_PROVIDER; attempt++) {
+      const startedAt = Date.now();
       let yieldedChunk = false;
       try {
         const stream = await executeWithTimeout(
@@ -467,12 +469,12 @@ async function* generateJsonStream(systemPrompt, userPrompt, maxTokens = 4096) {
         }
         
         circuitBreaker.onSuccess(provider.name);
-        logTelemetry({ provider: provider.name, model, endpoint: 'generateJsonStream', status: 'success' });
+        logTelemetry({ provider: provider.name, model, endpoint: 'generateJsonStream', status: 'success', latencyMs: Date.now() - startedAt, attempt });
         return;
       } catch (error) {
         console.error(`[AI Router] generateJsonStream ${provider.name} attempt ${attempt + 1} failed:`, error.stack || error);
         if (countsAgainstProviderHealth(error)) circuitBreaker.onFailure(provider.name);
-        logTelemetry({ provider: provider.name, model, endpoint: 'generateJsonStream', status: 'failure', reason: error.message || String(error) });
+        logTelemetry({ provider: provider.name, model, endpoint: 'generateJsonStream', status: 'failure', reason: error.message || String(error), latencyMs: Date.now() - startedAt, attempt });
         
         if (yieldedChunk) {
           console.error(`[AI Router] Stream interrupted midway. Aborting.`);
@@ -507,6 +509,7 @@ async function generateText(messages, maxTokens = 1024) {
   
   for (const { provider, model } of activeChain) {
     for (let attempt = 0; attempt < MAX_ATTEMPTS_PER_PROVIDER; attempt++) {
+      const startedAt = Date.now();
       try {
         const result = await executeWithTimeout(
           (signal) => provider.generateText(messages, maxTokens, model, signal),
@@ -514,12 +517,12 @@ async function generateText(messages, maxTokens = 1024) {
         );
         
         circuitBreaker.onSuccess(provider.name);
-        logTelemetry({ provider: provider.name, model, endpoint: 'generateText', status: 'success' });
+        logTelemetry({ provider: provider.name, model, endpoint: 'generateText', status: 'success', latencyMs: Date.now() - startedAt, attempt });
         return result;
       } catch (error) {
         console.error(`[AI Router] generateText ${provider.name} attempt ${attempt + 1} failed:`, error.stack || error);
         if (countsAgainstProviderHealth(error)) circuitBreaker.onFailure(provider.name);
-        logTelemetry({ provider: provider.name, model, endpoint: 'generateText', status: 'failure', reason: error.message || String(error) });
+        logTelemetry({ provider: provider.name, model, endpoint: 'generateText', status: 'failure', reason: error.message || String(error), latencyMs: Date.now() - startedAt, attempt });
         if (!shouldRetry(error)) {
           break;
         }
@@ -554,6 +557,7 @@ async function* generateTextStream(messages, maxTokens = 1024) {
   
   for (const { provider, model } of activeChain) {
     for (let attempt = 0; attempt < MAX_ATTEMPTS_PER_PROVIDER; attempt++) {
+      const startedAt = Date.now();
       let yieldedChunk = false;
       try {
         const stream = await executeWithTimeout(
@@ -567,12 +571,12 @@ async function* generateTextStream(messages, maxTokens = 1024) {
         }
         
         circuitBreaker.onSuccess(provider.name);
-        logTelemetry({ provider: provider.name, model, endpoint: 'generateTextStream', status: 'success' });
+        logTelemetry({ provider: provider.name, model, endpoint: 'generateTextStream', status: 'success', latencyMs: Date.now() - startedAt, attempt });
         return;
       } catch (error) {
         console.error(`[AI Router] generateTextStream ${provider.name} attempt ${attempt + 1} failed:`, error.stack || error);
         if (countsAgainstProviderHealth(error)) circuitBreaker.onFailure(provider.name);
-        logTelemetry({ provider: provider.name, model, endpoint: 'generateTextStream', status: 'failure', reason: error.message || String(error) });
+        logTelemetry({ provider: provider.name, model, endpoint: 'generateTextStream', status: 'failure', reason: error.message || String(error), latencyMs: Date.now() - startedAt, attempt });
         
         if (yieldedChunk) {
           console.error(`[AI Router] Stream interrupted midway. Aborting.`);
@@ -598,6 +602,7 @@ module.exports = { generateJson, generateJsonStream, generateText, generateTextS
 // Exported for unit tests: these two predicates encode the rules that decide
 // whether users see fabricated mock content and whether a provider gets benched.
 module.exports._internal = {
+  fallbackChain,
   hasNoConfiguredProvider,
   countsAgainstProviderHealth,
   resolveChain,
