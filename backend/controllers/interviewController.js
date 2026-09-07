@@ -4,36 +4,106 @@ const aiRouter = require("../services/aiRouter");
 
 const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
 
+/**
+ * Models routinely return the right content in a slightly wrong shape: a
+ * correctAnswer as the string "2" or the letter "B", options nested one level
+ * deeper, a singular key name. Rejecting the whole pack for that costs the user
+ * a full retry cycle across every provider -- up to ten 8k-token calls -- for a
+ * fault a single coercion fixes. Normalize first, then validate what is left.
+ */
+function normalizeInterviewPack(result) {
+  if (!result || typeof result !== 'object') return result;
+
+  const pack = { ...result };
+
+  // Accept a few common key aliases before anything else looks at the shape.
+  pack.mcqs = pack.mcqs || pack.mcq || pack.multipleChoiceQuestions || [];
+  pack.theoryQuestions = pack.theoryQuestions || pack.theory || [];
+  pack.codingQuestions = pack.codingQuestions || pack.coding || [];
+  pack.mockQuestions = pack.mockQuestions || pack.mock || [];
+
+  if (Array.isArray(pack.mcqs)) {
+    pack.mcqs = pack.mcqs.map((q) => {
+      if (!q || typeof q !== 'object') return q;
+      const next = { ...q };
+      const options = Array.isArray(next.options) ? next.options.map(String) : next.options;
+      next.options = options;
+
+      let answer = next.correctAnswer;
+      if (typeof answer === 'string') {
+        const trimmed = answer.trim();
+        if (/^\d+$/.test(trimmed)) {
+          // "2" -> 2
+          answer = Number(trimmed);
+        } else if (/^[A-Za-z]$/.test(trimmed)) {
+          // "B" -> 1
+          answer = trimmed.toUpperCase().charCodeAt(0) - 65;
+        } else if (Array.isArray(options)) {
+          // The answer text itself rather than its index.
+          const idx = options.findIndex((o) => o.trim() === trimmed);
+          if (idx >= 0) answer = idx;
+        }
+      }
+      next.correctAnswer = answer;
+      return next;
+    });
+  }
+
+  return pack;
+}
+
+/**
+ * Throws with `failureCategory: "schema_validation"` so the AI router can tell
+ * a malformed generation apart from a provider being unavailable. Without that
+ * tag, a model answering in the wrong shape counted against the provider's
+ * circuit breaker and took a perfectly healthy provider offline.
+ */
+function schemaError(reason) {
+  const err = new Error(`Interview pack failed validation: ${reason}`);
+  err.failureCategory = "schema_validation";
+  return err;
+}
+
 const validateInterviewPack = async (result) => {
-  if (!result || typeof result !== 'object') throw new Error("Invalid object");
-  
-  if (!Array.isArray(result.mcqs) || result.mcqs.length === 0) throw new Error("Missing MCQs");
-  if (!Array.isArray(result.theoryQuestions) || result.theoryQuestions.length === 0) throw new Error("Missing theory questions");
-  if (!Array.isArray(result.codingQuestions) || result.codingQuestions.length === 0) throw new Error("Missing coding questions");
-  
-  const questions = new Set();
-  
-  for (const q of result.mcqs) {
-    if (!q.question || !Array.isArray(q.options) || q.options.length < 2) throw new Error("Malformed MCQ");
-    if (typeof q.correctAnswer !== 'number' || q.correctAnswer < 0 || q.correctAnswer >= q.options.length) throw new Error("Invalid correct answer");
-    for (const opt of q.options) {
-      if (!opt || typeof opt !== 'string') throw new Error("Missing options");
+  if (!result || typeof result !== 'object') throw schemaError("not an object");
+
+  if (!Array.isArray(result.mcqs) || result.mcqs.length === 0) throw schemaError("no MCQs");
+  if (!Array.isArray(result.theoryQuestions) || result.theoryQuestions.length === 0) throw schemaError("no theory questions");
+  if (!Array.isArray(result.codingQuestions) || result.codingQuestions.length === 0) throw schemaError("no coding questions");
+
+  // Duplicate detection is scoped per section. A shared set also rejected a
+  // coding challenge whose title happened to match an MCQ stem, which is a
+  // legitimate pack -- the sections are answered independently.
+  const seenMcq = new Set();
+  const seenTheory = new Set();
+  const seenCoding = new Set();
+
+  result.mcqs.forEach((q, i) => {
+    if (!q || !q.question) throw schemaError(`MCQ ${i} has no question text`);
+    if (!Array.isArray(q.options) || q.options.length < 2) throw schemaError(`MCQ ${i} has fewer than 2 options`);
+    q.options.forEach((opt, j) => {
+      if (!opt || typeof opt !== 'string') throw schemaError(`MCQ ${i} option ${j} is empty`);
+    });
+    if (!Number.isInteger(q.correctAnswer) || q.correctAnswer < 0 || q.correctAnswer >= q.options.length) {
+      throw schemaError(`MCQ ${i} correctAnswer ${JSON.stringify(q.correctAnswer)} is not a valid index into ${q.options.length} options`);
     }
-    if (questions.has(q.question)) throw new Error("Duplicate question");
-    questions.add(q.question);
-  }
-  
-  for (const q of result.theoryQuestions) {
-    if (!q.question || !q.idealAnswer) throw new Error("Malformed theory question");
-    if (questions.has(q.question)) throw new Error("Duplicate question");
-    questions.add(q.question);
-  }
-  
-  for (const q of result.codingQuestions) {
-    if (!q.title || !q.problemStatement) throw new Error("Malformed coding question");
-    if (questions.has(q.title)) throw new Error("Duplicate question");
-    questions.add(q.title);
-  }
+    if (seenMcq.has(q.question)) throw schemaError(`MCQ ${i} duplicates an earlier question`);
+    seenMcq.add(q.question);
+  });
+
+  result.theoryQuestions.forEach((q, i) => {
+    if (!q || !q.question) throw schemaError(`theory question ${i} has no question text`);
+    if (!q.idealAnswer) throw schemaError(`theory question ${i} has no idealAnswer`);
+    if (seenTheory.has(q.question)) throw schemaError(`theory question ${i} is a duplicate`);
+    seenTheory.add(q.question);
+  });
+
+  result.codingQuestions.forEach((q, i) => {
+    if (!q || !q.title) throw schemaError(`coding question ${i} has no title`);
+    if (!q.problemStatement) throw schemaError(`coding question ${i} has no problemStatement`);
+    if (seenCoding.has(q.title)) throw schemaError(`coding question ${i} is a duplicate`);
+    seenCoding.add(q.title);
+  });
 };
 
 /**
@@ -43,7 +113,17 @@ const validateInterviewPack = async (result) => {
 async function generateInterview(req, res) {
   try {
     const rawTopic = String(req.body.topic || "");
-    const topic = rawTopic.replace(/[^\w\s.,+-]/gi, '').trim().slice(0, 300);
+    // Strip control characters and characters meaningful to prompt structure,
+    // but keep Unicode letters and punctuation: the previous ASCII-only class
+    // turned "System Design - LLD" (en dash) into "System Design  LLD" and
+    // erased non-Latin topics completely.
+    const topic = rawTopic
+      // eslint-disable-next-line no-control-regex
+      .replace(/[\u0000-\u001F\u007F]/g, ' ')
+      .replace(/[<>{}`$\\]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, 300);
 
     if (!topic) {
       return res.status(400).json({ error: "Topic is required." });
@@ -101,10 +181,25 @@ Make questions progressively harder.`;
 
     let result;
     try {
-      result = await aiRouter.generateJson(systemPrompt, userPrompt, 8192, validateInterviewPack);
+      result = await aiRouter.generateJson(
+        systemPrompt,
+        userPrompt,
+        8192,
+        async (raw) => validateInterviewPack(normalizeInterviewPack(raw))
+      );
+      result = normalizeInterviewPack(result);
     } catch (error) {
-      console.error("AI Generation Error:", error);
-      return res.status(502).json({ error: "The AI generated an invalid interview pack. Please try again." });
+      console.error("[Interview] generation failed:", error?.message || error);
+      const isSchema = error?.failureCategory === "schema_validation";
+      return res.status(502).json({
+        error: isSchema
+          ? "The AI returned an interview pack in an unexpected format. Please try again -- a different topic wording often helps."
+          : "The AI service is temporarily unavailable. Please try again in a minute.",
+        // Kept out of the user-facing string but available to the client for
+        // bug reports; the previous message named no cause at all, so a failure
+        // here was undiagnosable from either side.
+        reason: error?.message || String(error)
+      });
     }
 
     // Normalize MCQs
@@ -493,3 +588,7 @@ async function deleteInterview(req, res) {
 }
 
 module.exports = { generateInterview, getMyInterviews, getInterviewById, submitInterview, chatInterview, deleteInterview };
+
+// Exported for unit tests: the shapes a model can return are the main source of
+// generation failures, so the coercion and the schema rules are worth pinning.
+module.exports._internal = { normalizeInterviewPack, validateInterviewPack };

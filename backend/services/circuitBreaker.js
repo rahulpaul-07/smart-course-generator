@@ -40,6 +40,33 @@ class CircuitBreaker {
     this.state.set(key, s);
   }
 
+  /**
+   * Current state of every provider the breaker has seen, for the status
+   * endpoint. Read-only: derives the closed/open/half-open label rather than
+   * calling isOpen(), because isOpen() has the side effect of transitioning a
+   * cooled-down breaker to half-open, and reading a dashboard must not consume
+   * the probe that a real request is entitled to.
+   */
+  snapshot() {
+    const now = Date.now();
+    const out = {};
+    for (const [key, s] of this.state.entries()) {
+      const cooledDown = now - s.openedAt > this.cooldownMs;
+      let status = 'closed';
+      if (s.failures >= this.threshold) status = cooledDown ? 'half-open' : 'open';
+      else if (s.failures > 0) status = 'degraded';
+
+      out[key] = {
+        status,
+        failures: s.failures,
+        threshold: this.threshold,
+        openedAt: s.openedAt ? new Date(s.openedAt).toISOString() : null,
+        retryInMs: status === 'open' ? Math.max(0, this.cooldownMs - (now - s.openedAt)) : 0,
+      };
+    }
+    return out;
+  }
+
   /** Test helper: clear all breaker state. */
   reset() {
     this.state.clear();

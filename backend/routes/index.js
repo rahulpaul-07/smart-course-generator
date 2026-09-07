@@ -11,6 +11,7 @@ const agentRoutes = require("./agents");
 const collaborationRoutes = require("./collaboration");
 const dashboardRoutes = require("./dashboard");
 const { getHealth } = require("../controllers/healthController");
+const { getAiStatus } = require("../controllers/aiStatusController");
 const { getPublicCourse } = require("../controllers/courseController");
 
 const router = Router();
@@ -29,6 +30,9 @@ router.use("/interviews", interviewRoutes);
 router.use("/agents", agentRoutes);
 router.use("/collab", collaborationRoutes);
 router.get("/health", getHealth);
+// Public read-only view of the AI router: provider chain, circuit-breaker
+// state and recent success/latency. Exposes no keys and no prompt content.
+router.get("/ai/status", getAiStatus);
 
 module.exports = router;
 

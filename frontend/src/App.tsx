@@ -34,6 +34,7 @@ const AnalyticsPage = withSuspense(lazy(() => import('./pages/AnalyticsPage')));
 const RoadmapPage = withSuspense(lazy(() => import('./pages/RoadmapPage')));
 const InterviewPrepPage = withSuspense(lazy(() => import('./pages/InterviewPrepPage')));
 const AiAgentsPage = withSuspense(lazy(() => import('./pages/AiAgentsPage')));
+const AiRouterPage = withSuspense(lazy(() => import('./pages/AiRouterPage')));
 const ProfilePage = withSuspense(lazy(() => import('./pages/ProfilePage')));
 const PublicProfilePage = withSuspense(lazy(() => import('./pages/PublicProfilePage')));
 const CommunityTemplatesPage = withSuspense(lazy(() => import('./pages/CommunityTemplatesPage')));
@@ -86,6 +87,7 @@ export default function App() {
         <Route path="/onboarding" element={<ProtectedRoute><OnboardingPage /></ProtectedRoute>} />
         <Route path="/dashboard" element={<DashboardPage><HomePage /></DashboardPage>} />
         <Route path="/courses" element={<DashboardPage><CoursesPage /></DashboardPage>} />
+        <Route path="/ai-router" element={<DashboardPage><AiRouterPage /></DashboardPage>} />
         <Route path="/course/:id" element={<DashboardPage><CourseOverviewPage /></DashboardPage>} />
         <Route path="/course/:id/certificate" element={<DashboardPage><CertificatePage /></DashboardPage>} />
         <Route path="/certificate/:id" element={<CertificatePage />} />
