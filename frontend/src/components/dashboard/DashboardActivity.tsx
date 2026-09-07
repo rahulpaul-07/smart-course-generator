@@ -1,105 +1,46 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Sparkles, Activity, Clock, ChevronRight } from 'lucide-react';
-import { Card } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
-import type { LucideIcon } from 'lucide-react';
+import { formatTimeDistance } from '@/utils/dates';
+import type { RecentActivityItem } from '../../services/dashboardService';
 
-interface Recommendation {
-  label: string;
-  icon: LucideIcon;
-  desc: string;
-  url: string;
-}
-
-interface RecentActivityItem {
-  type: string;
-  title: string;
-  url: string;
-}
-
-interface DashboardActivityProps {
-  recommendations: Recommendation[];
-  recentActivity?: RecentActivityItem[];
-}
-
-export function DashboardActivity({ recommendations, recentActivity = [] }: DashboardActivityProps) {
+/**
+ * Every row here used to be stamped "Just now" -- a literal, for all ten items,
+ * while the API was already sending a real `timestamp` per item and
+ * `formatTimeDistance` was already in utils/dates. A timeline where every entry
+ * claims to be seconds old is worse than no timeline.
+ */
+export function DashboardActivity({ recentActivity = [] }: { recentActivity?: RecentActivityItem[] }) {
   return (
-    <div className="space-y-10">
-      {/* 6. Recommended Actions */}
-      <motion.section
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.2, delay: 0.25 }}
-      >
-        <div className="flex items-center justify-between mb-6 px-2">
-          <h2 className="text-xl font-semibold text-foreground flex items-center gap-3">
-            <Sparkles className="h-5 w-5 text-primary" /> Recommended
-          </h2>
-        </div>
-        <div className="flex flex-col gap-4">
-          {recommendations.map((rec, i) => (
-            <Link
-              key={i}
-              to={rec.url}
-              className="p-6 rounded-xl border border-border/30 bg-card shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 cursor-pointer flex items-center gap-4 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-            >
-              <div className="h-10 w-10 shrink-0 rounded-lg bg-background border border-border/30 flex items-center justify-center transition-transform duration-200">
-                <rec.icon className="h-5 w-5 text-foreground" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h4 className="text-sm font-semibold text-foreground mb-0.5 truncate">{rec.label}</h4>
-                <p className="text-xs text-muted-foreground truncate">{rec.desc}</p>
-              </div>
-              <ChevronRight className="h-4 w-4 text-muted-foreground/50 group-hover:text-primary transition-colors" />
-            </Link>
-          ))}
-        </div>
-      </motion.section>
+    <section aria-label="Recent activity">
+      <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+        Recent activity
+      </h2>
 
-      {/* 7. Recent Activity */}
-      <motion.section
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.2, delay: 0.3 }}
-      >
-        <div className="flex items-center justify-between mb-6 px-2">
-          <h2 className="text-xl font-semibold text-foreground flex items-center gap-3">
-            <Activity className="h-5 w-5 text-muted-foreground" /> Recent Activity
-          </h2>
-        </div>
-        <Card className="p-6 rounded-2xl border border-border/30 bg-card shadow-sm relative">
-          {recentActivity.length > 0 ? (
-            <div className="relative pl-6 border-l border-border/30 space-y-6 py-2">
-              {recentActivity.map((activity, i) => (
-                <div key={i} className="relative group">
-                  <div className="absolute -left-[30px] top-1 h-2.5 w-2.5 rounded-full border border-background bg-muted-foreground group-hover:bg-primary transition-colors duration-200" />
-                  <Link 
-                    to={activity.url}
-                    className="block -mt-1 hover:-translate-y-0.5 transition-transform duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg"
-                  >
-                    <div className="flex justify-between items-center mb-1">
-                      <span className="text-xs font-medium text-primary">
-                        {activity.type}
-                      </span>
-                      <span className="text-xs text-muted-foreground">Just now</span>
-                    </div>
-                    <p className="text-sm font-semibold text-foreground leading-snug line-clamp-2">{activity.title}</p>
-                  </Link>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-10 px-4">
-              <div className="h-12 w-12 rounded-full bg-muted border border-border/30 flex items-center justify-center mx-auto mb-3">
-                <Clock className="h-5 w-5 text-muted-foreground/60" />
-              </div>
-              <p className="text-sm font-semibold text-foreground">No recent activity</p>
-              <p className="text-xs text-muted-foreground mt-1">Start learning to see your timeline.</p>
-            </div>
-          )}
-        </Card>
-      </motion.section>
-    </div>
+      {recentActivity.length === 0 ? (
+        <p className="rounded-xl border border-border bg-card p-5 text-sm text-muted-foreground">
+          Nothing yet. Generate a course and it will show up here.
+        </p>
+      ) : (
+        <ol className="space-y-1 border-l border-border pl-5">
+          {recentActivity.map((activity, i) => (
+            <li key={`${activity.url}-${i}`} className="relative">
+              <span
+                className="absolute -left-[1.4rem] top-3 h-1.5 w-1.5 rounded-full bg-border ring-2 ring-background"
+                aria-hidden
+              />
+              <Link
+                to={activity.url}
+                className="-mx-2 block rounded-lg px-2 py-2 transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              >
+                <p className="truncate text-sm font-medium">{activity.title}</p>
+                <p className="mt-0.5 text-xs text-muted-foreground">
+                  {activity.type}
+                  {activity.timestamp && ` · ${formatTimeDistance(activity.timestamp)}`}
+                </p>
+              </Link>
+            </li>
+          ))}
+        </ol>
+      )}
+    </section>
   );
 }
