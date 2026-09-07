@@ -42,7 +42,7 @@ export default function SignupPage() {
       toast.error('Password must be at least 8 characters long.');
       return;
     }
-    
+
     setLoading(true);
 
     const [data] = await authService.register({ name, email, password });
@@ -74,31 +74,38 @@ export default function SignupPage() {
             <p className="text-sm font-medium text-foreground animate-pulse">Creating account...</p>
           </div>
         )}
-        {hasGoogleAuth && (
-          <div className="flex justify-center mb-6">
-            <GoogleLogin
-              onSuccess={handleGoogleSuccess}
-              onError={() => {
-                toast.error('Google signup failed');
-              }}
-              theme="filled_black"
-              shape="rectangular"
-              text="signup_with"
-              size="large"
-            />
-          </div>
-        )}
 
-        <div className="relative mb-6">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t border-border" />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-background px-2 text-muted-foreground">
-              Or sign up with email
-            </span>
-          </div>
-        </div>
+        {/* The Google button and the divider below it are a single unit. The
+            divider used to render unconditionally, so a deployment without
+            VITE_GOOGLE_CLIENT_ID showed "Or sign up with email" above an
+            empty space -- offering an alternative to nothing. */}
+        {hasGoogleAuth && (
+          <>
+            <div className="flex justify-center mb-6">
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={() => {
+                  toast.error('Google signup failed');
+                }}
+                theme="filled_black"
+                shape="rectangular"
+                text="signup_with"
+                size="large"
+              />
+            </div>
+
+            <div className="relative mb-6">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-border" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">
+                  Or sign up with email
+                </span>
+              </div>
+            </div>
+          </>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
