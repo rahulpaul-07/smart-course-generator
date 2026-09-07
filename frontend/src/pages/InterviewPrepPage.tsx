@@ -73,7 +73,7 @@ export default function InterviewPrepPage() {
   }
 
   return (
-    <div className="flex h-screen w-full bg-background overflow-hidden relative">
+    <div className="flex h-full min-h-0 w-full bg-background overflow-hidden relative">
       <InterviewSidebar
         activePrep={activePrep}
         activeTab={activeTab}
@@ -81,7 +81,7 @@ export default function InterviewPrepPage() {
         setActivePrep={setActivePrep}
       />
 
-      <main className="flex-1 min-h-0 overflow-y-auto bg-background/95 scroll-smooth relative flex flex-col">
+      <main className="flex-1 min-w-0 min-h-0 overflow-y-auto bg-background/95 scroll-smooth relative flex flex-col">
         <InterviewToolbar
           activePrep={activePrep}
           setActivePrep={setActivePrep}
@@ -89,7 +89,7 @@ export default function InterviewPrepPage() {
           setIsMobileCoachOpen={setIsMobileCoachOpen}
         />
 
-        <div className="flex-1 px-5 py-8 md:p-10 lg:p-16 w-full max-w-4xl mx-auto">
+        <div className="flex-1 w-full min-w-0 max-w-4xl mx-auto px-4 py-6 sm:px-6 md:px-8 md:py-10 xl:px-12">
           {activePrep.status === 'completed' && activeTab === 'results' ? (
             <ResultsDashboard prep={activePrep} readiness={readiness} strengths={strengths} weaknesses={weaknesses} aiRec={aiRec} />
           ) : (
@@ -128,8 +128,8 @@ export default function InterviewPrepPage() {
         </div>
       </main>
 
-      <aside className={`fixed inset-y-0 right-0 z-50 w-full sm:w-[400px] lg:static lg:w-[400px] lg:flex flex-col border-l border-border/30 bg-card/20 backdrop-blur-3xl transition-transform duration-300 ${isMobileCoachOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'}`}>
-        <div className="h-full flex flex-col shadow-lg lg:shadow-none bg-background lg:bg-transparent">
+      <aside className={`fixed inset-y-0 right-0 z-50 w-full sm:w-[400px] xl:static xl:w-[340px] 2xl:w-[400px] xl:shrink-0 xl:flex flex-col border-l border-border/30 bg-card/20 backdrop-blur-3xl transition-transform duration-300 ${isMobileCoachOpen ? 'translate-x-0' : 'translate-x-full xl:translate-x-0'}`}>
+        <div className="h-full flex flex-col shadow-lg xl:shadow-none bg-background xl:bg-transparent">
           <div className="flex items-center justify-between px-6 py-5 border-b border-border/30 bg-card/50 backdrop-blur-md">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary to-primary flex items-center justify-center shadow-lg shadow-primary/20">
@@ -142,7 +142,7 @@ export default function InterviewPrepPage() {
                 </p>
               </div>
             </div>
-            <button onClick={() => setIsMobileCoachOpen(false)} className="lg:hidden p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
+            <button onClick={() => setIsMobileCoachOpen(false)} className="xl:hidden p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
               <X className="h-5 w-5" />
             </button>
           </div>

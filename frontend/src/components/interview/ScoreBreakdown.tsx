@@ -20,16 +20,16 @@ export function ScoreBreakdown({ title, score, icon: Icon, color }: ScoreBreakdo
   };
   
   return (
-    <div className="rounded-2xl border border-border/30 bg-card/60 p-6 shadow-sm flex flex-col justify-center hover:shadow-lg transition-all flex-1 group">
-      <div className="flex items-center justify-between mb-4">
-        <span className="text-[12px] font-bold uppercase tracking-widest text-muted-foreground">{title}</span>
-        <span className={`p-2.5 rounded-xl border ${colors[color]}`}><Icon className="h-4 w-4" /></span>
+    <div className="min-w-0 rounded-2xl border border-border/30 bg-card/60 p-5 shadow-sm flex flex-col justify-center hover:shadow-lg transition-all flex-1 group">
+      <div className="flex items-center justify-between gap-2 mb-4">
+        <span className="min-w-0 truncate text-[12px] font-bold uppercase tracking-widest text-muted-foreground">{title}</span>
+        <span className={`shrink-0 p-2 rounded-xl border ${colors[color]}`}><Icon className="h-4 w-4" /></span>
       </div>
       <div className="flex items-baseline gap-1">
-        <span className="text-4xl font-extrabold text-foreground tracking-tight">{displayScore}</span>
+        <span className="text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight">{displayScore}</span>
         <span className="text-[13px] text-muted-foreground font-bold tracking-widest">/100</span>
       </div>
-      <div className="mt-5 h-2 w-full bg-muted/50 rounded-full overflow-hidden border border-border/30" aria-hidden="true">
+      <div className="mt-4 h-2 w-full bg-muted/50 rounded-full overflow-hidden border border-border/30" aria-hidden="true">
         <motion.div 
           className={`h-full rounded-full ${barColors[color]} shadow-[0_0_10px_currentColor] opacity-80`} 
           initial={{ width: 0 }}
