@@ -1,10 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
-import { BookOpen, Sparkles, PlayCircle, Brain, MessageSquare, Award, Map, Code } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Award, BarChart3, Bot, Brain, Layers } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useState, useRef, useEffect } from 'react';
 import { PageContainer } from '../components/layout/PageContainer';
-import React, { useState, useRef, useEffect } from 'react';
 import PromptForm from '../components/PromptForm';
 import { courseService, type CourseGenerationStage } from '../services/courseService';
 import { dashboardService } from '../services/dashboardService';
@@ -17,6 +16,23 @@ import { DashboardActivity } from '../components/dashboard/DashboardActivity';
 import { DashboardSkeleton } from '../components/dashboard/DashboardSkeleton';
 import { ErrorState } from '../components/ui/ErrorState';
 import { EmptyState } from '../components/ui/EmptyState';
+
+/**
+ * Generating a course is what this product does, so the generator is the top of
+ * the page rather than a headline that scrolls down to one. The old order put a
+ * marketing hero above it whose primary button did nothing but scroll 600px to
+ * the form that is now simply here.
+ *
+ * `#course-generator` is linked from six other pages, so the anchor and its
+ * scroll behaviour stay.
+ */
+const SHORTCUTS = [
+  { label: 'Roadmaps', icon: Layers, url: '/roadmaps' },
+  { label: 'Interview prep', icon: Brain, url: '/interview-prep' },
+  { label: 'AI insights', icon: Bot, url: '/agents' },
+  { label: 'Analytics', icon: BarChart3, url: '/analytics' },
+  { label: 'Certificates', icon: Award, url: '/certificates' },
+];
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -93,108 +109,70 @@ export default function HomePage() {
     }
   }, [loading, data, location.hash]);
 
-  const statsList = [
-    { label: "Courses", value: data?.statistics?.coursesCreated || 0, icon: BookOpen },
-    { label: "Lessons", value: data?.statistics?.lessonsCompleted || 0, icon: PlayCircle },
-    { label: "Roadmaps", value: data?.statistics?.roadmapsCreated || 0, icon: Map },
-    { label: "Interviews", value: data?.statistics?.interviewPacks || 0, icon: Brain },
-    { label: "Certificates", value: data?.statistics?.certificatesEarned || 0, icon: Award }
-  ];
-
-  const quickActions = [
-    { label: "Generate Course", icon: Sparkles, url: "#course-generator", desc: "Instantly create a new curriculum", color: "from-primary/20 to-primary/5", text: "text-primary", border: "group-hover:border-primary/50" },
-    { label: "Generate Roadmap", icon: Map, url: "/roadmaps", desc: "Plan your learning path", color: "from-brand-400/20 to-brand-400/5", text: "text-brand-400", border: "group-hover:border-brand-400/50" },
-    { label: "Interview Prep", icon: Brain, url: "/interview-prep", desc: "Practice with AI voice", color: "from-destructive/20 to-destructive/5", text: "text-destructive", border: "group-hover:border-destructive/50" },
-    { label: "AI Insights", icon: MessageSquare, url: "/agents", desc: "Specialized agents for reviews & planning", color: "from-warning/20 to-warning/5", text: "text-warning", border: "group-hover:border-warning/50" },
-    { label: "Certificates", icon: Award, url: "/certificates", desc: "View your achievements", color: "from-success/20 to-success/5", text: "text-success", border: "group-hover:border-success/50" }
-  ];
-  
-  const recommendations = [
-    ...(data?.continueLearning?.url
-      ? [{ label: "Resume AI Course", icon: PlayCircle, desc: "Continue where you left off", url: data.continueLearning.url }]
-      : []),
-    { label: "Practice Interview", icon: Code, desc: "Ace your next technical round", url: "/interview-prep" },
-    { label: "Generate Roadmap", icon: Map, desc: "Plan your long-term goals", url: "/roadmaps" }
-  ];
-
   const filteredRecentActivity = (data?.recentActivity || []).filter((activity) =>
     !searchQuery || activity.title.toLowerCase().includes(searchQuery)
   );
 
+  const continueLearning =
+    data?.continueLearning &&
+    (!searchQuery || data.continueLearning.title.toLowerCase().includes(searchQuery))
+      ? data.continueLearning
+      : null;
+
   return (
-    <div className="relative min-h-[calc(100vh-4rem)] bg-background text-foreground font-sans">
-      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/5 rounded-full blur-[100px]" />
-      </div>
-
-      <PageContainer className="relative z-10 pt-8 pb-24 space-y-8 max-w-7xl mx-auto">
-        {loading ? (
-          <DashboardSkeleton />
-        ) : error ? (
-          <ErrorState 
-            title="Unable to load dashboard" 
-            description="Please check your connection and try again." 
-            onRetry={fetchDashboard} 
+    <PageContainer>
+      {loading ? (
+        <DashboardSkeleton />
+      ) : error ? (
+        <ErrorState
+          title="Unable to load dashboard"
+          description="Please check your connection and try again."
+          onRetry={fetchDashboard}
+        />
+      ) : !data || Object.keys(data).length === 0 ? (
+        <EmptyState
+          title="No Dashboard Data"
+          description="Your dashboard is currently empty. Generate a course to get started!"
+        />
+      ) : (
+        <div className="space-y-10">
+          <DashboardHero
+            name={user?.name || 'there'}
+            streak={{
+              current: data?.streak?.current || 0,
+              longest: data?.streak?.longest || 0,
+              lastActive: data?.streak?.lastActive,
+            }}
+            weeklyProgress={data?.progress?.weeklyProgress || 0}
           />
-        ) : !data || Object.keys(data).length === 0 ? (
-          <EmptyState 
-            title="No Dashboard Data" 
-            description="Your dashboard is currently empty. Generate a course to get started!" 
-          />
-        ) : (
-          <div className="flex flex-col gap-10">
-            {/* 1. Hero Banner */}
-            <DashboardHero name={user?.name || 'there'} continueUrl={data?.continueLearning?.url} onNavigate={navigate} />
 
-            {/* Course Generator Section */}
-            <motion.section 
-              id="course-generator"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.2, delay: 0.05 }}
-              className="scroll-mt-24"
-            >
-              <div className="flex items-center justify-between mb-6 px-2">
-                <h2 className="text-xl font-semibold text-foreground flex items-center gap-3">
-                  <Sparkles className="h-5 w-5 text-primary" /> Generate New Course
-                </h2>
-              </div>
-              <PromptForm
-                onSubmit={generateCourse}
-                isLoading={generating}
-                stage={generationStage}
-                error={generationError}
-                onDismissError={() => setGenerationError(null)}
-              />
-            </motion.section>
+          <DashboardQuickActions actions={SHORTCUTS} />
 
-            {/* 2. Continue Learning */}
-            {data?.continueLearning && (!searchQuery || data.continueLearning.title.toLowerCase().includes(searchQuery)) && (
-              <DashboardContinueLearning data={data.continueLearning} />
-            )}
+          <section id="course-generator" className="scroll-mt-24">
+            <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Generate a course
+            </h2>
+            <PromptForm
+              onSubmit={generateCourse}
+              isLoading={generating}
+              stage={generationStage}
+              error={generationError}
+              onDismissError={() => setGenerationError(null)}
+            />
+          </section>
 
-            {/* 3. Quick Actions */}
-            <DashboardQuickActions actions={quickActions} />
+          {continueLearning && <DashboardContinueLearning data={continueLearning} />}
 
-            {/* Grid Layout for Stats, Progress, Activity, Recommended */}
-            <div className="grid lg:grid-cols-[1fr_320px] xl:grid-cols-[1fr_360px] gap-8">
-              {/* 4 & 5: Overview and Progress */}
-              <DashboardOverview 
-                streak={data?.streak?.current || 0}
-                statsList={statsList}
-                weeklyProgress={data?.progress?.weeklyProgress || 0}
-                overallCompletion={data?.progress?.overallCompletion || 0}
-              />
-
-              {/* 6 & 7: Activity and Recommended */}
-              <DashboardActivity
-                recommendations={recommendations}
-                recentActivity={filteredRecentActivity}
-              />
-            </div>
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] xl:grid-cols-[minmax(0,1fr)_360px]">
+            <DashboardOverview
+              statistics={data?.statistics}
+              weeklyProgress={data?.progress?.weeklyProgress || 0}
+              overallCompletion={data?.progress?.overallCompletion || 0}
+            />
+            <DashboardActivity recentActivity={filteredRecentActivity} />
           </div>
-        )}
-      </PageContainer>
-    </div>
+        </div>
+      )}
+    </PageContainer>
   );
 }

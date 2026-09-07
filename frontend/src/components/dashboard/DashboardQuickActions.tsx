@@ -1,66 +1,34 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import type { LucideIcon } from 'lucide-react';
 
-interface QuickAction {
+export interface QuickAction {
   label: string;
   icon: LucideIcon;
   url: string;
-  desc: string;
-  color: string;
-  text: string;
-  border: string;
 }
 
+/**
+ * Reduced from five gradient cards to one row of links.
+ *
+ * Each destination here is already in the sidebar, and the old "Recommended"
+ * block listed the same routes a third time -- three widgets pointing at five
+ * pages is what makes a dashboard read as filler. Kept as a thin row because
+ * losing the discovery entirely would be a regression; the gradients went
+ * because their colours were assigned by position and meant nothing.
+ */
 export function DashboardQuickActions({ actions }: { actions: QuickAction[] }) {
   return (
-    <motion.section
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.2, delay: 0.1 }}
-    >
-      <div className="flex items-center justify-between mb-6 px-2">
-        <h2 className="text-xl font-semibold text-foreground flex items-center gap-3">
-          <Zap className="h-5 w-5 text-warning" /> Quick Actions
-        </h2>
-      </div>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-        {actions.map((action, i) => {
-          const cardClassName = "group flex flex-col p-6 h-full rounded-2xl border border-border/30 bg-card shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 relative overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary";
-          const cardContent = (
-            <>
-              <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${action.color} blur-2xl -mr-16 -mt-16 rounded-full opacity-10 group-hover:opacity-20 transition-opacity duration-200`} />
-              <div className={`h-10 w-10 rounded-xl bg-background flex items-center justify-center mb-4 ${action.text} shadow-sm border border-border/30 transition-transform duration-200`}>
-                <action.icon className="h-5 w-5" />
-              </div>
-              <h3 className="text-sm font-semibold text-foreground mb-1">{action.label}</h3>
-              <p className="text-xs text-muted-foreground line-clamp-1">{action.desc}</p>
-            </>
-          );
-
-          if (action.url.startsWith('#')) {
-            const targetId = action.url.slice(1);
-            return (
-              <button
-                key={i}
-                type="button"
-                onClick={() => document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' })}
-                className={`${cardClassName} text-left`}
-              >
-                {cardContent}
-              </button>
-            );
-          }
-
-          return (
-            <Link key={i} to={action.url} className={cardClassName}>
-              {cardContent}
-            </Link>
-          );
-        })}
-      </div>
-    </motion.section>
+    <nav aria-label="Shortcuts" className="flex flex-wrap gap-2">
+      {actions.map((action) => (
+        <Link
+          key={action.url}
+          to={action.url}
+          className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+        >
+          <action.icon className="h-4 w-4" aria-hidden />
+          {action.label}
+        </Link>
+      ))}
+    </nav>
   );
 }
