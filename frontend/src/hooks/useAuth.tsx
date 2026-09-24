@@ -5,6 +5,7 @@ import api from '../utils/api';
 import { authService } from '../services/authService';
 import { getApiError } from '../services/apiHelper';
 import type { User } from '../types';
+import { applyTheme, getStoredTheme } from '../lib/theme';
 
 interface AuthContextValue {
   isAuthenticated: boolean;
@@ -62,33 +63,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    const root = window.document.documentElement;
-    const theme = user?.theme || localStorage.getItem('theme') || 'system';
-
-    localStorage.setItem('theme', theme);
-
-    const applyTheme = (t: string) => {
-      root.classList.remove('light', 'dark');
-      if (t === 'system') {
-        const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        root.classList.add(isDark ? 'dark' : 'light');
-      } else {
-        root.classList.add(t);
-      }
-    };
-
-    applyTheme(theme);
+    const saved = user?.theme;
+    applyTheme(saved === 'light' || saved === 'dark' || saved === 'system' ? saved : getStoredTheme());
   }, [user?.theme]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const listener = (e: MediaQueryListEvent) => {
-      const currentTheme = localStorage.getItem('theme') || 'system';
-      if (currentTheme === 'system') {
-        const root = window.document.documentElement;
-        root.classList.remove('light', 'dark');
-        root.classList.add(e.matches ? 'dark' : 'light');
-      }
+    const listener = () => {
+      if (getStoredTheme() === 'system') applyTheme('system');
     };
     mediaQuery.addEventListener('change', listener);
     return () => mediaQuery.removeEventListener('change', listener);

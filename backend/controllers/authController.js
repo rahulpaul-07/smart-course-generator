@@ -8,6 +8,8 @@ const {
   REFRESH_TOKEN_TTL_DAYS,
 } = require("../services/tokenService");
 
+const { isDemoEnabled, createDemoUser, purgeExpiredDemoUsers } = require("../services/demoService");
+
 const REFRESH_COOKIE = "refreshToken";
 const ACCESS_COOKIE = "token"; // kept for the cookie fallback in verifyAuth0Token
 
@@ -64,6 +66,7 @@ function userPayload(user, token) {
     email: user.email,
     avatar: user.avatar,
     onboardingCompleted: user.onboardingCompleted,
+    isDemo: Boolean(user.isDemo),
     bookmarkedLessons: user.bookmarkedLessons,
     certificates: user.certificates,
     token,
@@ -194,7 +197,30 @@ async function googleLogin(req, res) {
   res.json(userPayload(user, localToken));
 }
 
+/** One-click guest session for evaluating the app (DEMO_MODE=true only). */
+async function demoLogin(req, res) {
+  if (!isDemoEnabled()) {
+    res.status(404);
+    throw new Error("Demo mode is not enabled on this server");
+  }
+  purgeExpiredDemoUsers(); // throttled, fire-and-forget
+  const user = await createDemoUser();
+  const token = await issueSession(res, user);
+  res.status(201).json(userPayload(user, token));
+}
+
+/** Public capability flags so the UI can hide options the server can't honour. */
+function authConfig(req, res) {
+  res.json({
+    demo: isDemoEnabled(),
+    google: Boolean(process.env.GOOGLE_CLIENT_ID),
+    auth0: Boolean(process.env.AUTH0_DOMAIN),
+  });
+}
+
 module.exports = {
+  demoLogin: asyncHandler(demoLogin),
+  authConfig,
   register: asyncHandler(register),
   login: asyncHandler(login),
   refresh: asyncHandler(refresh),

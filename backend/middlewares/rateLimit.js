@@ -53,4 +53,14 @@ const communityLimiter = rateLimit({
   message: createErrorResponse("Too many community interactions, please try again later.")
 });
 
-module.exports = { apiLimiter, authLimiter, aiLimiter, communityLimiter };
+// Each demo login creates a user and clones a course, so it is capped per IP.
+const demoLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: skipInTest,
+  message: createErrorResponse("Too many demo sessions from this network. Please sign up instead."),
+});
+
+module.exports = { apiLimiter, authLimiter, aiLimiter, communityLimiter, demoLimiter };

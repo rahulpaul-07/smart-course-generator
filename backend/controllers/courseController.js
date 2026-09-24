@@ -144,6 +144,10 @@ async function updateSharing(req, res) {
   if (!course) return res.status(404).json({ error: "Course not found" });
   if (!ownsCourse(course, req.user._id)) return res.status(403).json({ error: "Forbidden" });
 
+  if (req.body?.enabled === true && req.user.isDemo) {
+    return res.status(403).json({ error: "Guest accounts can't publish. Create a free account to share courses." });
+  }
+
   const wasPublic = course.isPublic;
   course.isPublic = req.body?.enabled === true;
   if (course.isPublic && !course.shareId) course.shareId = crypto.randomUUID();
