@@ -1,182 +1,167 @@
 const Course = require("../models/Course");
+const Module = require("../models/Module");
+const Lesson = require("../models/Lesson");
+const User = require("../models/User");
 const InterviewPrep = require("../models/InterviewPrep");
 const Roadmap = require("../models/Roadmap");
 const Certificate = require("../models/Certificate");
 const AuditLog = require("../models/AuditLog");
+const { dayKey, DEFAULT_TIMEZONE } = require("../services/streakService");
+
+/**
+ * Lesson-level counters for a set of courses, computed in MongoDB.
+ *
+ * This used to populate courses -> modules -> lessons (including each lesson's
+ * full AI chat transcript) into the Node process just to count a few flags --
+ * O(total lessons) documents and payload on every dashboard load.
+ */
+async function lessonStats(courseIds) {
+  const empty = { total: 0, completed: 0, labs: 0, aiQuestions: 0 };
+  if (courseIds.length === 0) return empty;
+
+  const moduleIds = await Module.find({ course: { $in: courseIds } }).distinct("_id");
+  if (moduleIds.length === 0) return empty;
+
+  const [row] = await Lesson.aggregate([
+    { $match: { module: { $in: moduleIds } } },
+    {
+      $group: {
+        _id: null,
+        total: { $sum: 1 },
+        completed: { $sum: { $cond: [{ $ifNull: ["$completedAt", false] }, 1, 0] } },
+        labs: { $sum: { $cond: [{ $ifNull: ["$practiceLab.title", false] }, 1, 0] } },
+        aiQuestions: {
+          $sum: {
+            $size: {
+              $filter: {
+                input: { $ifNull: ["$aiConversation", []] },
+                cond: { $eq: ["$$this.role", "user"] },
+              },
+            },
+          },
+        },
+      },
+    },
+  ]);
+  return row || empty;
+}
+
+/** Share of the last `days` calendar days (in the user's zone) with activity. */
+function activeDayShare(history, days, timeZone, now = new Date()) {
+  const seen = new Set(history || []);
+  let active = 0;
+  for (let i = 0; i < days; i++) {
+    if (seen.has(dayKey(new Date(now.getTime() - i * 86400000), timeZone))) active++;
+  }
+  return Math.round((active / days) * 100);
+}
 
 exports.getDashboardSummary = async (req, res) => {
   try {
     const userId = req.user._id;
 
-    // Fetch the most recent items
-    const [latestCourse, latestInterview, latestRoadmap] = await Promise.all([
-      Course.findOne({ creator: userId }).sort({ updatedAt: -1 }),
-      InterviewPrep.findOne({ user: userId, status: "pending" }).sort({ updatedAt: -1 }),
-      Roadmap.findOne({ user: userId }).sort({ updatedAt: -1 }),
+    // Every query below is independent; they used to run one after another.
+    const [
+      latestCourse,
+      latestInterview,
+      latestRoadmap,
+      recentCourses,
+      recentInterviews,
+      recentRoadmaps,
+      courseIds,
+      coursesCompleted,
+      roadmapsCreated,
+      interviewPacks,
+      certificatesEarned,
+      flashcardsGenerated,
+      userDoc,
+    ] = await Promise.all([
+      Course.findOne({ creator: userId }).sort({ updatedAt: -1 }).select("title updatedAt").lean(),
+      InterviewPrep.findOne({ user: userId, status: "pending" }).sort({ updatedAt: -1 }).select("topic updatedAt").lean(),
+      Roadmap.findOne({ user: userId }).sort({ updatedAt: -1 }).select("goal updatedAt").lean(),
+      Course.find({ creator: userId }).sort({ createdAt: -1 }).limit(10).select("title createdAt").lean(),
+      InterviewPrep.find({ user: userId }).sort({ createdAt: -1 }).limit(10).select("topic createdAt status").lean(),
+      Roadmap.find({ user: userId }).sort({ createdAt: -1 }).limit(10).select("goal createdAt").lean(),
+      Course.find({ creator: userId }).distinct("_id"),
+      Course.countDocuments({ creator: userId, earnedCertificateId: { $exists: true, $ne: "" } }),
+      Roadmap.countDocuments({ user: userId }),
+      InterviewPrep.countDocuments({ user: userId }),
+      Certificate.countDocuments({ user: userId }),
+      AuditLog.countDocuments({ userId, action: "GENERATED_FLASHCARDS" }),
+      User.findById(userId).select("studyStreak longestStreak lastActiveDate activityHistory timezone").lean(),
     ]);
 
-    // Determine Continue Learning (most recently updated among them)
-    let continueLearning = null;
+    const lessons = await lessonStats(courseIds);
+
     const candidates = [];
-    
-    if (latestCourse) candidates.push({ 
-      type: "Course", 
-      title: latestCourse.title, 
-      id: latestCourse._id, 
-      updatedAt: latestCourse.updatedAt,
-      url: `/course/${latestCourse._id}`
-    });
-    
-    if (latestInterview) candidates.push({ 
-      type: "Interview Prep", 
-      title: latestInterview.topic, 
-      id: latestInterview._id, 
-      updatedAt: latestInterview.updatedAt,
-      url: `/interview-prep` 
-    });
-    
-    if (latestRoadmap) candidates.push({ 
-      type: "Roadmap", 
-      title: latestRoadmap.goal, 
-      id: latestRoadmap._id, 
-      updatedAt: latestRoadmap.updatedAt,
-      url: `/roadmaps` 
-    });
-
-    candidates.sort((a, b) => b.updatedAt - a.updatedAt);
-    if (candidates.length > 0) {
-      continueLearning = candidates[0];
+    if (latestCourse) {
+      candidates.push({ type: "Course", title: latestCourse.title, id: latestCourse._id, updatedAt: latestCourse.updatedAt, url: `/course/${latestCourse._id}` });
     }
+    if (latestInterview) {
+      candidates.push({ type: "Interview Prep", title: latestInterview.topic, id: latestInterview._id, updatedAt: latestInterview.updatedAt, url: "/interview-prep" });
+    }
+    if (latestRoadmap) {
+      candidates.push({ type: "Roadmap", title: latestRoadmap.goal, id: latestRoadmap._id, updatedAt: latestRoadmap.updatedAt, url: "/roadmaps" });
+    }
+    candidates.sort((a, b) => b.updatedAt - a.updatedAt);
+    const continueLearning = candidates[0] || null;
 
-    // Build Recent Activity
-    // Fetch 10 most recent across collections
-    const recentCourses = await Course.find({ creator: userId }).sort({ createdAt: -1 }).limit(10).select('title createdAt _id');
-    const recentInterviews = await InterviewPrep.find({ user: userId }).sort({ createdAt: -1 }).limit(10).select('topic createdAt _id status');
-    const recentRoadmaps = await Roadmap.find({ user: userId }).sort({ createdAt: -1 }).limit(10).select('goal createdAt _id');
-
-    let recentActivity = [];
-    
-    recentCourses.forEach(c => recentActivity.push({
-      type: "Course",
-      title: c.title,
-      timestamp: c.createdAt,
-      url: `/course/${c._id}`
-    }));
-
-    recentInterviews.forEach(i => recentActivity.push({
-      type: i.status === 'completed' ? "Interview Completed" : "Interview Started",
-      title: i.topic,
-      timestamp: i.createdAt,
-      url: `/interview-prep`
-    }));
-
-    recentRoadmaps.forEach(r => recentActivity.push({
-      type: "Roadmap Generated",
-      title: r.goal,
-      timestamp: r.createdAt,
-      url: `/roadmaps`
-    }));
-
-    // Sort all recent activity by timestamp desc, limit 10
-    recentActivity.sort((a, b) => b.timestamp - a.timestamp);
-    recentActivity = recentActivity.slice(0, 10);
+    const recentActivity = [
+      ...recentCourses.map((c) => ({ type: "Course", title: c.title, timestamp: c.createdAt, url: `/course/${c._id}` })),
+      ...recentInterviews.map((i) => ({
+        type: i.status === "completed" ? "Interview Completed" : "Interview Started",
+        title: i.topic,
+        timestamp: i.createdAt,
+        url: "/interview-prep",
+      })),
+      ...recentRoadmaps.map((r) => ({ type: "Roadmap Generated", title: r.goal, timestamp: r.createdAt, url: "/roadmaps" })),
+    ]
+      .sort((a, b) => b.timestamp - a.timestamp)
+      .slice(0, 10);
 
     const quickActions = [
-      { label: "Generate Course", url: "/", icon: "BookOpen" },
+      { label: "Generate Course", url: "/dashboard", icon: "BookOpen" },
       { label: "Generate Roadmap", url: "/roadmaps", icon: "Layers" },
       { label: "Interview Prep", url: "/interview-prep", icon: "Brain" },
-      { label: "Continue Learning", url: continueLearning ? continueLearning.url : "/", icon: "PlayCircle" },
-      { label: "Ask AI", url: continueLearning && continueLearning.type === 'Course' ? continueLearning.url : "/", icon: "MessageSquare" }
+      { label: "Continue Learning", url: continueLearning ? continueLearning.url : "/dashboard", icon: "PlayCircle" },
+      { label: "Ask AI", url: continueLearning?.type === "Course" ? continueLearning.url : "/dashboard", icon: "MessageSquare" },
     ];
 
-    const coursesCreated = await Course.countDocuments({ creator: userId });
-    const coursesCompleted = await Course.countDocuments({ creator: userId, earnedCertificateId: { $exists: true, $ne: "" } });
-    const roadmapsCreated = await Roadmap.countDocuments({ user: userId });
-    const interviewPacks = await InterviewPrep.countDocuments({ user: userId });
-    const certificatesEarned = await Certificate.countDocuments({ user: userId });
-
-    // User stats
-    const User = require("../models/User");
-    const userDoc = await User.findById(userId).select('studyStreak longestStreak lastActiveDate activityHistory');
-
-    // Aggregate real lesson-level stats across the user's courses
-    const coursesWithLessons = await Course.find({ creator: userId })
-      .populate({
-        path: "modules",
-        populate: { path: "lessons", select: "completedAt practiceLab aiConversation" },
-      })
-      .lean();
-
-    let lessonsCompleted = 0;
-    let practiceLabsGenerated = 0;
-    let aiQuestionsAsked = 0;
-
-    for (const course of coursesWithLessons) {
-      for (const mod of course.modules || []) {
-        for (const lesson of mod.lessons || []) {
-          if (lesson.completedAt) lessonsCompleted++;
-          if (lesson.practiceLab && lesson.practiceLab.title) practiceLabsGenerated++;
-          if (Array.isArray(lesson.aiConversation)) {
-            aiQuestionsAsked += lesson.aiConversation.filter((m) => m.role === "user").length;
-          }
-        }
-      }
-    }
-
-    const flashcardsGenerated = await AuditLog.countDocuments({ userId, action: "GENERATED_FLASHCARDS" });
-
     const statistics = {
-      coursesCreated,
+      coursesCreated: courseIds.length,
       coursesCompleted,
-      lessonsCompleted,
+      lessonsCompleted: lessons.completed,
+      lessonsTotal: lessons.total,
       roadmapsCreated,
-      practiceLabsGenerated,
+      practiceLabsGenerated: lessons.labs,
       flashcardsGenerated,
       interviewPacks,
       certificatesEarned,
-      aiQuestionsAsked
+      aiQuestionsAsked: lessons.aiQuestions,
     };
 
-    // Weekly/monthly progress = share of the last 7/30 days on which the user was active
-    const toDateStr = (d) => d.toISOString().slice(0, 10);
-    const activityHistory = new Set(userDoc?.activityHistory || []);
-    let activeDaysLast7 = 0;
-    let activeDaysLast30 = 0;
-    for (let i = 0; i < 30; i++) {
-      const d = new Date();
-      d.setDate(d.getDate() - i);
-      const dateStr = toDateStr(d);
-      if (activityHistory.has(dateStr)) {
-        activeDaysLast30++;
-        if (i < 7) activeDaysLast7++;
-      }
-    }
-
+    // Streak days are keyed in the user's zone (see streakService), so the
+    // active-day share must be too -- it used to compare against UTC dates.
+    const timeZone = userDoc?.timezone || DEFAULT_TIMEZONE;
     const progress = {
-      overallCompletion: coursesCreated > 0 ? Math.round((coursesCompleted / coursesCreated) * 100) : 0,
-      weeklyProgress: Math.round((activeDaysLast7 / 7) * 100),
-      monthlyProgress: Math.round((activeDaysLast30 / 30) * 100)
+      // Lesson-level. It was coursesCompleted / coursesCreated, so a learner
+      // 90% of the way through their only course was shown as 0%.
+      overallCompletion: lessons.total > 0 ? Math.round((lessons.completed / lessons.total) * 100) : 0,
+      weeklyProgress: activeDayShare(userDoc?.activityHistory, 7, timeZone),
+      monthlyProgress: activeDayShare(userDoc?.activityHistory, 30, timeZone),
     };
 
     const streak = {
       current: userDoc?.studyStreak || 0,
-      // Was `userDoc?.studyStreak` -- the same number twice, so the "longest"
-      // card reset to 0 with the current streak. Now a persisted high-water mark.
       longest: Math.max(userDoc?.longestStreak || 0, userDoc?.studyStreak || 0),
-      lastActive: userDoc?.lastActiveDate || new Date().toISOString()
+      lastActive: userDoc?.lastActiveDate || null,
     };
 
-    res.json({
-      continueLearning,
-      recentActivity,
-      quickActions,
-      statistics,
-      progress,
-      streak
-    });
-
+    res.json({ continueLearning, recentActivity, quickActions, statistics, progress, streak });
   } catch (error) {
     console.error("Dashboard summary error:", error);
     res.status(500).json({ error: "Failed to fetch dashboard summary" });
   }
 };
+
+exports.activeDayShare = activeDayShare;

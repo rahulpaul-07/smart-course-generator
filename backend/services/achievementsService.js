@@ -133,49 +133,58 @@ async function checkAndUnlockAchievements(user) {
   return true;
 }
 
+/**
+ * Actions whose XP may be earned only once per (user, action, resource).
+ *
+ * Without this, any state that can be toggled was an XP faucet: marking a
+ * lesson complete/incomplete/complete, publishing/unpublishing a course, or
+ * upvoting/un-upvoting a template re-awarded the XP on every cycle -- and XP
+ * is what the public leaderboard ranks on.
+ */
+const ONCE_PER_RESOURCE = new Set([
+  "COMPLETED_LESSON",
+  "COMPLETED_QUIZ",
+  "PERFECT_QUIZ",
+  "COMPLETED_COURSE",
+  "PUBLISHED_COURSE",
+  "UPVOTED_COURSE",
+  "COURSE_UPVOTED_BY_OTHER",
+  "GENERATED_FLASHCARDS",
+]);
+
+/** XP for a single activity. Pure; exported for tests. */
+function xpForAction(action) {
+  switch (action) {
+    case "COMPLETED_LESSON": return 10;
+    case "COMPLETED_QUIZ": return 25;
+    case "PERFECT_QUIZ": return 20;
+    case "COMPLETED_COURSE": return 100;
+    case "PUBLISHED_COURSE": return 50;
+    case "CLONED_COURSE": return 20;
+    case "UPVOTED_COURSE": return 1;
+    case "COURSE_UPVOTED_BY_OTHER": return 5;
+    case "DAILY_STREAK": return 15;
+    case "GENERATED_FLASHCARDS": return 10;
+    case "STUDIED_FLASHCARDS": return 5;
+    default: return 0;
+  }
+}
+
 async function recordActivity(userId, action, resourceType, resourceId, metadata = {}) {
   try {
-    // 1. Calculate XP based on the action
-    let xpToAdd = 0;
-    switch (action) {
-      case "COMPLETED_LESSON":
-        xpToAdd = 10;
-        break;
-      case "COMPLETED_QUIZ":
-        xpToAdd = 25;
-        if (metadata.score === PERFECT_QUIZ_SCORE) {
-          xpToAdd += 20; // 5/5 perfect score bonus!
-        }
-        break;
-      case "COMPLETED_COURSE": // e.g. final test passed
-        xpToAdd = 100;
-        break;
-      case "PUBLISHED_COURSE":
-        xpToAdd = 50;
-        break;
-      case "CLONED_COURSE":
-        xpToAdd = 20;
-        break;
-      case "UPVOTED_COURSE":
-        xpToAdd = 1; // Voter XP
-        break;
-      case "COURSE_UPVOTED_BY_OTHER":
-        xpToAdd = 5; // Creator XP
-        break;
-      case "DAILY_STREAK":
-        xpToAdd = 15;
-        break;
-      case "GENERATED_FLASHCARDS":
-        xpToAdd = 10;
-        break;
-      case "STUDIED_FLASHCARDS":
-        xpToAdd = 5;
-        break;
-      default:
-        xpToAdd = 0;
+    if (ONCE_PER_RESOURCE.has(action)) {
+      // COURSE_UPVOTED_BY_OTHER is keyed per voter too, otherwise a creator
+      // could only ever earn from the first person who upvoted a course.
+      const dedupe = { userId, action, resourceId: String(resourceId) };
+      if (action === "COURSE_UPVOTED_BY_OTHER" && metadata.upvotedBy) {
+        dedupe["metadata.upvotedBy"] = metadata.upvotedBy;
+      }
+      if (await AuditLog.exists(dedupe)) return;
     }
 
-    // 2. Create the audit/activity log
+    const xpToAdd = xpForAction(action);
+
+    // Create the audit/activity log
     await AuditLog.create({
       userId,
       action,
@@ -226,5 +235,7 @@ module.exports = {
   checkAndUnlockAchievements,
   findNewlyUnlockedAchievements,
   ACHIEVEMENTS_LIST,
-  PERFECT_QUIZ_SCORE
+  PERFECT_QUIZ_SCORE,
+  ONCE_PER_RESOURCE,
+  xpForAction,
 };

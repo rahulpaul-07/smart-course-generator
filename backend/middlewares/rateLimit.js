@@ -14,7 +14,9 @@ const createErrorResponse = (message) => ({
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per `window`
+  // A single dashboard load fans out to ~8 queries, so 100/15min locked out
+  // ordinary users after a few minutes of clicking around.
+  max: 600,
   standardHeaders: true,
   legacyHeaders: false,
   skip: skipInTest,
@@ -23,7 +25,10 @@ const apiLimiter = rateLimit({
 
 const authLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
-  max: 10, // Limit each IP to 10 login/register requests per hour
+  // Counts only failed attempts, so a user who logs in and out on several
+  // devices is not locked out for an hour.
+  max: 20,
+  skipSuccessfulRequests: true,
   standardHeaders: true,
   legacyHeaders: false,
   skip: skipInTest,

@@ -5,7 +5,7 @@ const { deleteCourseRecords } = require("../services/coursePersistence");
 const { getOwnedLesson } = require("../services/lessonAccessService");
 const aiRouter = require("../services/aiRouter");
 const Certificate = require("../models/Certificate");
-const { recordActivity } = require("../services/achievementsService");
+const { recordActivity, PERFECT_QUIZ_SCORE } = require("../services/achievementsService");
 const { applyStreak } = require("../services/streakService");
 
 const COURSE_OUTLINE = {
@@ -97,22 +97,32 @@ async function updateLessonProgress(req, res) {
     lesson.notes = req.body.notes.slice(0, 12000);
   }
   
-  let newlyCompletedQuiz = false;
-  if (typeof req.body?.quizBestScore === "number") {
-    lesson.quizBestScore = Math.max(lesson.quizBestScore, req.body.quizBestScore);
+  // Quiz results arrive from the client, so they are clamped to the shape the
+  // quiz actually has (a fixed 5-question set) and each submission counts as
+  // exactly one attempt. Previously both were trusted as-is: a single request
+  // could post quizBestScore: 1e9 or quizAttempts: -50.
+  let submittedQuiz = false;
+  if (typeof req.body?.quizBestScore === "number" && Number.isFinite(req.body.quizBestScore)) {
+    const score = Math.min(PERFECT_QUIZ_SCORE, Math.max(0, Math.round(req.body.quizBestScore)));
+    lesson.quizBestScore = Math.max(lesson.quizBestScore || 0, score);
   }
-  if (typeof req.body?.quizAttempts === "number") {
-    if (req.body.quizAttempts > 0) newlyCompletedQuiz = true;
-    lesson.quizAttempts += req.body.quizAttempts;
+  if (typeof req.body?.quizAttempts === "number" && req.body.quizAttempts > 0) {
+    submittedQuiz = true;
+    lesson.quizAttempts = (lesson.quizAttempts || 0) + 1;
   }
 
   await lesson.save();
 
+  // XP for these is once-per-lesson (see ONCE_PER_RESOURCE); re-completing or
+  // retaking a quiz is still recorded on the lesson but earns nothing new.
   if (newlyCompletedLesson) {
     await recordActivity(req.user._id, "COMPLETED_LESSON", "Lesson", lesson._id, { title: lesson.title });
   }
-  if (newlyCompletedQuiz) {
+  if (submittedQuiz) {
     await recordActivity(req.user._id, "COMPLETED_QUIZ", "Lesson", lesson._id, { title: lesson.title, score: lesson.quizBestScore });
+    if (lesson.quizBestScore === PERFECT_QUIZ_SCORE) {
+      await recordActivity(req.user._id, "PERFECT_QUIZ", "Lesson", lesson._id, { title: lesson.title });
+    }
   }
 
   // Update user activity streak. Best-effort: a streak write must never fail a

@@ -72,15 +72,9 @@ api.interceptors.request.use((config) => {
 // --- Access-token refresh on 401 -------------------------------------------
 // The long-lived credential is an httpOnly refresh cookie; the access token is
 // short-lived. On a 401 we transparently hit /auth/refresh once, store the new
-// access token, and retry the original request. Concurrent 401s share a single
-// in-flight refresh.
-let isRefreshing = false;
-let refreshWaiters: Array<(token: string | null) => void> = [];
-
-function onRefreshed(token: string | null) {
-  refreshWaiters.forEach((cb) => cb(token));
-  refreshWaiters = [];
-}
+// access token, and retry the original request. Concurrent 401s -- from axios
+// or from the streaming fetch() calls below -- share one in-flight refresh.
+let refreshInFlight: Promise<string | null> | null = null;
 
 async function requestAccessRefresh(): Promise<string | null> {
   try {
@@ -97,48 +91,95 @@ async function requestAccessRefresh(): Promise<string | null> {
   }
 }
 
+export function refreshAccessToken(): Promise<string | null> {
+  if (!refreshInFlight) {
+    refreshInFlight = requestAccessRefresh().finally(() => {
+      refreshInFlight = null;
+    });
+  }
+  return refreshInFlight;
+}
+
+function expireSession() {
+  toast.error('Your session has expired. Please log in again.');
+  localStorage.removeItem('token');
+  window.dispatchEvent(new Event('auth:unauthorized'));
+}
+
+/**
+ * fetch() with the same auth contract as the axios instance: Bearer token,
+ * credentials, and one transparent refresh-and-retry on 401.
+ *
+ * The SSE endpoints (course/lesson generation, lesson and interview chat) need
+ * a raw ReadableStream, so they can't go through axios -- and they used to
+ * skip the refresh entirely. Once the 30-minute access token lapsed, clicking
+ * "Generate" on a lesson you'd been reading failed with an auth error.
+ */
+export async function authFetch(path: string, init: RequestInit = {}): Promise<Response> {
+  const send = (token: string | null) =>
+    fetch(`${baseURL}${path}`, {
+      credentials: 'include',
+      ...init,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(init.headers || {}),
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    });
+
+  const response = await send(localStorage.getItem('token'));
+  if (response.status !== 401) return response;
+
+  const fresh = await refreshAccessToken();
+  if (!fresh) {
+    expireSession();
+    return response;
+  }
+  return send(fresh);
+}
+
+function releaseDedupLock(config?: { metadata?: { key: string } }) {
+  if (config?.metadata?.key) {
+    pendingRequests.delete(config.metadata.key);
+    sessionStorage.removeItem(AXIOS_GENERATION_JOB_KEY);
+  }
+}
+
 api.interceptors.response.use(
   (response) => {
-    if (response.config?.metadata?.key) {
-      pendingRequests.delete(response.config.metadata.key);
-      sessionStorage.removeItem(AXIOS_GENERATION_JOB_KEY);
-    }
+    releaseDedupLock(response.config);
     return response;
   },
   async (error) => {
     if (error.isDuplicate) return Promise.reject(error);
-    
-    // 401 → attempt a one-shot token refresh, then replay the original request.
+
+    // 401 -> attempt a one-shot token refresh, then replay the original request.
     const original = error.config;
     const url: string = original?.url || '';
     const isAuthRoute = url.includes('/auth/refresh') || url.includes('/auth/login') || url.includes('/auth/register');
     if (error.response?.status === 401 && original && !original._retry && !isAuthRoute) {
       original._retry = true;
-      const newToken = isRefreshing
-        ? await new Promise<string | null>((resolve) => refreshWaiters.push(resolve))
-        : await (async () => {
-            isRefreshing = true;
-            const t = await requestAccessRefresh();
-            isRefreshing = false;
-            onRefreshed(t);
-            return t;
-          })();
+      // The replay goes back through the request interceptor; without this the
+      // retried /generate POST was rejected by its own duplicate guard.
+      releaseDedupLock(original);
+      const newToken = await refreshAccessToken();
 
       if (newToken) {
         original.headers = original.headers || {};
         original.headers.Authorization = `Bearer ${newToken}`;
         return api(original);
       }
-      // Refresh failed → fall through to the normal unauthorized handling.
-      toast.error('Your session has expired. Please log in again.');
-      localStorage.removeItem('token');
-      window.dispatchEvent(new Event('auth:unauthorized'));
+      expireSession();
       return Promise.reject(error);
     }
 
-    if (error.config?.metadata?.key) {
+    if (error.response) {
+      // The server answered, so nothing is still running for this request.
+      releaseDedupLock(error.config);
+    } else if (error.config?.metadata?.key) {
+      // No response: the connection dropped but the backend may still be
+      // generating, so keep the recovery lock and only free the in-memory slot.
       pendingRequests.delete(error.config.metadata.key);
-      // We don't remove active_generation_job here because the browser might have just disconnected but the backend is still running
     }
 
     if (error.response) {
