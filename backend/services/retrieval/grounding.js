@@ -32,6 +32,9 @@ async function getStore() {
       );
       return store;
     })();
+    // Don't memoise a failure: a transient embedding error at boot would
+    // otherwise disable grounding until the process restarts.
+    storePromise.catch(() => { storePromise = null; });
   }
   return storePromise;
 }
@@ -42,8 +45,15 @@ async function getStore() {
 async function buildGroundedContext(topic, { k = 3, minScore = 0.05 } = {}) {
   if (!isEnabled() || !topic) return { contextText: "", citations: [], used: false };
 
-  const store = await getStore();
-  const hits = (await store.search(topic, k)).filter((h) => h.score >= minScore);
+  let hits;
+  try {
+    const store = await getStore();
+    hits = (await store.search(topic, k)).filter((h) => h.score >= minScore);
+  } catch (err) {
+    // Grounding is an enhancement; a retrieval failure must not fail the lesson.
+    console.warn("RAG retrieval failed, generating ungrounded:", err.message);
+    return { contextText: "", citations: [], used: false };
+  }
   if (hits.length === 0) return { contextText: "", citations: [], used: false };
 
   const contextText = [

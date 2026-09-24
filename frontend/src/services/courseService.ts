@@ -1,4 +1,4 @@
-import api, { baseURL } from '../utils/api';
+import api, { authFetch } from '../utils/api';
 import { handleApi, getApiError } from './apiHelper';
 import type { Course, PopulatedCourse } from '../types';
 
@@ -22,14 +22,8 @@ export const courseService = {
     onStage?: (stage: CourseGenerationStage) => void
   ): Promise<[Course | null, string | null]> => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${baseURL}/courses/generate-stream`, {
+      const response = await authFetch('/courses/generate-stream', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        credentials: 'include',
         body: JSON.stringify(data),
       });
 

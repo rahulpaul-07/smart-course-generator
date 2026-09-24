@@ -57,9 +57,14 @@ async function embed(text) {
 }
 
 function cosineSimilarity(a, b) {
-  const len = Math.min(a.length, b.length);
+  // Vectors from different embedders (local 256-d vs OpenAI 1536-d) are not
+  // comparable. This used to truncate to the shorter one and return a
+  // meaningless score; fail loudly so a mixed index is caught immediately.
+  if (a.length !== b.length) {
+    throw new Error(`Embedding dimension mismatch: ${a.length} vs ${b.length}`);
+  }
   let dot = 0;
-  for (let i = 0; i < len; i++) dot += a[i] * b[i];
+  for (let i = 0; i < a.length; i++) dot += a[i] * b[i];
   return dot; // vectors are L2-normalized, so dot == cosine
 }
 

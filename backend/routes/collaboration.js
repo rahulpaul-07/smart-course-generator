@@ -3,6 +3,7 @@ const { getUserProfile, updateUserProfile, getLeaderboard, getCommunityTemplates
 const { verifyAuth0Token } = require("../middlewares/auth0Auth");
 const { validateRequest } = require("../middlewares/validateRequest");
 const { rateTemplateSchema, cloneTemplateSchema } = require("../validations/collaborationValidation");
+const { updateProfileSchema } = require("../validations/userValidation");
 const { communityLimiter } = require("../middlewares/rateLimit");
 const { cacheMiddleware } = require("../middlewares/cacheMiddleware");
 
@@ -19,7 +20,7 @@ router.get("/activity", communityLimiter, cacheMiddleware(30), getActivityFeed);
 // Protected routes
 router.use(verifyAuth0Token);
 router.get("/profile", getUserProfile);
-router.put("/profile", updateUserProfile);
+router.put("/profile", validateRequest(updateProfileSchema), updateUserProfile);
 router.get("/templates/my-upvotes", getMyUpvotedTemplateIds);
 router.post("/templates/:courseId/upvote", communityLimiter, upvoteTemplate);
 router.post("/templates/:courseId/rate", communityLimiter, validateRequest(rateTemplateSchema), rateTemplate);

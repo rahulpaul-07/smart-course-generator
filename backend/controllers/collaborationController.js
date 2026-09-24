@@ -6,17 +6,22 @@ const AuditLog = require("../models/AuditLog");
 const { recordActivity } = require("../services/achievementsService");
 
 async function getUserProfile(req, res) {
-  const user = await User.findById(req.user._id).select("-password -auth0Id");
+  const user = await User.findById(req.user._id).select("-password -auth0Id -googleId");
   res.json(user);
 }
 
 async function updateUserProfile(req, res) {
-  const { name, bio, isProfilePublic } = req.body;
+  // Only fields that were actually sent. $set-ing an undefined `name` fails
+  // the required validator and turned a bio-only update into a 400.
+  const update = {};
+  for (const key of ["name", "bio", "isProfilePublic"]) {
+    if (req.body[key] !== undefined) update[key] = req.body[key];
+  }
   const user = await User.findByIdAndUpdate(
     req.user._id,
-    { $set: { name, bio, isProfilePublic } },
-    { new: true, runValidators: true }
-  ).select("-password -auth0Id");
+    { $set: update },
+    { returnDocument: "after", runValidators: true }
+  ).select("-password -auth0Id -googleId");
   res.json(user);
 }
 
@@ -64,31 +69,40 @@ async function getMyUpvotedTemplateIds(req, res) {
 }
 
 async function upvoteTemplate(req, res) {
-  const template = await Course.findOne({ _id: req.params.courseId, isPublic: true });
-  if (!template) {
+  const courseId = req.params.courseId;
+  const userId = req.user._id;
+
+  // Conditional atomic updates instead of read-modify-write: two concurrent
+  // clicks used to both read "not upvoted", both push, and double-count.
+  let updated = await Course.findOneAndUpdate(
+    { _id: courseId, isPublic: true, upvotedBy: { $ne: userId } },
+    { $addToSet: { upvotedBy: userId }, $inc: { upvotesCount: 1 } },
+    { returnDocument: "after" }
+  ).select("title creator upvotesCount");
+  let hasUpvoted = Boolean(updated);
+
+  if (!updated) {
+    updated = await Course.findOneAndUpdate(
+      { _id: courseId, isPublic: true, upvotedBy: userId },
+      { $pull: { upvotedBy: userId }, $inc: { upvotesCount: -1 } },
+      { returnDocument: "after" }
+    ).select("title creator upvotesCount");
+  }
+
+  if (!updated) {
     res.status(404);
     throw new Error("Template not found");
   }
 
-  const userId = String(req.user._id);
-  const alreadyUpvoted = template.upvotedBy.some((id) => String(id) === userId);
-
-  if (alreadyUpvoted) {
-    template.upvotedBy = template.upvotedBy.filter((id) => String(id) !== userId);
-    template.upvotesCount = Math.max(0, template.upvotesCount - 1);
-  } else {
-    template.upvotedBy.push(req.user._id);
-    template.upvotesCount += 1;
+  if (hasUpvoted) {
+    await recordActivity(userId, "UPVOTED_COURSE", "Course", updated._id, { title: updated.title });
+    // Upvoting your own course is allowed but earns the creator nothing.
+    if (String(updated.creator) !== String(userId)) {
+      await recordActivity(updated.creator, "COURSE_UPVOTED_BY_OTHER", "Course", updated._id, { title: updated.title, upvotedBy: userId });
+    }
   }
 
-  await template.save();
-
-  if (!alreadyUpvoted) {
-    await recordActivity(req.user._id, "UPVOTED_COURSE", "Course", template._id, { title: template.title });
-    await recordActivity(template.creator, "COURSE_UPVOTED_BY_OTHER", "Course", template._id, { title: template.title, upvotedBy: req.user._id });
-  }
-
-  res.json({ success: true, upvotesCount: template.upvotesCount, hasUpvoted: !alreadyUpvoted });
+  res.json({ success: true, upvotesCount: Math.max(0, updated.upvotesCount), hasUpvoted });
 }
 
 async function rateTemplate(req, res) {

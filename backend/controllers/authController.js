@@ -171,7 +171,7 @@ async function googleLogin(req, res) {
     throw new Error("Invalid Google token", { cause: verifyError });
   }
 
-  const { sub: googleId, email, email_verified: emailVerified, name, picture } = payload;
+  const { sub: googleId, email_verified: emailVerified, name, picture } = payload;
 
   // Reject unverified Google emails to prevent linking into an existing local
   // account via an unconfirmed address (account-takeover path).
@@ -180,6 +180,7 @@ async function googleLogin(req, res) {
     throw new Error("Google account email is not verified");
   }
 
+  const email = String(payload.email || "").toLowerCase();
   let user = await User.findOne({ email });
   if (!user) {
     user = await User.create({ name, email, googleId, avatar: picture, onboardingCompleted: false });
