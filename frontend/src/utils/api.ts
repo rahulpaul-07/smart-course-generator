@@ -101,7 +101,12 @@ export function refreshAccessToken(): Promise<string | null> {
 }
 
 function expireSession() {
-  toast.error('Your session has expired. Please log in again.');
+  // Only announce an expiry if there was a session to expire. The auth
+  // bootstrap probes /auth/me on every page load, so anonymous visitors used
+  // to be greeted on the landing page with "Your session has expired".
+  if (localStorage.getItem('token')) {
+    toast.error('Your session has expired. Please log in again.');
+  }
   localStorage.removeItem('token');
   window.dispatchEvent(new Event('auth:unauthorized'));
 }

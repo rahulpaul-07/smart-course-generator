@@ -170,3 +170,59 @@ describe("GET /api/dashboard/summary", () => {
     expect(res.body.progress.overallCompletion).toBe(50);
   });
 });
+
+describe("public community endpoints with real data", () => {
+  // Bug: node-cache deep-cloned Mongoose documents and threw a CastError, so
+  // /templates returned 500 as soon as one public course existed. The old test
+  // only ever hit an empty collection.
+  it("serves templates when public courses exist, twice (cache hit)", async () => {
+    const { id } = await register("pub@example.com");
+    await seedCourse(id, { isPublic: true });
+    const first = await request(app).get("/api/collab/templates");
+    const second = await request(app).get("/api/collab/templates");
+    expect(first.statusCode).toBe(200);
+    expect(second.statusCode).toBe(200);
+    expect(second.body[0].creator.name).toBe("Test User");
+  });
+
+  it("activity feed omits users without a public profile", async () => {
+    const priv = await register("private@example.com", "Private Person");
+    const { course } = await seedCourse(priv.id);
+    await request(app).patch(`/api/courses/${course._id}/sharing`).set("Authorization", `Bearer ${priv.token}`).send({ enabled: true });
+
+    const res = await request(app).get("/api/collab/activity?nocache=1");
+    expect(res.statusCode).toBe(200);
+    expect(JSON.stringify(res.body)).not.toContain("Private Person");
+  });
+});
+
+describe("POST /api/auth/demo", () => {
+  const { seedShowcase } = require("../scripts/seed_showcase");
+  const original = process.env.DEMO_MODE;
+  afterEach(() => { process.env.DEMO_MODE = original; });
+
+  it("is disabled unless DEMO_MODE=true", async () => {
+    process.env.DEMO_MODE = "false";
+    const res = await request(app).post("/api/auth/demo");
+    expect(res.statusCode).toBe(404);
+  });
+
+  it("creates an isolated guest with a cloned course that cannot be published", async () => {
+    process.env.DEMO_MODE = "true";
+    await seedShowcase();
+    const a = await request(app).post("/api/auth/demo");
+    const b = await request(app).post("/api/auth/demo");
+    expect(a.statusCode).toBe(201);
+    expect(a.body.isDemo).toBe(true);
+    expect(a.body._id).not.toBe(b.body._id);
+
+    const mine = await request(app).get("/api/courses/mine").set("Authorization", `Bearer ${a.body.token}`);
+    expect(mine.body.length).toBe(1);
+
+    const publish = await request(app)
+      .patch(`/api/courses/${mine.body[0]._id}/sharing`)
+      .set("Authorization", `Bearer ${a.body.token}`)
+      .send({ enabled: true });
+    expect(publish.statusCode).toBe(403);
+  });
+});
