@@ -20,7 +20,7 @@
   "license": "MIT",
   "type": "commonjs",
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=22"
   },
   "dependencies": {
     "@google/genai": "^2.12.0",
