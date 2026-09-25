@@ -1,5 +1,7 @@
 import { Copy, Globe2, Loader2, Lock } from 'lucide-react';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 import toast from 'react-hot-toast';
 import { courseService } from '../services/courseService';
 import { Button } from './ui/button';
@@ -12,6 +14,7 @@ interface ShareCourseButtonProps {
 }
 
 export default function ShareCourseButton({ course, onUpdate }: ShareCourseButtonProps) {
+  const { user } = useAuth();
   const [saving, setSaving] = useState(false);
   const { copyToClipboard } = useClipboard({ successMessage: 'Public link copied' });
 
@@ -33,6 +36,16 @@ export default function ShareCourseButton({ course, onUpdate }: ShareCourseButto
   let ShareIcon = Globe2;
   if (saving) ShareIcon = Loader2;
   else if (course.isPublic) ShareIcon = Lock;
+
+  // Guests can't publish (the API refuses with 403), so offer the upgrade
+  // instead of a button that can only fail.
+  if (user?.isDemo) {
+    return (
+      <Button asChild variant="secondary">
+        <Link to="/save-account"><Globe2 className="mr-2 h-4 w-4" /> Save your account to publish</Link>
+      </Button>
+    );
+  }
 
   return (
     <div className="flex flex-wrap items-center gap-2">

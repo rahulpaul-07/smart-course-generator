@@ -1,4 +1,5 @@
 import React from 'react';
+import { CourseCover } from './CourseCover';
 import { motion } from 'framer-motion';
 import { Sparkles, MoreVertical, Layers, Clock, ArrowRight, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -54,11 +55,11 @@ export function CourseCard({ course, viewMode, onDeleted }: CourseCardProps) {
     >
       {/* Cover Thumbnail */}
       <div className={`relative bg-muted/30 border-b border-border/30 overflow-hidden shrink-0 flex items-center justify-center ${viewMode === 'list' ? 'w-full sm:w-[280px] sm:border-r sm:border-b-0' : 'h-40'}`}>
-        <img
-          src={course.bannerUrl || `https://picsum.photos/seed/${course._id}/800/600`}
-          alt=""
-          className="absolute inset-0 h-full w-full object-cover"
-        />
+        {course.bannerUrl ? (
+          <img src={course.bannerUrl} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+        ) : (
+          <CourseCover id={course._id} title={course.title} className="absolute inset-0 h-full w-full" />
+        )}
         
         <div className="absolute top-3 left-3 flex flex-wrap gap-2">
           <span className="inline-flex items-center gap-1 rounded-md bg-background/90 backdrop-blur-md px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-primary shadow-sm border border-border/30">

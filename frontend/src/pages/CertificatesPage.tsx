@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
+import { PageHeader } from '@/components/ui/PageHeader';
 import { Award, ExternalLink } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { certificateService } from '../services/certificateService';
 import type { Certificate } from '../types';
 import { PageContainer } from '../components/layout/PageContainer';
-import { SectionHeader } from '../components/ui/SectionHeader';
 import { EmptyState } from '../components/ui/EmptyState';
 import { Button } from '../components/ui/button';
 
@@ -36,7 +36,7 @@ export default function CertificatesPage() {
 
   return (
     <PageContainer>
-      <SectionHeader 
+      <PageHeader 
         title="Your Certificates" 
         description="Verifiable credentials for your completed courses."
       />

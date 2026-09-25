@@ -19,6 +19,17 @@ export default {
       },
     },
     extend: {
+      // Typography wraps inline code in literal backticks by default, which
+      // showed as `queueMicrotask` (backticks and all) inside the code pill in
+      // every lesson, chat reply and interview feedback.
+      typography: {
+        DEFAULT: {
+          css: {
+            'code::before': { content: 'none' },
+            'code::after': { content: 'none' },
+          },
+        },
+      },
       fontFamily: {
         sans: ['Geist', 'system-ui', 'sans-serif'],
         display: ['Geist', 'system-ui', 'sans-serif'],

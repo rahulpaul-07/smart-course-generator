@@ -1,8 +1,8 @@
 import { useState } from 'react';
+import { PageHeader } from '@/components/ui/PageHeader';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { Sparkles } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { PageContainer } from '../components/layout/PageContainer';
 import { Button } from '@/components/ui/button';
 import { courseService } from '../services/courseService';
@@ -62,23 +62,16 @@ export default function CoursesPage() {
 
       <PageContainer className="relative z-10 pt-8 pb-24 space-y-8 max-w-7xl mx-auto">
         
-        {/* 1. Header Section */}
-        <motion.div 
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.2 }}
-          className="flex flex-col md:flex-row md:items-end justify-between gap-6"
-        >
-          <div>
-            <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-foreground mb-2 drop-shadow-sm">My Courses</h1>
-            <p className="text-base md:text-lg text-muted-foreground font-medium">Manage and continue your AI-generated learning journeys.</p>
-          </div>
-          
-          <Button size="lg" className="rounded-xl shadow-[0_4px_20px_rgb(0,0,0,0.1)] shadow-primary/20 hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 w-full md:w-auto shrink-0 bg-primary hover:bg-primary/90 font-bold" onClick={() => navigate('/dashboard#course-generator')}>
-            <Sparkles className="mr-2 h-4 w-4" />
-            Generate New Course
-          </Button>
-        </motion.div>
+        <PageHeader
+          title="My Courses"
+          description="Pick up where you left off, or generate something new."
+          action={(
+            <Button className="rounded-xl shadow-[0_4px_20px_rgb(0,0,0,0.1)] shadow-primary/20 hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 bg-primary hover:bg-primary/90 font-bold" onClick={() => navigate('/dashboard#course-generator')}>
+              <Sparkles className="mr-2 h-4 w-4" />
+              Generate New Course
+            </Button>
+          )}
+        />
 
         {/* 2. Controls Toolbar (Search & Filters) */}
         <CourseFilters 

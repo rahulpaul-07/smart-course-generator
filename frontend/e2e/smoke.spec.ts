@@ -69,7 +69,7 @@ test.describe('Guest demo', () => {
     await page.getByRole('button', { name: /try the demo/i }).click();
 
     await expect(page).toHaveURL(/\/dashboard/);
-    await expect(page.getByText(/guest account/i).first()).toBeVisible();
+    await expect(page.getByText(/guest account/i).filter({ visible: true }).first()).toBeVisible();
 
     await page.goto('/courses');
     await page.getByText('Asynchronous JavaScript', { exact: false }).first().click();
@@ -78,5 +78,29 @@ test.describe('Guest demo', () => {
     await page.getByText('The Event Loop, Macrotasks and Microtasks').first().click();
     await expect(page).toHaveURL(/\/lesson\//);
     await expect(page.getByRole('heading', { name: 'Two queues, one rule' })).toBeVisible();
+  });
+});
+
+test.describe('Interview session', () => {
+  test('is usable at laptop width and submit is reachable from every section', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto('/');
+    await page.getByRole('button', { name: /try the demo/i }).click();
+    await expect(page).toHaveURL(/\/dashboard/);
+
+    await page.goto('/interview-prep');
+    await page.getByPlaceholder(/Senior Frontend Engineer/i).fill('Frontend engineer');
+    await page.getByRole('button', { name: /generate mock/i }).click();
+    await expect(page.getByRole('tablist', { name: 'Interview sections' })).toBeVisible({ timeout: 30000 });
+
+    for (const section of ['MCQs', 'Theory', 'Coding']) {
+      await page.getByRole('tab', { name: new RegExp(section) }).click();
+      await expect(page.getByRole('button', { name: /submit assessment/i })).toBeVisible();
+    }
+
+    // The question column used to be squeezed to ~350px by four side-by-side
+    // columns, clipping code. It must now get most of the remaining width.
+    const width = await page.locator('main main').evaluate((el) => el.getBoundingClientRect().width);
+    expect(width).toBeGreaterThan(600);
   });
 });

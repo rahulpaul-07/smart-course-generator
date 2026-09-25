@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { PageHeader } from '@/components/ui/PageHeader';
 import { Trophy, Flame, Zap, Award } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { collabService, type LeaderboardUser } from '../services/collabService';
@@ -43,11 +44,17 @@ export default function LeaderboardPage() {
 
   if (leaders.length === 0) {
     return (
-      <div className="page-shell py-20">
-        <EmptyState 
+      <div className="page-shell">
+        <PageHeader
+          eyebrow={{ icon: Trophy, label: 'Leaderboard' }}
+          title="Top learners"
+          description="Ranked by XP. Only learners with a public profile appear here."
+        />
+        <EmptyState
           icon={Trophy}
-          title="No learners on the board yet"
-          description="Be the first to complete a course and climb the ranks!"
+          title="No public profiles yet"
+          description="Earn XP by finishing lessons and quizzes, then make your profile public to join the board."
+          action={<Link to="/profile" className="inline-flex h-10 items-center rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground hover:bg-primary/90">Go to your profile</Link>}
         />
       </div>
     );
@@ -55,11 +62,11 @@ export default function LeaderboardPage() {
 
   return (
     <div className="page-shell">
-      <section className="mb-10 text-center">
-        <p className="eyebrow flex justify-center"><Trophy className="h-3.5 w-3.5" /> Hall of Fame</p>
-        <h1 className="gradient-text mt-3 font-display text-4xl font-extrabold">Top Learners</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Compete with the community and climb the ranks.</p>
-      </section>
+      <PageHeader
+        eyebrow={{ icon: Trophy, label: 'Leaderboard' }}
+        title="Top learners"
+        description="Ranked by XP. Only learners with a public profile appear here."
+      />
 
       <div className="max-w-4xl mx-auto glass-card rounded-2xl overflow-hidden shadow-lg border border-border/30">
         <div className="p-4 bg-foreground/10 border-b border-border/30 grid grid-cols-12 gap-4 text-xs font-bold text-muted-foreground uppercase tracking-wider hidden sm:grid">

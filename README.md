@@ -52,8 +52,11 @@ Most "AI course generator" demos are a prompt and a text box. The hard part of a
     <td><img src="docs/screenshots/lesson.png" alt="Lesson view" /></td>
   </tr>
   <tr>
+    <td><img src="docs/screenshots/interview.png" alt="Mock interview session with AI interviewer" /></td>
     <td><img src="docs/screenshots/course.png" alt="Course overview" /></td>
-    <td><img src="docs/screenshots/router-status.png" alt="AI router status" /></td>
+  </tr>
+  <tr>
+    <td colspan="2"><img src="docs/screenshots/router-status.png" alt="AI router status" /></td>
   </tr>
 </table>
 

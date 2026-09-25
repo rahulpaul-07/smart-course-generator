@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### UI audit (every page, desktop and phone)
+- Interview session rebuilt: four squeezed columns became a compact session header with tabs and timer, a wide question area and the coach panel. Code blocks scroll instead of clipping, the editor keeps Tab, languages are detected (a SQL question was labelled JavaScript), and one submit bar with per-section progress is reachable from every tab (it only existed on the MCQ tab).
+- Fixed horizontal overflow on phones on the dashboard, course, roadmap, analytics and profile pages (grid items now shrink to their track).
+- Removed nested interactive elements (buttons inside buttons) on the interview list and roadmap pages; delete controls are now reachable by touch and keyboard.
+- One consistent page header across the app; the leaderboard kept its title when empty.
+- Roadmaps open the most recent plan; the close-form control is no longer a trash icon.
+- Guests are offered "save your account" instead of a Publish button that could only fail.
+- Generated course covers replace random stock photos; finished lessons show a slim regenerate bar instead of a full card; inline code no longer shows literal backticks; lesson view no longer double-scrolls under the guest banner.
+- E2E now covers the interview session at laptop width.
+
+
 ### Security
 - Auth0 identities without a verified email can no longer sign in as, or link to, an existing account (a missing email claim matched the first user in the database).
 - Public activity feed limited to public profiles and display fields.

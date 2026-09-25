@@ -1,4 +1,5 @@
 import { Bot } from 'lucide-react';
+import { PageHeader } from '@/components/ui/PageHeader';
 import { useAiAgents } from '../hooks/useAiAgents';
 import { AgentSidebar } from '../components/agents/AgentSidebar';
 import { AgentHeaderInputs } from '../components/agents/AgentHeaderInputs';
@@ -25,11 +26,11 @@ export default function AiAgentsPage() {
 
   return (
     <div className="page-shell">
-      <section className="mb-10">
-        <p className="eyebrow"><Bot className="h-3.5 w-3.5" /> Multi-Agent System</p>
-        <h1 className="gradient-text mt-3 font-display text-3xl font-extrabold">AI Insights</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Leverage specialized AI agents to accelerate your learning journey.</p>
-      </section>
+      <PageHeader
+        eyebrow={{ icon: Bot, label: 'Multi-agent system' }}
+        title="AI insights"
+        description="Specialised agents that review your courses, coach you and plan what to revise."
+      />
 
       <div className="grid gap-8 lg:grid-cols-[280px_1fr]">
         <AgentSidebar activeTab={activeTab} setActiveTab={setActiveTab} setResult={setResult} />

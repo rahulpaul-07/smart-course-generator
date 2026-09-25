@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { PageHeader } from '@/components/ui/PageHeader';
 import { Globe, Heart, Copy, Star, Plus } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { collabService, type CommunityTemplate } from '../services/collabService';
@@ -98,13 +99,11 @@ export default function CommunityTemplatesPage() {
 
   return (
     <div className="page-shell">
-      <section className="mb-10 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-        <div>
-          <p className="eyebrow"><Globe className="h-3.5 w-3.5" /> Community</p>
-          <h1 className="gradient-text mt-3 font-display text-3xl font-extrabold">Community</h1>
-          <p className="mt-2 text-sm text-muted-foreground">Discover, clone, and rate courses created by the community.</p>
-        </div>
-      </section>
+      <PageHeader
+        eyebrow={{ icon: Globe, label: 'Community' }}
+        title="Course library"
+        description="Courses other learners have published. Clone one to make it yours."
+      />
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {templates.map(template => (

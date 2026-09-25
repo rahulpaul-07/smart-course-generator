@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Map, Plus, Sparkles, Trash2 } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { Map, Plus, Sparkles, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { useRoadmap } from '../hooks/useRoadmap';
@@ -12,6 +12,7 @@ import { RoadmapSkeleton } from '../components/roadmap/RoadmapSkeleton';
 import { Button } from '@/components/ui/button';
 import { ErrorState } from '@/components/ui/ErrorState';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { PageHeader } from '@/components/ui/PageHeader';
 
 export default function RoadmapPage() {
   const {
@@ -30,6 +31,16 @@ export default function RoadmapPage() {
   } = useRoadmap();
   
   const [showForm, setShowForm] = useState(false);
+
+  // With roadmaps available, landing on an empty "Select a roadmap" panel was
+  // a dead end. Open the most recent one, once per visit, so "back to all"
+  // from the detail view still works.
+  const autoOpened = useRef(false);
+  useEffect(() => {
+    if (autoOpened.current || loading || activeRoadmap || roadmaps.length === 0) return;
+    autoOpened.current = true;
+    viewRoadmap(roadmaps[0]._id);
+  }, [loading, activeRoadmap, roadmaps, viewRoadmap]);
   const [form, setForm] = useState({ goal: '', duration: '4 weeks', skillLevel: 'beginner' });
 
   const handleGenerate = async (e: React.FormEvent) => {
@@ -41,15 +52,8 @@ export default function RoadmapPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
-        <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/30 px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary border border-primary/20 shadow-sm">
-              <Map className="h-4 w-4" />
-            </div>
-            <h1 className="font-bold text-foreground tracking-tight text-lg">Career Roadmaps</h1>
-          </div>
-        </header>
         <main className="page-shell w-full space-y-10">
+          <PageHeader eyebrow={{ icon: Map, label: 'Roadmaps' }} title="Career roadmaps" />
           <RoadmapSkeleton />
         </main>
       </div>
@@ -59,14 +63,6 @@ export default function RoadmapPage() {
   if (error) {
     return (
       <div className="min-h-screen bg-background">
-        <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/30 px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary border border-primary/20 shadow-sm">
-              <Map className="h-4 w-4" />
-            </div>
-            <h1 className="font-bold text-foreground tracking-tight text-lg">Career Roadmaps</h1>
-          </div>
-        </header>
         <main className="page-shell w-full space-y-10 flex items-center justify-center min-h-[60vh]">
           <ErrorState 
             title="Unable to load roadmap" 
@@ -80,21 +76,19 @@ export default function RoadmapPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/30 px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary border border-primary/20 shadow-sm">
-            <Map className="h-4 w-4" />
-          </div>
-          <h1 className="font-bold text-foreground tracking-tight text-lg">Career Roadmaps</h1>
-        </div>
-        {!showForm && (
-          <Button variant="outline" onClick={() => setShowForm(true)} className="flex items-center justify-center h-10 px-4 rounded-xl font-bold shadow-sm">
-            <Plus className="h-4 w-4 mr-1.5" /> New Roadmap
-          </Button>
-        )}
-      </header>
 
       <main className="page-shell w-full space-y-10">
+        <PageHeader
+          eyebrow={{ icon: Map, label: 'Roadmaps' }}
+          title="Career roadmaps"
+          description="A week-by-week plan from where you are to where you want to be."
+          action={!showForm ? (
+            <Button onClick={() => setShowForm(true)} className="h-10 rounded-xl px-4 font-semibold">
+              <Plus className="mr-1.5 h-4 w-4" /> New roadmap
+            </Button>
+          ) : null}
+          className="mb-0"
+        />
         <AnimatePresence>
           {showForm && (
             <motion.form 
@@ -108,11 +102,11 @@ export default function RoadmapPage() {
               <div className="bg-card/30 backdrop-blur-md mb-8 rounded-2xl border border-border/30 p-8 shadow-md">
                 <div className="flex items-center justify-between mb-8">
                   <div>
-                    <h3 className="font-display text-3xl font-extrabold tracking-tight text-foreground mb-2">Configure Your Path</h3>
+                    <h2 className="mb-1 text-xl font-semibold tracking-tight">Configure your path</h2>
                     <p className="text-muted-foreground font-medium">Define your goals, and our AI will build a comprehensive step-by-step journey.</p>
                   </div>
-                  <button type="button" onClick={() => setShowForm(false)} className="text-muted-foreground hover:bg-muted p-2 rounded-full transition-colors">
-                    <Trash2 className="h-5 w-5" />
+                  <button type="button" onClick={() => setShowForm(false)} aria-label="Close" className="rounded-full p-2 text-muted-foreground transition-colors hover:bg-muted">
+                    <X className="h-5 w-5" />
                   </button>
                 </div>
                 
@@ -172,7 +166,7 @@ export default function RoadmapPage() {
 
         {!activeRoadmap ? (
           <div className="grid lg:grid-cols-4 gap-8">
-            <RoadmapSidebar roadmaps={roadmaps} viewRoadmap={viewRoadmap} deleteRoadmap={deleteRoadmap} />
+            <RoadmapSidebar roadmaps={roadmaps} viewRoadmap={viewRoadmap} deleteRoadmap={deleteRoadmap}/>
             <div className="lg:col-span-3">
               {roadmaps.length === 0 && !showForm ? (
                 <EmptyState

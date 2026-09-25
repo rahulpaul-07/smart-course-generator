@@ -30,6 +30,22 @@ export default function LessonGenerator({
 }: LessonGeneratorProps) {
   const isStreaming = isGenerating && streamedCount > 0;
 
+  // A finished lesson is for reading. The full "AI Lesson Studio" card used to
+  // sit above every generated lesson, so the first thing a reader saw was a
+  // prompt to regenerate it. Keep that as a slim, secondary control.
+  if (hasContent && !isGenerating && !isPickerOpen) {
+    return (
+      <div className="mb-8 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border/70 bg-card/40 px-4 py-2.5 text-sm">
+        <span className="flex items-center gap-2 text-muted-foreground">
+          <Sparkles className="h-4 w-4 text-primary" /> Want it deeper, shorter or in another language?
+        </span>
+        <Button type="button" size="sm" variant="secondary" onClick={() => onPickerChange(true)} className="rounded-lg">
+          Regenerate
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <section className="relative mb-10 overflow-hidden rounded-2xl bg-card border border-border/50 p-5 shadow-lg animate-enter-delay sm:p-6 group">
       {/* Animated gradient border overlay */}

@@ -1,37 +1,32 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle2, XCircle, BookOpen, Award } from 'lucide-react';
-import LoadingSpinner from '../LoadingSpinner';
+import { CheckCircle2, XCircle, BookOpen } from 'lucide-react';
 import type { InterviewPrep, MCQQuestion } from '../../types';
+import { SectionIntro } from './SectionIntro';
 
 interface MCQWorkspaceProps {
   prep: InterviewPrep;
   mcqAnswers: number[];
   setMcqAnswers: (answers: number[]) => void;
   submitted: boolean;
-  submitting: boolean;
-  submitAssessment: () => void;
 }
 
-export function MCQWorkspace({ prep, mcqAnswers, setMcqAnswers, submitted, submitting, submitAssessment }: MCQWorkspaceProps) {
+export function MCQWorkspace({ prep, mcqAnswers, setMcqAnswers, submitted }: MCQWorkspaceProps) {
   return (
-    <div className="space-y-8">
-      <div className="mb-10 pb-6 border-b border-border/30">
-        <h2 className="text-3xl font-extrabold font-display tracking-tight text-foreground mb-2">Multiple Choice</h2>
-        <p className="text-muted-foreground font-medium">Select the best answer for each question.</p>
-      </div>
+    <div className="space-y-6">
+      <SectionIntro title="Multiple choice" description="Pick the best answer for each question." />
       
       {prep.mcqs?.map((q: MCQQuestion, i: number) => {
         const userAns = submitted ? q.userAnswer : mcqAnswers[i];
         return (
-          <div key={i} className="rounded-2xl border border-border/30 bg-card/20 backdrop-blur-md p-8 shadow-sm transition-all hover:shadow-md">
+          <div key={i} className="rounded-2xl border border-border/70 bg-card/40 p-5 sm:p-6">
             <p className="mb-6 text-[15px] font-semibold text-foreground leading-relaxed flex items-start gap-4">
               <span className="shrink-0 flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10 text-primary text-sm mt-0.5">
                 {i + 1}
               </span>
               <span className="pt-1.5">{q.question}</span>
             </p>
-            <div className="space-y-3 pl-12">
+            <div className="space-y-2.5 sm:pl-12">
               {q.options.map((opt: string, oi: number) => {
                 const isSelected = userAns === oi;
                 const isCorrect = submitted && oi === q.correctAnswer;
@@ -64,7 +59,7 @@ export function MCQWorkspace({ prep, mcqAnswers, setMcqAnswers, submitted, submi
               })}
             </div>
             {submitted && q.explanation && (
-              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="mt-8 ml-12 rounded-xl border border-primary/20 bg-primary/5 p-5 text-[14px] leading-relaxed text-foreground/90">
+              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="mt-6 rounded-xl sm:ml-12 border border-primary/20 bg-primary/5 p-5 text-[14px] leading-relaxed text-foreground/90">
                 <span className="font-bold text-primary mb-2 block flex items-center gap-2"><BookOpen className="w-4 h-4" /> Explanation</span>
                 {q.explanation}
               </motion.div>
@@ -73,13 +68,6 @@ export function MCQWorkspace({ prep, mcqAnswers, setMcqAnswers, submitted, submi
         );
       })}
       
-      {!submitted && prep.mcqs?.length > 0 && (
-        <div className="pt-8 border-t border-border/30 sticky bottom-0 z-10 bg-background/95 backdrop-blur-xl pb-8 flex justify-end">
-          <button onClick={submitAssessment} disabled={submitting} className={`h-12 bg-foreground text-background px-8 rounded-xl font-bold hover:bg-foreground/90 transition-all flex items-center justify-center gap-2 shadow-lg ${submitting ? 'cursor-progress opacity-70' : ''}`}>
-            {submitting ? <><LoadingSpinner small /> Evaluating...</> : <><Award className="h-5 w-5" /> Submit Assessment</>}
-          </button>
-        </div>
-      )}
     </div>
   );
 }

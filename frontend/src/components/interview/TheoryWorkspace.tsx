@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { BookOpen, Clock, Sparkles, CheckCircle2, ChevronRight } from 'lucide-react';
+import { SectionIntro } from './SectionIntro';
 import type { InterviewPrep, TheoryQuestion } from '../../types';
 
 interface TheoryWorkspaceProps {
@@ -19,10 +20,7 @@ export function TheoryWorkspace({ prep, theoryAnswers, setTheoryAnswers, submitt
 
   return (
     <div className="space-y-10">
-      <div className="mb-10 pb-6 border-b border-border/30">
-        <h2 className="text-3xl font-extrabold font-display tracking-tight text-foreground mb-2">Theory & Concepts</h2>
-        <p className="text-muted-foreground font-medium">Provide detailed, comprehensive answers.</p>
-      </div>
+      <SectionIntro title="Theory" description="Explain your reasoning as you would to an interviewer." />
 
       {prep.theoryQuestions?.map((q: TheoryQuestion, i: number) => {
         const textValue = submitted ? (q.userAnswer || '') : theoryAnswers[i];
@@ -30,7 +28,7 @@ export function TheoryWorkspace({ prep, theoryAnswers, setTheoryAnswers, submitt
         const readTime = Math.max(1, Math.ceil(wordCount / 200));
         
         return (
-          <div key={i} className="rounded-2xl border border-border/30 bg-card/20 backdrop-blur-md p-8 shadow-sm flex flex-col gap-6">
+          <div key={i} className="rounded-2xl border border-border/30 bg-card/20 backdrop-blur-md p-5 sm:p-6 shadow-sm flex flex-col gap-6">
             <p className="text-[15px] font-semibold text-foreground leading-relaxed flex items-start gap-4">
               <span className="shrink-0 flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10 text-primary text-sm mt-0.5">
                 {i + 1}

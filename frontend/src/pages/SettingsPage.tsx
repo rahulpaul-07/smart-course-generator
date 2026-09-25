@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
+import { PageHeader } from '@/components/ui/PageHeader';
 import { applyTheme, type ThemePreference } from '../lib/theme';
 import { Settings as SettingsIcon, Moon, Sun, Monitor } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { userService } from '../services/userService';
 import { useAuth } from '../hooks/useAuth';
 import { PageContainer } from '../components/layout/PageContainer';
-import { SectionHeader } from '../components/ui/SectionHeader';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
@@ -51,7 +51,7 @@ export default function SettingsPage() {
 
   return (
     <PageContainer>
-      <SectionHeader 
+      <PageHeader 
         title="Settings" 
         description="Manage your account preferences and settings."
       />

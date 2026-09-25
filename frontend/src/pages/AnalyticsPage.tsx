@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { PageHeader } from '@/components/ui/PageHeader';
 import { useNavigate } from 'react-router-dom';
 import { BarChart3, BookOpen, Brain, Clock, Flame, Target, TrendingDown, TrendingUp, Trophy, Zap, PlusCircle } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
@@ -75,51 +76,48 @@ export default function AnalyticsPage() {
 
   return (
     <div className="page-shell">
-      {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="eyebrow"><BarChart3 className="h-3.5 w-3.5" /> Learning Analytics</p>
-            <h1 className="gradient-text mt-3 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
-              Your Learning Journey
-            </h1>
-            <p className="mt-2 text-sm text-muted-foreground">Track your progress, identify strengths, and improve weak areas.</p>
-          </div>
-          <Button
-            disabled={exportingCsv}
-            className={`shadow-sm ${exportingCsv ? 'cursor-progress' : ''}`}
-            onClick={async () => {
-              setExportingCsv(true);
-              try {
-                // Add a small synthetic delay if needed to show the button state, but the user requested no artificial delays.
-                // However, since it's synchronous CSV generation, it might happen instantly.
-                // We'll wrap in a Promise to allow React to render the disabled state briefly if it takes time.
-                await new Promise(resolve => setTimeout(resolve, 0));
-                const escapeCsv = (val: unknown) => {
-                  if (val === null || val === undefined) return '""';
-                  return '"' + String(val).replace(/"/g, '""') + '"';
-                };
-                const headers = ['Course', 'Completed Lessons', 'Total Lessons', 'Completion %'].map(escapeCsv);
-                const rows = data.courseStats.map((c: CourseStat) => [c.title, c.completedLessons, c.totalLessons, c.completionPct].map(escapeCsv));
-                const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
-                const blob = new Blob([csv], { type: 'text/csv' });
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'learning-analytics.csv';
-                a.click();
-              } finally {
-                setExportingCsv(false);
-              }
-            }}
-          >
-            {exportingCsv ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Exporting...</> : 'Export CSV'}
-          </Button>
-        </div>
+      <PageHeader
+        eyebrow={{ icon: BarChart3, label: 'Learning analytics' }}
+        title="Your learning journey"
+        description="Track your progress, spot weak areas and see what to review next."
+        action={(
+            <Button
+              disabled={exportingCsv}
+              className={`shadow-sm ${exportingCsv ? 'cursor-progress' : ''}`}
+              onClick={async () => {
+                setExportingCsv(true);
+                try {
+                  // Add a small synthetic delay if needed to show the button state, but the user requested no artificial delays.
+                  // However, since it's synchronous CSV generation, it might happen instantly.
+                  // We'll wrap in a Promise to allow React to render the disabled state briefly if it takes time.
+                  await new Promise(resolve => setTimeout(resolve, 0));
+                  const escapeCsv = (val: unknown) => {
+                    if (val === null || val === undefined) return '""';
+                    return '"' + String(val).replace(/"/g, '""') + '"';
+                  };
+                  const headers = ['Course', 'Completed Lessons', 'Total Lessons', 'Completion %'].map(escapeCsv);
+                  const rows = data.courseStats.map((c: CourseStat) => [c.title, c.completedLessons, c.totalLessons, c.completionPct].map(escapeCsv));
+                  const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+                  const blob = new Blob([csv], { type: 'text/csv' });
+                  const url = window.URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = 'learning-analytics.csv';
+                  a.click();
+                } finally {
+                  setExportingCsv(false);
+                }
+              }}
+            >
+              {exportingCsv ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Exporting...</> : 'Export CSV'}
+            </Button>
+        )}
+      />
 
       {/* Stat Cards */}
       <section className="mb-10 grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-7 animate-enter-delay">
         <StatCard icon={Zap} label="Total XP" value={data.xp || 0} color="from-primary to-primary/60" />
-        <StatCard icon={Flame} label="Study Streak" value={`${data.studyStreak} days`} color="from-brand-400 to-primary" />
+        <StatCard icon={Flame} label="Study Streak" value={`${data.studyStreak} ${data.studyStreak === 1 ? 'day' : 'days'}`} color="from-brand-400 to-primary" />
         <StatCard icon={Clock} label="Study Hours" value={`${data.totalStudyHours}h`} color="from-success to-success/70" />
         <StatCard icon={BookOpen} label="Courses" value={data.totalCourses} color="from-primary to-primary/60" />
         <StatCard icon={Target} label="Completion" value={`${data.overallCompletion}%`} color="from-success to-success/70" />

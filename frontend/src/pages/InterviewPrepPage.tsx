@@ -7,10 +7,8 @@ import { useInterviewAnswers } from '../hooks/useInterviewAnswers';
 import { useInterviewResults } from '../hooks/useInterviewResults';
 import type { InterviewPrep } from '../types';
 import { InterviewHeader } from '../components/interview/InterviewHeader';
-import { InterviewSidebar } from '../components/interview/InterviewSidebar';
-import { InterviewToolbar } from '../components/interview/InterviewToolbar';
-import { QuestionNavigator } from '../components/interview/QuestionNavigator';
-import { TimerPanel } from '../components/interview/TimerPanel';
+import { SessionHeader } from '../components/interview/SessionHeader';
+import { SubmitBar } from '../components/interview/SubmitBar';
 import { MCQWorkspace } from '../components/interview/MCQWorkspace';
 import { TheoryWorkspace } from '../components/interview/TheoryWorkspace';
 import { CodingWorkspace } from '../components/interview/CodingWorkspace';
@@ -73,46 +71,30 @@ export default function InterviewPrepPage() {
   }
 
   return (
-    <div className="flex h-full min-h-0 w-full bg-background overflow-hidden relative">
-      <InterviewSidebar
-        activePrep={activePrep}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        setActivePrep={setActivePrep}
-      />
-
-      <main className="flex-1 min-w-0 min-h-0 overflow-y-auto bg-background/95 scroll-smooth relative flex flex-col">
-        <InterviewToolbar
-          activePrep={activePrep}
-          setActivePrep={setActivePrep}
+    <div className="relative flex h-full min-h-0 w-full overflow-hidden bg-background">
+      <main className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto">
+        <SessionHeader
+          prep={activePrep}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          onExit={() => setActivePrep(null)}
           formattedTime={formatTime(elapsedTime)}
-          setIsMobileCoachOpen={setIsMobileCoachOpen}
+          onOpenCoach={() => setIsMobileCoachOpen(true)}
         />
 
-        <div className="flex-1 w-full min-w-0 max-w-4xl mx-auto px-4 py-6 sm:px-6 md:px-8 md:py-10 xl:px-12">
+        <div className="mx-auto w-full min-w-0 max-w-4xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
           {activePrep.status === 'completed' && activeTab === 'results' ? (
             <ResultsDashboard prep={activePrep} readiness={readiness} strengths={strengths} weaknesses={weaknesses} aiRec={aiRec} />
           ) : (
-            <AnimatePresence mode="sync" initial={false}>
+            <AnimatePresence mode="wait" initial={false}>
               <motion.div
                 key={activeTab}
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.15, ease: 'easeOut' }}
                 className="w-full"
               >
-                <QuestionNavigator
-                  activeTab={activeTab}
-                  setActiveTab={setActiveTab}
-                  status={activePrep.status}
-                />
-
-                <TimerPanel
-                  status={activePrep.status}
-                  formattedTime={formatTime(elapsedTime)}
-                />
-
                 <WorkspaceRouter
                   activeTab={activeTab}
                   prep={activePrep}
@@ -128,27 +110,39 @@ export default function InterviewPrepPage() {
         </div>
       </main>
 
-      <aside className={`fixed inset-y-0 right-0 z-50 w-full sm:w-[400px] xl:static xl:w-[340px] 2xl:w-[400px] xl:shrink-0 xl:flex flex-col border-l border-border/30 bg-card/20 backdrop-blur-3xl transition-transform duration-300 ${isMobileCoachOpen ? 'translate-x-0' : 'translate-x-full xl:translate-x-0'}`}>
-        <div className="h-full flex flex-col shadow-lg xl:shadow-none bg-background xl:bg-transparent">
-          <div className="flex items-center justify-between px-6 py-5 border-b border-border/30 bg-card/50 backdrop-blur-md">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary to-primary flex items-center justify-center shadow-lg shadow-primary/20">
-                <Brain className="h-5 w-5 text-primary-foreground" />
-              </div>
-              <div>
-                <h3 className="font-bold text-sm text-foreground leading-tight tracking-tight">AI Interview Coach</h3>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-success flex items-center gap-1.5 mt-0.5">
-                  <span className="w-1.5 h-1.5 bg-success rounded-full animate-pulse" /> Active
-                </p>
-              </div>
+      {isMobileCoachOpen && (
+        <button
+          type="button"
+          aria-label="Close coach"
+          onClick={() => setIsMobileCoachOpen(false)}
+          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm xl:hidden"
+        />
+      )}
+      <aside
+        aria-label="AI interview coach"
+        className={`fixed inset-y-0 right-0 z-50 flex w-full flex-col border-l border-border/70 bg-background transition-transform duration-300 sm:w-[400px] xl:static xl:z-auto xl:w-[360px] xl:translate-x-0 xl:shrink-0 2xl:w-[400px] ${isMobileCoachOpen ? 'translate-x-0' : 'translate-x-full'}`}
+      >
+        <div className="flex items-center justify-between gap-3 border-b border-border/70 px-5 py-4">
+          <div className="flex items-center gap-3">
+            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/15">
+              <Brain className="h-4 w-4 text-primary" />
+            </span>
+            <div>
+              <h2 className="text-sm font-semibold leading-tight">AI interviewer</h2>
+              <p className="text-xs text-muted-foreground">Follow-ups, hints and mock rounds</p>
             </div>
-            <button onClick={() => setIsMobileCoachOpen(false)} className="xl:hidden p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
-              <X className="h-5 w-5" />
-            </button>
           </div>
-          <div className="flex-1 overflow-hidden">
-            <FeedbackPanel prep={activePrep} />
-          </div>
+          <button
+            type="button"
+            onClick={() => setIsMobileCoachOpen(false)}
+            aria-label="Close coach"
+            className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground xl:hidden"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+        <div className="min-h-0 flex-1 overflow-hidden">
+          <FeedbackPanel prep={activePrep} />
         </div>
       </aside>
     </div>
@@ -174,42 +168,34 @@ function WorkspaceRouter({ activeTab, prep, onUpdate }: WorkspaceRouterProps) {
     submitAssessment
   } = useInterviewAnswers(prep, onUpdate);
 
+  let workspace: React.ReactNode = null;
   if (activeTab === 'mcq') {
-    return (
-      <MCQWorkspace
-        prep={prep}
-        mcqAnswers={mcqAnswers}
-        setMcqAnswers={setMcqAnswers}
-        submitted={submitted}
-        submitting={submitting}
-        submitAssessment={submitAssessment}
-      />
-    );
+    workspace = <MCQWorkspace prep={prep} mcqAnswers={mcqAnswers} setMcqAnswers={setMcqAnswers} submitted={submitted} />;
+  } else if (activeTab === 'theory') {
+    workspace = <TheoryWorkspace prep={prep} theoryAnswers={theoryAnswers} setTheoryAnswers={setTheoryAnswers} submitted={submitted} />;
+  } else if (activeTab === 'coding') {
+    workspace = <CodingWorkspace prep={prep} codingSolutions={codingSolutions} setCodingSolutions={setCodingSolutions} submitted={submitted} />;
   }
 
-  if (activeTab === 'theory') {
-    return (
-      <TheoryWorkspace
-        prep={prep}
-        theoryAnswers={theoryAnswers}
-        setTheoryAnswers={setTheoryAnswers}
-        submitted={submitted}
-      />
-    );
-  }
-
-  if (activeTab === 'coding') {
-    return (
-      <CodingWorkspace
-        prep={prep}
-        codingSolutions={codingSolutions}
-        setCodingSolutions={setCodingSolutions}
-        submitted={submitted}
-      />
-    );
-  }
-
-  return null;
+  return (
+    <>
+      {workspace}
+      {/* One submit for the whole assessment, visible from every section. It
+          used to exist only at the bottom of the MCQ tab, so someone who
+          finished on Coding had no visible way to hand in. */}
+      {!submitted && (
+        <SubmitBar
+          counts={[
+            { label: 'MCQ', done: mcqAnswers.filter((a) => a >= 0).length, total: prep.mcqs?.length ?? 0 },
+            { label: 'Theory', done: theoryAnswers.filter((a) => a.trim()).length, total: prep.theoryQuestions?.length ?? 0 },
+            { label: 'Coding', done: codingSolutions.filter((a) => a.trim()).length, total: prep.codingQuestions?.length ?? 0 },
+          ]}
+          submitting={submitting}
+          onSubmit={submitAssessment}
+        />
+      )}
+    </>
+  );
 }
 
 
