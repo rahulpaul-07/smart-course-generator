@@ -1,0 +1,31 @@
+name: Keep API warm
+
+# Render's free tier sleeps a service after ~15 minutes without traffic, and
+# the next visitor waits 20-60s for it to boot. For a portfolio demo that
+# first visitor is usually a recruiter, so ping the API every 10 minutes.
+# One always-on free service fits within Render's monthly free-hour allowance.
+#
+# Note: GitHub pauses scheduled workflows in public repos after 60 days with
+# no commits; re-enable it from the Actions tab if that happens.
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Ping health endpoint
+        run: |
+          for attempt in 1 2 3; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 90 https://smart-course-generator.onrender.com/api/health) || true
+            echo "attempt $attempt: HTTP $code"
+            [ "$code" = "200" ] && exit 0
+            sleep 10
+          done
+          echo "::warning::API did not answer 200 after 3 attempts"

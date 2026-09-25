@@ -1,16 +1,44 @@
 version: 2
+
+# Routine patch/minor bumps arrive as one grouped PR per ecosystem each week
+# instead of a dozen individual ones. Major upgrades that need a deliberate
+# migration are ignored here and done by hand:
+#   - express 5: breaking changes to routing and request parsing
+#   - typescript 7: new native compiler, needs a full type-check pass
+#   - eslint 10 (frontend): waits on react-hooks / jsx-a11y plugin support
 updates:
   - package-ecosystem: "npm"
     directory: "/frontend"
     schedule:
       interval: "weekly"
+    groups:
+      frontend-minor:
+        update-types: ["minor", "patch"]
+    ignore:
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "eslint"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@eslint/js"
+        update-types: ["version-update:semver-major"]
+      # Deprecated stub package; eslint ships its own types.
+      - dependency-name: "@types/eslint__js"
 
   - package-ecosystem: "npm"
     directory: "/backend"
     schedule:
       interval: "weekly"
+    groups:
+      backend-minor:
+        update-types: ["minor", "patch"]
+    ignore:
+      - dependency-name: "express"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+    groups:
+      actions:
+        patterns: ["*"]
