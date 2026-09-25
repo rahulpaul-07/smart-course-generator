@@ -26,6 +26,11 @@ updates:
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
+      # mongoose 9.10 ships MongoDB driver 7.6, whose connection handshake is
+      # rejected ("Missing required sub-document 'driver' in the client
+      # metadata document"). Held at 9.7.x until verified against Atlas.
+      - dependency-name: "mongoose"
+        versions: [">=9.8.0"]
 
   - package-ecosystem: "github-actions"
     directory: "/"
