@@ -1,125 +1,159 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { Sparkles, BrainCircuit, BookOpen, Code, Award, ArrowRight, PlayCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { ProductPreview } from './ProductPreview';
+import { useEffect, useState, type FormEvent } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ArrowRight, ArrowUpRight, Loader2, Sparkles } from 'lucide-react';
+import { BlurFade } from '@/components/magic/blur-fade';
+import { BorderBeam } from '@/components/magic/border-beam';
+import { DotPattern } from '@/components/magic/dot-pattern';
+import { ShimmerButton } from '@/components/magic/shimmer-button';
+import { ShinyBadge } from '@/components/magic/shiny-badge';
+import { useAuthConfig } from '@/hooks/useAuthConfig';
+import { useDemoLogin } from '@/hooks/useDemoLogin';
+import { setPendingPrompt } from '@/lib/pendingPrompt';
+import { StreamingDemo } from './StreamingDemo';
+
+const EXAMPLES = [
+  'Rust ownership for TypeScript developers',
+  'Statistics for product managers',
+  'System design for backend interviews',
+  'Linear algebra, visually',
+  'Kubernetes from zero to production',
+];
+
+/** Cycles example topics as a typed placeholder. */
+function useTypedPlaceholder(paused: boolean) {
+  const [index, setIndex] = useState(0);
+  const [length, setLength] = useState(0);
+  const [deleting, setDeleting] = useState(false);
+
+  useEffect(() => {
+    if (paused) return;
+    const word = EXAMPLES[index];
+    const done = !deleting && length === word.length;
+    const empty = deleting && length === 0;
+    const delay = done ? 1800 : empty ? 250 : deleting ? 22 : 45;
+    const id = window.setTimeout(() => {
+      if (done) setDeleting(true);
+      else if (empty) {
+        setDeleting(false);
+        setIndex((i) => (i + 1) % EXAMPLES.length);
+      } else setLength((n) => n + (deleting ? -1 : 1));
+    }, delay);
+    return () => window.clearTimeout(id);
+  }, [index, length, deleting, paused]);
+
+  return EXAMPLES[index].slice(0, length);
+}
 
 export function LandingHero() {
+  const navigate = useNavigate();
+  const { demo } = useAuthConfig();
+  const { startDemo, starting } = useDemoLogin();
+  const [topic, setTopic] = useState('');
+  const placeholder = useTypedPlaceholder(topic.length > 0);
+
+  function onSubmit(e: FormEvent) {
+    e.preventDefault();
+    const value = topic.trim() || placeholder.trim();
+    if (value) setPendingPrompt(value);
+    navigate('/signup');
+  }
+
   return (
-    <section className="relative min-h-[calc(100vh-64px)] flex items-center overflow-hidden">
-      {/* ── Layered Background ── */}
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_60%_50%_at_50%_0%,rgba(120,40,200,0.15),transparent_70%)]" />
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_50%_40%_at_100%_100%,rgba(255,100,150,0.1),transparent_65%)]" />
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_40%_40%_at_0%_100%,rgba(50,150,255,0.1),transparent_60%)]" />
-      
-      {/* Subtle grid texture */}
-      <div
-        className="pointer-events-none absolute inset-0 -z-10 opacity-[0.03]"
-        style={{
-          backgroundImage:
-            'linear-gradient(hsl(var(--foreground)) 1px,transparent 1px),linear-gradient(90deg,hsl(var(--foreground)) 1px,transparent 1px)',
-          backgroundSize: '32px 32px',
-        }}
-      />
-      
-      <div className="container px-4 md:px-8 lg:px-12 w-full py-16 lg:py-0">
-        <div className="grid lg:grid-cols-[60%_40%] gap-12 lg:gap-8 items-center min-h-[calc(100vh-64px)]">
-          
-          {/* ────────── LEFT: Marketing 60% ────────── */}
-          <div className="flex flex-col justify-center space-y-8 text-center lg:text-left pt-10 lg:pt-0">
-            
-            {/* Badge */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.25 }}
-              className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-xs text-primary w-fit mx-auto lg:mx-0 shadow-sm backdrop-blur-sm hover:bg-primary/15 transition-colors"
-            >
-              <Sparkles className="h-4 w-4" />
-              ✨ AI-Powered Talent Upskilling
-            </motion.div>
+    <section className="relative isolate overflow-hidden pt-32 sm:pt-40">
+      <DotPattern className="-z-10 [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,black,transparent_75%)]" />
+      <div aria-hidden className="absolute left-1/2 top-0 -z-10 h-[520px] w-[900px] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,hsl(245_90%_65%/0.28),transparent)] blur-2xl" />
+      <div aria-hidden className="absolute left-[15%] top-40 -z-10 h-64 w-64 rounded-full bg-fuchsia-500/10 blur-3xl" />
 
-            {/* Headline */}
-            <motion.h1
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.25, delay: 0.05 }}
-              className="text-5xl font-bold tracking-tight text-foreground leading-[1.1] max-w-[700px] mx-auto lg:mx-0"
-            >
-              Bridge Skill Gaps with <br className="hidden sm:block" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#7828C8] via-[#FF6496] to-[#3296FF]">
-                AI-Generated Curricula
-              </span>{' '}
-              <br className="hidden sm:block" />
-              in Minutes.
-            </motion.h1>
+      <div className="mx-auto max-w-5xl px-4 text-center sm:px-6">
+        <BlurFade immediate>
+          <a href="#engineering" className="inline-block">
+            <ShinyBadge>
+              <span className="rounded-full bg-primary/20 px-1.5 py-px text-[10px] font-semibold uppercase tracking-wider text-primary">New</span>
+              RAG-grounded lessons &amp; a live eval scorecard
+              <ArrowRight className="h-3 w-3" />
+            </ShinyBadge>
+          </a>
+        </BlurFade>
 
-            {/* Description */}
-            <motion.p
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.25, delay: 0.1 }}
-              className="max-w-[600px] mx-auto lg:mx-0 text-muted-foreground leading-7"
-            >
-              CourseAI generates complete personalized upskilling paths with interactive lessons, quizzes, mock interviews for screening, and verifiable certificates.
-            </motion.p>
+        <BlurFade immediate delay={0.06}>
+          <h1 className="mx-auto mt-7 max-w-4xl text-balance text-[2.75rem] font-semibold leading-[1.02] tracking-[-0.035em] sm:text-6xl md:text-7xl">
+            Learn anything,{' '}
+            <span className="bg-gradient-to-r from-indigo-300 via-fuchsia-200 to-amber-100 bg-clip-text pr-1 font-serif text-[1.08em] font-normal italic tracking-[-0.01em] text-transparent">
+              properly.
+            </span>
+          </h1>
+        </BlurFade>
 
-            {/* CTAs */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.2, delay: 0.15 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
-            >
-              <Button asChild size="lg" className="h-12 px-8 rounded-xl text-base font-semibold bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background">
-                <Link to="/signup">
-                  Generate Your First Course
-                  <ArrowRight className="ml-2 h-6 w-6" />
-                </Link>
-              </Button>
-              <Button asChild variant="ghost" size="lg" className="h-12 px-8 rounded-xl text-base font-semibold border border-border/30 hover:bg-muted/50 backdrop-blur-sm transition-all duration-200 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background hover:-translate-y-0.5 hover:shadow-sm">
-                <Link to="/community">
-                  <PlayCircle className="mr-2 h-6 w-6" />
-                  Explore Demo
-                </Link>
-              </Button>
-            </motion.div>
+        <BlurFade immediate delay={0.12}>
+          <p className="mx-auto mt-6 max-w-2xl text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">
+            Describe what you want to learn. CourseAI designs the curriculum, streams every lesson as it is written,
+            then drills you with quizzes, flashcards and mock interviews until it sticks.
+          </p>
+        </BlurFade>
 
-            {/* Trust Badges */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.25, delay: 0.2 }}
-              className="pt-6 flex flex-wrap gap-3 justify-center lg:justify-start"
-            >
-              {[
-                { label: 'Skills-Based', icon: BrainCircuit },
-                { label: 'Adaptive Learning', icon: BookOpen },
-                { label: 'AI Screening', icon: Code },
-                { label: 'Workforce Readiness', icon: Award },
-              ].map((badge, i) => (
-                <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-muted/50 border border-border/30 text-xs text-muted-foreground">
-                  <badge.icon className="h-4 w-4 text-primary" />
-                  {badge.label}
-                </div>
-              ))}
-            </motion.div>
+        <BlurFade immediate delay={0.18}>
+          <form onSubmit={onSubmit} className="mx-auto mt-10 max-w-2xl">
+            <div className="relative rounded-2xl">
+              <div className="relative flex items-center gap-2 rounded-2xl border border-border/80 bg-card/70 p-2 pl-4 shadow-2xl shadow-black/30 backdrop-blur-xl focus-within:border-primary/50">
+                <Sparkles className="h-4 w-4 shrink-0 text-primary" aria-hidden />
+                <label htmlFor="hero-topic" className="sr-only">What do you want to learn?</label>
+                <input
+                  id="hero-topic"
+                  value={topic}
+                  onChange={(e) => setTopic(e.target.value)}
+                  placeholder={placeholder || 'What do you want to learn?'}
+                  autoComplete="off"
+                  maxLength={200}
+                  className="h-11 min-w-0 flex-1 bg-transparent text-[15px] text-foreground outline-none placeholder:text-muted-foreground/70"
+                />
+                <ShimmerButton type="submit" className="h-11 shrink-0 px-5">
+                  <span className="hidden sm:inline">Generate course</span>
+                  <span className="sm:hidden">Generate</span>
+                  <ArrowRight className="h-4 w-4" />
+                </ShimmerButton>
+              </div>
+              <BorderBeam size={120} duration={10} />
+            </div>
+          </form>
+        </BlurFade>
+
+        <BlurFade immediate delay={0.24}>
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm">
+            {demo ? (
+              <button
+                type="button"
+                onClick={startDemo}
+                disabled={starting}
+                className="inline-flex items-center gap-1.5 font-medium text-foreground underline-offset-4 hover:underline disabled:opacity-60"
+              >
+                {starting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
+                Try the demo, no sign-up
+                <ArrowUpRight className="h-3.5 w-3.5" />
+              </button>
+            ) : (
+              <Link to="/signup" className="inline-flex items-center gap-1.5 font-medium text-foreground underline-offset-4 hover:underline">
+                Create a free account <ArrowUpRight className="h-3.5 w-3.5" />
+              </Link>
+            )}
+            <Link to="/status" className="inline-flex items-center gap-1.5 text-muted-foreground transition-colors hover:text-foreground">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+              </span>
+              Live AI router status
+            </Link>
           </div>
-
-          {/* ────────── RIGHT: Product Preview 40% ────────── */}
-          <motion.div
-            initial={{ opacity: 0, x: 10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.2, delay: 0.15 }}
-            className="relative mx-auto w-full max-w-[600px] lg:max-w-none pt-10 lg:pt-0"
-          >
-            <div className="absolute -inset-4 rounded-2xl bg-gradient-to-tr from-primary/20 via-transparent to-primary/15 opacity-60 blur-3xl -z-10" />
-            <ProductPreview />
-          </motion.div>
-
-        </div>
+        </BlurFade>
       </div>
+
+      <BlurFade delay={0.1} y={30} className="relative mx-auto mt-16 max-w-6xl px-4 pb-8 sm:mt-20 sm:px-6">
+        <div aria-hidden className="absolute inset-x-10 -top-10 -z-10 h-40 rounded-full bg-primary/20 blur-3xl" />
+        <div className="relative rounded-2xl">
+          <StreamingDemo />
+          <BorderBeam size={260} duration={14} delay={3} />
+        </div>
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background to-transparent" />
+      </BlurFade>
     </section>
   );
 }

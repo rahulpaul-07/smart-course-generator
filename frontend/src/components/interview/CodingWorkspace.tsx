@@ -1,7 +1,7 @@
 import React from 'react';
 import { Code2, AlertTriangle, Sparkles, ChevronRight, Brain, CheckCircle2 } from 'lucide-react';
 import SyntaxHighlighter from '../../lib/syntaxHighlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import vscDarkPlus from 'react-syntax-highlighter/dist/esm/styles/prism/vsc-dark-plus';
 import type { InterviewPrep, CodingQuestion } from '../../types';
 
 interface CodingWorkspaceProps {

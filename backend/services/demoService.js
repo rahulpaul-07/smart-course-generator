@@ -9,6 +9,7 @@ const AuditLog = require("../models/AuditLog");
 const RefreshToken = require("../models/RefreshToken");
 const { cloneCourseTree } = require("./courseClone");
 const { deleteCourseRecords } = require("./coursePersistence");
+const { applyStreak } = require("./streakService");
 
 /**
  * One-click guest accounts for people evaluating the app.
@@ -28,7 +29,7 @@ function isDemoEnabled() {
 }
 
 async function createDemoUser() {
-  const user = await User.create({
+  const user = new User({
     name: "Guest Learner",
     email: `guest-${crypto.randomBytes(6).toString("hex")}@demo.courseai.local`,
     isDemo: true,
@@ -36,6 +37,9 @@ async function createDemoUser() {
     skillLevel: "intermediate",
     learningInterests: ["JavaScript", "System Design"],
   });
+  // The seeded lesson below counts as today's study, same as a real one would.
+  applyStreak(user);
+  await user.save();
 
   const template = await Course.findOne({ isFeatured: true, isPublic: true })
     .sort({ createdAt: 1 })

@@ -226,3 +226,46 @@ describe("POST /api/auth/demo", () => {
     expect(publish.statusCode).toBe(403);
   });
 });
+
+describe("POST /api/auth/claim", () => {
+  const { seedShowcase } = require("../scripts/seed_showcase");
+  const original = process.env.DEMO_MODE;
+  afterEach(() => { process.env.DEMO_MODE = original; });
+
+  it("upgrades a guest in place, keeping their courses", async () => {
+    process.env.DEMO_MODE = "true";
+    await seedShowcase();
+    const guest = await request(app).post("/api/auth/demo");
+
+    const res = await request(app)
+      .post("/api/auth/claim")
+      .set("Authorization", `Bearer ${guest.body.token}`)
+      .send({ name: "Real Person", email: "Real@Example.com", password: "password123" });
+    expect(res.statusCode).toBe(200);
+    expect(res.body.isDemo).toBe(false);
+    expect(res.body._id).toBe(guest.body._id);
+
+    const login = await request(app).post("/api/auth/login").send({ email: "real@example.com", password: "password123" });
+    expect(login.statusCode).toBe(200);
+    const mine = await request(app).get("/api/courses/mine").set("Authorization", `Bearer ${login.body.token}`);
+    expect(mine.body.length).toBe(1);
+  });
+
+  it("rejects claiming a regular account or a taken email", async () => {
+    const regular = await register("regular@example.com");
+    const notGuest = await request(app)
+      .post("/api/auth/claim")
+      .set("Authorization", `Bearer ${regular.token}`)
+      .send({ name: "X Y", email: "new@example.com", password: "password123" });
+    expect(notGuest.statusCode).toBe(400);
+
+    process.env.DEMO_MODE = "true";
+    await seedShowcase();
+    const guest = await request(app).post("/api/auth/demo");
+    const taken = await request(app)
+      .post("/api/auth/claim")
+      .set("Authorization", `Bearer ${guest.body.token}`)
+      .send({ name: "X Y", email: "regular@example.com", password: "password123" });
+    expect(taken.statusCode).toBe(409);
+  });
+});

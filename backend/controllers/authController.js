@@ -209,6 +209,33 @@ async function demoLogin(req, res) {
   res.status(201).json(userPayload(user, token));
 }
 
+/**
+ * Turn the current guest account into a regular one, keeping everything the
+ * guest created. Only valid for demo users; the address must be unused.
+ */
+async function claimGuest(req, res) {
+  if (!req.user?.isDemo) {
+    res.status(400);
+    throw new Error("Only guest accounts can be claimed");
+  }
+  const { name, email, password } = req.body;
+  if (await User.exists({ email })) {
+    res.status(409);
+    throw new Error("An account with this email already exists");
+  }
+  const user = await User.findById(req.user._id).select("+password");
+  user.name = name;
+  user.email = email;
+  user.password = password;
+  user.isDemo = false;
+  await user.save();
+
+  // Rotate the session so no guest-era refresh token outlives the upgrade.
+  await revokeRefreshToken(readCookie(req, REFRESH_COOKIE));
+  const token = await issueSession(res, user);
+  res.json(userPayload(user, token));
+}
+
 /** Public capability flags so the UI can hide options the server can't honour. */
 function authConfig(req, res) {
   res.json({
@@ -220,6 +247,7 @@ function authConfig(req, res) {
 
 module.exports = {
   demoLogin: asyncHandler(demoLogin),
+  claimGuest: asyncHandler(claimGuest),
   authConfig,
   register: asyncHandler(register),
   login: asyncHandler(login),

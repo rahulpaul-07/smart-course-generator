@@ -1,25 +1,30 @@
-import type { ReactNode } from 'react';
-import { Auth0Provider } from '@auth0/auth0-react';
+import { lazy, Suspense, type ReactNode } from 'react';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import { hasAuth0Config } from './contexts/Auth0Bridge';
 
-const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || 'dummy-google-client-id';
+const Auth0BridgeProvider = lazy(() => import('./contexts/Auth0BridgeProvider'));
 
-// Auth0Provider always wraps the tree -- even when Auth0 isn't configured --
-// using inert placeholder values in that case. This keeps useAuth0() safe to
-// call unconditionally in hooks/useAuth.tsx (React's Rules of Hooks forbid
-// calling a hook only when a condition is true); actual Auth0 session state
-// is simply ignored downstream when hasAuth0Config is false.
+const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
+
+/**
+ * Identity-provider wrappers, each mounted only when configured.
+ *
+ * Both used to wrap every page unconditionally with placeholder credentials:
+ * the Auth0 SDK sat in the entry bundle, and GoogleOAuthProvider injected
+ * Google's third-party GSI script into every page load -- even on deployments
+ * where neither sign-in method was enabled.
+ */
 export function AuthWrapper({ children }: { children: ReactNode }) {
-  return (
-    <Auth0Provider
-      domain={import.meta.env.VITE_AUTH0_DOMAIN || 'not-configured.auth0.com'}
-      clientId={import.meta.env.VITE_AUTH0_CLIENT_ID || 'dummy-auth0-client-id'}
-      authorizationParams={{ redirect_uri: window.location.origin }}
-    >
-      <GoogleOAuthProvider clientId={googleClientId}>
-        {children}
-      </GoogleOAuthProvider>
-    </Auth0Provider>
-  );
+  let tree = children;
+  if (googleClientId) {
+    tree = <GoogleOAuthProvider clientId={googleClientId}>{tree}</GoogleOAuthProvider>;
+  }
+  if (hasAuth0Config) {
+    tree = (
+      <Suspense fallback={null}>
+        <Auth0BridgeProvider>{tree}</Auth0BridgeProvider>
+      </Suspense>
+    );
+  }
+  return <>{tree}</>;
 }
-

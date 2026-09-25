@@ -1,6 +1,7 @@
 import React from "react";
 import { Sidebar } from "./Sidebar";
 import { TopNavigation } from "./TopNavigation";
+import { GuestBanner } from "./GuestBanner";
 import { LayoutProvider } from "@/contexts/LayoutContext";
 
 interface AppShellProps {
@@ -13,6 +14,7 @@ export function AppShell({ children }: AppShellProps) {
       <div className="flex h-screen w-full bg-background text-foreground font-sans selection:bg-primary/30">
         <Sidebar />
         <div className="flex flex-col flex-1 min-w-0">
+          <GuestBanner />
           <TopNavigation />
           <main className="flex-1 min-h-0 overflow-y-auto">
             {children}

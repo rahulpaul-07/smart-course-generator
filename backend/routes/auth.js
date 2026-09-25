@@ -1,5 +1,5 @@
 const express = require("express");
-const { register, login, refresh, logout, getMe, auth0Sync, googleLogin, demoLogin, authConfig } = require("../controllers/authController");
+const { register, login, refresh, logout, getMe, auth0Sync, googleLogin, demoLogin, authConfig, claimGuest } = require("../controllers/authController");
 const { verifyAuth0Token } = require("../middlewares/auth0Auth");
 const { validateRequest } = require("../middlewares/validateRequest");
 const { registerSchema, loginSchema, googleLoginSchema, auth0SyncSchema } = require("../validations/authValidation");
@@ -20,5 +20,6 @@ router.post("/google", authLimiter, validateRequest(googleLoginSchema), googleLo
 // Protected routes
 router.get("/me", verifyAuth0Token, getMe);
 router.post("/auth0-sync", verifyAuth0Token, auth0Sync);
+router.post("/claim", authLimiter, verifyAuth0Token, validateRequest(registerSchema), claimGuest);
 
 module.exports = router;

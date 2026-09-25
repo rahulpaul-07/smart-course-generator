@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
-import { useAuth0 } from '@auth0/auth0-react';
+import { useAuth0Bridge, hasAuth0Config } from '../contexts/Auth0Bridge';
 import toast from 'react-hot-toast';
 import api from '../utils/api';
 import { authService } from '../services/authService';
@@ -21,20 +21,17 @@ interface AuthContextValue {
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
-const hasAuth0Config = !!(import.meta.env.VITE_AUTH0_DOMAIN && import.meta.env.VITE_AUTH0_CLIENT_ID);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  // Auth0Provider always wraps the app (see AuthWrapper.tsx), using inert
-  // placeholder values when Auth0 isn't configured -- so this hook is safe
-  // to call unconditionally per React's Rules of Hooks. Actual Auth0 session
-  // state below is ignored whenever hasAuth0Config is false.
+  // Safe to call unconditionally: without Auth0 configured this returns an
+  // inert bridge (see contexts/Auth0Bridge.tsx).
   const {
     getAccessTokenSilently,
     isAuthenticated: auth0SessionFlag,
     isLoading: auth0LoadingFlag,
     loginWithRedirect,
     logout: logoutFromAuth0,
-  } = useAuth0();
+  } = useAuth0Bridge();
 
   const hasAuth0Session = hasAuth0Config && auth0SessionFlag;
   const auth0Loading = hasAuth0Config && auth0LoadingFlag;
