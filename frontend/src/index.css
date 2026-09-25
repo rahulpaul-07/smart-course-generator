@@ -1,18 +1,16 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 0 0% 97%;
-    --foreground: 240 10% 10%;
+    --background: 0 0% 98.5%;
+    --foreground: 240 10% 6%;
     --card: 0 0% 100%;
     --card-foreground: 240 10% 10%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 10%;
-    --primary: 243 75% 59%;
+    --primary: 245 75% 58%;
     --primary-foreground: 0 0% 100%;
     --secondary: 240 5% 94%;
     --secondary-foreground: 240 10% 15%;
@@ -26,22 +24,23 @@
     --success-foreground: 0 0% 100%;
     --warning: 38 92% 50%;
     --warning-foreground: 38 30% 12%;
-    --border: 240 6% 88%;
-    --input: 240 6% 88%;
-    --ring: 243 75% 59%;
-    --radius: 0.5rem;
+    --border: 240 6% 90%;
+    --input: 240 6% 90%;
+    --ring: 245 75% 58%;
+    --radius: 0.625rem;
+    --grid-line: 240 10% 6% / 0.05;
   }
 
   .dark {
-    --background: 240 10% 6%;
-    --foreground: 0 0% 96%;
-    --card: 240 8% 9%;
-    --card-foreground: 0 0% 96%;
-    --popover: 240 8% 9%;
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 97%;
+    --card: 240 7% 7%;
+    --card-foreground: 0 0% 97%;
+    --popover: 240 7% 8%;
     --popover-foreground: 0 0% 96%;
-    --primary: 239 84% 67%;
+    --primary: 245 90% 70%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 240 6% 14%;
+    --secondary: 240 5% 13%;
     --secondary-foreground: 0 0% 92%;
     --muted: 240 6% 14%;
     --muted-foreground: 240 5% 60%;
@@ -53,9 +52,10 @@
     --success-foreground: 0 0% 100%;
     --warning: 38 92% 55%;
     --warning-foreground: 38 30% 10%;
-    --border: 240 6% 16%;
-    --input: 240 6% 16%;
-    --ring: 239 84% 67%;
+    --border: 240 4% 15%;
+    --input: 240 4% 15%;
+    --ring: 245 90% 70%;
+    --grid-line: 0 0% 100% / 0.045;
   }
 
   * {
@@ -80,9 +80,15 @@ body {
   min-width: 320px;
   min-height: 100vh;
   overflow-x: hidden;
-  font-family: "DM Sans", system-ui, sans-serif;
+  font-family: "Geist", system-ui, sans-serif;
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
+/* Was rgba(255,255,255,.05): invisible on the light theme's near-white
+   background. Now driven by a per-theme token. */
 body::before {
   position: fixed;
   z-index: -1;
@@ -91,8 +97,8 @@ body::before {
   content: "";
   opacity: 0.15;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    linear-gradient(hsl(var(--grid-line)) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(var(--grid-line)) 1px, transparent 1px);
   background-size: 40px 40px;
   mask-image: radial-gradient(circle at top center, black, transparent 80%);
 }
@@ -103,8 +109,20 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: "DM Sans", system-ui, sans-serif;
-  letter-spacing: -0.01em;
+  font-family: "Geist", system-ui, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+/* Every animation in the app honours the OS "reduce motion" setting. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 button,
@@ -196,8 +214,8 @@ select:focus-visible {
 
   .soft-grid {
     background-image:
-      linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+      linear-gradient(hsl(var(--grid-line)) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--grid-line)) 1px, transparent 1px);
     background-size: 40px 40px;
   }
 
@@ -327,135 +345,6 @@ select:focus-visible {
   transform-origin: left;
 }
 
-.auth-stage {
-  background:
-    radial-gradient(circle at 15% 12%, hsl(var(--primary) / 0.12), transparent 26rem),
-    radial-gradient(circle at 78% 85%, hsl(var(--destructive) / 0.08), transparent 28rem),
-    hsl(var(--background));
-}
-
-.auth-aurora {
-  width: 34rem;
-  height: 34rem;
-  border-radius: 999px;
-  filter: blur(110px);
-  opacity: 0.23;
-  will-change: transform;
-}
-
-.auth-aurora-one {
-  top: -18rem;
-  left: 18%;
-  background: hsl(var(--primary));
-  animation: auroraOne 13s ease-in-out infinite alternate;
-}
-
-.auth-aurora-two {
-  right: -18rem;
-  bottom: -14rem;
-  background: hsl(var(--destructive));
-  animation: auroraTwo 16s ease-in-out infinite alternate;
-}
-
-.auth-topic-chip {
-  animation: featureGlow 3s ease-in-out infinite;
-}
-
-.auth-workspace {
-  transform: perspective(1200px) rotateX(1.5deg) rotateY(-1.5deg);
-  animation: workspaceFloat 8s ease-in-out infinite;
-}
-
-.auth-workspace::after {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  content: "";
-  opacity: 0.35;
-  background: linear-gradient(105deg, transparent 32%, hsl(var(--primary) / 0.08) 48%, transparent 64%);
-  transform: translateX(-100%);
-  animation: workspaceShine 7s 2s ease-in-out infinite;
-}
-
-.auth-prompt-text {
-  max-height: 3.75rem;
-  overflow: hidden;
-  opacity: 0;
-  animation: promptReveal 1.8s 0.35s steps(58, end) forwards;
-}
-
-.auth-idea-card,
-.auth-module-row {
-  opacity: 0;
-  transform: translateY(8px);
-  animation: authItemReveal 0.55s ease forwards;
-}
-
-.auth-feature-chip {
-  animation: featureGlow 3s ease-in-out infinite;
-}
-
-.auth-live-badge::before {
-  display: inline-block;
-  width: 0.35rem;
-  height: 0.35rem;
-  margin-right: 0.35rem;
-  border-radius: 999px;
-  background: hsl(var(--success));
-  content: "";
-  box-shadow: 0 0 8px hsl(var(--success) / 0.8);
-  animation: livePulse 1.4s ease-in-out infinite;
-}
-
-.auth-progress-ring {
-  stroke-dasharray: 107;
-  stroke-dashoffset: 107;
-  animation: progressDraw 2.4s 0.5s ease forwards;
-}
-
-@keyframes auroraOne {
-  from { transform: translate3d(-5%, -4%, 0) scale(0.9); }
-  to { transform: translate3d(20%, 18%, 0) scale(1.18); }
-}
-
-@keyframes auroraTwo {
-  from { transform: translate3d(0, 0, 0) scale(0.9); }
-  to { transform: translate3d(-26%, -20%, 0) scale(1.16); }
-}
-
-@keyframes workspaceFloat {
-  0%, 100% { transform: perspective(1200px) rotateX(1.5deg) rotateY(-1.5deg) translateY(0); }
-  50% { transform: perspective(1200px) rotateX(0deg) rotateY(0deg) translateY(-7px); }
-}
-
-@keyframes workspaceShine {
-  0%, 35% { transform: translateX(-100%); }
-  65%, 100% { transform: translateX(100%); }
-}
-
-@keyframes promptReveal {
-  from { max-width: 0; opacity: 0.3; }
-  to { max-width: 100%; opacity: 1; }
-}
-
-@keyframes authItemReveal {
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes featureGlow {
-  0%, 100% { border-color: hsl(var(--border)); color: hsl(var(--muted-foreground)); }
-  50% { border-color: hsl(var(--primary) / 0.3); color: hsl(var(--primary)); }
-}
-
-@keyframes livePulse {
-  0%, 100% { opacity: 0.45; transform: scale(0.85); }
-  50% { opacity: 1; transform: scale(1.15); }
-}
-
-@keyframes progressDraw {
-  to { stroke-dashoffset: 34; }
-}
-
 @media print {
   body {
     background: white;
@@ -478,16 +367,5 @@ select:focus-visible {
 
   [data-print-content] * {
     color: #111827 !important;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    scroll-behavior: auto !important;
-    animation-duration: 1ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 1ms !important;
   }
 }

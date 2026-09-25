@@ -3,10 +3,12 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { useAuth } from './hooks/useAuth';
 import ProtectedRoute from './components/ProtectedRoute';
-import { AppShell } from './components/layout/AppShell';
+import { OpenPage } from './components/layout/PublicLayout';
 import LoadingSpinner from './components/LoadingSpinner';
 
 import ErrorBoundary from './components/ErrorBoundary';
+
+const AppShell = lazy(() => import('./components/layout/AppShell').then((m) => ({ default: m.AppShell })));
 
 const withSuspense = <P extends object>(Component: React.ComponentType<P>) => {
   return function SuspensedComponent(props: P) {
@@ -19,9 +21,12 @@ const withSuspense = <P extends object>(Component: React.ComponentType<P>) => {
 };
 
 import LandingPage from './pages/LandingPage';
-import LoginPage from './pages/LoginPage';
-import SignupPage from './pages/SignupPage';
-import OnboardingPage from './pages/OnboardingPage';
+// Only the landing page is in the entry chunk; everything a first-time
+// visitor doesn't need (auth forms, Google OAuth, the app shell with its menus)
+// loads on demand.
+const LoginPage = withSuspense(lazy(() => import('./pages/LoginPage')));
+const SignupPage = withSuspense(lazy(() => import('./pages/SignupPage')));
+const OnboardingPage = withSuspense(lazy(() => import('./pages/OnboardingPage')));
 
 const CertificatePage = withSuspense(lazy(() => import('./pages/CertificatePage')));
 const CertificatesPage = withSuspense(lazy(() => import('./pages/CertificatesPage')));
@@ -42,6 +47,7 @@ const CommunityTemplatesPage = withSuspense(lazy(() => import('./pages/Community
 const LeaderboardPage = withSuspense(lazy(() => import('./pages/LeaderboardPage')));
 const SettingsPage = withSuspense(lazy(() => import('./pages/SettingsPage')));
 const CoursesPage = withSuspense(lazy(() => import('./pages/CoursesPage')));
+const SaveAccountPage = withSuspense(lazy(() => import('./pages/SaveAccountPage')));
 const NotFoundPage = withSuspense(lazy(() => import('./pages/NotFoundPage')));
 
 function GuestRoute({ children }: { children: React.ReactNode }) {
@@ -56,7 +62,9 @@ function GuestRoute({ children }: { children: React.ReactNode }) {
 function DashboardPage({ children }: { children: React.ReactNode }) {
   return (
     <ProtectedRoute>
-      <AppShell>{children}</AppShell>
+      <Suspense fallback={<div className="flex min-h-screen items-center justify-center"><LoadingSpinner text="Loading..." /></div>}>
+        <AppShell>{children}</AppShell>
+      </Suspense>
     </ProtectedRoute>
   );
 }
@@ -71,8 +79,9 @@ export default function App() {
           style: {
             background: 'hsl(var(--card) / 0.9)',
             border: '1px solid hsl(var(--border) / 0.5)',
-            borderRadius: '16px', // rounded-2xl
-            boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)', // shadow-lg
+            borderRadius: '14px',
+            boxShadow: '0 10px 30px -10px rgba(0, 0, 0, 0.35)',
+            fontSize: '14px',
             color: 'hsl(var(--foreground))',
             backdropFilter: 'blur(12px)',
           },
@@ -88,8 +97,10 @@ export default function App() {
         <Route path="/onboarding" element={<ProtectedRoute><OnboardingPage /></ProtectedRoute>} />
         <Route path="/dashboard" element={<DashboardPage><HomePage /></DashboardPage>} />
         <Route path="/courses" element={<DashboardPage><CoursesPage /></DashboardPage>} />
-        <Route path="/ai-router" element={<DashboardPage><AiRouterPage /></DashboardPage>} />
-        <Route path="/evals" element={<DashboardPage><EvalsPage /></DashboardPage>} />
+        {/* Transparency pages: public, and inside the shell when signed in. */}
+        <Route path="/status" element={<OpenPage><AiRouterPage /></OpenPage>} />
+        <Route path="/ai-router" element={<OpenPage><AiRouterPage /></OpenPage>} />
+        <Route path="/evals" element={<OpenPage><EvalsPage /></OpenPage>} />
         <Route path="/course/:id" element={<DashboardPage><CourseOverviewPage /></DashboardPage>} />
         <Route path="/course/:id/certificate" element={<DashboardPage><CertificatePage /></DashboardPage>} />
         <Route path="/certificate/:id" element={<CertificatePage />} />
@@ -107,6 +118,7 @@ export default function App() {
         <Route path="/profile/:userId" element={<DashboardPage><PublicProfilePage /></DashboardPage>} />
         <Route path="/community" element={<DashboardPage><CommunityTemplatesPage /></DashboardPage>} />
         <Route path="/leaderboard" element={<DashboardPage><LeaderboardPage /></DashboardPage>} />
+        <Route path="/save-account" element={<DashboardPage><SaveAccountPage /></DashboardPage>} />
         <Route path="/settings" element={<DashboardPage><SettingsPage /></DashboardPage>} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

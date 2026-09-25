@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useLocation, useSearchParams } from "react-router-dom";
-import { Menu, Search, User, X, Settings, BrainCircuit } from "lucide-react";
+import { Menu, Search, User, X, Settings } from "lucide-react";
+import { LogoMark } from "@/components/brand/Logo";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -81,7 +82,7 @@ export function TopNavigation() {
               <div className="hidden md:flex flex-col items-end">
                 <span className="text-sm font-medium leading-none">{user?.name || "Guest"}</span>
                 <span className="text-xs text-muted-foreground mt-1">
-                  {user ? "Signed in" : "Not signed in"}
+                  {user?.isDemo ? "Guest account" : user ? "Signed in" : "Not signed in"}
                 </span>
               </div>
               <DropdownMenu>
@@ -144,9 +145,7 @@ export function TopNavigation() {
                   onClick={() => setMobileMenuOpen(false)}
                   className="flex items-center gap-2 font-bold text-lg text-foreground tracking-tight focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg"
                 >
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary shadow-lg shadow-primary/20 shrink-0">
-                    <BrainCircuit className="h-5 w-5 text-primary-foreground" />
-                  </div>
+                  <LogoMark className="h-8 w-8 shrink-0" />
                   CourseAI
                 </Link>
                 <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(false)}>

@@ -1,36 +1,11 @@
-import {
-  ArrowRight,
-  BookOpen,
-  BrainCircuit,
-  Check,
-  Code2,
-  Languages,
-  LineChart,
-  Microscope,
-  Palette,
-  Sparkles,
-  WandSparkles,
-} from 'lucide-react';
+import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-
-const LEARNING_PATH = [
-  { label: 'Understand the foundations', detail: 'Concepts + examples', complete: true },
-  { label: 'Practice with guidance', detail: 'Interactive exercises', active: true },
-  { label: 'Build something real', detail: 'Personalized project' },
-];
-
-const TOPICS = [
-  { icon: Code2, label: 'Development' },
-  { icon: LineChart, label: 'Business' },
-  { icon: Languages, label: 'Languages' },
-  { icon: Palette, label: 'Creative skills' },
-];
-
-const COURSE_IDEAS = [
-  { icon: Code2, label: 'Build a full-stack app', color: 'text-primary bg-primary/10 border-primary/15' },
-  { icon: Microscope, label: 'Explore machine learning', color: 'text-destructive bg-destructive/10 border-destructive/15' },
-  { icon: LineChart, label: 'Understand personal finance', color: 'text-success bg-success/10 border-success/15' },
-];
+import { ArrowUpRight, Check, Loader2 } from 'lucide-react';
+import { Logo } from '@/components/brand/Logo';
+import { BorderBeam } from '@/components/magic/border-beam';
+import { DotPattern } from '@/components/magic/dot-pattern';
+import { useAuthConfig } from '@/hooks/useAuthConfig';
+import { useDemoLogin } from '@/hooks/useDemoLogin';
 
 export function GoogleIcon() {
   return (
@@ -43,232 +18,106 @@ export function GoogleIcon() {
   );
 }
 
-function LearningStudio() {
+const PERKS = [
+  'A full curriculum from one sentence, in your language',
+  'Lessons that stream in as they are written',
+  'Quizzes, flashcards, labs and a tutor on every lesson',
+  'Mock interviews and verifiable certificates',
+];
+
+function Showcase() {
   return (
-    <div className="auth-workspace relative mt-9 max-w-2xl overflow-hidden rounded-2xl border border-border bg-card/90 shadow-lg backdrop-blur-xl">
-      <div className="flex items-center justify-between gap-3 border-b border-border bg-foreground/10 px-4 py-3">
-        <div className="flex items-center gap-2">
-          <span className="grid h-7 w-7 place-items-center rounded-lg bg-gradient-to-br from-brand-500 to-primary">
-            <WandSparkles className="h-3.5 w-3.5" />
-          </span>
-          <div>
-            <p className="text-[10px] font-bold text-foreground/90">AI Learning Studio</p>
-            <p className="text-[8px] uppercase tracking-[0.16em] text-muted-foreground">Designing your course</p>
-          </div>
-        </div>
-        <span className="auth-live-badge rounded-full border border-success/15 bg-success/10 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-success">
-          Generating
-        </span>
+    <div className="dark relative hidden overflow-hidden border-l border-border bg-background text-foreground lg:flex lg:flex-col lg:justify-between">
+      <DotPattern className="[mask-image:radial-gradient(ellipse_at_top_right,black,transparent_70%)]" />
+      <div aria-hidden className="absolute -right-24 -top-24 h-96 w-96 rounded-full bg-primary/25 blur-3xl" />
+      <div aria-hidden className="absolute -bottom-32 left-10 h-80 w-80 rounded-full bg-fuchsia-500/10 blur-3xl" />
+
+      <div className="relative p-12 xl:p-16">
+        <p className="text-sm font-medium text-primary">Why CourseAI</p>
+        <h2 className="mt-4 max-w-md text-4xl font-semibold leading-[1.1] tracking-tight xl:text-5xl">
+          Learn anything, <span className="font-serif font-normal italic text-muted-foreground">properly.</span>
+        </h2>
+        <ul className="mt-10 space-y-4">
+          {PERKS.map((perk) => (
+            <li key={perk} className="flex items-start gap-3 text-[15px] text-muted-foreground">
+              <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/15">
+                <Check className="h-3 w-3 text-primary" />
+              </span>
+              {perk}
+            </li>
+          ))}
+        </ul>
       </div>
 
-      <div className="grid lg:grid-cols-[1.12fr_0.88fr]">
-        <div className="border-b border-border p-4 lg:border-b-0 lg:border-r">
-          <p className="mb-2 text-[9px] font-bold uppercase tracking-[0.18em] text-muted-foreground">Learning goal</p>
-          <div className="rounded-xl border border-brand-400/20 bg-brand-500/[0.07] p-3">
-            <div className="flex gap-2">
-              <Sparkles className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand-300" />
-              <p className="auth-prompt-text font-mono text-[10px] leading-5 text-foreground/90">
-                Teach me a practical skill from beginner to confident, with clear lessons and a real project.
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-4 space-y-2">
-            {COURSE_IDEAS.map(({ icon: Icon, label, color }, index) => (
-              <div
-                key={label}
-                className="auth-idea-card flex items-center gap-3 rounded-xl border border-border bg-foreground/10 p-2.5"
-                style={{ animationDelay: `${0.7 + index * 0.45}s` }}
-              >
-                <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-lg border ${color}`}>
-                  <Icon className="h-3.5 w-3.5" />
-                </span>
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate text-[10px] font-semibold text-foreground/90">{label}</span>
-                  <span className="mt-0.5 block text-[8px] text-muted-foreground">Personalized path ready</span>
-                </span>
-                <Check className="h-3.5 w-3.5 text-success" />
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-4 flex gap-2">
-            {['Lessons', 'Practice', 'AI tutor', 'Certificate'].map((item, index) => (
-              <span
-                key={item}
-                className="auth-feature-chip flex-1 rounded-lg border border-border bg-foreground/10 px-2 py-1.5 text-center text-[8px] font-semibold text-muted-foreground"
-                style={{ animationDelay: `${index * 0.35}s` }}
-              >
-                {item}
-              </span>
-            ))}
-          </div>
+      <div className="relative m-12 mt-0 rounded-2xl border border-border bg-card/70 p-5 backdrop-blur xl:m-16 xl:mt-0">
+        <div className="flex items-center justify-between text-xs text-muted-foreground">
+          <span className="font-mono">event: stage</span>
+          <span className="inline-flex items-center gap-1.5">
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" /> streaming
+          </span>
         </div>
-
-        <div className="p-4">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-brand-300">Your course</p>
-              <h3 className="mt-1 font-display text-xs font-bold text-foreground">A path built around you</h3>
+        <p className="mt-3 text-sm font-medium">Asynchronous JavaScript, From Callbacks to Async Iterators</p>
+        <div className="mt-4 space-y-2">
+          {['The Event Loop, Macrotasks and Microtasks', 'Promises as State Machines', 'async/await Without Accidental Serialisation'].map((l, i) => (
+            <div key={l} className="flex items-center gap-2 text-xs text-muted-foreground">
+              <span className={i === 0 ? 'h-1.5 w-1.5 rounded-full bg-emerald-400' : i === 1 ? 'h-1.5 w-1.5 animate-pulse rounded-full bg-primary' : 'h-1.5 w-1.5 rounded-full bg-muted-foreground/40'} />
+              {l}
             </div>
-            <div className="relative grid h-11 w-11 place-items-center rounded-full bg-foreground/10">
-              <svg viewBox="0 0 40 40" className="absolute inset-0 -rotate-90">
-                <circle cx="20" cy="20" r="17" fill="none" stroke="hsl(var(--foreground) / 0.08)" strokeWidth="3" />
-                <circle className="auth-progress-ring" cx="20" cy="20" r="17" fill="none" stroke="url(#authProgress)" strokeWidth="3" strokeLinecap="round" />
-                <defs>
-                  <linearGradient id="authProgress">
-                    <stop stopColor="hsl(var(--primary))" />
-                    <stop offset="1" stopColor="hsl(var(--warning))" />
-                  </linearGradient>
-                </defs>
-              </svg>
-              <span className="text-[8px] font-bold text-brand-200">68%</span>
-            </div>
-          </div>
-
-          <div className="mt-4 space-y-2">
-            {LEARNING_PATH.map((step, index) => (
-              <div
-                key={step.label}
-                className={`auth-module-row flex items-center gap-2.5 rounded-xl border px-2.5 py-2.5 ${
-                  step.active
-                    ? 'border-brand-400/25 bg-brand-500/10'
-                    : 'border-transparent bg-foreground/10'
-                }`}
-                style={{ animationDelay: `${0.4 + index * 0.38}s` }}
-              >
-                <span className={`grid h-7 w-7 shrink-0 place-items-center rounded-lg text-[9px] font-bold ${
-                  step.complete
-                    ? 'bg-success/10 text-success'
-                    : step.active
-                      ? 'bg-brand-500 text-foreground shadow-lg shadow-brand-500/20'
-                      : 'bg-foreground/10 text-muted-foreground'
-                }`}>
-                  {step.complete ? <Check className="h-3 w-3" /> : index + 1}
-                </span>
-                <span className="min-w-0">
-                  <span className="block truncate text-[10px] font-semibold text-foreground/90">{step.label}</span>
-                  <span className="block text-[8px] text-muted-foreground">{step.detail}</span>
-                </span>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-4 rounded-xl border border-primary/15 bg-gradient-to-br from-primary/[0.07] to-brand-500/[0.06] p-3">
-            <div className="flex items-center gap-2">
-              <span className="grid h-7 w-7 place-items-center rounded-lg bg-primary/10 text-primary">
-                <BrainCircuit className="h-3.5 w-3.5" />
-              </span>
-              <div>
-                <p className="text-[9px] font-bold text-foreground/90">AI tutor included</p>
-                <p className="mt-0.5 text-[8px] text-muted-foreground">Ask questions at every step</p>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
+        <BorderBeam size={140} duration={10} />
       </div>
     </div>
   );
 }
 
 interface AuthLayoutProps {
-  children: React.ReactNode;
+  children: ReactNode;
   title: string;
   description?: string;
-  footer?: React.ReactNode;
+  footer?: ReactNode;
   eyebrow?: string;
 }
 
-export default function AuthLayout({
-  children,
-  title,
-  description,
-  footer,
-  eyebrow,
-}: AuthLayoutProps) {
-  return (
-    <main className="auth-stage relative min-h-screen overflow-x-hidden text-foreground lg:grid lg:grid-cols-[minmax(0,1.12fr)_minmax(450px,0.88fr)]">
-      <div className="auth-aurora auth-aurora-one pointer-events-none absolute" />
-      <div className="auth-aurora auth-aurora-two pointer-events-none absolute" />
+export default function AuthLayout({ children, title, description, footer, eyebrow }: AuthLayoutProps) {
+  const { demo } = useAuthConfig();
+  const { startDemo, starting } = useDemoLogin();
 
-      <section className="relative hidden min-h-screen overflow-hidden border-r border-border p-10 lg:flex lg:flex-col xl:p-14">
-        <Link to="/" className="relative z-20 flex w-fit items-center gap-3 text-foreground">
-          <span className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-brand-500 to-primary shadow-lg shadow-brand-500/20">
-            <BookOpen className="h-5 w-5" />
-          </span>
-          <span className="font-display text-lg font-bold tracking-tight">Course<span className="text-brand-300">AI</span></span>
+  return (
+    <div className="grid min-h-screen bg-background text-foreground lg:grid-cols-[1fr_1.05fr]">
+      <div className="flex flex-col px-6 py-8 sm:px-10">
+        <Link to="/" className="w-fit rounded-lg text-[15px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+          <Logo />
         </Link>
 
-        <div className="relative z-10 my-auto max-w-3xl py-8 animate-enter">
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-brand-400/20 bg-brand-500/10 px-3 py-1.5 text-xs font-medium text-brand-300">
-            {/* <Sparkles className="h-3.5 w-3.5" /> */}
-            Learn anything, built around you
-          </div>
-          <h2 className="gradient-text max-w-2xl font-display text-5xl font-extrabold leading-[1.04] tracking-[-0.055em] xl:text-6xl">
-            Turn any curiosity into real capability.
-          </h2>
-          <p className="mt-5 max-w-xl text-sm leading-7 text-muted-foreground xl:text-base">
-            CourseAI creates a complete learning journey for your goal, with clear lessons, hands-on practice, helpful videos, quizzes, and an AI tutor.
-          </p>
+        <main className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center py-12">
+          {eyebrow && <p className="text-sm font-medium text-primary">{eyebrow}</p>}
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight">{title}</h1>
+          {description && <p className="mt-2 text-sm text-muted-foreground">{description}</p>}
 
-          <div className="mt-5 flex max-w-xl flex-wrap gap-2">
-            {TOPICS.map(({ icon: Icon, label }, index) => (
-              <span
-                key={label}
-                className="auth-topic-chip inline-flex items-center gap-1.5 rounded-full border border-border bg-foreground/10 px-3 py-1.5 text-[10px] font-semibold text-muted-foreground"
-                style={{ animationDelay: `${index * 0.35}s` }}
-              >
-                <Icon className="h-3 w-3 text-brand-300" />
-                {label}
-              </span>
-            ))}
-          </div>
+          <div className="mt-8">{children}</div>
 
-          <LearningStudio />
-        </div>
+          {demo && (
+            <button
+              type="button"
+              onClick={startDemo}
+              disabled={starting}
+              className="mt-4 inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-dashed border-border text-sm text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground disabled:opacity-60"
+            >
+              {starting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+              Just looking? Try a guest account
+              <ArrowUpRight className="h-3.5 w-3.5" />
+            </button>
+          )}
 
-        <div className="relative z-10 flex items-center gap-5 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
-          <span>Any topic</span>
-          <span className="h-1 w-1 rounded-full bg-brand-400" />
-          <span>Your pace</span>
-          <span className="h-1 w-1 rounded-full bg-primary" />
-          <span>Real outcomes</span>
-        </div>
-      </section>
+          {footer && <p className="mt-8 text-center text-sm text-muted-foreground">{footer}</p>}
+        </main>
 
-      <section className="relative flex min-h-screen items-center justify-center px-4 py-8 sm:px-8 lg:px-10">
-        <div className="w-full max-w-md animate-enter-delay">
-          <Link to="/" className="mb-8 flex w-fit items-center gap-2.5 text-foreground lg:hidden">
-            <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-brand-500 to-primary shadow-lg shadow-brand-500/20">
-              <BookOpen className="h-4 w-4" />
-            </span>
-            <span className="font-display font-bold tracking-tight">Course<span className="text-brand-300">AI</span></span>
-          </Link>
-
-          <div className="relative overflow-hidden rounded-2xl border border-border bg-card/95 p-6 shadow-lg backdrop-blur-2xl sm:p-8">
-            <div className="pointer-events-none absolute -right-20 -top-24 h-48 w-48 rounded-full bg-brand-500/10 blur-3xl" />
-            <div className="relative mb-7">
-              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-brand-300">{eyebrow}</p>
-              <h1 className="font-display text-3xl font-bold tracking-tight text-foreground">{title}</h1>
-              <p className="mt-2.5 text-sm leading-6 text-muted-foreground">{description}</p>
-            </div>
-
-            <div className="relative">{children}</div>
-
-            <div className="relative mt-7 border-t border-border/30 pt-6 text-center text-sm text-muted-foreground">
-              {footer}
-            </div>
-          </div>
-
-          <Link
-            to="/"
-            className="mx-auto mt-6 flex w-fit items-center gap-1.5 text-xs font-medium text-muted-foreground transition hover:text-foreground/90"
-          >
-            Explore CourseAI
-            <ArrowRight className="h-3.5 w-3.5" />
-          </Link>
-        </div>
-      </section>
-    </main>
+        <p className="text-xs text-muted-foreground">
+          By continuing you agree to use AI-generated content responsibly.
+        </p>
+      </div>
+      <Showcase />
+    </div>
   );
 }

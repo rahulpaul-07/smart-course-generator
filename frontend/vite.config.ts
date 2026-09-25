@@ -10,6 +10,21 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    rolldownOptions: {
+      output: {
+        // Stable vendor chunks: app deploys don't invalidate the cached
+        // framework code, which changes far less often.
+        codeSplitting: {
+          groups: [
+            // react-dom/server is only used by the lazily loaded PDF exporter.
+            { name: 'react-vendor', test: /node_modules[\\/](react|react-dom(?![\\/](server|cjs[\\/]react-dom-server))|react-router|react-router-dom|scheduler)[\\/]/ },
+            { name: 'motion', test: /node_modules[\\/](framer-motion|motion-dom|motion-utils)[\\/]/ },
+          ],
+        },
+      },
+    },
+  },
   test: {
     environment: "jsdom",
     globals: true,
