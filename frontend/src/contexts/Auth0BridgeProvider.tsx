@@ -4,9 +4,18 @@ import { Auth0BridgeContext } from './Auth0Bridge';
 
 function Bridge({ children }: { children: ReactNode }) {
   const { isAuthenticated, isLoading, getAccessTokenSilently, loginWithRedirect, logout } = useAuth0();
+
+  // The SDK's overloads can resolve to undefined (e.g. with a detailed
+  // response); the bridge promises a token string or a rejection.
+  const getToken = async () => {
+    const token = await getAccessTokenSilently();
+    if (typeof token !== 'string' || !token) throw new Error('Auth0 returned no access token');
+    return token;
+  };
+
   return (
     <Auth0BridgeContext.Provider
-      value={{ configured: true, isAuthenticated, isLoading, getAccessTokenSilently, loginWithRedirect, logout }}
+      value={{ configured: true, isAuthenticated, isLoading, getAccessTokenSilently: getToken, loginWithRedirect, logout }}
     >
       {children}
     </Auth0BridgeContext.Provider>
