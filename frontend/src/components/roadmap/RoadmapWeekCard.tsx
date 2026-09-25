@@ -51,11 +51,17 @@ export function RoadmapWeekCard({
             : 'border-border/30 bg-card/30 hover:border-primary/30 hover:bg-card/50'
       }`}>
         
+        {/* Expand and complete are siblings: "Mark complete" used to be a
+            <button> nested inside the expand <button>, which is invalid HTML
+            and left the inner control unreliable for keyboard users. */}
+        <div className="flex items-center gap-3 p-4 sm:p-6">
         <button
+          type="button"
           onClick={() => toggleWeek(week.weekNumber)}
-          className="w-full flex items-center justify-between p-6 text-left focus-visible:outline-none focus-visible:bg-muted/50"
+          aria-expanded={isExpanded}
+          className="flex min-w-0 flex-1 items-center gap-3 rounded-lg text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         >
-          <div className="flex-1 min-w-0 pr-4">
+          <div className="flex-1 min-w-0">
             <div className="flex items-center gap-3 mb-1.5">
               <p className={`text-[11px] font-bold uppercase tracking-widest ${isCurrent ? 'text-primary' : isCompleted ? 'text-success' : 'text-muted-foreground'}`}>
                 Week {week.weekNumber}
@@ -69,22 +75,23 @@ export function RoadmapWeekCard({
             </h3>
           </div>
           
-          <div className="flex items-center gap-4 shrink-0">
-            <button
-              onClick={(e) => toggleCompletion(e, week.weekNumber)}
-              className={`h-9 px-3 rounded-lg text-xs font-bold transition-colors border shadow-sm flex items-center gap-2 ${
-                isCompleted
-                  ? 'bg-background border-border text-muted-foreground hover:bg-muted'
-                  : 'bg-background border-border text-foreground hover:border-primary/50 hover:text-primary'
-              }`}
-            >
-              {isCompleted ? 'Completed' : 'Mark Complete'}
-            </button>
-            <div className={`h-8 w-8 rounded-full flex items-center justify-center transition-transform duration-300 ${isExpanded ? 'bg-muted rotate-180' : 'hover:bg-muted'}`}>
-              <ChevronDown className="h-4 w-4 text-muted-foreground" />
-            </div>
+          <div className={`h-8 w-8 shrink-0 rounded-full flex items-center justify-center transition-transform duration-300 ${isExpanded ? 'bg-muted rotate-180' : ''}`}>
+            <ChevronDown className="h-4 w-4 text-muted-foreground" />
           </div>
         </button>
+        <button
+          type="button"
+          onClick={(e) => toggleCompletion(e, week.weekNumber)}
+          aria-pressed={isCompleted}
+          className={`h-9 shrink-0 px-3 rounded-lg text-xs font-bold transition-colors border shadow-sm flex items-center gap-2 ${
+            isCompleted
+              ? 'bg-background border-border text-muted-foreground hover:bg-muted'
+              : 'bg-background border-border text-foreground hover:border-primary/50 hover:text-primary'
+          }`}
+        >
+          {isCompleted ? 'Completed' : 'Mark complete'}
+        </button>
+        </div>
 
         <AnimatePresence initial={false}>
           {isExpanded && (

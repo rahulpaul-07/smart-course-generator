@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
+import { PageHeader } from '@/components/ui/PageHeader';
 import { User, Save, Mail, Sparkles, Loader2, BookOpen, Trophy } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { userService } from '../services/userService';
 import { analyticsService } from '../services/analyticsService';
 import { useAuth } from '../hooks/useAuth';
 import { PageContainer } from '../components/layout/PageContainer';
-import { SectionHeader } from '../components/ui/SectionHeader';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -75,12 +75,12 @@ export default function ProfilePage() {
 
   return (
     <PageContainer>
-      <SectionHeader 
+      <PageHeader 
         title="Your Profile" 
         description="Manage your personal information and learning identity."
       />
 
-      <div className="grid lg:grid-cols-[1fr_350px] gap-8 mt-8">
+      <div className="grid lg:grid-cols-[1fr_350px] gap-8 mt-8 [&>*]:min-w-0">
         <div className="space-y-6">
           <Card className="bg-card/50 backdrop-blur-sm border-border/30 rounded-2xl">
             <CardHeader>
@@ -88,20 +88,22 @@ export default function ProfilePage() {
               <CardDescription>Update your photo and personal details.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="flex items-center gap-6">
-                <div className="relative group">
-                  <Avatar className="h-24 w-24 ring-4 ring-background shadow-md">
+              <div className="flex items-center gap-4 sm:gap-6">
+                <div className="relative group shrink-0">
+                  <Avatar className="h-16 w-16 sm:h-24 sm:w-24 ring-4 ring-background shadow-md">
                     <AvatarImage src={profile.avatar} />
                     <AvatarFallback className="bg-primary/10 text-primary text-2xl font-semibold">
                       {profile.name?.charAt(0)?.toUpperCase() || <User />}
                     </AvatarFallback>
                   </Avatar>
                 </div>
-                <div>
-                  <h3 className="text-lg font-medium">{profile.name}</h3>
-                  <div className="flex items-center gap-2 text-muted-foreground text-sm mt-1">
-                    <Mail className="w-4 h-4" />
-                    {user.email}
+                <div className="min-w-0">
+                  <h3 className="truncate text-lg font-medium">{profile.name}</h3>
+                  {/* Long addresses (guest emails especially) used to push the
+                      whole card off-screen on phones. */}
+                  <div className="mt-1 flex min-w-0 items-center gap-2 text-sm text-muted-foreground">
+                    <Mail className="h-4 w-4 shrink-0" />
+                    <span className="truncate" title={user.email}>{user.email}</span>
                   </div>
                   <Badge variant="secondary" className="mt-3 capitalize">
                     {profile.skillLevel} Level

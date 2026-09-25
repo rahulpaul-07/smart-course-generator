@@ -60,7 +60,22 @@ export function FeedbackPanel({ prep }: FeedbackPanelProps) {
 
   return (
     <div className="flex h-full flex-col bg-background/50">
-      <div className="flex-1 min-h-0 overflow-y-auto p-5 space-y-6 scroll-smooth">
+      <div className="flex-1 min-h-0 overflow-y-auto p-5 space-y-5 scroll-smooth">
+        {chat.length === 0 && !sending && (
+          <div className="rounded-2xl border border-dashed border-border/80 p-5 text-sm text-muted-foreground">
+            <p className="font-medium text-foreground">Practise out loud, in writing.</p>
+            <p className="mt-1">The interviewer asks follow-ups on your answers. Try:</p>
+            <ul className="mt-3 space-y-2">
+              {['Ask me a follow-up on the first question', 'Give me a hint for the coding problem without the answer', 'Run a five-minute behavioural round'].map((t) => (
+                <li key={t}>
+                  <button type="button" onClick={() => setMessage(t)} className="w-full rounded-lg border border-border/70 px-3 py-2 text-left text-[13px] transition-colors hover:border-primary/50 hover:text-foreground">
+                    {t}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
         <AnimatePresence initial={false}>
           {chat.map((msg: InterviewChatMessage, i: number) => (
             <motion.div 
@@ -68,8 +83,11 @@ export function FeedbackPanel({ prep }: FeedbackPanelProps) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.2 }}
               key={i} 
-              className={`flex w-full ${msg.role === 'candidate' ? 'justify-end' : 'justify-start'}`}
+              className={`flex w-full flex-col ${msg.role === 'candidate' ? 'items-end' : 'items-start'}`}
             >
+              <span className="mb-1 px-1 text-[11px] font-medium text-muted-foreground">
+                {msg.role === 'candidate' ? 'You' : 'Interviewer'}
+              </span>
               <div className={`max-w-[88%] rounded-2xl px-4 py-3 text-[14px] leading-relaxed shadow-sm ${
                 msg.role === 'candidate'
                   ? 'rounded-br-sm bg-foreground text-background font-medium'
@@ -129,7 +147,7 @@ export function FeedbackPanel({ prep }: FeedbackPanelProps) {
         <form onSubmit={sendMessage} className="relative flex items-end gap-2">
           {sending ? (
             <button type="button" onClick={stopGenerating} className="w-full h-12 flex items-center justify-center gap-2 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive font-bold text-sm transition-colors hover:bg-destructive/20 shadow-sm">
-              <XCircle className="h-4 w-4" /> Stop Generation
+              <XCircle className="h-4 w-4" /> Stop generating
             </button>
           ) : (
             <div className="relative flex-1 flex items-end bg-background border border-border/30 rounded-xl shadow-sm focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary/50 transition-all">
@@ -142,12 +160,13 @@ export function FeedbackPanel({ prep }: FeedbackPanelProps) {
                     sendMessage();
                   }
                 }}
-                placeholder="Message your Coach..."
+                placeholder="Reply to the interviewer…"
+                aria-label="Message the interviewer"
                 className="w-full bg-transparent px-4 py-3.5 text-sm text-foreground outline-none resize-none max-h-32"
                 rows={1}
                 disabled={sending}
               />
-              <button type="submit" disabled={!message.trim()} className="mb-1.5 mr-1.5 shrink-0 h-9 w-9 flex items-center justify-center bg-primary text-primary-foreground rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary/90 transition-colors shadow-sm">
+              <button type="submit" aria-label="Send message" disabled={!message.trim()} className="mb-1.5 mr-1.5 shrink-0 h-9 w-9 flex items-center justify-center bg-primary text-primary-foreground rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary/90 transition-colors shadow-sm">
                 <Send className="h-3.5 w-3.5" />
               </button>
             </div>

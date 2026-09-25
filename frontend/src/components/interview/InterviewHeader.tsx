@@ -61,25 +61,36 @@ export function InterviewHeader({
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {preps.map((p) => (
-              <button type="button" key={p._id} onClick={() => viewPrep(p._id)} className="group cursor-pointer rounded-2xl border border-border/30 bg-card/40 p-6 transition-all duration-300 hover:bg-card hover:border-primary/40 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:-translate-y-1 flex flex-col justify-between min-h-[180px] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 w-full">
-                <div>
-                  <div className="flex items-center justify-between mb-5">
-                    <span className={`px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${p.status === 'completed' ? 'bg-success/10 text-success border border-success/20' : 'bg-warning/10 text-warning border border-warning/20'}`}>
-                      {p.status}
+              // Open and delete are sibling controls: the delete <button> used
+              // to be nested inside the card's <button>, and only appeared on
+              // mouse hover, so touch and keyboard users could not reach it.
+              <div key={p._id} className="group relative">
+                <button
+                  type="button"
+                  onClick={() => viewPrep(p._id)}
+                  className="flex min-h-[160px] w-full flex-col justify-between rounded-2xl border border-border/70 bg-card/40 p-6 pr-14 text-left transition-colors hover:border-primary/40 hover:bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                >
+                  <div>
+                    <span className={`inline-block rounded-lg px-3 py-1 text-[10px] font-bold uppercase tracking-wider ${p.status === 'completed' ? 'border border-success/20 bg-success/10 text-success' : 'border border-warning/20 bg-warning/10 text-warning'}`}>
+                      {p.status === 'completed' ? 'Completed' : 'In progress'}
                     </span>
-                    <button onClick={(e: React.MouseEvent<HTMLButtonElement>) => { e.stopPropagation(); deletePrep(p._id); }} className="p-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive rounded-lg transition-colors opacity-0 group-hover:opacity-100">
-                      <Trash2 className="h-4 w-4" />
-                    </button>
+                    <h4 className="mt-4 line-clamp-2 text-lg font-semibold leading-snug">{p.topic}</h4>
                   </div>
-                  <h4 className="font-bold text-lg text-foreground line-clamp-2 leading-snug">{p.topic}</h4>
-                </div>
-                {p.status === 'completed' && (
-                  <div className="mt-6 flex items-center gap-2">
-                    <Trophy className="w-4 h-4 text-success" />
-                    <p className="text-sm text-muted-foreground font-semibold">Score: <span className="text-foreground">{p.overallScore}%</span></p>
-                  </div>
-                )}
-              </button>
+                  {p.status === 'completed' && (
+                    <p className="mt-6 flex items-center gap-2 text-sm text-muted-foreground">
+                      <Trophy className="h-4 w-4 text-success" /> Score <span className="font-semibold text-foreground">{p.overallScore}%</span>
+                    </p>
+                  )}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => deletePrep(p._id)}
+                  aria-label={`Delete interview: ${p.topic}`}
+                  className="absolute right-3 top-3 rounded-lg p-2 text-muted-foreground transition-opacity hover:bg-destructive/10 hover:text-destructive focus-visible:opacity-100 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
             ))}
             {preps.length === 0 && (
               <div className="col-span-full">

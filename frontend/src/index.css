@@ -113,6 +113,14 @@ h6 {
   letter-spacing: -0.02em;
 }
 
+/* Grid items default to min-width:auto, so one wide child (a chart, a code
+   block, a long unbreakable title) stretched its whole column past the
+   viewport. On phones that pushed the dashboard, course, roadmap and analytics
+   pages 25-312px off-screen. Let grid items shrink to their track instead. */
+.grid > * {
+  min-width: 0;
+}
+
 /* Every animation in the app honours the OS "reduce motion" setting. */
 @media (prefers-reduced-motion: reduce) {
   *,
