@@ -47,7 +47,7 @@ function useTypedPlaceholder(paused: boolean) {
 export function LandingHero() {
   const navigate = useNavigate();
   const { demo } = useAuthConfig();
-  const { startDemo, starting } = useDemoLogin();
+  const { startDemo, starting, waking } = useDemoLogin();
   const [topic, setTopic] = useState('');
   const placeholder = useTypedPlaceholder(topic.length > 0);
 
@@ -127,8 +127,8 @@ export function LandingHero() {
                 className="inline-flex items-center gap-1.5 font-medium text-foreground underline-offset-4 hover:underline disabled:opacity-60"
               >
                 {starting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
-                Try the demo, no sign-up
-                <ArrowUpRight className="h-3.5 w-3.5" />
+                <span aria-live="polite">{waking ? 'Waking the server, up to 30s…' : 'Try the demo, no sign-up'}</span>
+                {!starting && <ArrowUpRight className="h-3.5 w-3.5" />}
               </button>
             ) : (
               <Link to="/signup" className="inline-flex items-center gap-1.5 font-medium text-foreground underline-offset-4 hover:underline">
