@@ -34,9 +34,6 @@ exports.getHinglishAudio = async (req, res) => {
     }
     const lessonText = String(rawLessonText).slice(0, 2000);
 
-    // Echo back the hinglish text via header for the frontend to decode.
-    res.setHeader('x-hinglish-text', encodeURIComponent(lessonText));
-
     // Limit text length for TTS (Google TTS limit is 200 chars per request, but the module handles splitting or we can just fetch the first part)
     // google-tts-api `getAllAudioBase64` handles long text (>200 chars).
     const results = await googleTTS.getAllAudioBase64(lessonText, {

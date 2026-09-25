@@ -3,6 +3,7 @@ const groq = require("./groqService");
 const openrouter = require("./openrouterService");
 const AiTelemetry = require("../models/AiTelemetry");
 const circuitBreaker = require("./circuitBreaker");
+const { MODELS, AI_TIMEOUT_MS } = require("./aiModels");
 
 function logTelemetry(data) {
   try {
@@ -18,12 +19,14 @@ gemini.name = "gemini";
 groq.name = "groq";
 openrouter.name = "openrouter";
 
+// Model IDs come from aiModels.js (environment-overridable) so a provider
+// retiring a model is a config change, not a code change.
 const fallbackChain = [
-  { provider: gemini, model: "gemini-2.5-flash", key: "GEMINI_API_KEY" },
-  { provider: groq, model: "llama-3.3-70b-versatile", key: "GROQ_API_KEY" },
-  { provider: groq, model: "llama-3.1-8b-instant", key: "GROQ_API_KEY" },
-  { provider: openrouter, model: "openai/gpt-4o-mini", key: "OPENROUTER_API_KEY" },
-  { provider: openrouter, model: "openai/gpt-4o", key: "OPENROUTER_API_KEY" },
+  { provider: gemini, model: MODELS.gemini, key: "GEMINI_API_KEY" },
+  { provider: groq, model: MODELS.groq, key: "GROQ_API_KEY" },
+  { provider: groq, model: MODELS.groqFast, key: "GROQ_API_KEY" },
+  { provider: openrouter, model: MODELS.openrouter, key: "OPENROUTER_API_KEY" },
+  { provider: openrouter, model: MODELS.openrouterFallback, key: "OPENROUTER_API_KEY" },
 ];
 
 function getProviderChain() {
@@ -332,7 +335,7 @@ function resolveChain(chain) {
 
 const FRIENDLY_ERROR = "Our AI service is temporarily busy. Please try again in a minute.";
 const MAX_ATTEMPTS_PER_PROVIDER = 2; 
-const REQUEST_TIMEOUT_MS = 20000;
+const REQUEST_TIMEOUT_MS = AI_TIMEOUT_MS;
 
 function shouldRetry(error) {
   const msg = String(error?.message || error).toLowerCase();
@@ -341,7 +344,10 @@ function shouldRetry(error) {
   if (status === 429 || status === 500 || status === 502 || status === 503 || status === 504) return true;
   if (msg.includes('timeout') || msg.includes('abort') || msg.includes('econnreset') || msg.includes('etimedout') || msg.includes('connection reset')) return true;
   
-  if (status === 400 || status === 401 || status === 403) return false;
+  // 404 is a retired or mistyped model (Groq: model_not_found). Retrying it
+  // only burns the latency budget before failing over.
+  if (status === 400 || status === 401 || status === 403 || status === 404) return false;
+  if (msg.includes('model_not_found') || msg.includes('does not exist')) return false;
   if (msg.includes('invalid json') || msg.includes('malformed') || msg.includes('validation')) return false;
   
   return true;
@@ -607,4 +613,5 @@ module.exports._internal = {
   countsAgainstProviderHealth,
   resolveChain,
   getProviderChain,
+  shouldRetry,
 };

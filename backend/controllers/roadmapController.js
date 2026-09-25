@@ -150,6 +150,13 @@ async function toggleWeekCompletion(req, res) {
     const roadmap = await Roadmap.findOne({ _id: req.params.id, user: req.user._id });
     if (!roadmap) return res.status(404).json({ error: "Roadmap not found" });
 
+    // Any integer used to be accepted and stored, so a crafted request could
+    // mark week 999999 done and push the progress bar past 100%.
+    const totalWeeks = roadmap.weeks?.length || 0;
+    if (weekNumber < 1 || weekNumber > totalWeeks) {
+      return res.status(400).json({ error: `weekNumber must be between 1 and ${totalWeeks}.` });
+    }
+
     if (roadmap.completedWeeks.includes(weekNumber)) {
       roadmap.completedWeeks = roadmap.completedWeeks.filter((w) => w !== weekNumber);
     } else {

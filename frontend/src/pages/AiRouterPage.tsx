@@ -212,6 +212,17 @@ export default function AiRouterPage() {
         </div>
       )}
 
+      {data?.alerts?.length ? (
+        <div role="alert" className="mb-8 space-y-2 rounded-xl border border-destructive/40 bg-destructive/10 p-4 text-sm">
+          {data.alerts.map((a) => (
+            <p key={`${a.provider}:${a.model}`}>
+              <span className="font-semibold capitalize">{a.provider}</span>{' '}
+              <span className="font-mono text-xs">{a.model}</span>: {a.message}
+            </p>
+          ))}
+        </div>
+      ) : null}
+
       {data && !data.anyProviderConfigured && (
         <p className="mb-8 rounded-xl border border-amber-500/40 bg-amber-500/10 p-4 text-sm">
           No provider keys are configured, so generation runs against built-in sample content.

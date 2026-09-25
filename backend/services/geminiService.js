@@ -9,8 +9,9 @@ function getAiClient() {
 }
 
 const { parseRobustJson } = require("./aiValidator");
+const { MODELS, geminiThinkingConfig } = require("./aiModels");
 
-async function generateJson(systemPrompt, userPrompt, maxTokens = 4096, modelName = "gemini-1.5-flash", signal = null) {
+async function generateJson(systemPrompt, userPrompt, maxTokens = 4096, modelName = MODELS.gemini, signal = null) {
   const { client, apiKey } = getAiClient();
   try {
     const response = await client.models.generateContent({
@@ -21,6 +22,7 @@ async function generateJson(systemPrompt, userPrompt, maxTokens = 4096, modelNam
         responseMimeType: "application/json",
         temperature: 0.3,
         maxOutputTokens: maxTokens,
+        ...geminiThinkingConfig(modelName),
         abortSignal: signal || undefined,
       }
     });
@@ -31,7 +33,7 @@ async function generateJson(systemPrompt, userPrompt, maxTokens = 4096, modelNam
   }
 }
 
-async function* generateJsonStream(systemPrompt, userPrompt, maxTokens = 4096, modelName = "gemini-1.5-flash", signal = null) {
+async function* generateJsonStream(systemPrompt, userPrompt, maxTokens = 4096, modelName = MODELS.gemini, signal = null) {
   const { client, apiKey } = getAiClient();
   try {
     const stream = await client.models.generateContentStream({
@@ -41,6 +43,7 @@ async function* generateJsonStream(systemPrompt, userPrompt, maxTokens = 4096, m
         systemInstruction: systemPrompt,
         temperature: 0.3,
         maxOutputTokens: maxTokens,
+        ...geminiThinkingConfig(modelName),
         abortSignal: signal || undefined,
       }
     });
@@ -54,7 +57,7 @@ async function* generateJsonStream(systemPrompt, userPrompt, maxTokens = 4096, m
   }
 }
 
-async function generateText(messages, maxTokens = 1024, modelName = "gemini-1.5-flash", signal = null) {
+async function generateText(messages, maxTokens = 1024, modelName = MODELS.gemini, signal = null) {
   let systemInstruction = "";
   const contents = [];
   
@@ -95,7 +98,7 @@ async function generateText(messages, maxTokens = 1024, modelName = "gemini-1.5-
   }
 }
 
-async function* generateTextStream(messages, maxTokens = 1024, modelName = "gemini-1.5-flash", signal = null) {
+async function* generateTextStream(messages, maxTokens = 1024, modelName = MODELS.gemini, signal = null) {
   let systemInstruction = "";
   const contents = [];
   

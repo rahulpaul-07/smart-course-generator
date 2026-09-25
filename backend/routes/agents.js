@@ -6,12 +6,14 @@ const router = Router();
 const validateObjectIds = require("../middlewares/validateObjectIds");
 router.use(validateObjectIds);
 
+const { agentLimiter } = require("../middlewares/aiRateLimiters");
+
 router.use(verifyAuth0Token);
 
-router.post("/reviewer", runCourseReviewer);
-router.post("/coach", runLearningCoach);
-router.post("/planner", runRevisionPlanner);
-router.post("/recommend", runRecommendationAgent);
+router.post("/reviewer", agentLimiter, runCourseReviewer);
+router.post("/coach", agentLimiter, runLearningCoach);
+router.post("/planner", agentLimiter, runRevisionPlanner);
+router.post("/recommend", agentLimiter, runRecommendationAgent);
 
 module.exports = router;
 

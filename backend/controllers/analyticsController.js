@@ -101,10 +101,18 @@ async function getDashboard(req, res) {
 async function recordStudyTime(req, res) {
   try {
     const userId = req.user._id;
-    const minutes = Math.min(Math.max(Number(req.body?.minutes) || 1, 1), 30);
+    const requested = Math.min(Math.max(Number(req.body?.minutes) || 1, 1), 30);
 
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ error: "User not found" });
+
+    // The client reports minutes, but the server decides how many can have
+    // elapsed. Previously each call added up to 30 minutes unconditionally,
+    // so a loop could inflate the study time shown on public profiles.
+    const now = Date.now();
+    const elapsed = user.lastStudyPingAt ? Math.floor((now - user.lastStudyPingAt.getTime()) / 60000) : requested;
+    const minutes = Math.max(0, Math.min(requested, elapsed));
+    if (minutes > 0 || !user.lastStudyPingAt) user.lastStudyPingAt = new Date(now);
 
     user.totalStudyMinutes = (user.totalStudyMinutes || 0) + minutes;
 

@@ -10,6 +10,7 @@ import { LessonViewerSkeleton } from '../components/lesson/LessonViewerSkeleton'
 import { useFocusMode } from '../hooks/useFocusMode';
 import { useLessonNavigation } from '../hooks/useLessonNavigation';
 import { useLessonProgress } from '../hooks/useLessonProgress';
+import { useStudyTimer } from '../hooks/useStudyTimer';
 
 import { LessonLayout, type ActivePanel } from '../components/lesson/LessonLayout';
 import { LessonHeader } from '../components/lesson/LessonHeader';
@@ -35,6 +36,8 @@ export default function LessonViewerPage() {
     updateCurrentLesson,
     setLesson
   } = useLessonNavigation(courseId, lessonId);
+
+  useStudyTimer(Boolean(lesson));
 
   const {
     generating,

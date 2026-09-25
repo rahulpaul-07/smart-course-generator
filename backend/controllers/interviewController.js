@@ -1,6 +1,14 @@
 const mongoose = require("mongoose");
+const { watchSse } = require("../utils/sse");
 const InterviewPrep = require("../models/InterviewPrep");
 const aiRouter = require("../services/aiRouter");
+
+// Everything below is sent to a paid model, so it is bounded. These inputs were
+// previously limited only by the 1 MB body cap (roughly 250k tokens a request).
+const MAX_THEORY_ANSWER = 6000;
+const MAX_CODE_SOLUTION = 12000;
+const MAX_CHAT_MESSAGE = 2000;
+const CHAT_HISTORY_TURNS = 12;
 
 const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
 
@@ -320,7 +328,7 @@ async function submitInterview(req, res) {
     if (Array.isArray(theoryAnswers)) {
       for (let i = 0; i < prep.theoryQuestions.length; i++) {
         if (theoryAnswers[i]) {
-          prep.theoryQuestions[i].userAnswer = String(theoryAnswers[i]);
+          prep.theoryQuestions[i].userAnswer = String(theoryAnswers[i]).slice(0, MAX_THEORY_ANSWER);
         }
       }
     }
@@ -329,7 +337,7 @@ async function submitInterview(req, res) {
     if (Array.isArray(codingSolutions)) {
       for (let i = 0; i < prep.codingQuestions.length; i++) {
         if (codingSolutions[i]) {
-          prep.codingQuestions[i].userSolution = String(codingSolutions[i]);
+          prep.codingQuestions[i].userSolution = String(codingSolutions[i]).slice(0, MAX_CODE_SOLUTION);
         }
       }
     }
@@ -507,14 +515,17 @@ async function chatInterview(req, res) {
     const prep = await InterviewPrep.findOne({ _id: req.params.id, user: req.user._id });
     if (!prep) return res.status(404).json({ error: "Interview prep not found" });
 
-    const { message } = req.body;
+    const message = String(req.body?.message || "").trim().slice(0, MAX_CHAT_MESSAGE);
     if (!message) return res.status(400).json({ error: "Message is required" });
 
-    prep.mockChat.push({ role: "candidate", content: String(message) });
+    prep.mockChat.push({ role: "candidate", content: message });
 
-    const chatHistory = prep.mockChat.map(m => ({
+    // Only the recent turns go to the model. The whole transcript used to be
+    // resent every turn, so cost grew quadratically with the conversation
+    // until it overflowed the model's context window.
+    const chatHistory = prep.mockChat.slice(-CHAT_HISTORY_TURNS).map(m => ({
       role: m.role === "interviewer" ? "assistant" : "user",
-      content: m.content,
+      content: String(m.content).slice(0, 1500),
     }));
 
     const systemMsg = `You are a senior technical interviewer conducting a mock interview about "${prep.topic}".
@@ -528,7 +539,7 @@ If the candidate has answered enough questions, provide brief feedback on their 
     res.flushHeaders();
 
     let isAborted = false;
-    req.on('close', () => {
+    watchSse(res, () => {
       isAborted = true;
     });
 
@@ -547,7 +558,8 @@ If the candidate has answered enough questions, provide brief feedback on their 
     } catch (streamErr) {
       console.error("Stream generation failed:", streamErr);
       if (!isAborted) {
-        res.write(`data: ${JSON.stringify({ error: streamErr.message || "Failed to generate response." })}\n\n`);
+        // Provider error text (model names, quota details) stays in the logs.
+        res.write(`data: ${JSON.stringify({ error: "The interviewer is unavailable right now. Please try again." })}\n\n`);
       }
       return res.end();
     }
