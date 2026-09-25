@@ -269,3 +269,53 @@ describe("POST /api/auth/claim", () => {
     expect(taken.statusCode).toBe(409);
   });
 });
+
+describe("third pass: integrity of scores and progress", () => {
+  const Roadmap = require("../models/Roadmap");
+
+  // Bug: GET /courses/:id returned finalTest.questions[].correctAnswer, so a
+  // "verifiable" certificate could be earned by reading the network tab.
+  it("never sends the final-test answer key to the client, but still grades with it", async () => {
+    const { token, id } = await register("examinee@example.com");
+    const { course } = await seedCourse(id);
+    await Course.updateOne({ _id: course._id }, {
+      $set: { finalTest: { generatedAt: new Date(), questions: [
+        { question: "2+2?", options: ["3", "4"], correctAnswer: 1, explanation: "arithmetic" },
+      ] } },
+    });
+
+    const res = await request(app).get(`/api/courses/${course._id}`).set("Authorization", `Bearer ${token}`);
+    expect(res.statusCode).toBe(200);
+    expect(res.body.finalTest.questions[0].options).toEqual(["3", "4"]);
+    expect(JSON.stringify(res.body)).not.toMatch(/correctAnswer|explanation/);
+
+    const claim = await request(app)
+      .post(`/api/certificates/claim/${course._id}`)
+      .set("Authorization", `Bearer ${token}`)
+      .send({ answers: [1] });
+    expect(claim.body.passed).toBe(true);
+  });
+
+  // Bug: every call added up to 30 minutes, regardless of real time.
+  it("credits study time only up to the wall-clock time since the last report", async () => {
+    const { token } = await register("studier@example.com");
+    const post = () => request(app).post("/api/analytics/study-time").set("Authorization", `Bearer ${token}`).send({ minutes: 30 });
+    const first = await post();
+    const burst = [];
+    for (let i = 0; i < 5; i++) burst.push((await post()).body.totalStudyMinutes);
+    expect(burst.every((m) => m === first.body.totalStudyMinutes)).toBe(true);
+  });
+
+  it("rejects roadmap weeks outside the plan", async () => {
+    const { token, id } = await register("planner@example.com");
+    const roadmap = await Roadmap.create({
+      user: id, goal: "Backend", duration: "2 weeks", skillLevel: "beginner",
+      weeks: [{ weekNumber: 1, title: "A" }, { weekNumber: 2, title: "B" }],
+    });
+    const bad = await request(app).patch(`/api/roadmaps/${roadmap._id}/progress`).set("Authorization", `Bearer ${token}`).send({ weekNumber: 999999 });
+    expect(bad.statusCode).toBe(400);
+    const ok = await request(app).patch(`/api/roadmaps/${roadmap._id}/progress`).set("Authorization", `Bearer ${token}`).send({ weekNumber: 2 });
+    expect(ok.statusCode).toBe(200);
+    expect(ok.body.completedWeeks).toEqual([2]);
+  });
+});

@@ -434,7 +434,7 @@ async function generateLessonOutline(req, res) {
     return res.json(context.lesson.toObject({ depopulate: true }));
   } catch (err) {
     console.error("Outline generation error:", err);
-    return res.status(500).json({ error: err.message || "Failed to generate outline" });
+    return res.status(err.statusCode || 500).json({ error: safeErrorMessage(err, "Failed to generate outline") });
   }
 }
 
@@ -500,7 +500,7 @@ async function generateLessonChunk(req, res) {
     return res.json(context.lesson.toObject({ depopulate: true }));
   } catch (err) {
     console.error("Chunk generation error:", err);
-    return res.status(500).json({ error: err.message || "Failed to generate chunk" });
+    return res.status(err.statusCode || 500).json({ error: safeErrorMessage(err, "Failed to generate chunk") });
   }
 }
 
@@ -530,7 +530,7 @@ async function generateLessonQuizChunk(req, res) {
     return res.json(context.lesson.toObject({ depopulate: true }));
   } catch (err) {
     console.error("Quiz generation error:", err);
-    return res.status(500).json({ error: err.message || "Failed to generate quiz" });
+    return res.status(err.statusCode || 500).json({ error: safeErrorMessage(err, "Failed to generate quiz") });
   }
 }
 

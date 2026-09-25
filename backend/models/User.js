@@ -50,6 +50,8 @@ const userSchema = new mongoose.Schema({
   lastActiveDate: { type: String, default: "" },
   activityHistory: [{ type: String }],
   totalStudyMinutes: { type: Number, default: 0 },
+  // Server-side clock for study-time credit (see analyticsController).
+  lastStudyPingAt: { type: Date, default: null },
   xp: { type: Number, default: 0 },
   achievements: [{
     badge: { type: String },

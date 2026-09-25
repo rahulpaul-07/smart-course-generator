@@ -42,8 +42,17 @@ export interface TelemetryEvent {
   timestamp: string;
 }
 
+export interface AiAlert {
+  provider: string;
+  model: string;
+  status: 'misconfigured' | 'failing';
+  message: string;
+}
+
 export interface AiStatus {
   windowHours: number;
+  /** Providers that look broken even though their breaker is closed. */
+  alerts?: AiAlert[];
   generatedAt: string;
   anyProviderConfigured: boolean;
   providers: ProviderStatus[];

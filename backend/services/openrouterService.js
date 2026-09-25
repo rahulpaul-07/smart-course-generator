@@ -1,4 +1,5 @@
 const { OpenAI } = require("openai");
+const { MODELS } = require("./aiModels");
 const KeyManager = require("./keyManager");
 const { parseRobustJson } = require("./aiValidator");
 
@@ -16,7 +17,7 @@ function getAiClient() {
   };
 }
 
-async function generateJson(systemPrompt, userPrompt, maxTokens = 4096, modelName = "anthropic/claude-3.5-sonnet", signal) {
+async function generateJson(systemPrompt, userPrompt, maxTokens = 4096, modelName = MODELS.openrouter, signal) {
   const { client, apiKey } = getAiClient();
   if (!client) throw new Error("OpenRouter API key missing");
 
@@ -41,7 +42,7 @@ async function generateJson(systemPrompt, userPrompt, maxTokens = 4096, modelNam
   }
 }
 
-async function* generateJsonStream(systemPrompt, userPrompt, maxTokens = 4096, modelName = "anthropic/claude-3.5-sonnet", signal) {
+async function* generateJsonStream(systemPrompt, userPrompt, maxTokens = 4096, modelName = MODELS.openrouter, signal) {
   const { client, apiKey } = getAiClient();
   if (!client) throw new Error("OpenRouter API key missing");
 
@@ -78,7 +79,7 @@ module.exports = {
   generateTextStream,
 };
 
-async function generateText(messages, maxTokens = 1024, modelName = "anthropic/claude-3.5-sonnet", signal) {
+async function generateText(messages, maxTokens = 1024, modelName = MODELS.openrouter, signal) {
   const { client, apiKey } = getAiClient();
   if (!client) throw new Error("OpenRouter API key missing");
 
@@ -99,7 +100,7 @@ async function generateText(messages, maxTokens = 1024, modelName = "anthropic/c
   }
 }
 
-async function* generateTextStream(messages, maxTokens = 1024, modelName = "anthropic/claude-3.5-sonnet", signal) {
+async function* generateTextStream(messages, maxTokens = 1024, modelName = MODELS.openrouter, signal) {
   const { client, apiKey } = getAiClient();
   if (!client) throw new Error("OpenRouter API key missing");
 

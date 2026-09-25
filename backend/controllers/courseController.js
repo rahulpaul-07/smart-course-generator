@@ -31,6 +31,22 @@ async function getMyCourses(req, res) {
   return res.json(courses);
 }
 
+/**
+ * The final test as the learner may see it: questions and options only.
+ *
+ * Certificates are graded server-side against `correctAnswer`, but the full
+ * test -- answer key and explanations included -- used to be returned by both
+ * GET /courses/:id and the generate-test endpoint, so any "verifiable"
+ * certificate could be earned by reading the network tab.
+ */
+function publicFinalTest(finalTest) {
+  if (!finalTest?.questions?.length) return finalTest;
+  return {
+    generatedAt: finalTest.generatedAt,
+    questions: finalTest.questions.map((q) => ({ _id: q._id, question: q.question, options: q.options })),
+  };
+}
+
 async function getCourseById(req, res) {
   const course = await Course.findOne({ _id: req.params.courseId, creator: req.user._id })
     .select("title description modules isPublic shareId creator finalTest difficulty skills createdAt updatedAt")
@@ -46,6 +62,7 @@ async function getCourseById(req, res) {
   }
 
   delete course.creator;
+  course.finalTest = publicFinalTest(course.finalTest);
   return res.json(course);
 }
 
@@ -197,7 +214,7 @@ async function generateFinalTest(req, res) {
   }
 
   if (course.finalTest && course.finalTest.questions && course.finalTest.questions.length > 0) {
-    return res.json({ message: "Test already generated", finalTest: course.finalTest });
+    return res.json({ message: "Test already generated", finalTest: publicFinalTest(course.finalTest) });
   }
 
   const totalLessonsInCourse = course.modules.reduce((sum, mod) => sum + (mod.lessons?.length || 0), 0);
@@ -292,12 +309,13 @@ Format each item exactly like this:
   };
   await course.save();
 
-  res.json({ message: "Test generated successfully", finalTest: course.finalTest });
+  res.json({ message: "Test generated successfully", finalTest: publicFinalTest(course.finalTest.toObject ? course.finalTest.toObject() : course.finalTest) });
 }
 
 const asyncHandler = require("express-async-handler");
 
 module.exports = {
+  publicFinalTest,
   deleteCourse: asyncHandler(deleteCourse),
   getCourseById: asyncHandler(getCourseById),
   getLessonView: asyncHandler(getLessonView),

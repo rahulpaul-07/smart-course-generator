@@ -4,11 +4,12 @@ const KeyManager = require("./keyManager");
 const groqKeys = new KeyManager("GROQ_API_KEY");
 
 const { parseRobustJson } = require("./aiValidator");
+const { MODELS, groqModelOptions } = require("./aiModels");
 async function generateJson(
   systemPrompt,
   userPrompt,
   maxTokens = 4096,
-  modelName = "llama-3.1-8b-instant",
+  modelName = MODELS.groqFast,
   signal
 ) {
   const apiKey = groqKeys.getKey();
@@ -17,6 +18,7 @@ async function generateJson(
   try {
     const completion = await groq.chat.completions.create({
       model: modelName,
+      ...groqModelOptions(modelName),
       messages: [
         {
           role: "system",
@@ -49,13 +51,14 @@ Respond with valid JSON only.`,
   }
 }
 
-async function* generateJsonStream(systemPrompt, userPrompt, maxTokens = 4096, modelName = "llama-3.1-8b-instant", signal) {
+async function* generateJsonStream(systemPrompt, userPrompt, maxTokens = 4096, modelName = MODELS.groqFast, signal) {
   const apiKey = groqKeys.getKey();
   const groq = new Groq({ apiKey });
 
   try {
     const stream = await groq.chat.completions.create({
       model: modelName,
+      ...groqModelOptions(modelName),
       messages: [
         {
           role: "system",
@@ -91,13 +94,14 @@ Respond with valid JSON only.`,
   }
 }
 
-async function generateText(messages, maxTokens = 1024, modelName = "llama-3.1-8b-instant", signal) {
+async function generateText(messages, maxTokens = 1024, modelName = MODELS.groqFast, signal) {
   const apiKey = groqKeys.getKey();
   const groq = new Groq({ apiKey });
 
   try {
     const completion = await groq.chat.completions.create({
       model: modelName,
+      ...groqModelOptions(modelName),
       messages,
       temperature: 0.7,
       max_tokens: maxTokens,
@@ -111,13 +115,14 @@ async function generateText(messages, maxTokens = 1024, modelName = "llama-3.1-8
   }
 }
 
-async function* generateTextStream(messages, maxTokens = 1024, modelName = "llama-3.1-8b-instant", signal) {
+async function* generateTextStream(messages, maxTokens = 1024, modelName = MODELS.groqFast, signal) {
   const apiKey = groqKeys.getKey();
   const groq = new Groq({ apiKey });
 
   try {
     const stream = await groq.chat.completions.create({
       model: modelName,
+      ...groqModelOptions(modelName),
       messages,
       temperature: 0.7,
       max_tokens: maxTokens,

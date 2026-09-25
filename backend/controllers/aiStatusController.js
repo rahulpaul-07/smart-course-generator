@@ -35,6 +35,26 @@ function describeChain() {
 }
 
 /**
+ * Health beyond the circuit breaker. 4xx failures deliberately don't trip the
+ * breaker (a bad prompt isn't an outage), which also meant a *retired model*
+ * showed as "closed" -- healthy -- while 100% of its calls returned 404. That
+ * is exactly how production generation broke unnoticed in September 2026.
+ */
+function classifyHealth(entry, s, recent) {
+  if (!entry.configured) return { status: "unconfigured", message: `${entry.envVar} is not set.` };
+  const last = recent.find((r) => r.provider === entry.provider && r.model === entry.model);
+  const reason = String(last?.reason || "").toLowerCase();
+  if (last?.status === "failure" && (reason.includes("model_not_found") || reason.includes("does not exist") || reason.startsWith("404"))) {
+    return { status: "misconfigured", message: `Model "${entry.model}" was not found. It may have been retired; set a current model ID in the environment.` };
+  }
+  const total = s.success + s.failure;
+  if (total >= 3 && s.success === 0) {
+    return { status: "failing", message: `All ${total} recent calls failed. Last error: ${last?.reason || "unknown"}` };
+  }
+  return { status: total === 0 ? "idle" : "ok", message: null };
+}
+
+/**
  * GET /api/ai/status
  *
  * The router's failover behaviour was previously only observable by reading
@@ -60,7 +80,7 @@ async function getAiStatus(req, res) {
           { $match: { timestamp: { $gte: since } } },
           {
             $group: {
-              _id: { provider: "$provider", status: "$status" },
+              _id: { provider: "$provider", model: "$model", status: "$status" },
               count: { $sum: 1 },
               avgLatencyMs: { $avg: "$latencyMs" },
               lastSeen: { $max: "$timestamp" },
@@ -77,10 +97,12 @@ async function getAiStatus(req, res) {
       console.warn("[AI Status] telemetry unavailable:", telemetryErr.message);
     }
 
-    // Fold the per-status groups into one row per provider.
+    // Fold the per-status groups into one row per provider *and model*. Keyed
+    // by provider alone, two Groq models shared one set of numbers, so a
+    // retired model was indistinguishable from a working one.
     const stats = {};
     for (const row of perProvider) {
-      const name = row._id.provider;
+      const name = `${row._id.provider}:${row._id.model}`;
       stats[name] = stats[name] || { success: 0, failure: 0, avgLatencyMs: null };
       stats[name][row._id.status] = row.count;
       if (row._id.status === "success" && row.avgLatencyMs != null) {
@@ -89,10 +111,11 @@ async function getAiStatus(req, res) {
     }
 
     const providers = chain.map((entry) => {
-      const s = stats[entry.provider] || { success: 0, failure: 0, avgLatencyMs: null };
+      const s = stats[`${entry.provider}:${entry.model}`] || { success: 0, failure: 0, avgLatencyMs: null };
       const total = s.success + s.failure;
       return {
         ...entry,
+        health: classifyHealth(entry, s, recent),
         window: {
           success: s.success,
           failure: s.failure,
@@ -106,8 +129,13 @@ async function getAiStatus(req, res) {
     // A request served by anything other than chain position 0 is a failover.
     const failovers = recent.filter((r) => r.status === "success" && r.attempt > 0).length;
 
+    const alerts = providers
+      .filter((p) => p.health.status === "misconfigured" || p.health.status === "failing")
+      .map((p) => ({ provider: p.provider, model: p.model, status: p.health.status, message: p.health.message }));
+
     return res.json({
       windowHours,
+      alerts,
       generatedAt: new Date().toISOString(),
       anyProviderConfigured: providers.some((p) => p.configured),
       providers,
