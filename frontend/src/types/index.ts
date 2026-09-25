@@ -28,6 +28,7 @@ export interface User {
   skillLevel?: 'beginner' | 'intermediate' | 'advanced' | 'expert';
   theme?: 'dark' | 'light' | 'system';
   onboardingCompleted?: boolean;
+  isDemo?: boolean;
   bookmarkedLessons?: ID[];
   certificates?: ID[];
   studyStreak?: number;

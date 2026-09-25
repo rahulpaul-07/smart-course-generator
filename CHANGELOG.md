@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security
+- Auth0 identities without a verified email can no longer sign in as, or link to, an existing account (a missing email claim matched the first user in the database).
+- Public activity feed limited to public profiles and display fields.
+- XP awards are idempotent per resource; quiz results from the client are clamped.
+
+### Added
+- Redesigned landing page, auth pages, brand mark, favicon and OG image.
+- One-click guest accounts (`DEMO_MODE`), upgradeable in place via `/save-account`.
+- Public `/status` (AI router) and `/evals` pages.
+- `npm run dev:memory`: zero-setup backend on in-memory MongoDB with showcase content.
+- Playwright E2E against the real API, now a blocking CI job.
+
+### Fixed
+- Community templates returned 500 once any public course existed (cache cloning Mongoose documents).
+- Stored code answers HTML-escaped by `xss-clean` (removed).
+- Mixed-case emails unable to log in; streaming requests not refreshing expired tokens; "session expired" toast for anonymous visitors; SSE streams dropped by idle proxies.
+- Dashboard completion is lesson-level; dashboard queries parallelised and aggregated.
+
+### Changed
+- Initial JS reduced from 227 KB to 181 KB gzipped; Auth0 and Google SDKs load only when configured.
+- See `docs/AUDIT-2026-09.md` (second pass) for the full write-up.
+
+
 ### Fixed
 - **Layout:** unified five competing page-width systems behind one `PageContainer` primitive. Content edge no longer shifts 32px between routes; `.page-shell` now mirrors the same geometry.
 - **Typography:** `prose-invert` was applied unconditionally, rendering lesson bodies, chat replies and interview feedback as near-white text on the light theme's near-white background. Now `dark:prose-invert`.

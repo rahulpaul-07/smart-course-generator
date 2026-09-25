@@ -29,6 +29,8 @@ const userSchema = new mongoose.Schema({
   theme: { type: String, enum: ['dark', 'light', 'system'], default: 'dark' },
 
   onboardingCompleted: { type: Boolean, default: false },
+  // Ephemeral one-click guest account (see services/demoService.js).
+  isDemo: { type: Boolean, default: false, index: true },
   bookmarkedLessons: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: "Lesson"

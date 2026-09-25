@@ -1,12 +1,11 @@
 import { useState, useRef } from 'react';
 import toast from 'react-hot-toast';
-import { baseURL } from '../utils/api';
+import { authFetch } from '../utils/api';
 import { lessonService } from '../services/lessonService';
 import type { Lesson } from '../types';
 import type { Dispatch, SetStateAction } from 'react';
 import { getApiError } from '../services/apiHelper';
 
-const API_BASE = baseURL;
 
 export function useLessonProgress(courseId: string | undefined, lessonId: string | undefined, updateCurrentLesson: (lesson: Lesson) => void, setLesson: Dispatch<SetStateAction<Lesson | null>>) {
   const [generating, setGenerating] = useState(false);
@@ -47,14 +46,8 @@ export function useLessonProgress(courseId: string | undefined, lessonId: string
     setLesson((prev) => prev ? { ...prev, content: [] } : prev);
 
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${API_BASE}/courses/${courseId}/lessons/${lessonId}/enrich-stream`, {
+      const response = await authFetch(`/courses/${courseId}/lessons/${lessonId}/enrich-stream`, {
         method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
-        },
-        credentials: 'include',
         body: JSON.stringify({ depth: selectedDepth, language: selectedLanguage }),
       });
 

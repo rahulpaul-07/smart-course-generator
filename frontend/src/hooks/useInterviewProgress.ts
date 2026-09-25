@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { useSessionStorage } from './useStorage';
-import { baseURL } from '../utils/api';
+import { authFetch } from '../utils/api';
 import type { InterviewPrep, InterviewChatMessage } from '../types';
 import type { FormEvent } from 'react';
 
@@ -49,13 +49,8 @@ export function useInterviewProgress(prep: InterviewPrep | null) {
     setAbortController(controller);
 
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${baseURL}/interviews/${prep._id}/chat`, {
+      const response = await authFetch(`/interviews/${prep._id}/chat`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(token ? { Authorization: `Bearer ${token}` } : {})
-        },
         body: JSON.stringify({ message: text }),
         signal: controller.signal
       });

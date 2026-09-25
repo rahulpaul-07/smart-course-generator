@@ -6,6 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
+    "dev:memory": "node scripts/dev_memory.js",
+    "seed": "node scripts/seed_showcase.js",
     "test": "jest",
     "lint": "eslint .",
     "eval": "node ../evals/runEvals.js",
@@ -42,7 +44,6 @@
     "swagger-ui-express": "^5.0.1",
     "uuid": "^14.0.1",
     "winston": "^3.19.0",
-    "xss-clean": "^0.1.4",
     "yt-search": "^2.13.1",
     "zod": "^4.4.3"
   },

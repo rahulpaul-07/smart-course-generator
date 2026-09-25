@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { lessonService } from '../services/lessonService';
-import { baseURL } from '../utils/api';
+import { authFetch } from '../utils/api';
 import type { AiConversationMessage } from '../types';
 
 export function useAIChat(courseId: string, lessonId: string, isOpen: boolean) {
@@ -87,13 +87,8 @@ export function useAIChat(courseId: string, lessonId: string, isOpen: boolean) {
     abortControllerRef.current = new AbortController();
 
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${baseURL}/courses/${courseId}/lessons/${lessonId}/chat`, {
+      const response = await authFetch(`/courses/${courseId}/lessons/${lessonId}/chat`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
         body: JSON.stringify({ message, history: historyRef.current.slice(-6) }),
         signal: abortControllerRef.current.signal
       });

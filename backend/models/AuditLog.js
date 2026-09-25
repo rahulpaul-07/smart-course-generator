@@ -33,4 +33,7 @@ const auditLogSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
+// Backs the once-per-resource XP check in achievementsService.recordActivity.
+auditLogSchema.index({ userId: 1, action: 1, resourceId: 1 });
+
 module.exports = mongoose.model("AuditLog", auditLogSchema);
