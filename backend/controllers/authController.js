@@ -8,6 +8,8 @@ const {
   REFRESH_TOKEN_TTL_DAYS,
 } = require("../services/tokenService");
 
+const { isDemoEnabled, createDemoUser, purgeExpiredDemoUsers } = require("../services/demoService");
+
 const REFRESH_COOKIE = "refreshToken";
 const ACCESS_COOKIE = "token"; // kept for the cookie fallback in verifyAuth0Token
 
@@ -64,6 +66,7 @@ function userPayload(user, token) {
     email: user.email,
     avatar: user.avatar,
     onboardingCompleted: user.onboardingCompleted,
+    isDemo: Boolean(user.isDemo),
     bookmarkedLessons: user.bookmarkedLessons,
     certificates: user.certificates,
     token,
@@ -171,7 +174,7 @@ async function googleLogin(req, res) {
     throw new Error("Invalid Google token", { cause: verifyError });
   }
 
-  const { sub: googleId, email, email_verified: emailVerified, name, picture } = payload;
+  const { sub: googleId, email_verified: emailVerified, name, picture } = payload;
 
   // Reject unverified Google emails to prevent linking into an existing local
   // account via an unconfirmed address (account-takeover path).
@@ -180,6 +183,7 @@ async function googleLogin(req, res) {
     throw new Error("Google account email is not verified");
   }
 
+  const email = String(payload.email || "").toLowerCase();
   let user = await User.findOne({ email });
   if (!user) {
     user = await User.create({ name, email, googleId, avatar: picture, onboardingCompleted: false });
@@ -193,7 +197,58 @@ async function googleLogin(req, res) {
   res.json(userPayload(user, localToken));
 }
 
+/** One-click guest session for evaluating the app (DEMO_MODE=true only). */
+async function demoLogin(req, res) {
+  if (!isDemoEnabled()) {
+    res.status(404);
+    throw new Error("Demo mode is not enabled on this server");
+  }
+  purgeExpiredDemoUsers(); // throttled, fire-and-forget
+  const user = await createDemoUser();
+  const token = await issueSession(res, user);
+  res.status(201).json(userPayload(user, token));
+}
+
+/**
+ * Turn the current guest account into a regular one, keeping everything the
+ * guest created. Only valid for demo users; the address must be unused.
+ */
+async function claimGuest(req, res) {
+  if (!req.user?.isDemo) {
+    res.status(400);
+    throw new Error("Only guest accounts can be claimed");
+  }
+  const { name, email, password } = req.body;
+  if (await User.exists({ email })) {
+    res.status(409);
+    throw new Error("An account with this email already exists");
+  }
+  const user = await User.findById(req.user._id).select("+password");
+  user.name = name;
+  user.email = email;
+  user.password = password;
+  user.isDemo = false;
+  await user.save();
+
+  // Rotate the session so no guest-era refresh token outlives the upgrade.
+  await revokeRefreshToken(readCookie(req, REFRESH_COOKIE));
+  const token = await issueSession(res, user);
+  res.json(userPayload(user, token));
+}
+
+/** Public capability flags so the UI can hide options the server can't honour. */
+function authConfig(req, res) {
+  res.json({
+    demo: isDemoEnabled(),
+    google: Boolean(process.env.GOOGLE_CLIENT_ID),
+    auth0: Boolean(process.env.AUTH0_DOMAIN),
+  });
+}
+
 module.exports = {
+  demoLogin: asyncHandler(demoLogin),
+  claimGuest: asyncHandler(claimGuest),
+  authConfig,
   register: asyncHandler(register),
   login: asyncHandler(login),
   refresh: asyncHandler(refresh),

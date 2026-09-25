@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ErrorState } from '@/components/ui/ErrorState';
 import type { CourseGenerationStage } from '../services/courseService';
+import { takePendingPrompt } from '../lib/pendingPrompt';
 
 const EXAMPLES = [
   'A beginner React course with small projects',
@@ -28,7 +29,8 @@ interface PromptFormProps {
 }
 
 export default function PromptForm({ onSubmit, isLoading = false, stage = null, error = null, onDismissError }: PromptFormProps) {
-  const [prompt, setPrompt] = useState('');
+  // A topic typed into the landing-page hero survives the sign-up detour.
+  const [prompt, setPrompt] = useState(() => takePendingPrompt());
   const [isFocused, setIsFocused] = useState(false);
 
   async function submitPrompt() {

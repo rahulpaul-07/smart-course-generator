@@ -7,7 +7,7 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
 import SyntaxHighlighter from '../../lib/syntaxHighlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import vscDarkPlus from 'react-syntax-highlighter/dist/esm/styles/prism/vsc-dark-plus';
 import { useInterviewProgress } from '../../hooks/useInterviewProgress';
 import { ErrorState } from '../ui/ErrorState';
 import type { InterviewPrep, InterviewChatMessage } from '../../types';

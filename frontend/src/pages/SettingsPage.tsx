@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { applyTheme, type ThemePreference } from '../lib/theme';
 import { Settings as SettingsIcon, Moon, Sun, Monitor } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { userService } from '../services/userService';
@@ -42,16 +43,8 @@ export default function SettingsPage() {
   const handleThemeChange = (theme: string) => {
     setSettings({ ...settings, theme });
     
-    // Apply to DOM immediately for preview
-    localStorage.setItem('theme', theme);
-    const root = window.document.documentElement;
-    root.classList.remove('light', 'dark');
-    if (theme === 'system') {
-      const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      root.classList.add(isDark ? 'dark' : 'light');
-    } else {
-      root.classList.add(theme);
-    }
+    // Apply to the DOM immediately for preview.
+    applyTheme(theme as ThemePreference);
   };
 
   if (!user) return <SettingsSkeleton />;

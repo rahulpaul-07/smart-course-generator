@@ -3,7 +3,6 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
-const xss = require("xss-clean");
 
 // Load environment variables
 dotenv.config();
@@ -55,11 +54,14 @@ app.use(
   })
 );
 
-app.use(express.json());
+app.use(express.json({ limit: "1mb" }));
 
-// Sanitize data
+// Strip `$`/`.` operator keys from user input (NoSQL injection). There is
+// deliberately no HTML-escaping middleware here: `xss-clean` used to rewrite
+// every string in the body, so a coding-round answer like `if (a < b)` was
+// stored and graded as `if (a &lt; b)`. Output is escaped where it is rendered
+// (React), which is the correct layer for XSS defence.
 app.use(mongoSanitize());
-app.use(xss());
 
 // Apply global rate limiting
 app.use("/api", apiLimiter);
@@ -166,3 +168,4 @@ if (require.main === module) {
 }
 
 module.exports = app;
+module.exports.startServer = startServer;

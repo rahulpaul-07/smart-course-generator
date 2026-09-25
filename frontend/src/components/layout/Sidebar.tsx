@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
+import { LogoMark } from '@/components/brand/Logo';
 import { cn } from "@/lib/utils";
-import { ChevronLeft, ChevronRight, BrainCircuit } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useLayout } from "@/contexts/LayoutContext";
 import { navGroups, navItems, accountNavItems, isNavItemActive } from "./navItems";
 
@@ -57,9 +58,7 @@ export function Sidebar() {
     >
       <div className={cn("flex h-16 shrink-0 items-center border-b border-border transition-all duration-300", isSidebarCollapsed ? "px-0 justify-center" : "px-6")}>
         <Link to="/dashboard" className="flex items-center gap-2 font-bold text-lg text-foreground tracking-tight overflow-hidden whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary shadow-lg shadow-primary/20 shrink-0">
-            <BrainCircuit className="h-5 w-5 text-primary-foreground" />
-          </div>
+          <LogoMark className="h-8 w-8 shrink-0" />
           {!isSidebarCollapsed && (
             <motion.span
               initial={{ opacity: 0 }}
@@ -167,6 +166,8 @@ export function Sidebar() {
             isSidebarCollapsed ? "justify-center px-0" : "gap-3 px-3"
           )}
           title={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+          aria-label={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+          aria-expanded={!isSidebarCollapsed}
         >
           {isSidebarCollapsed ? (
             <ChevronRight className="h-5 w-5 shrink-0 transition-transform" />

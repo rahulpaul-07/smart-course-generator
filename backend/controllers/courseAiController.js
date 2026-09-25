@@ -6,6 +6,7 @@ const { getOwnedLesson } = require("../services/lessonAccessService");
 const { findLessonVideos } = require("../services/youtubeService");
 const { createLessonFlashcards, createPracticeLab, createLessonQuiz } = require("../services/studyGeneration");
 const { recordActivity } = require("../services/achievementsService");
+const { watchSse } = require("../utils/sse");
 
 const VALID_DEPTHS = new Set(["brief", "standard", "deep"]);
 
@@ -70,7 +71,7 @@ async function generateCourseContentStream(req, res) {
     });
     headersWritten = true;
 
-    res.on("close", () => { closed = true; });
+    watchSse(res, () => { closed = true; });
 
     sendEvent("stage", { stage: "analyzing_topic" });
 
@@ -186,7 +187,7 @@ async function enrichLessonStream(req, res) {
     });
     headersWritten = true;
 
-    res.on("close", () => { closed = true; });
+    watchSse(res, () => { closed = true; });
 
     const Lesson = require("../models/Lesson");
     const siblingLessons = await Lesson.find({ 
@@ -323,7 +324,7 @@ async function chatAboutLesson(req, res) {
       "X-Accel-Buffering": "no",
     });
 
-    res.on("close", () => { closed = true; });
+    watchSse(res, () => { closed = true; });
 
     function sendEvent(event, data) {
       if (closed) return;

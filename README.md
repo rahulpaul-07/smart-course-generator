@@ -1,170 +1,135 @@
-# Smart Course Generator
+<div align="center">
 
-An AI-powered adaptive learning platform. Give it any topic and it generates a full, structured course — modules, lessons, and a final assessment — streamed lesson-by-lesson, then teaches it back through quizzes, flashcards, and AI-scored mock interviews.
+<img src="frontend/public/favicon.svg" width="56" alt="CourseAI logo" />
 
-<p>
-  <a href="https://smart-course-generator.vercel.app/"><img src="https://img.shields.io/badge/Live_Demo-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" /></a>
-  <a href="https://github.com/rahulpaul-07/smart-course-generator/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/rahulpaul-07/smart-course-generator/ci.yml?style=for-the-badge&logo=githubactions&logoColor=white&label=CI" alt="CI" /></a>
-  <a href="https://github.com/rahulpaul-07/smart-course-generator/actions/workflows/codeql.yml"><img src="https://img.shields.io/github/actions/workflow/status/rahulpaul-07/smart-course-generator/codeql.yml?style=for-the-badge&logo=github&logoColor=white&label=CodeQL" alt="CodeQL" /></a>
-  <a href="./frontend/tsconfig.app.json"><img src="https://img.shields.io/badge/TypeScript-strict-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript strict" /></a>
-  <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge" alt="License: MIT" /></a>
-</p>
+# CourseAI — Smart Course Generator
 
-**[Try the live demo](https://smart-course-generator.vercel.app/)** — the backend runs on Render's free tier, so the first request after a period of inactivity cold-starts in ~30-60s.
+**Turn one sentence into a structured course, streamed lesson by lesson, then learn it properly with quizzes, flashcards, a per-lesson tutor and scored mock interviews.**
 
----
+<a href="https://smart-course-generator.vercel.app/"><img src="https://img.shields.io/badge/Live_demo-no_sign--up-6d5dfc?style=for-the-badge" alt="Live demo" /></a>
+<a href="https://github.com/rahulpaul-07/smart-course-generator/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/rahulpaul-07/smart-course-generator/ci.yml?style=for-the-badge&label=CI" alt="CI" /></a>
+<a href="https://github.com/rahulpaul-07/smart-course-generator/actions/workflows/codeql.yml"><img src="https://img.shields.io/github/actions/workflow/status/rahulpaul-07/smart-course-generator/codeql.yml?style=for-the-badge&label=CodeQL" alt="CodeQL" /></a>
+<img src="https://img.shields.io/badge/TypeScript-strict-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript strict" />
+<a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="MIT" /></a>
 
-## Table of Contents
+[**Live demo**](https://smart-course-generator.vercel.app/) · [Router status](https://smart-course-generator.vercel.app/status) · [Eval scorecard](https://smart-course-generator.vercel.app/evals) · [Architecture](./docs/architecture) · [Audit log](./docs/AUDIT-2026-09.md)
 
-- [Overview](#overview)
-- [What Makes It Different](#what-makes-it-different)
-- [Key Features](#key-features)
-- [Architecture](#architecture)
-- [Tech Stack](#tech-stack)
-- [Getting Started](#getting-started)
-- [Testing](#testing)
-- [AI Quality, Grounding & Evals](#ai-quality-grounding--evals)
-- [Known Limitations & Roadmap](#known-limitations--roadmap)
-- [Deployment](#deployment)
-- [Security](#security)
-- [Documentation](#documentation)
+<img src="docs/screenshots/landing.png" alt="CourseAI landing page with a live replay of streaming course generation" width="100%" />
+
+</div>
+
+> **Try it in one click.** Hit *"Try the demo, no sign-up"* on the landing page for a private guest account with a sample course already in it. The API runs on Render's free tier, so the first request after idling can take ~30–60 s to wake up.
 
 ---
 
-## Overview
+## Why this project
 
-Static course platforms can't adapt to what an individual learner already knows, and a general-purpose chat assistant produces a linear conversation, not a structured, resumable curriculum with progress tracking, spaced-repetition review, and assessments.
+Most "AI course generator" demos are a prompt and a text box. The hard part of an AI product is everything that happens when the model is **slow, wrong or down**, and that's where most of this codebase lives:
 
-Smart Course Generator sits in that gap. It generates full multi-module courses with an LLM, streams them lesson-by-lesson over Server-Sent Events (SSE), and layers on quizzes, flashcards, optional YouTube enrichment, per-user progress/XP/streaks, a community marketplace, and an Interview Prep mode that runs mock technical interviews (MCQ, theory, and coding rounds) with a strengths-and-weaknesses breakdown.
-
-The emphasis is on the parts that make an "AI wrapper" actually trustworthy and production-shaped: a resilient multi-provider AI layer, measured generation quality (evals), retrieval grounding, and real auth/security — not just a prompt and a UI.
-
-## What Makes It Different
-
-- **Real-time streaming generation.** Courses stream in over SSE so the UI renders lesson-by-lesson instead of blocking on a single long completion.
-- **Resilient AI routing.** A custom router fails over across three LLM providers with retry-with-backoff, per-provider circuit breakers, and API-key rotation, so a single provider rate-limiting or timing out degrades gracefully instead of failing the request.
-- **Measured, not assumed, quality.** Generation is scored by an eval harness (structural validity, subtopic coverage, and an LLM-as-judge faithfulness rating) that runs in CI.
-- **Grounded content.** Optional RAG retrieval injects vetted source excerpts into lesson prompts to keep content factual and citeable.
-
-## Key Features
-
-| Feature | Description |
+| Problem | What CourseAI does |
 |---|---|
-| **AI course generation** | A topic in, a structured course out: modules, lessons, and a final assessment, streamed incrementally so the UI never blocks. |
-| **Multi-provider AI routing** | A custom router fails over across Gemini, Groq, and OpenRouter, with per-provider API-key rotation and cooldown handling. |
-| **Adaptive study tools** | AI-generated flashcards, practice labs, inline lesson chat, and optional Hinglish audio explanations via text-to-speech. |
-| **Interview Prep mode** | Generates MCQ, theory, and coding question sets for a topic, scores submitted answers, and produces a strengths/weaknesses breakdown. |
-| **Learning roadmaps** | Multi-week personalized learning plans generated from a goal, duration, and skill level. |
-| **Gamification** | XP, streaks, and achievements on a public leaderboard; publish courses publicly and clone others'. |
-| **Verifiable certificates** | PDF certificates on course completion, independently verifiable via a public certificate ID. |
-| **Flexible auth** | Email/password, Google OAuth, or Auth0, all normalized behind one session contract on the frontend. |
+| Long generations block the UI | Courses and lessons stream over **Server-Sent Events** block by block, with heartbeats so proxies don't cut long streams. |
+| One provider goes down | A custom **AI router** fails over across Gemini → Groq → OpenRouter with retry + exponential backoff, per-provider **circuit breakers**, key rotation and telemetry. Bad prompts don't count as outages. |
+| "Is the output any good?" | An **eval harness** scores structure, subtopic coverage and LLM-as-judge faithfulness and runs in CI. Results are public at `/evals`. |
+| Hallucinated facts | Optional **RAG grounding** retrieves vetted excerpts into lesson prompts (pluggable vector store). |
+| Real users, real auth | Short-lived JWTs + rotating httpOnly refresh tokens with **reuse detection**, verified-email-only account linking, Zod on every write. |
+| Recruiters won't sign up | **Ephemeral guest accounts**: isolated per visitor, seeded with a course, purged after 24 h, and upgradable in place to a real account. |
+
+## Features
+
+- **Course generation.** Topic → modules → lessons → final test, in any language, streamed live.
+- **Rich lessons.** Markdown, code with syntax highlighting, LaTeX math, callouts, embedded videos, PDF export, reading-progress tracking and focus mode.
+- **Study toolkit.** Per-lesson quizzes, flashcards, practice labs, an in-context AI tutor (streamed) and Hinglish audio explanations.
+- **Interview prep.** Generated MCQ, theory and coding rounds with a timer, AI grading and a strengths/gaps breakdown.
+- **Roadmaps.** Week-by-week plans from a goal, timeframe and current level.
+- **Progress & motivation.** Timezone-correct streaks, XP, achievements, a leaderboard (XP is idempotent, so it can't be farmed), analytics and verifiable certificates.
+- **Community.** Publish, upvote, rate and clone courses; public profiles; shareable read-only course links.
+- **Transparency pages.** Live router status (`/status`) and the eval scorecard (`/evals`) are public.
+
+<table>
+  <tr>
+    <td><img src="docs/screenshots/dashboard.png" alt="Dashboard" /></td>
+    <td><img src="docs/screenshots/lesson.png" alt="Lesson view" /></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/course.png" alt="Course overview" /></td>
+    <td><img src="docs/screenshots/router-status.png" alt="AI router status" /></td>
+  </tr>
+</table>
 
 ## Architecture
 
 ```mermaid
-graph TD
-    Client[React 19 + Vite SPA] -->|HTTPS, JWT Bearer| API[Node.js / Express API]
-    API -->|Mongoose| DB[(MongoDB)]
-    API -->|Auth0 / Google OAuth| Auth[Identity Providers]
-    API --> Router[AI Router]
-    Router -->|Priority 1| Gemini[Google Gemini]
-    Router -->|Priority 2| Groq[Groq]
-    Router -->|Priority 3| OpenRouter[OpenRouter]
-    API -->|SSE| Client
+graph LR
+    subgraph Client
+      SPA[React 19 SPA<br/>TanStack Query · Tailwind]
+    end
+    subgraph API[Express API]
+      Auth[JWT + refresh rotation]
+      Gen[Generation controllers<br/>SSE + heartbeat]
+      Router[AI Router<br/>retry · breaker · telemetry]
+      RAG[RAG grounding]
+    end
+    SPA -- REST + SSE --> Auth --> Gen
+    Gen --> RAG
+    Gen --> Router
+    Router -->|1| Gemini
+    Router -->|2| Groq
+    Router -->|3| OpenRouter
+    Gen --> DB[(MongoDB)]
 ```
 
-The frontend and backend are independently deployable: a React SPA (Vite, TypeScript, Tailwind, React Query) talking to a stateless Express API over a versioned REST contract, secured with JWTs so either side can scale or redeploy on its own.
+Frontend and backend deploy independently (Vercel + Render). Deeper dives: [system](./docs/architecture/system.md), [AI layer](./docs/architecture/ai.md), [auth](./docs/architecture/auth.md), [data model](./docs/database/er-diagram.md), [course generation sequence](./docs/flows/sequence-course-generation.md), and the [engineering decisions](./docs/engineering_decisions.md) (custom router vs. LangChain, SSE vs. WebSockets, token model).
 
-See [`docs/architecture/`](./docs/architecture) for per-layer diagrams (frontend, backend, auth, database, AI routing) and [`docs/engineering_decisions.md`](./docs/engineering_decisions.md) for the reasoning behind notable choices (custom AI router over LangChain, SSE over WebSockets, stateless JWT auth).
+## Tech stack
 
-## Tech Stack
+**Frontend** React 19, TypeScript (strict), Vite, Tailwind CSS, Radix UI, TanStack Query, Framer Motion · **Backend** Node 20, Express, MongoDB/Mongoose, Zod · **AI** Gemini, Groq, OpenRouter behind a custom router · **Quality** Jest + Supertest, Vitest + Testing Library, Playwright, ESLint, GitHub Actions, CodeQL, Dependabot
 
-- **Frontend:** React 19, TypeScript (strict), Vite, Tailwind CSS, Radix UI, React Query
-- **Backend:** Node.js (>=20), Express, MongoDB / Mongoose
-- **AI providers:** Google Gemini, Groq, OpenRouter (behind a custom failover router)
-- **Tooling:** Jest + Supertest, Vitest + React Testing Library, Playwright (E2E), ESLint, GitHub Actions CI + CodeQL
+## Run it locally in two commands
 
-## Getting Started
-
-**Prerequisites:** Node.js 18+, npm, and a MongoDB instance (local or [Atlas](https://www.mongodb.com/atlas)).
+No database, no API keys, no `.env` needed:
 
 ```bash
-git clone https://github.com/rahulpaul-07/smart-course-generator.git
-cd smart-course-generator
+# terminal 1: API on an in-memory MongoDB, seeded with sample courses, guest mode on
+cd backend && npm install && npm run dev:memory
 
-# 1. Backend
-cd backend
-npm install
-cp .env.example .env    # fill in MONGO_URI, JWT_SECRET, and at least one AI provider key
-npm run dev             # http://localhost:8000
-
-# 2. Frontend (separate terminal)
-cd frontend
-npm install
-cp .env.example .env
-npm run dev             # http://localhost:5173
+# terminal 2: web app on http://localhost:5173
+cd frontend && npm install && npm run dev
 ```
 
-With the backend running, interactive API docs (Swagger) are available at `http://localhost:8000/api-docs`.
+With no provider key, the AI router runs in a deterministic mock mode so every flow works offline. For real generation, copy `backend/.env.example` to `backend/.env` and add any of `GEMINI_API_KEY`, `GROQ_API_KEY` or `OPENROUTER_API_KEY`. Use `npm run dev` with a real `MONGO_URI` for persistent data, and `npm run seed` once to load the showcase courses guests are cloned from.
+
+API docs (Swagger) are served at `http://localhost:8000/api-docs` in development.
 
 ## Testing
 
-```bash
-cd backend && npm test    # Jest + Supertest, against an in-memory MongoDB instance
-cd frontend && npm test   # Vitest + React Testing Library
-```
+| Suite | Command | What it covers |
+|---|---|---|
+| API unit | `npm run test:unit` (backend) | Router failover, circuit breaker, JSON repair, streaks, XP rules, SSE heartbeat. No DB, ~2 s. |
+| API integration | `npm run test:integration` | Supertest against in-memory MongoDB: auth, ownership, XP integrity, guest accounts, community. |
+| UI | `npm test` (frontend) | Components, token refresh/retry, theme, pending-prompt handoff. |
+| End-to-end | `npm run e2e` (frontend) | Playwright against the real API: landing, auth, guest journey through a lesson, mobile layout. |
+| Evals | `npm run eval` (backend) | Generation quality scorecard; mock mode in CI, real scores with a key. |
 
-`npm run typecheck` in `frontend/` runs a full `tsc -b` build across the app and Vite config; `npm run lint` runs ESLint in both packages. All four gates run in CI on every push and pull request to `main`.
-
-## AI Quality, Grounding & Evals
-
-An "AI wrapper" is only as trustworthy as its output, so generation quality is measured, not assumed:
-
-- **Eval harness** ([`evals/`](./evals)) scores generated courses on structural validity, subtopic coverage, and — with AI keys — an LLM-as-judge faithfulness rating. It runs in CI on every push as a structural-contract smoke test (mock mode, no keys), and as a real quality gate when keys are present. Run locally: `npm run eval` (from `backend/`). Latest scorecard: [`evals/report.md`](./evals/report.md).
-- **RAG grounding** ([`backend/services/retrieval/`](./backend/services/retrieval)) retrieves vetted source excerpts from a curated corpus and injects them into lesson prompts so content stays factual and citeable. Pluggable vector store (in-memory today, Atlas Vector Search ready). Off by default; enable with `RAG_ENABLED=true`. Measure the faithfulness lift by running the evals with grounding on vs. off.
-- **Provider resilience** ([`backend/services/aiRouter.js`](./backend/services/aiRouter.js)) — retry-with-backoff, per-provider circuit breaker, and telemetry, all covered by unit tests in [`backend/tests/aiRouter.test.js`](./backend/tests/aiRouter.test.js).
-
-## Known Limitations & Roadmap
-
-Honest scope, because tradeoffs matter more than superlatives:
-
-- **Auth** uses short-lived access tokens (default 30m) plus rotating, revocable httpOnly refresh tokens with reuse detection ([`backend/services/tokenService.js`](./backend/services/tokenService.js)), and a transparent 401-refresh interceptor on the client. Remaining hardening (moving the access token fully into memory) is tracked in [`docs/adr/0001-auth-token-model.md`](./docs/adr/0001-auth-token-model.md).
-- **RAG corpus is intentionally small** (a demonstrator set); production use would expand it and move the store to Atlas Vector Search.
-- **Test coverage** is collected and reported in CI. A numeric coverage gate is intentionally deferred until a baseline is measured, then set slightly below the observed number to catch regressions without blocking on legacy untested modules.
-
-## Deployment
-
-Preconfigured for a split Vercel/Render deployment.
-
-- **Backend (Render):** root directory `backend`, build `npm install`, start `npm start`. Set `MONGO_URI`, `JWT_SECRET`, and your AI provider keys as environment variables. See [`render.yaml`](./render.yaml).
-- **Frontend (Vercel):** root directory `frontend`, framework preset Vite. Set `VITE_API_BASE_URL` to the deployed backend URL; `vercel.json` handles SPA routing.
+Every gate (lint, types, all test suites, evals, build, E2E) runs in CI on each push and pull request.
 
 ## Security
 
-- Helmet security headers, MongoDB query sanitization, and XSS input sanitization on every request.
-- Global and endpoint-specific rate limiting, including a dedicated auth limiter to slow credential-stuffing attempts.
-- Passwords hashed with bcrypt and never returned in API responses; the JWT secret is required at boot (the process refuses to start without one).
-- Zod schema validation on all mutating routes; ObjectId shape validation on all `:id`-style route params.
+Helmet headers, NoSQL-operator sanitisation, per-route rate limits (auth limits count only failed attempts), bcrypt, a required strong `JWT_SECRET` in production, ObjectId validation on every `:id` param, ownership checks on every resource, and verified-email-only linking for Google and Auth0. Findings and fixes from two full audits are written up in [`docs/AUDIT-2026-09.md`](./docs/AUDIT-2026-09.md). Report vulnerabilities per [`SECURITY.md`](./SECURITY.md).
 
-See [`SECURITY.md`](./SECURITY.md) for the vulnerability-reporting policy.
+## Deployment
 
-## Documentation
+- **API (Render):** root `backend`, start `npm start`. Set `MONGO_URI`, `JWT_SECRET` (32+ chars), at least one AI key, `CLIENT_URL`, and optionally `DEMO_MODE=true`. See [`render.yaml`](./render.yaml).
+- **Web (Vercel):** root `frontend`, Vite preset, `VITE_API_BASE_URL` pointing at the API. `vercel.json` handles SPA routing.
 
-Detailed documentation lives in [`docs/`](./docs):
+Full guide: [`docs/deployment.md`](./docs/deployment.md).
 
-| Document | Description |
-|---|---|
-| [`docs/architecture/`](./docs/architecture/) | System topology, frontend/backend architecture, and auth flows. |
-| [`docs/api/api-diagram.md`](./docs/api/api-diagram.md) | API route map, public vs. protected access. |
-| [`docs/database/er-diagram.md`](./docs/database/er-diagram.md) | Entity-relationship diagram with indexes. |
-| [`docs/deployment.md`](./docs/deployment.md) | Production deployment guide (Vercel, Render, MongoDB Atlas). |
-| [`docs/engineering_decisions.md`](./docs/engineering_decisions.md) | Rationale behind key technical choices. |
-| [`docs/adr/`](./docs/adr/) | Architecture Decision Records. |
+## Known limitations
 
-## Contributing
-
-Contributions are welcome — see [`CONTRIBUTING.md`](./CONTRIBUTING.md) for the workflow and [`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md). See [`CHANGELOG.md`](./CHANGELOG.md) for release history.
+- The RAG corpus is a small demonstrator set; production would expand it and move to Atlas Vector Search.
+- The committed eval scorecard is from mock mode; run `npm run eval` with a key to record real quality numbers.
+- Password reset needs an email provider and isn't implemented; accounts can use Google or Auth0 instead.
 
 ## License
 
-MIT — see [`LICENSE`](./LICENSE).
+MIT © Rahul Paul. See [`CONTRIBUTING.md`](./CONTRIBUTING.md) and [`CHANGELOG.md`](./CHANGELOG.md).

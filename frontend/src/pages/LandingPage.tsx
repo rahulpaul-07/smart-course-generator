@@ -1,42 +1,31 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { BrainCircuit } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-
+import { LandingNav } from '../components/landing/LandingNav';
 import { LandingHero } from '../components/landing/LandingHero';
-import { LandingFeatures } from '../components/landing/LandingFeatures';
-import { LandingTestimonials } from '../components/landing/LandingTestimonials';
+import { FeatureBento } from '../components/landing/FeatureBento';
+import { EngineeringSection, FAQ, FinalCTA, HowItWorks, StackMarquee } from '../components/landing/LandingSections';
 import { LandingFooter } from '../components/landing/LandingFooter';
 
+/**
+ * Marketing page. Always rendered in the dark palette (the `dark` class scopes
+ * the CSS variables to this subtree) so the first impression doesn't depend
+ * on the visitor's OS theme; the app itself still follows their preference.
+ */
 export default function LandingPage() {
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground selection:bg-primary/30 font-sans">
-      {/* Navbar */}
-      <header className="sticky top-0 z-50 w-full border-b border-border/30 bg-background/60 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
-        <div className="container px-4 md:px-8 lg:px-12 flex h-16 items-center justify-between mx-auto">
-          <Link to="/" className="flex items-center gap-2 font-bold text-xl tracking-tight focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary shadow-lg shadow-primary/20">
-              <BrainCircuit className="h-5 w-5 text-primary-foreground" />
-            </div>
-            CourseAI
-          </Link>
-          <nav className="flex items-center gap-6">
-            <Link to="/login" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-              Sign In
-            </Link>
-            <Button asChild className="rounded-full shadow-sm shadow-primary/10 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:shadow-primary/20 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background">
-              <Link to="/signup">Get Started</Link>
-            </Button>
-          </nav>
-        </div>
-      </header>
-
-      <main className="flex-1 overflow-hidden">
+    <div className="dark min-h-screen bg-background font-sans text-foreground antialiased selection:bg-primary/30 [color-scheme:dark]">
+      <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-md focus:bg-foreground focus:px-3 focus:py-2 focus:text-background">
+        Skip to content
+      </a>
+      <LandingNav />
+      <main id="main">
         <LandingHero />
-        <LandingFeatures />
-        <LandingTestimonials />
-        <LandingFooter />
+        <StackMarquee />
+        <FeatureBento />
+        <HowItWorks />
+        <EngineeringSection />
+        <FAQ />
+        <FinalCTA />
       </main>
+      <LandingFooter />
     </div>
   );
 }
