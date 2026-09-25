@@ -16,14 +16,17 @@ This guide covers deploying CourseAI across Vercel (Frontend), Render (Backend),
 4. Configure the following settings:
    - **Root Directory:** `backend`
    - **Environment:** `Node`
-   - **Build Command:** `npm install`
-   - **Start Command:** `node server.js`
+   - **Build Command:** `npm ci --omit=dev`
+   - **Start Command:** `npm start`
 5. Add the following **Environment Variables**:
    - `MONGO_URI` (from Atlas)
-   - `JWT_SECRET`
-   - `PORT` (usually defaults to 10000 on Render)
-   - `GEMINI_API_KEY`, `GROQ_API_KEY`, `OPENROUTER_API_KEY`
+   - `JWT_SECRET` (at least 32 characters; the server refuses to start otherwise)
+   - `CLIENT_URL`: the exact frontend origin, e.g. `https://smart-course-generator.vercel.app`. **Required:** in production it is the only origin CORS allows, so without it every browser request is rejected.
+   - `NODE_ENV=production`
+   - At least one of `GEMINI_API_KEY`, `GROQ_API_KEY`, `OPENROUTER_API_KEY`
+   - Optional: `DEMO_MODE=true` to enable one-click guest accounts, `RAG_ENABLED=true`, `APP_TIMEZONE`
 6. Deploy the service and copy the provided URL (e.g., `https://my-backend.onrender.com`).
+7. If `DEMO_MODE` is on, load the showcase courses that guest accounts are cloned from, once: run `npm run seed` from a Render shell (or locally with `MONGO_URI` pointing at production). It is idempotent.
 
 ## 3. Frontend Deployment: Vercel
 1. Create an account at [Vercel](https://vercel.com/).
@@ -33,7 +36,7 @@ This guide covers deploying CourseAI across Vercel (Frontend), Render (Backend),
    - **Root Directory:** `frontend`
 4. Add the following **Environment Variables**:
    - `VITE_API_BASE_URL` (Set this to your Render backend URL, e.g., `https://my-backend.onrender.com/api`)
-   - `VITE_AUTH0_DOMAIN`, `VITE_AUTH0_CLIENT_ID`, `VITE_AUTH0_AUDIENCE`
+   - Optional: `VITE_GOOGLE_CLIENT_ID`, and `VITE_AUTH0_DOMAIN` + `VITE_AUTH0_CLIENT_ID`. Each sign-in method (and its SDK) is only loaded when configured.
 5. Deploy the project.
 
 ## 4. Deployment Readiness Checklist
@@ -41,4 +44,6 @@ This guide covers deploying CourseAI across Vercel (Frontend), Render (Backend),
 - [ ] Backend is deployed on Render and `/api/health` returns 200 OK.
 - [ ] Frontend is deployed on Vercel and successfully communicates with the Backend.
 - [ ] Auth0 callback URLs have been updated to include the Vercel production domain.
-- [ ] CORS settings in the Backend allow requests from the Vercel production domain.
+- [ ] `CLIENT_URL` on the backend exactly matches the Vercel production origin (no trailing slash).
+- [ ] With `DEMO_MODE=true`, "Try the demo" on the landing page lands on a dashboard with a course (run `npm run seed` if the dashboard is empty).
+- [ ] `/status` shows at least one provider with a key configured.

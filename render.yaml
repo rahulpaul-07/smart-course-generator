@@ -4,7 +4,7 @@ services:
     env: node
     region: oregon
     rootDir: backend
-    buildCommand: npm install
+    buildCommand: npm ci --omit=dev
     startCommand: npm start
     healthCheckPath: /api/health/readiness
     envVars:
@@ -27,14 +27,24 @@ services:
         sync: false
       - key: OPENROUTER_API_KEY
         sync: false
+      # One-click guest accounts for visitors evaluating the app.
+      - key: DEMO_MODE
+        value: "true"
+      - key: DEMO_TTL_HOURS
+        value: "24"
 
   - type: web
     name: unified-course-frontend
     env: static
     region: oregon
     rootDir: frontend
-    buildCommand: npm install && npm run build
+    buildCommand: npm ci && npm run build
     staticPublishPath: ./dist
+    # SPA fallback: without it a refresh on /dashboard returns Render's 404.
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
     envVars:
       - key: VITE_API_BASE_URL
         fromService:
