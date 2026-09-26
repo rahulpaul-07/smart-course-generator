@@ -1,4 +1,3 @@
-const mongoose = require("mongoose");
 const { watchSse } = require("../utils/sse");
 const InterviewPrep = require("../models/InterviewPrep");
 const aiRouter = require("../services/aiRouter");
@@ -9,8 +8,9 @@ const MAX_THEORY_ANSWER = 6000;
 const MAX_CODE_SOLUTION = 12000;
 const MAX_CHAT_MESSAGE = 2000;
 const CHAT_HISTORY_TURNS = 12;
+// Stored transcript cap; only the last CHAT_HISTORY_TURNS reach the model.
+const MAX_STORED_CHAT_MESSAGES = 100;
 
-const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
 
 /**
  * Models routinely return the right content in a slightly wrong shape: a
@@ -285,9 +285,6 @@ async function getMyInterviews(req, res) {
  */
 async function getInterviewById(req, res) {
   try {
-    if (!isValidObjectId(req.params.id)) {
-      return res.status(400).json({ error: "Invalid interview id." });
-    }
     const prep = await InterviewPrep.findOne({ _id: req.params.id, user: req.user._id }).lean();
     if (!prep) return res.status(404).json({ error: "Interview prep not found" });
     return res.json(prep);
@@ -303,9 +300,6 @@ async function getInterviewById(req, res) {
  */
 async function submitInterview(req, res) {
   try {
-    if (!isValidObjectId(req.params.id)) {
-      return res.status(400).json({ error: "Invalid interview id." });
-    }
     const prep = await InterviewPrep.findOne({ _id: req.params.id, user: req.user._id });
     if (!prep) return res.status(404).json({ error: "Interview prep not found" });
 
@@ -509,9 +503,6 @@ Analyze: correctness, communication, technical depth, optimization, edge cases, 
  */
 async function chatInterview(req, res) {
   try {
-    if (!isValidObjectId(req.params.id)) {
-      return res.status(400).json({ error: "Invalid interview id." });
-    }
     const prep = await InterviewPrep.findOne({ _id: req.params.id, user: req.user._id });
     if (!prep) return res.status(404).json({ error: "Interview prep not found" });
 
@@ -566,6 +557,8 @@ If the candidate has answered enough questions, provide brief feedback on their 
 
     if (!isAborted && fullReply.trim()) {
       prep.mockChat.push({ role: "interviewer", content: fullReply.trim() });
+      const overflow = prep.mockChat.length - MAX_STORED_CHAT_MESSAGES;
+      if (overflow > 0) prep.mockChat.splice(0, overflow);
       await prep.save();
     }
 
@@ -587,9 +580,6 @@ If the candidate has answered enough questions, provide brief feedback on their 
  */
 async function deleteInterview(req, res) {
   try {
-    if (!isValidObjectId(req.params.id)) {
-      return res.status(400).json({ error: "Invalid interview id." });
-    }
     const result = await InterviewPrep.deleteOne({ _id: req.params.id, user: req.user._id });
     if (result.deletedCount === 0) return res.status(404).json({ error: "Interview prep not found" });
     return res.json({ message: "Interview prep deleted" });

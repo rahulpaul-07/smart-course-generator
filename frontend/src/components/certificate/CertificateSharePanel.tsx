@@ -26,7 +26,7 @@ export function CertificateSharePanel({
   return (
     <div className="md:col-span-4">
       <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-4 pl-1">Share Credential</h3>
-      <div className="bg-card/40 backdrop-blur-md border border-border/30 rounded-2xl p-4 shadow-lg flex flex-col gap-2">
+      <div className="bg-card border border-border rounded-2xl p-4 shadow-lg flex flex-col gap-2">
         <Button variant="secondary" onClick={shareToLinkedIn} className="w-full h-11 justify-start font-bold bg-[#0A66C2]/10 text-[#0A66C2] hover:bg-[#0A66C2]/20 rounded-xl">
           <ExternalLink className="w-4 h-4 mr-3" /> Add to LinkedIn
         </Button>

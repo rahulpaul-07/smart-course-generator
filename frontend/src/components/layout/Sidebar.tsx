@@ -54,7 +54,7 @@ export function Sidebar() {
         width: isSidebarCollapsed ? 80 : 256,
       }}
       transition={{ duration: 0.2, ease: "easeOut" }}
-      className="hidden flex-col border-r border-border bg-card/80 backdrop-blur-xl h-screen md:flex relative shrink-0 z-50"
+      className="hidden flex-col border-r border-border bg-card h-screen md:flex relative shrink-0 z-50"
     >
       <div className={cn("flex h-16 shrink-0 items-center border-b border-border transition-all duration-300", isSidebarCollapsed ? "px-0 justify-center" : "px-6")}>
         <Link to="/dashboard" className="flex items-center gap-2 font-bold text-lg text-foreground tracking-tight overflow-hidden whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg">
@@ -125,7 +125,7 @@ export function Sidebar() {
         )}
       </div>
 
-      <div className="shrink-0 p-3 border-t border-border/30 space-y-1">
+      <div className="shrink-0 p-3 border-t border-border space-y-1">
         {!isSidebarCollapsed && (
           <div className="eyebrow px-3 mb-1.5">
             Account

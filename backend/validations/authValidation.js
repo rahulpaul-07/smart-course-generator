@@ -21,18 +21,8 @@ const googleLoginSchema = z.object({
   })
 });
 
-const auth0SyncSchema = z.object({
-  body: z.object({
-    auth0Id: z.string().min(1, "Auth0 ID is required"),
-    email: z.string().email("Invalid email address"),
-    name: z.string().min(1, "Name is required"),
-    picture: z.string().url().optional().or(z.literal(''))
-  })
-});
-
 module.exports = {
   registerSchema,
   loginSchema,
-  googleLoginSchema,
-  auth0SyncSchema
+  googleLoginSchema
 };

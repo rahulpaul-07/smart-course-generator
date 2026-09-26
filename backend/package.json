@@ -13,7 +13,8 @@
     "eval": "node ../evals/runEvals.js",
     "load-test": "node ../perf/load-test.js",
     "test:unit": "jest --selectProjects unit",
-    "test:integration": "jest --selectProjects integration"
+    "test:integration": "jest --selectProjects integration",
+    "test:coverage": "jest --coverage --coverageReporters=text-summary"
   },
   "keywords": [],
   "author": "Rahul Paul",
@@ -32,7 +33,6 @@
     "express-mongo-sanitize": "^2.2.0",
     "express-rate-limit": "^8.7.0",
     "google-auth-library": "^10.9.1",
-    "google-tts-api": "^2.0.2",
     "groq-sdk": "^1.6.0",
     "helmet": "^8.3.0",
     "jsonwebtoken": "^9.0.3",

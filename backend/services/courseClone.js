@@ -18,8 +18,6 @@ async function cloneCourseTree(original, creatorId, { title } = {}) {
     language: original.language,
     difficulty: original.difficulty,
     skills: original.skills,
-    bannerUrl: original.bannerUrl,
-    bannerStatus: original.bannerStatus,
     isPublic: false,
   });
 

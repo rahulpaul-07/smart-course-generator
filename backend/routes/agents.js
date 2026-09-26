@@ -3,17 +3,16 @@ const { runCourseReviewer, runLearningCoach, runRevisionPlanner, runRecommendati
 const { verifyAuth0Token } = require("../middlewares/auth0Auth");
 
 const router = Router();
-const validateObjectIds = require("../middlewares/validateObjectIds");
-router.use(validateObjectIds);
 
 const { agentLimiter } = require("../middlewares/aiRateLimiters");
+const { aiLimiter } = require("../middlewares/rateLimit");
 
 router.use(verifyAuth0Token);
 
-router.post("/reviewer", agentLimiter, runCourseReviewer);
-router.post("/coach", agentLimiter, runLearningCoach);
-router.post("/planner", agentLimiter, runRevisionPlanner);
-router.post("/recommend", agentLimiter, runRecommendationAgent);
+router.post("/reviewer", agentLimiter, aiLimiter, runCourseReviewer);
+router.post("/coach", agentLimiter, aiLimiter, runLearningCoach);
+router.post("/planner", agentLimiter, aiLimiter, runRevisionPlanner);
+router.post("/recommend", agentLimiter, aiLimiter, runRecommendationAgent);
 
 module.exports = router;
 

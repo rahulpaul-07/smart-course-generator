@@ -34,16 +34,4 @@ export const lessonService = {
 
   clearChat: (courseId: string, lessonId: string) =>
     handleApi<{ success: boolean }>(api.delete(`/courses/${courseId}/lessons/${lessonId}/chat`), { showErrorToast: true, fallbackMsg: 'Failed to clear chat history' }),
-
-  generateHinglishText: (lessonText: string) =>
-    handleApi<{ data: { hinglishText: string } }>(api.post('/explanations/hinglish-text', { lessonText }), { showErrorToast: false }),
-
-  generateHinglishAudio: (lessonText: string) =>
-    handleApi<Blob>(api.post('/explanations/hinglish-audio', { lessonText, voiceName: 'Kore', tone: 'friendly teacher' }, { responseType: 'blob' }), { showErrorToast: false }),
-
-  executeCode: (endpoint: string) =>
-    handleApi<unknown>(api.post(endpoint), { showErrorToast: true, fallbackMsg: 'Execution failed' }),
-
-  getExplanation: (endpoint: string, data: Record<string, unknown>) =>
-    handleApi<unknown>(api.post(endpoint, data), { showErrorToast: true, fallbackMsg: 'Failed to load explanation' }),
 };

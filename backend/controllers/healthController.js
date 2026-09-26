@@ -1,11 +1,11 @@
-// @desc    Get system health status
+// @desc    Process health (no dependency checks; see /api/health/readiness)
 // @route   GET /api/health
 // @access  Public
 const getHealth = (req, res) => {
   res.status(200).json({
-    status: 'success',
-    message: 'System is healthy and running smoothly.',
-    timestamp: new Date().toISOString()
+    success: true,
+    message: "Backend health check successful",
+    timestamp: new Date().toISOString(),
   });
 };
 

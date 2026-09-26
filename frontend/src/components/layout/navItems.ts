@@ -1,7 +1,7 @@
 import type { ElementType } from "react";
 import { Home, BookOpen, Compass, Award, Layers, Brain, Bot, BarChart3, Trophy, User, Settings, Waypoints, FlaskConical } from "lucide-react";
 
-export type NavGroup = "learn" | "progress" | "community";
+export type NavGroup = "learn" | "progress" | "community" | "project";
 
 export interface NavItem {
   name: string;
@@ -15,6 +15,9 @@ export const navGroups: { key: NavGroup; label: string }[] = [
   { key: "learn", label: "Learn" },
   { key: "progress", label: "Progress" },
   { key: "community", label: "Community" },
+  // How the app itself is running: public engineering pages, kept apart from
+  // the learner's own progress.
+  { key: "project", label: "Under the hood" },
 ];
 
 export const navItems: NavItem[] = [
@@ -24,11 +27,11 @@ export const navItems: NavItem[] = [
   { name: "Interview Prep", href: "/interview-prep", icon: Brain, group: "learn" },
   { name: "AI Insights", href: "/agents", icon: Bot, group: "learn" },
   { name: "Analytics", href: "/analytics", icon: BarChart3, group: "progress" },
-  { name: "AI Router", href: "/ai-router", icon: Waypoints, group: "progress" },
-  { name: "Evals", href: "/evals", icon: FlaskConical, group: "progress" },
   { name: "Certificates", href: "/certificates", icon: Award, group: "progress" },
   { name: "Community", href: "/community", icon: Compass, group: "community" },
   { name: "Leaderboard", href: "/leaderboard", icon: Trophy, group: "community" },
+  { name: "AI router status", href: "/status", icon: Waypoints, group: "project" },
+  { name: "Eval results", href: "/evals", icon: FlaskConical, group: "project" },
 ];
 
 /** Rendered separately at the bottom of the nav (own profile + settings), not part of the grouped scroll list. */

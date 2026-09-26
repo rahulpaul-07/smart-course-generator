@@ -15,7 +15,7 @@ const COLUMNS = [
     title: 'Transparency',
     links: [
       { label: 'AI router status', to: '/status' },
-      { label: 'Eval scorecard', to: '/evals' },
+      { label: 'Eval results', to: '/evals' },
       { label: 'Architecture docs', href: `${GITHUB_URL}/tree/main/docs` },
     ],
   },
@@ -31,7 +31,7 @@ const COLUMNS = [
 
 export function LandingFooter() {
   return (
-    <footer className="border-t border-border/60">
+    <footer className="border-t border-border">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-[1.5fr_repeat(3,1fr)]">
         <div>
           <Logo />
@@ -62,7 +62,7 @@ export function LandingFooter() {
           </nav>
         ))}
       </div>
-      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 border-t border-border/60 px-4 py-6 text-xs text-muted-foreground sm:flex-row sm:px-6">
+      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 border-t border-border px-4 py-6 text-xs text-muted-foreground sm:flex-row sm:px-6">
         <p>© {new Date().getFullYear()} CourseAI</p>
         <p>AI-generated content can be wrong. Verify anything important.</p>
       </div>

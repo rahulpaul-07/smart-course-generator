@@ -48,6 +48,19 @@ describe('EvalsPage', () => {
     vi.clearAllMocks();
   });
 
+  it('says plainly that mock-mode results do not measure quality', async () => {
+    mockGet.mockResolvedValue([reportWith(), null]);
+    renderPage();
+    expect(await screen.findByText('These results come from mock mode')).toBeInTheDocument();
+  });
+
+  it('shows no mock-mode note for a live report', async () => {
+    mockGet.mockResolvedValue([reportWith({ mode: 'live', modeLabel: 'live' }), null]);
+    renderPage();
+    await screen.findByRole('row', { name: /json-basics/ });
+    expect(screen.queryByText('These results come from mock mode')).not.toBeInTheDocument();
+  });
+
   it('renders an unmeasured metric as n/a, never as a zero score', async () => {
     mockGet.mockResolvedValue([reportWith(), null]);
     renderPage();

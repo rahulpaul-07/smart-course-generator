@@ -138,12 +138,12 @@ export default function CommunityTemplatesPage() {
             </p>
             
             <div className="flex items-center gap-2 mb-4">
-              <span className="px-2 py-1 rounded bg-foreground/10 text-[10px] font-medium text-foreground/90 border border-border/30 uppercase">
+              <span className="px-2 py-1 rounded bg-foreground/10 text-[10px] font-medium text-foreground/90 border border-border uppercase">
                 {template.language || 'English'}
               </span>
             </div>
             
-            <div className="flex items-center justify-between border-t border-border/30 pt-4 mb-4">
+            <div className="flex items-center justify-between border-t border-border pt-4 mb-4">
               <Link to={`/profile/${template.creator?._id}`} className="flex items-center gap-2 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm">
                 <div className="h-7 w-7 rounded-full bg-muted flex items-center justify-center text-xs text-foreground overflow-hidden shadow-inner">
                   {template.creator?.avatar ? (

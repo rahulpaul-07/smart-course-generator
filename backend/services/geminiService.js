@@ -141,29 +141,4 @@ async function* generateTextStream(messages, maxTokens = 1024, modelName = MODEL
   }
 }
 
-async function generateCourseImage(prompt, signal = null) {
-  const { client, apiKey } = getAiClient();
-  try {
-    const response = await client.models.generateImages({
-      model: "imagen-4.0-generate-001",
-      prompt,
-      config: {
-        numberOfImages: 1,
-        abortSignal: signal || undefined,
-      },
-    });
-
-    const image = response?.generatedImages?.[0]?.image;
-    if (!image?.imageBytes) {
-      throw new Error("No image data returned from Imagen");
-    }
-
-    const mimeType = image.mimeType || "image/png";
-    return `data:${mimeType};base64,${image.imageBytes}`;
-  } catch (error) {
-    if (error.status === 429) geminiKeys.markExhausted(apiKey);
-    throw error;
-  }
-}
-
-module.exports = { generateJson, generateJsonStream, generateText, generateTextStream, generateCourseImage };
+module.exports = { generateJson, generateJsonStream, generateText, generateTextStream };

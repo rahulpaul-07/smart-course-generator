@@ -46,6 +46,9 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
+      - name: Dependency Audit
+        run: npm audit --audit-level=high
+
       - name: Run Linter
         run: npm run lint
 
@@ -87,12 +90,14 @@ jobs:
       - name: Run Unit Tests (no database)
         run: npm run test:unit
 
-      - name: Run Integration Tests (mongodb-memory-server)
-        run: npm run test:integration
+      # Runs unit + integration (mongodb-memory-server) with coverage and fails
+      # below the floor in jest.config.js.
+      - name: Run All Tests with Coverage Floor
+        run: npm run test:coverage
 
+      # Blocking: a high or critical advisory fails the build.
       - name: Dependency Audit
         run: npm audit --audit-level=high
-        continue-on-error: true
 
   evals-smoke:
     name: AI Eval Harness (smoke)

@@ -66,7 +66,7 @@ export default function CoursesPage() {
           title="My Courses"
           description="Pick up where you left off, or generate something new."
           action={(
-            <Button className="rounded-xl shadow-[0_4px_20px_rgb(0,0,0,0.1)] shadow-primary/20 hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 bg-primary hover:bg-primary/90 font-bold" onClick={() => navigate('/dashboard#course-generator')}>
+            <Button className="rounded-xl shadow-primary/20 active:scale-[0.98] transition-all duration-200 bg-primary hover:bg-primary/90 font-bold" onClick={() => navigate('/dashboard#course-generator')}>
               <Sparkles className="mr-2 h-4 w-4" />
               Generate New Course
             </Button>

@@ -1,7 +1,7 @@
 import { LandingNav } from '../components/landing/LandingNav';
 import { LandingHero } from '../components/landing/LandingHero';
 import { FeatureBento } from '../components/landing/FeatureBento';
-import { EngineeringSection, FAQ, FinalCTA, HowItWorks, StackMarquee } from '../components/landing/LandingSections';
+import { EngineeringSection, FAQ, FinalCTA, HowItWorks } from '../components/landing/LandingSections';
 import { LandingFooter } from '../components/landing/LandingFooter';
 
 /**
@@ -18,7 +18,6 @@ export default function LandingPage() {
       <LandingNav />
       <main id="main">
         <LandingHero />
-        <StackMarquee />
         <FeatureBento />
         <HowItWorks />
         <EngineeringSection />

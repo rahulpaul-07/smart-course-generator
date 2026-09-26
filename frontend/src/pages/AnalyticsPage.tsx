@@ -173,16 +173,16 @@ export default function AnalyticsPage() {
                 </div>
                 <span className="text-sm font-bold text-brand-300">{course.completionPct}%</span>
               </div>
-              <div className="mt-3 h-2 overflow-hidden rounded-full bg-foreground/10 border border-border/20">
+              <div className="mt-3 h-2 overflow-hidden rounded-full bg-foreground/10 border border-border">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-primary to-primary/70 transition-all duration-200 shadow-[0_0_10px_currentColor] opacity-80"
+                  className="h-full rounded-full bg-gradient-to-r from-primary to-primary/70 transition-all duration-200 opacity-80"
                   style={{ width: `${course.completionPct}%` }}
                 />
               </div>
             </div>
           ))}
           {data.courseStats.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-16 text-center glass-card rounded-2xl border-dashed border-2 border-border/30 bg-card/30">
+            <div className="flex flex-col items-center justify-center py-16 text-center glass-card rounded-2xl border-dashed border-2 border-border bg-card/30">
               <div className="mb-4 rounded-full bg-brand-500/10 p-4 ring-1 ring-brand-500/20 shadow-sm">
                 <BookOpen className="h-8 w-8 text-brand-400" />
               </div>
@@ -262,7 +262,7 @@ export default function AnalyticsPage() {
 
 function StatCard({ icon: Icon, label, value, color }: { icon: LucideIcon; label: string; value: string | number; color: string }) {
   return (
-    <div className="glass-card group rounded-2xl p-4 transition duration-300 hover:-translate-y-1 hover:border-brand-400/25">
+    <div className="glass-card group rounded-2xl p-4 transition duration-300 hover:border-brand-400/25">
       <span className={`grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br ${color} shadow-lg`}>
         <Icon className="h-5 w-5 text-foreground" />
       </span>

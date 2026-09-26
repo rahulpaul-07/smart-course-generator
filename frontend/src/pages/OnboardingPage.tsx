@@ -101,7 +101,7 @@ export default function OnboardingPage() {
                 className="space-y-8"
               >
                 <div className="text-center space-y-2">
-                  <h1 className="gradient-text font-display text-3xl font-extrabold tracking-tight">Welcome to CourseAI</h1>
+                  <h1 className="font-display text-3xl font-extrabold tracking-tight">Welcome to CourseAI</h1>
                   <p className="text-muted-foreground text-lg">Let's personalize your learning experience.</p>
                 </div>
 
@@ -115,7 +115,7 @@ export default function OnboardingPage() {
                         className={`p-4 rounded-xl border-2 text-left transition-all duration-200 ${
                           skillLevel === level.id 
                             ? 'border-primary bg-primary/5 shadow-md shadow-primary/5' 
-                            : 'border-border/30 hover:border-primary/50 hover:bg-secondary/50'
+                            : 'border-border hover:border-primary/50 hover:bg-secondary/50'
                         }`}
                       >
                         <div className="flex justify-between items-center mb-1">
@@ -143,7 +143,7 @@ export default function OnboardingPage() {
                 className="space-y-8"
               >
                 <div className="text-center space-y-2">
-                  <h1 className="gradient-text font-display text-3xl font-extrabold tracking-tight">What do you want to learn?</h1>
+                  <h1 className="font-display text-3xl font-extrabold tracking-tight">What do you want to learn?</h1>
                   <p className="text-muted-foreground text-lg">Select at least one topic to get personalized course recommendations.</p>
                 </div>
 
@@ -158,7 +158,7 @@ export default function OnboardingPage() {
                         className={`p-4 rounded-xl border-2 flex flex-col items-center justify-center gap-3 transition-all duration-200 ${
                           isSelected 
                             ? 'border-primary bg-primary/10 shadow-md shadow-primary/10' 
-                            : 'border-border/30 hover:border-primary/50 hover:bg-secondary/50'
+                            : 'border-border hover:border-primary/50 hover:bg-secondary/50'
                         }`}
                       >
                         <Icon className={`w-8 h-8 ${isSelected ? 'text-primary' : 'text-muted-foreground'}`} />

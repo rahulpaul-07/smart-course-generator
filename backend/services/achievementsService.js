@@ -202,7 +202,7 @@ async function recordActivity(userId, action, resourceType, resourceId, metadata
     // requests evaluate the same condition at the same time.
     if (xpToAdd > 0 || action.includes("UNLOCKED")) {
       const user = xpToAdd > 0
-        ? await User.findByIdAndUpdate(userId, { $inc: { xp: xpToAdd } }, { new: true })
+        ? await User.findByIdAndUpdate(userId, { $inc: { xp: xpToAdd } }, { returnDocument: "after" })
         : await User.findById(userId);
 
       if (user) {

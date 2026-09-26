@@ -5,7 +5,7 @@ export function LessonViewerSkeleton() {
   return (
     <div className="relative min-h-screen bg-background font-sans overflow-hidden flex flex-col">
       {/* Header Skeleton */}
-      <div className="h-[72px] lg:h-[88px] w-full border-b border-border/30 bg-background/80 flex items-center px-4 lg:px-8 shrink-0 justify-between">
+      <div className="h-[72px] lg:h-[88px] w-full border-b border-border bg-background/80 flex items-center px-4 lg:px-8 shrink-0 justify-between">
         <div className="flex items-center gap-4">
           <Skeleton className="h-8 w-8 rounded-lg" />
           <Skeleton className="h-6 w-48" />
@@ -18,7 +18,7 @@ export function LessonViewerSkeleton() {
 
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar Skeleton (Hidden on small screens) */}
-        <div className="hidden lg:flex flex-col w-[300px] xl:w-[340px] border-r border-border/30 bg-card/20 p-6 shrink-0 space-y-6">
+        <div className="hidden lg:flex flex-col w-[300px] xl:w-[340px] border-r border-border bg-card/20 p-6 shrink-0 space-y-6">
           <Skeleton className="h-6 w-3/4 mb-4" />
           {[...Array(5)].map((_, i) => (
             <div key={i} className="space-y-3">
@@ -51,7 +51,7 @@ export function LessonViewerSkeleton() {
                 <SkeletonText lines={3} />
               </div>
               
-              <div className="flex justify-between items-center pt-8 border-t border-border/30">
+              <div className="flex justify-between items-center pt-8 border-t border-border">
                 <Skeleton className="h-10 w-32 rounded-lg" />
                 <Skeleton className="h-10 w-32 rounded-lg" />
               </div>

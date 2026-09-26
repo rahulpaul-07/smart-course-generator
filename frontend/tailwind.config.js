@@ -33,7 +33,7 @@ export default {
       fontFamily: {
         sans: ['Geist', 'system-ui', 'sans-serif'],
         display: ['Geist', 'system-ui', 'sans-serif'],
-        serif: ['"Instrument Serif"', 'Georgia', 'serif'],
+        serif: ['Georgia', 'serif'],
         mono: ['"Geist Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
       },
       colors: {
@@ -120,30 +120,6 @@ export default {
           from: { backgroundPosition: "200% 0" },
           to: { backgroundPosition: "-200% 0" },
         },
-        marquee: {
-          from: { transform: "translateX(0)" },
-          to: { transform: "translateX(calc(-100% - var(--gap)))" },
-        },
-        "border-beam": {
-          "100%": { "offset-distance": "100%" },
-        },
-        "spin-around": {
-          "0%": { transform: "translateZ(0) rotate(0)" },
-          "15%, 35%": { transform: "translateZ(0) rotate(90deg)" },
-          "65%, 85%": { transform: "translateZ(0) rotate(270deg)" },
-          "100%": { transform: "translateZ(0) rotate(360deg)" },
-        },
-        "shimmer-slide": {
-          to: { transform: "translate(calc(100cqw - 100%), 0)" },
-        },
-        "shiny-text": {
-          "0%, 90%, 100%": { "background-position": "calc(-100% - var(--shiny-width)) 0" },
-          "30%, 60%": { "background-position": "calc(100% + var(--shiny-width)) 0" },
-        },
-        "gradient-x": {
-          "0%, 100%": { "background-position": "0% 50%" },
-          "50%": { "background-position": "100% 50%" },
-        },
         blink: {
           "0%, 49%": { opacity: "1" },
           "50%, 100%": { opacity: "0" },
@@ -156,12 +132,6 @@ export default {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "shimmer": "shimmer 8s ease-in-out infinite",
-        marquee: "marquee var(--duration) linear infinite",
-        "border-beam": "border-beam calc(var(--duration)*1s) infinite linear",
-        "spin-around": "spin-around calc(var(--speed) * 2) infinite linear",
-        "shimmer-slide": "shimmer-slide var(--speed) ease-in-out infinite alternate",
-        "shiny-text": "shiny-text 8s infinite",
-        "gradient-x": "gradient-x 6s ease infinite",
         blink: "blink 1s step-end infinite",
         "beam-dash": "beam-dash 2.4s linear infinite",
       },
