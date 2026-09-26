@@ -39,7 +39,6 @@ interface VideoBlock extends LessonContentBlock {
 
 interface CalloutBlock extends LessonContentBlock {
   type: "callout";
-  emoji?: string;
   title?: string;
   text?: string;
 }
@@ -173,8 +172,7 @@ const PDFDocument = ({ lesson }: { lesson: Lesson & { objectives?: string[]; des
             case "callout":
               return (
                 <div key={index} style={{ backgroundColor: "#f0f9ff", borderLeft: "4px solid #0ea5e9", padding: "16px", margin: "16px 0", pageBreakInside: "avoid" }}>
-                  <h4 style={{ margin: "0 0 8px", color: "#0369a1", fontSize: "15px", display: "flex", alignItems: "center", gap: "8px" }}>
-                    <span>{block.emoji || "💡"}</span>
+                  <h4 style={{ margin: "0 0 8px", color: "#0369a1", fontSize: "15px" }}>
                     {block.title || "Note"}
                   </h4>
                   <p style={{ margin: 0, color: "#0c4a6e", fontSize: "14px", lineHeight: "1.6" }}>{block.text}</p>

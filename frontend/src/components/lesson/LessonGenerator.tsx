@@ -48,8 +48,6 @@ export default function LessonGenerator({
 
   return (
     <section className="relative mb-10 overflow-hidden rounded-2xl bg-card border border-border p-5 shadow-lg animate-enter-delay sm:p-6 group">
-      {/* Animated gradient border overlay */}
-      <div className="absolute inset-0 z-0 bg-[linear-gradient(110deg,transparent,hsl(var(--primary)/0.1),transparent)] bg-[length:200%_100%] animate-shimmer pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity" />
       <div className="pointer-events-none absolute -right-14 -top-16 h-40 w-40 rounded-full bg-primary/10 blur-[50px] transition-all group-hover:bg-primary/20 group-hover:scale-110" />
       
       <div className="relative z-10 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
@@ -59,7 +57,7 @@ export default function LessonGenerator({
           </span>
           <div>
             <p className="text-xs font-bold uppercase tracking-wider text-primary mb-1">AI Lesson Studio</p>
-            <h2 className="font-display text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">
+            <h2 className="font-display text-2xl font-bold">
               {hasContent ? 'Shape this lesson your way' : 'Bring this lesson to life'}
             </h2>
             <p className="mt-1 text-sm text-muted-foreground">
@@ -77,7 +75,7 @@ export default function LessonGenerator({
             size="lg"
             onClick={() => onPickerChange(true)}
             disabled={isGenerating}
-            className={`shrink-0 rounded-full px-6 transition-all ${isGenerating ? 'cursor-progress opacity-90' : 'bg-gradient-to-r from-primary to-primary/60 text-primary-foreground border-0'}`}
+            className={`shrink-0 px-6 ${isGenerating ? 'cursor-progress opacity-90' : ''}`}
           >
             {isGenerating ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Sparkles className="h-4 w-4 mr-2" />}
             {isGenerating

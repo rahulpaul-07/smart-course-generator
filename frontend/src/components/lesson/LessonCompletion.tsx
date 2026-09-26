@@ -39,8 +39,8 @@ const LessonCompletion = React.memo(({ course, courseId, lesson, onLessonUpdate 
   return (
     <section className={`relative mt-10 overflow-hidden rounded-2xl border p-6 shadow-md shadow-black/10 ${
       lesson.completedAt
-        ? 'border-success/30 bg-gradient-to-br from-success/15 to-background/60'
-        : 'border-brand-500/25 bg-gradient-to-br from-brand-500/12 to-background/60'
+        ? 'border-success/30 bg-success/10'
+        : 'border-primary/25 bg-primary/[0.06]'
     }`}
     >
       <div className={`pointer-events-none absolute -right-16 -top-20 h-48 w-48 rounded-full blur-3xl ${lesson.completedAt ? 'bg-success/15' : 'bg-brand-500/15'}`} />
