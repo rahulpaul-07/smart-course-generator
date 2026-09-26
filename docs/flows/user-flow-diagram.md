@@ -26,13 +26,11 @@ graph TD
     
     %% Interactive Widgets
     StreamLesson --> Interact{Need Help?}
-    Interact -->|Hinglish Translate| ExplTool[Request Hinglish Translation / Audio]
     Interact -->|AI Tutor| Tutor[Chat with context-aware AI Sidebar]
     Interact -->|Flashcards| Cards[Review Flashcards]
     Interact -->|Practice Lab| Lab[Run Interactive Coding Lab]
     Interact -->|Take Quiz| Quiz[Complete Lesson End-Quiz]
     
-    ExplTool --> ResumeStudy[Continue Lesson Study]
     Tutor --> ResumeStudy
     Cards --> ResumeStudy
     Lab --> ResumeStudy
