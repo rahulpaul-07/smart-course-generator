@@ -79,7 +79,7 @@ const PracticeLab = React.memo(({ lessonId, courseId, initialLab = null, embedde
 
   return (
     <Card className={`overflow-hidden border-primary/20 ${embedded ? 'border-none shadow-none bg-transparent' : ''}`}>
-      <CardHeader className="bg-primary/5 border-b border-border/30 pb-6">
+      <CardHeader className="bg-primary/5 border-b border-border pb-6">
         <div className="flex items-start justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-3">
@@ -153,7 +153,7 @@ const PracticeLab = React.memo(({ lessonId, courseId, initialLab = null, embedde
           </ul>
         </div>
 
-        <div className="pt-4 border-t border-border/30">
+        <div className="pt-4 border-t border-border">
           <Button variant="outline" onClick={() => setShowHint(!showHint)} className="w-full sm:w-auto">
             <AlertCircle className="mr-2 h-4 w-4" />
             {showHint ? 'Hide Hint' : 'Need a hint?'}

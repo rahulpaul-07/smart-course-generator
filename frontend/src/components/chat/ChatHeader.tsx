@@ -12,7 +12,7 @@ interface ChatHeaderProps {
 
 export function ChatHeader({ lessonTitle, hasMessages, onClearChat, onBack, onClose }: ChatHeaderProps) {
   return (
-    <header className="flex flex-shrink-0 items-center justify-between gap-3 border-b border-border/30 bg-card/50 backdrop-blur-xl px-5 py-4 z-10">
+    <header className="flex flex-shrink-0 items-center justify-between gap-3 border-b border-border bg-card px-5 py-4 z-10">
       <div className="flex min-w-0 items-center gap-3">
         <button
           type="button"

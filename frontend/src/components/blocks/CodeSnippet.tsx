@@ -46,9 +46,9 @@ export default function CodeSnippet({ block }: { block: LessonContentBlock }) {
       initial={{ opacity: 0, y: 10 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      className="my-8 overflow-hidden rounded-xl border border-border/30 bg-[#0d1117] shadow-md"
+      className="my-8 overflow-hidden rounded-xl border border-border bg-[#0d1117] shadow-md"
     >
-      <div className="flex items-center justify-between border-b border-border/30 bg-[#161b22] px-4 py-2">
+      <div className="flex items-center justify-between border-b border-border bg-[#161b22] px-4 py-2">
         <div className="flex items-center gap-4">
           <div className="hidden gap-1.5 sm:flex">
             <div className="h-3 w-3 rounded-full bg-destructive/80" />

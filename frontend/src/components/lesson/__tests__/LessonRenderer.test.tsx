@@ -22,8 +22,8 @@ describe('LessonRenderer Markdown & Content Handling', () => {
     // The markdown parses the long string. It should be in the document.
     expect(screen.getByText(/averyveryveryveryveryveryverylongurl/)).toBeInTheDocument();
     
-    // Check overflow-wrap-anywhere class to ensure long content is handled correctly
-    const markdownContainers = container.querySelectorAll('.overflow-wrap-anywhere');
+    // Long unbreakable content must wrap (overflow-wrap:anywhere) rather than overflow.
+    const markdownContainers = container.querySelectorAll('[class*="[overflow-wrap:anywhere]"]');
     expect(markdownContainers.length).toBeGreaterThan(0);
   });
 

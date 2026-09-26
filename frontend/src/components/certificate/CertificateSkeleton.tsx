@@ -5,7 +5,7 @@ export function CertificateSkeleton() {
   return (
     <div className="min-h-screen bg-background pb-32">
       {/* Top Banner Skeleton */}
-      <div className="w-full bg-muted/20 border-b border-border/30 py-3 backdrop-blur-md sticky top-0 z-50">
+      <div className="w-full bg-muted/20 border-b border-border py-3 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
           <Skeleton className="h-4 w-48 rounded-md" />
           <Skeleton className="h-8 w-20 rounded-md" />
@@ -14,12 +14,12 @@ export function CertificateSkeleton() {
 
       <div className="max-w-5xl mx-auto px-6 pt-12 lg:pt-16 flex flex-col items-center">
         {/* Certificate Preview Skeleton */}
-        <div className="w-full max-w-[1000px] mb-16 aspect-[1.414/1] relative bg-card/50 border border-border/50 rounded-lg overflow-hidden shadow-xl">
+        <div className="w-full max-w-[1000px] mb-16 aspect-[1.414/1] relative bg-card/50 border border-border rounded-lg overflow-hidden shadow-xl">
           <Skeleton className="absolute inset-0" />
         </div>
 
         {/* Metadata Skeleton */}
-        <div className="w-full max-w-[1000px] mb-8 bg-card/30 backdrop-blur-xl border border-border/30 rounded-3xl p-8 lg:p-12 shadow-md">
+        <div className="w-full max-w-[1000px] mb-8 bg-card border border-border rounded-3xl p-8 lg:p-12 shadow-md">
           <div className="grid md:grid-cols-3 gap-8">
             {Array.from({ length: 3 }).map((_, i) => (
               <div key={i}>
@@ -32,7 +32,7 @@ export function CertificateSkeleton() {
 
         {/* Achievements & Share Panel Skeleton */}
         <div className="w-full max-w-[1000px] grid md:grid-cols-12 gap-8 mb-16">
-          <div className="col-span-12 md:col-span-8 bg-card/40 backdrop-blur-md border border-border/30 rounded-3xl p-8 shadow-sm">
+          <div className="col-span-12 md:col-span-8 bg-card border border-border rounded-3xl p-8 shadow-sm">
             <Skeleton className="h-6 w-48 rounded-md mb-8" />
             <div className="space-y-6">
               {Array.from({ length: 3 }).map((_, i) => (
@@ -47,7 +47,7 @@ export function CertificateSkeleton() {
             </div>
           </div>
           
-          <div className="col-span-12 md:col-span-4 bg-card/40 backdrop-blur-md border border-border/30 rounded-3xl p-8 shadow-sm flex flex-col">
+          <div className="col-span-12 md:col-span-4 bg-card border border-border rounded-3xl p-8 shadow-sm flex flex-col">
             <Skeleton className="h-6 w-32 rounded-md mb-8" />
             <div className="space-y-4">
               <SkeletonButton className="w-full h-12 rounded-xl" />

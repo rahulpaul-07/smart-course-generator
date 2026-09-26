@@ -11,15 +11,15 @@ export function LeaderboardSkeleton() {
         <Skeleton className="h-4 w-96 rounded-md mt-2" />
       </section>
 
-      <div className="max-w-4xl mx-auto glass-card rounded-2xl overflow-hidden shadow-lg border border-border/30">
-        <div className="p-4 bg-foreground/10 border-b border-border/30 grid grid-cols-12 gap-4 text-xs font-bold text-muted-foreground uppercase tracking-wider hidden sm:grid">
+      <div className="max-w-4xl mx-auto glass-card rounded-2xl overflow-hidden shadow-lg border border-border">
+        <div className="p-4 bg-foreground/10 border-b border-border grid grid-cols-12 gap-4 text-xs font-bold text-muted-foreground uppercase tracking-wider hidden sm:grid">
           <div className="col-span-2 text-center">Rank</div>
           <div className="col-span-5">Learner</div>
           <div className="col-span-3">Achievements</div>
           <div className="col-span-2 text-right pr-4">Total XP</div>
         </div>
         
-        <div className="divide-y divide-border/30">
+        <div className="divide-y divide-border">
           {Array.from({ length: 10 }).map((_, i) => (
             <div key={i} className="p-4 grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
               <div className="col-span-2 flex items-center justify-between sm:justify-center">

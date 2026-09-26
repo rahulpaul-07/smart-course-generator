@@ -15,7 +15,6 @@ interface AuthContextValue {
   login: (userData?: User & { token?: string }) => void;
   loginWithGoogle: (googleToken: string) => Promise<User | undefined>;
   logout: () => Promise<void>;
-  getToken: () => Promise<string | null>;
   loginWithAuth0: () => void;
   signupWithAuth0: () => void;
 }
@@ -88,7 +87,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // api interceptor pulls the token from localStorage, but Auth0 provides a
         // different token here, so we pass it explicitly for this one request.
         try {
-          const { data } = await api.post<User>('/auth/auth0-sync', {}, { headers: { Authorization: `Bearer ${token}` } });
+          const { data } = await api.post<User & { token?: string }>('/auth/auth0-sync', {}, { headers: { Authorization: `Bearer ${token}` } });
+          // From here on the session is a local one (access token + refresh
+          // cookie), same as a password login.
+          if (data?.token) localStorage.setItem('token', data.token);
           setUser(data);
         } catch (error) {
           toast.error(getApiError(error) || 'Could not finish Google login');
@@ -107,17 +109,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         auth0SyncStarted.current = false;
       });
   }, [getAccessTokenSilently, hasAuth0Session, loadingSession, user]);
-
-  async function getToken(): Promise<string | null> {
-    if (hasAuth0Session) {
-      try {
-        return await getAccessTokenSilently();
-      } catch (err) {
-        console.warn('Failed to get Auth0 token', err);
-      }
-    }
-    return localStorage.getItem('token');
-  }
 
   async function logout() {
     await authService.logout();
@@ -151,7 +142,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return data ?? undefined;
     },
     logout,
-    getToken,
     loginWithAuth0: () => loginWithRedirect(),
     signupWithAuth0: () => loginWithRedirect({ authorizationParams: { screen_hint: 'signup' } }),
   };

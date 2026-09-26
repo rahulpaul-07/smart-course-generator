@@ -9,7 +9,7 @@ export default function NotFoundPage() {
     <div className="min-h-screen flex items-center justify-center bg-background text-foreground relative overflow-hidden p-6">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
       
-      <div className="relative z-10 text-center max-w-lg mx-auto p-12 bg-card/40 backdrop-blur-xl border border-border/30 shadow-lg rounded-2xl flex flex-col items-center">
+      <div className="relative z-10 text-center max-w-lg mx-auto p-12 bg-card border border-border shadow-lg rounded-2xl flex flex-col items-center">
         <div className="h-24 w-24 bg-primary/10 rounded-2xl flex items-center justify-center mb-8 shadow-inner ring-1 ring-primary/20">
           <FileQuestion className="h-12 w-12 text-primary opacity-90" />
         </div>

@@ -20,7 +20,7 @@ const CodeBlock = ({ language, value }: { language: string, value: string }) => 
     setTimeout(() => setCopied(false), 2000);
   };
   return (
-    <div className="relative group my-4 rounded-xl overflow-hidden bg-[#0D0D0D] border border-border/30 shadow-md">
+    <div className="relative group my-4 rounded-xl overflow-hidden bg-[#0D0D0D] border border-border shadow-md">
       <div className="flex items-center justify-between px-4 py-2 bg-[#1a1a1a] border-b border-white/5">
         <span className="text-[10px] font-mono font-bold text-muted-foreground uppercase tracking-widest">{language || 'code'}</span>
         <button onClick={handleCopy} className="text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded">
@@ -62,13 +62,13 @@ export function FeedbackPanel({ prep }: FeedbackPanelProps) {
     <div className="flex h-full flex-col bg-background/50">
       <div className="flex-1 min-h-0 overflow-y-auto p-5 space-y-5 scroll-smooth">
         {chat.length === 0 && !sending && (
-          <div className="rounded-2xl border border-dashed border-border/80 p-5 text-sm text-muted-foreground">
+          <div className="rounded-2xl border border-dashed border-border p-5 text-sm text-muted-foreground">
             <p className="font-medium text-foreground">Practise out loud, in writing.</p>
             <p className="mt-1">The interviewer asks follow-ups on your answers. Try:</p>
             <ul className="mt-3 space-y-2">
               {['Ask me a follow-up on the first question', 'Give me a hint for the coding problem without the answer', 'Run a five-minute behavioural round'].map((t) => (
                 <li key={t}>
-                  <button type="button" onClick={() => setMessage(t)} className="w-full rounded-lg border border-border/70 px-3 py-2 text-left text-[13px] transition-colors hover:border-primary/50 hover:text-foreground">
+                  <button type="button" onClick={() => setMessage(t)} className="w-full rounded-lg border border-border px-3 py-2 text-left text-[13px] transition-colors hover:border-primary/50 hover:text-foreground">
                     {t}
                   </button>
                 </li>
@@ -91,7 +91,7 @@ export function FeedbackPanel({ prep }: FeedbackPanelProps) {
               <div className={`max-w-[88%] rounded-2xl px-4 py-3 text-[14px] leading-relaxed shadow-sm ${
                 msg.role === 'candidate'
                   ? 'rounded-br-sm bg-foreground text-background font-medium'
-                  : 'rounded-tl-sm bg-card border border-border/30 text-foreground/90'
+                  : 'rounded-tl-sm bg-card border border-border text-foreground/90'
               }`}>
                 {msg.role === 'candidate' ? (
                   msg.content
@@ -121,7 +121,7 @@ export function FeedbackPanel({ prep }: FeedbackPanelProps) {
         
         {sending && chat[chat.length-1]?.role !== 'interviewer' && (
           <div className="flex justify-start">
-            <div className="bg-card border border-border/30 rounded-2xl rounded-tl-sm px-4 py-3.5 shadow-sm flex gap-1.5 items-center h-[46px]">
+            <div className="bg-card border border-border rounded-2xl rounded-tl-sm px-4 py-3.5 shadow-sm flex gap-1.5 items-center h-[46px]">
               <span className="w-1.5 h-1.5 bg-primary/70 rounded-full animate-bounce" />
               <span className="w-1.5 h-1.5 bg-primary/70 rounded-full animate-bounce" style={{ animationDelay: '0.15s' }} />
               <span className="w-1.5 h-1.5 bg-primary/70 rounded-full animate-bounce" style={{ animationDelay: '0.3s' }} />
@@ -143,14 +143,14 @@ export function FeedbackPanel({ prep }: FeedbackPanelProps) {
         <div ref={messagesEndRef} className="h-4" />
       </div>
 
-      <div className="p-4 border-t border-border/30 bg-card/80 backdrop-blur-xl">
+      <div className="p-4 border-t border-border bg-card">
         <form onSubmit={sendMessage} className="relative flex items-end gap-2">
           {sending ? (
             <button type="button" onClick={stopGenerating} className="w-full h-12 flex items-center justify-center gap-2 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive font-bold text-sm transition-colors hover:bg-destructive/20 shadow-sm">
               <XCircle className="h-4 w-4" /> Stop generating
             </button>
           ) : (
-            <div className="relative flex-1 flex items-end bg-background border border-border/30 rounded-xl shadow-sm focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary/50 transition-all">
+            <div className="relative flex-1 flex items-end bg-background border border-border rounded-xl shadow-sm focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary/50 transition-all">
               <textarea
                 value={message}
                 onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setMessage(e.target.value)}

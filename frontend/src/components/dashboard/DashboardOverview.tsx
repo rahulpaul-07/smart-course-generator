@@ -76,7 +76,7 @@ export function DashboardOverview({ statistics, weeklyProgress, overallCompletio
                   <dd
                     className={cn(
                       'mt-1 font-mono text-2xl tabular-nums',
-                      value === 0 && 'text-muted-foreground/40'
+                      value === 0 && 'text-muted-foreground'
                     )}
                   >
                     {value}

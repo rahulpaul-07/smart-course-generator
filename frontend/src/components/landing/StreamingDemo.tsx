@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useInView, useReducedMotion } from 'framer-motion';
-import { Check, CircleDashed, Loader2, Sparkles } from 'lucide-react';
+import { Check, CircleDashed, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 /**
@@ -85,24 +85,15 @@ export function StreamingDemo({ className }: { className?: string }) {
   const codeLines = CODE.filter((_, i) => t >= 8000 + i * 280);
 
   return (
-    <div ref={ref} className={cn('overflow-hidden rounded-2xl border border-border/80 bg-card/80 shadow-2xl shadow-black/40 backdrop-blur', className)}>
-      {/* window chrome */}
-      <div className="flex items-center gap-3 border-b border-border/70 px-4 py-3">
-        <div className="flex gap-1.5" aria-hidden>
-          <span className="h-3 w-3 rounded-full bg-[#ff5f57]/90" />
-          <span className="h-3 w-3 rounded-full bg-[#febc2e]/90" />
-          <span className="h-3 w-3 rounded-full bg-[#28c840]/90" />
-        </div>
-        <div className="mx-auto flex h-7 w-full max-w-sm items-center justify-center rounded-md border border-border/60 bg-background/60 px-3 font-mono text-[11px] text-muted-foreground">
-          courseai.app/dashboard
-        </div>
-        <div className="w-12" />
+    <div ref={ref} className={cn('overflow-hidden rounded-xl border border-border bg-card', className)}>
+      <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-border px-4 py-3 text-xs text-muted-foreground">
+        <span className="font-medium text-foreground">Course generation, replayed</span>
+        <span>Scripted, but the events and their order match the real SSE stream.</span>
       </div>
 
       {/* prompt */}
-      <div className="border-b border-border/70 p-4 sm:p-5">
-        <div className="flex items-center gap-3 rounded-xl border border-border/80 bg-background/70 px-4 py-3">
-          <Sparkles className="h-4 w-4 shrink-0 text-primary" />
+      <div className="border-b border-border p-4 sm:p-5">
+        <div className="flex items-center gap-3 rounded-lg border border-border bg-background px-4 py-3">
           <p className="min-w-0 flex-1 truncate text-sm text-foreground">
             {typed}
             {t < 1400 && <span className="ml-px inline-block h-4 w-[2px] translate-y-0.5 animate-blink bg-primary" />}
@@ -121,7 +112,7 @@ export function StreamingDemo({ className }: { className?: string }) {
 
       <div className="grid min-h-[340px] grid-cols-1 md:grid-cols-[240px_1fr]">
         {/* curriculum */}
-        <aside className="hidden border-r border-border/70 p-4 md:block">
+        <aside className="hidden border-r border-border p-4 md:block">
           <p className="mb-3 text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">Curriculum</p>
           <div className="space-y-3">
             {MODULES.map((m, mi) => {
@@ -132,7 +123,7 @@ export function StreamingDemo({ className }: { className?: string }) {
                     <span className="mr-1.5 font-mono text-muted-foreground">{String(mi + 1).padStart(2, '0')}</span>
                     {m.title}
                   </p>
-                  <ul className="mt-1.5 space-y-1 border-l border-border/70 pl-3">
+                  <ul className="mt-1.5 space-y-1 border-l border-border pl-3">
                     {m.lessons.map((l, li) => {
                       const active = mi === 1 && li === 0 && t >= 4500;
                       return (
@@ -168,10 +159,10 @@ export function StreamingDemo({ className }: { className?: string }) {
                 </p>
               )}
               {codeLines.length > 0 && (
-                <pre className="overflow-hidden rounded-xl border border-border/70 bg-background/80 p-4 font-mono text-[11.5px] leading-6">
+                <pre className="overflow-hidden rounded-xl border border-border bg-background/80 p-4 font-mono text-[11.5px] leading-6">
                   {codeLines.map((line, i) => (
                     <div key={i} className="whitespace-pre text-foreground/90">
-                      <span className="mr-4 select-none text-muted-foreground/50">{i + 1}</span>
+                      <span className="mr-4 select-none text-muted-foreground">{i + 1}</span>
                       {line}
                     </div>
                   ))}
@@ -184,7 +175,7 @@ export function StreamingDemo({ className }: { className?: string }) {
                 </div>
               )}
               {t >= 11300 && (
-                <div className="inline-flex items-center gap-2 rounded-lg border border-border/70 bg-background/70 px-3 py-1.5 text-xs text-muted-foreground">
+                <div className="inline-flex items-center gap-2 rounded-lg border border-border bg-background/70 px-3 py-1.5 text-xs text-muted-foreground">
                   <Check className="h-3.5 w-3.5 text-emerald-400" /> Knowledge check · 5 questions
                 </div>
               )}
@@ -194,7 +185,7 @@ export function StreamingDemo({ className }: { className?: string }) {
       </div>
 
       {/* raw SSE log */}
-      <div className="border-t border-border/70 bg-background/60 px-4 py-3 font-mono text-[11px] leading-5">
+      <div className="border-t border-border bg-background/60 px-4 py-3 font-mono text-[11px] leading-5">
         <div className="mb-1 flex items-center gap-2 text-muted-foreground">
           <span className={cn('h-1.5 w-1.5 rounded-full', generating ? 'animate-pulse bg-emerald-400' : 'bg-muted-foreground/40')} />
           text/event-stream

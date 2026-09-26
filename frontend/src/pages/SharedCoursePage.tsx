@@ -37,7 +37,7 @@ export default function SharedCoursePage() {
   if (!course) {
     return (
       <div className="page-shell max-w-xl py-24 text-center animate-enter">
-        <div className="surface-card rounded-2xl p-10 shadow-lg border border-border/30">
+        <div className="surface-card rounded-2xl p-10 shadow-lg border border-border">
           <BookOpen className="mx-auto h-9 w-9 text-brand-300" />
           <h1 className="mt-5 font-display text-2xl font-bold text-foreground">Course unavailable</h1>
           <p className="mt-2 text-sm text-muted-foreground">This course is private or the shared link is no longer active.</p>
@@ -48,7 +48,7 @@ export default function SharedCoursePage() {
 
   return (
     <main className="min-h-screen text-foreground">
-      <header className="sticky top-0 z-20 border-b border-border bg-background/80 px-4 py-4 backdrop-blur-2xl sm:px-6 lg:px-8">
+      <header className="sticky top-0 z-20 border-b border-border bg-background/80 px-4 py-4 sm:px-6 lg:px-8">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
             <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-brand-500 to-primary shadow-lg shadow-brand-500/20">
@@ -67,9 +67,9 @@ export default function SharedCoursePage() {
       </header>
 
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[21rem_1fr] lg:px-8 lg:py-10">
-        <aside className="surface-card rounded-2xl border border-border/30 h-fit p-5 animate-enter lg:sticky lg:top-28 shadow-sm">
+        <aside className="surface-card rounded-2xl border border-border h-fit p-5 animate-enter lg:sticky lg:top-28 shadow-sm">
           <p className="eyebrow"><Sparkles className="h-3.5 w-3.5" /> Explore course</p>
-          <h1 className="gradient-text mt-4 font-display text-2xl font-extrabold leading-tight">{course.title}</h1>
+          <h1 className="mt-4 font-display text-2xl font-extrabold leading-tight">{course.title}</h1>
           {course.description && <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{course.description}</p>}
 
           <div className="mt-8 space-y-5">
@@ -101,11 +101,11 @@ export default function SharedCoursePage() {
           </div>
         </aside>
 
-        <section className="surface-card rounded-2xl border border-border/30 min-w-0 p-6 shadow-sm animate-enter-delay lg:p-10 xl:p-12">
+        <section className="surface-card rounded-2xl border border-border min-w-0 p-6 shadow-sm animate-enter-delay lg:p-10 xl:p-12">
           {selectedLesson ? (
             <>
               <p className="eyebrow">Current lesson</p>
-              <h2 className="gradient-text mb-10 mt-3 font-display text-3xl font-extrabold">{selectedLesson.title}</h2>
+              <h2 className="mb-10 mt-3 font-display text-3xl font-extrabold">{selectedLesson.title}</h2>
               <LessonAudioPlayer
                 key={`audio-${selectedLesson._id}`}
                 lesson={selectedLesson}

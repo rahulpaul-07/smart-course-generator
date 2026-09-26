@@ -24,7 +24,7 @@ export function CourseActions({ progress, nextLessonId, courseId }: CourseAction
     >
       <Button 
         variant="outline"
-        className="w-full h-10 rounded-lg shadow-sm border border-border/30 hover:bg-muted/50 hover:-translate-y-0.5 transition-all duration-200 font-semibold text-sm" 
+        className="w-full h-10 rounded-lg shadow-sm border border-border hover:bg-muted/50 transition-all duration-200 font-semibold text-sm" 
         onClick={() => nextLessonId && navigate(`/course/${courseId}/lesson/${nextLessonId}`)}
       >
         {progress.percentage === 0 ? 'Start Learning' : 'Continue Learning'}

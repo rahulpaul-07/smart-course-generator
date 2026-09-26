@@ -67,7 +67,7 @@ export default function LessonViewerPage() {
   ];
 
   const courseBreadcrumbBar = !isFocusMode && (
-    <div className="flex items-center gap-3 border-b border-border/20 bg-background/60 px-4 py-2 sm:px-6">
+    <div className="flex items-center gap-3 border-b border-border bg-background/60 px-4 py-2 sm:px-6">
       <div className="shrink-0 lg:hidden">
         <BackButton onClick={() => navigate(`/course/${courseId}`)} label="Back to Course" iconOnly />
       </div>

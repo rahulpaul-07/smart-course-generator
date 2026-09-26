@@ -42,7 +42,7 @@ export function ResultsDashboard({ prep, readiness, strengths, weaknesses, aiRec
       </div>
 
       <div className="space-y-6">
-        <div className="min-w-0 rounded-2xl border border-border/30 bg-card/30 backdrop-blur-xl p-6 sm:p-8 flex flex-col justify-center items-center text-center shadow-md relative overflow-hidden group">
+        <div className="min-w-0 rounded-2xl border border-border bg-card p-6 sm:p-8 flex flex-col justify-center items-center text-center shadow-md relative overflow-hidden group">
           <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity duration-200" />
           <h3 className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-6 z-10">Overall Score</h3>
           <div className="relative flex h-40 w-40 sm:h-44 sm:w-44 max-w-full items-center justify-center mb-6 z-10">
@@ -93,12 +93,12 @@ export function ResultsDashboard({ prep, readiness, strengths, weaknesses, aiRec
         </div>
       </div>
 
-      <div className="rounded-2xl border border-primary/20 bg-card/50 backdrop-blur-sm p-6 sm:p-8 shadow-md overflow-hidden relative">
+      <div className="rounded-2xl border border-primary/20 bg-card p-6 sm:p-8 shadow-md overflow-hidden relative">
         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none" />
         <h3 className="flex items-center gap-3 text-lg sm:text-xl font-bold text-foreground mb-5"><Brain className="h-6 w-6 text-primary shrink-0" /> Comprehensive Evaluation</h3>
         <p className="text-[15px] text-muted-foreground font-medium leading-relaxed mb-8 max-w-4xl break-words">{aiRec}</p>
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-1 2xl:grid-cols-2 pt-6 border-t border-border/30">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-1 2xl:grid-cols-2 pt-6 border-t border-border">
           <div className="min-w-0">
             <h4 className="text-[11px] font-bold uppercase tracking-widest text-primary mb-3">Communication</h4>
             <p className="text-[14px] font-medium text-foreground/80 leading-relaxed break-words">{prep.communicationFeedback || 'Not evaluated.'}</p>
@@ -115,7 +115,7 @@ export function ResultsDashboard({ prep, readiness, strengths, weaknesses, aiRec
       </div>
 
       {prep.nextSteps && prep.nextSteps.length > 0 && (
-        <div className="rounded-2xl border border-border/30 bg-card/50 p-6 sm:p-8 shadow-sm">
+        <div className="rounded-2xl border border-border bg-card/50 p-6 sm:p-8 shadow-sm">
           <h4 className="text-[13px] font-bold uppercase tracking-widest text-foreground mb-5">Recommended Next Steps</h4>
           <ul className="space-y-3 text-[14px] font-medium text-muted-foreground list-disc pl-5">
             {prep.nextSteps.map((step: string, i: number) => <li key={i} className="pl-2 break-words">{step}</li>)}

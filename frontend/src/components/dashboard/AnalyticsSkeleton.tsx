@@ -21,7 +21,7 @@ export function AnalyticsSkeleton() {
 
       <div className="mt-12 space-y-12">
         {/* Streak Banner Skeleton */}
-        <SkeletonCard className="relative overflow-hidden rounded-3xl p-6 sm:p-10 border border-border/30 shadow-lg">
+        <SkeletonCard className="relative overflow-hidden rounded-3xl p-6 sm:p-10 border border-border shadow-lg">
           <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-10">
             <Skeleton className="h-24 w-24 rounded-full shrink-0" />
             <div className="flex-1 text-center sm:text-left space-y-3">

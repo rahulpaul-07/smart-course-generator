@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Loader2, CheckCircle2, Trophy, Sparkles, RotateCcw } from 'lucide-react';
+import { Loader2, CheckCircle2, Trophy, Award, RotateCcw } from 'lucide-react';
 import Confetti from 'react-confetti';
 import { useWindowSize } from 'react-use';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { useApi } from '../hooks/useApi';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -23,6 +23,7 @@ export default function FinalTestPage() {
   const navigate = useNavigate();
   const fetchApi = useApi();
   const { width, height } = useWindowSize();
+  const reduceMotion = useReducedMotion();
 
   const [course, setCourse] = useState<PopulatedCourse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -134,7 +135,7 @@ export default function FinalTestPage() {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      {result && result.passed && <Confetti width={width} height={height} recycle={false} numberOfPieces={800} gravity={0.15} />}
+      {result && result.passed && !reduceMotion && <Confetti width={width} height={height} recycle={false} numberOfPieces={250} gravity={0.2} />}
       
       <div className="max-w-4xl mx-auto px-4 sm:px-8 pt-12">
         <BackButton to={`/course/${id}`} label="Back to Course" className="mb-2 -ml-2" />
@@ -153,27 +154,25 @@ export default function FinalTestPage() {
               key="result"
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              className="mt-10 p-10 bg-card border border-border rounded-2xl text-center relative overflow-hidden shadow-lg"
+              className="mt-10 p-10 bg-card border border-border rounded-2xl text-center"
             >
-              <div className={`absolute inset-0 opacity-20 pointer-events-none ${result.passed ? 'bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-success/40 via-background to-background' : 'bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-warning/40 via-background to-background'}`} />
-              
-              <div className="relative z-10 flex flex-col items-center">
-                <div className={`w-28 h-28 rounded-full flex items-center justify-center mb-8 border-4 shadow-lg ${
-                  result.passed 
-                    ? 'bg-card border-success/50 text-success shadow-[0_0_40px_rgba(16,185,129,0.3)]' 
-                    : 'bg-card border-warning/50 text-warning shadow-[0_0_40px_rgba(245,158,11,0.3)]'
+              <div className="flex flex-col items-center">
+                <div className={`w-20 h-20 rounded-full flex items-center justify-center mb-6 border-2 ${
+                  result.passed ? 'border-success/60 text-success' : 'border-warning/60 text-warning'
                 }`}>
-                  {result.passed ? <Trophy className="w-14 h-14" /> : <RotateCcw className="w-14 h-14" />}
+                  {result.passed ? <Trophy className="w-10 h-10" aria-hidden /> : <RotateCcw className="w-10 h-10" aria-hidden />}
                 </div>
-                
-                <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-foreground mb-4">
-                  {result.passed ? 'Congratulations!' : 'Keep Learning!'}
+
+                <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground mb-3">
+                  {result.passed ? 'You passed' : result.error ? 'Submission failed' : 'Not quite yet'}
                 </h1>
-                
-                <p className="text-xl text-muted-foreground mb-10 max-w-lg leading-relaxed">
-                  {result.passed 
-                    ? `You passed the Final Certification Test with a brilliant score of ${result.score}%!` 
-                    : `You scored ${result.score !== null ? result.score : 'under 70'}%, falling just short of the 70% passing mark. Review the course material and try again!`}
+
+                <p className="text-lg text-muted-foreground mb-10 max-w-lg leading-relaxed" role="status">
+                  {result.passed
+                    ? `You scored ${result.score}% on the final test. Your certificate is ready.`
+                    : result.error
+                      ? result.error
+                      : 'You need at least 70% to earn the certificate. Review the lessons you were unsure about and try again.'}
                 </p>
 
                 <div className="flex gap-4">
@@ -181,17 +180,17 @@ export default function FinalTestPage() {
                     <Button 
                       size="lg"
                       onClick={() => navigate(`/certificate/${result.certificateId}`)}
-                      className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-[0_0_20px_hsl(var(--primary)/0.3)] h-14 px-8 text-lg rounded-xl"
+                      className="h-12 px-6 text-base"
                     >
-                      <Sparkles className="w-5 h-5 mr-2" /> View Certificate
+                      <Award className="w-5 h-5 mr-2" aria-hidden /> View certificate
                     </Button>
                   ) : (
                     <Button 
                       size="lg"
                       onClick={() => { setResult(null); setAnswers({}); }}
-                      className="h-14 px-8 text-lg rounded-xl"
+                      className="h-12 px-6 text-base"
                     >
-                      <RotateCcw className="w-5 h-5 mr-2" /> Try Again
+                      <RotateCcw className="w-5 h-5 mr-2" /> Try again
                     </Button>
                   )}
                 </div>
@@ -218,7 +217,7 @@ export default function FinalTestPage() {
                   const selectedAns = answers[qIdx];
 
                   return (
-                    <Card key={qIdx} className="overflow-hidden border-border/30 shadow-md">
+                    <Card key={qIdx} className="overflow-hidden border-border shadow-md">
                       <CardContent className="p-6 sm:p-8">
                         <h3 className="text-xl font-bold text-foreground mb-6 flex gap-4 leading-relaxed">
                           <span className="text-primary shrink-0">{qIdx + 1}.</span> 

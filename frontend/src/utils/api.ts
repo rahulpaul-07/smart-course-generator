@@ -10,10 +10,15 @@ declare module 'axios' {
   }
 }
 
-let baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
-// In Render, the base URL is provided without /api (e.g. https://my-backend.onrender.com)
-if (baseURL && !baseURL.endsWith('/api') && baseURL.startsWith('http')) {
-  baseURL = `${baseURL}/api`;
+// The API is served same-origin under /api: Vite proxies it in dev and preview,
+// and the host rewrites it in production (frontend/vercel.json). Same-origin is
+// what lets the SameSite=Strict refresh cookie reach /api/auth/refresh; with the
+// API on another site (e.g. *.onrender.com from *.vercel.app) the browser never
+// sends it and every session ends when the access token expires.
+// VITE_API_BASE_URL remains an override for setups without a proxy.
+let baseURL = import.meta.env.VITE_API_BASE_URL || '/api';
+if (baseURL.startsWith('http') && !baseURL.endsWith('/api')) {
+  baseURL = `${baseURL.replace(/\/+$/, '')}/api`;
 }
 
 const api = axios.create({

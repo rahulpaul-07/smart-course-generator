@@ -15,7 +15,7 @@
     --secondary: 240 5% 94%;
     --secondary-foreground: 240 10% 15%;
     --muted: 240 5% 94%;
-    --muted-foreground: 240 4% 46%;
+    --muted-foreground: 240 4% 42%;
     --accent: 240 5% 94%;
     --accent-foreground: 240 10% 15%;
     --destructive: 0 72% 51%;
@@ -25,10 +25,9 @@
     --warning: 38 92% 50%;
     --warning-foreground: 38 30% 12%;
     --border: 240 6% 90%;
-    --input: 240 6% 90%;
+    --input: 240 5% 58%;
     --ring: 245 75% 58%;
     --radius: 0.625rem;
-    --grid-line: 240 10% 6% / 0.05;
   }
 
   .dark {
@@ -38,7 +37,7 @@
     --card-foreground: 0 0% 97%;
     --popover: 240 7% 8%;
     --popover-foreground: 0 0% 96%;
-    --primary: 245 90% 70%;
+    --primary: 245 80% 64%;
     --primary-foreground: 0 0% 100%;
     --secondary: 240 5% 13%;
     --secondary-foreground: 0 0% 92%;
@@ -53,9 +52,8 @@
     --warning: 38 92% 55%;
     --warning-foreground: 38 30% 10%;
     --border: 240 4% 15%;
-    --input: 240 4% 15%;
-    --ring: 245 90% 70%;
-    --grid-line: 0 0% 100% / 0.045;
+    --input: 240 4% 40%;
+    --ring: 245 80% 64%;
   }
 
   * {
@@ -85,22 +83,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-}
-
-/* Was rgba(255,255,255,.05): invisible on the light theme's near-white
-   background. Now driven by a per-theme token. */
-body::before {
-  position: fixed;
-  z-index: -1;
-  inset: 0;
-  pointer-events: none;
-  content: "";
-  opacity: 0.15;
-  background-image:
-    linear-gradient(hsl(var(--grid-line)) 1px, transparent 1px),
-    linear-gradient(90deg, hsl(var(--grid-line)) 1px, transparent 1px);
-  background-size: 40px 40px;
-  mask-image: radial-gradient(circle at top center, black, transparent 80%);
 }
 
 h1,
@@ -211,20 +193,6 @@ select:focus-visible {
     font-weight: 700;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-  }
-
-  .gradient-text {
-    color: transparent;
-    background: linear-gradient(180deg, hsl(var(--foreground)) 0%, hsl(var(--muted-foreground)) 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-  }
-
-  .soft-grid {
-    background-image:
-      linear-gradient(hsl(var(--grid-line)) 1px, transparent 1px),
-      linear-gradient(90deg, hsl(var(--grid-line)) 1px, transparent 1px);
-    background-size: 40px 40px;
   }
 
   .icon-button:focus-visible {

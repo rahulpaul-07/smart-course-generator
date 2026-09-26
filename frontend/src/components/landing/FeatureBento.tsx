@@ -1,8 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import { BadgeCheck, Bot, Brain, Layers, Map, MessagesSquare, Network, ShieldCheck } from 'lucide-react';
-import { BlurFade } from '@/components/magic/blur-fade';
-import { MagicCard } from '@/components/magic/magic-card';
 import { cn } from '@/lib/utils';
 
 function Tile({ icon: Icon, title, body, children, className }: {
@@ -13,17 +11,15 @@ function Tile({ icon: Icon, title, body, children, className }: {
   className?: string;
 }) {
   return (
-    <MagicCard className={cn('flex h-full flex-col', className)}>
-      <div className="relative flex h-full flex-col">
-        <div className="relative min-h-[210px] flex-1 overflow-hidden border-b border-border/60">{children}</div>
-        <div className="p-6">
-          <div className="flex items-center gap-2 text-sm font-medium text-foreground">
-            <Icon className="h-4 w-4 text-primary" /> {title}
-          </div>
-          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{body}</p>
-        </div>
+    <article className={cn('group/card flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card', className)}>
+      <div className="relative min-h-[210px] flex-1 overflow-hidden border-b border-border">{children}</div>
+      <div className="p-6">
+        <h3 className="flex items-center gap-2 text-sm font-medium text-foreground">
+          <Icon className="h-4 w-4 text-primary" aria-hidden /> {title}
+        </h3>
+        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{body}</p>
       </div>
-    </MagicCard>
+    </article>
   );
 }
 
@@ -91,6 +87,7 @@ function InterviewVisual() {
   const c = 2 * Math.PI * r;
   return (
     <div className="absolute inset-0 flex items-center justify-center gap-6 px-6">
+      <span className="absolute left-4 top-3 text-[10px] uppercase tracking-wider text-muted-foreground">Sample result</span>
       <div className="relative h-28 w-28">
         <svg viewBox="0 0 100 100" className="h-full w-full -rotate-90">
           <circle cx="50" cy="50" r={r} strokeWidth="8" fill="none" className="stroke-muted" />
@@ -121,8 +118,8 @@ function InterviewVisual() {
 function FlashcardVisual() {
   return (
     <div className="group/flash absolute inset-0 flex items-center justify-center [perspective:900px]">
-      <div className="absolute h-28 w-52 translate-y-4 rotate-[-6deg] rounded-xl border border-border/70 bg-muted/40" />
-      <div className="absolute h-28 w-52 translate-y-2 rotate-[4deg] rounded-xl border border-border/70 bg-muted/60" />
+      <div className="absolute h-28 w-52 translate-y-4 rotate-[-6deg] rounded-xl border border-border bg-muted/40" />
+      <div className="absolute h-28 w-52 translate-y-2 rotate-[4deg] rounded-xl border border-border bg-muted/60" />
       <div className="relative h-28 w-52 transition-transform duration-700 [transform-style:preserve-3d] group-hover/card:[transform:rotateY(180deg)]">
         <div className="absolute inset-0 flex flex-col justify-center rounded-xl border border-border bg-card p-4 [backface-visibility:hidden]">
           <span className="text-[10px] uppercase tracking-wider text-muted-foreground">Question</span>
@@ -171,7 +168,7 @@ function ChatVisual() {
       </div>
       <div className="flex max-w-[85%] gap-2">
         <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted"><Bot className="h-3.5 w-3.5 text-primary" /></span>
-        <div className="rounded-2xl rounded-bl-md border border-border/70 bg-card px-4 py-2 text-xs leading-relaxed text-muted-foreground">
+        <div className="rounded-2xl rounded-bl-md border border-border bg-card px-4 py-2 text-xs leading-relaxed text-muted-foreground">
           Without one, a row updated in the database stays stale in the cache forever. The TTL caps how long a wrong answer can be served.
         </div>
       </div>
@@ -183,9 +180,9 @@ function ChatVisual() {
 function CertificateVisual() {
   return (
     <div className="absolute inset-0 flex items-center justify-center">
-      <div className="relative w-56 rounded-xl border border-border bg-gradient-to-br from-card to-muted/40 p-4 shadow-xl">
+      <div className="relative w-56 rounded-lg border border-border bg-background p-4">
         <div className="flex items-center justify-between">
-          <span className="font-serif text-lg italic">Certificate</span>
+          <span className="text-base font-semibold">Certificate</span>
           <BadgeCheck className="h-5 w-5 text-emerald-400" />
         </div>
         <p className="mt-2 text-[11px] text-muted-foreground">System Design Fundamentals</p>
@@ -200,47 +197,34 @@ function CertificateVisual() {
 
 export function FeatureBento() {
   return (
-    <section id="features" className="scroll-mt-24 py-24 sm:py-32">
+    <section id="features" className="scroll-mt-24 border-b border-border py-20 sm:py-28">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <BlurFade className="mx-auto max-w-2xl text-center">
-          <p className="text-sm font-medium text-primary">Everything after the prompt</p>
-          <h2 className="mt-3 text-balance text-3xl font-semibold tracking-tight sm:text-5xl">
-            A curriculum is the start.{' '}
-            <span className="font-serif font-normal italic text-muted-foreground">Retention is the point.</span>
-          </h2>
-        </BlurFade>
+        <div className="max-w-2xl">
+          <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">What happens after the outline</h2>
+          <p className="mt-4 text-muted-foreground">
+            A curriculum is only the start. Each lesson comes with ways to check you understood it.
+          </p>
+        </div>
 
-        <div className="mt-14 grid grid-cols-1 gap-4 md:grid-cols-3">
-          <BlurFade className="md:col-span-2 [&>*]:h-full">
-            <Tile icon={Network} title="Never stalls on one provider" body="A custom router fails over across Gemini, Groq and OpenRouter with retry-and-backoff and a circuit breaker per provider, so an outage degrades to a slower answer instead of an error.">
-              <RouterVisual />
-            </Tile>
-          </BlurFade>
-          <BlurFade delay={0.05} className="[&>*]:h-full">
-            <Tile icon={Brain} title="Mock interviews, scored" body="MCQ, theory and coding rounds generated for your topic, graded with a strengths-and-gaps breakdown.">
-              <InterviewVisual />
-            </Tile>
-          </BlurFade>
-          <BlurFade delay={0.05} className="[&>*]:h-full">
-            <Tile icon={Layers} title="Flashcards from every lesson" body="Key ideas extracted into cards you can review in minutes. Hover to flip.">
-              <FlashcardVisual />
-            </Tile>
-          </BlurFade>
-          <BlurFade delay={0.1} className="md:col-span-2 [&>*]:h-full">
-            <Tile icon={Map} title="Week-by-week roadmaps" body="Turn a goal, a timeframe and your current level into a plan you can actually follow, with progress tracked per week.">
-              <RoadmapVisual />
-            </Tile>
-          </BlurFade>
-          <BlurFade className="md:col-span-2 [&>*]:h-full">
-            <Tile icon={MessagesSquare} title="Ask the lesson" body="A tutor that answers in the context of the lesson you are reading, streamed token by token, with the conversation saved per lesson.">
-              <ChatVisual />
-            </Tile>
-          </BlurFade>
-          <BlurFade delay={0.05} className="[&>*]:h-full">
-            <Tile icon={ShieldCheck} title="Certificates anyone can verify" body="Pass the final test and get a PDF certificate with a public verification ID.">
-              <CertificateVisual />
-            </Tile>
-          </BlurFade>
+        <div className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-3">
+          <Tile className="md:col-span-2" icon={Network} title="Keeps working when a provider fails" body="A custom router fails over across Gemini, Groq and OpenRouter with retry, backoff and a circuit breaker per provider. An outage means a slower answer, not an error.">
+            <RouterVisual />
+          </Tile>
+          <Tile icon={Brain} title="Mock interviews, scored" body="MCQ, theory and coding rounds generated for your topic, graded with a breakdown of strengths and gaps.">
+            <InterviewVisual />
+          </Tile>
+          <Tile icon={Layers} title="Flashcards from every lesson" body="Key ideas extracted into cards you can review in a few minutes.">
+            <FlashcardVisual />
+          </Tile>
+          <Tile className="md:col-span-2" icon={Map} title="Week-by-week roadmaps" body="Turn a goal, a timeframe and your current level into a plan, with progress tracked per week.">
+            <RoadmapVisual />
+          </Tile>
+          <Tile className="md:col-span-2" icon={MessagesSquare} title="Ask about the lesson" body="A tutor that answers in the context of the lesson you are reading, streamed as it is written and saved per lesson.">
+            <ChatVisual />
+          </Tile>
+          <Tile icon={ShieldCheck} title="Certificates with a public ID" body="Pass the final test to get a certificate with a verification page anyone can open.">
+            <CertificateVisual />
+          </Tile>
         </div>
       </div>
     </section>

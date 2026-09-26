@@ -50,7 +50,7 @@ export default function PromptForm({ onSubmit, isLoading = false, stage = null, 
 
   return (
     <div className="space-y-4">
-    <Card className={`relative overflow-hidden transition-all duration-300 bg-card/40 backdrop-blur-2xl border-white/5 ${isFocused ? 'ring-2 ring-primary/60 shadow-[0_8px_30px_rgb(0,0,0,0.12)] shadow-primary/20' : 'hover:border-primary/30 hover:bg-card/60'}`}>
+    <Card className={`relative overflow-hidden transition-all duration-300 bg-card border-white/5 ${isFocused ? 'ring-2 ring-primary/60 shadow-primary/20' : 'hover:border-primary/30 hover:bg-card/60'}`}>
       <form onSubmit={handleSubmit} className="flex flex-col">
         <div className="block p-4 sm:p-6 pb-2 relative">
           <label htmlFor="course-prompt" className="sr-only">What course do you want to create?</label>
@@ -88,7 +88,7 @@ export default function PromptForm({ onSubmit, isLoading = false, stage = null, 
           </AnimatePresence>
         </div>
 
-        <div className="flex items-center justify-between gap-4 border-t border-border/30 bg-muted/20 px-4 py-3 sm:px-6">
+        <div className="flex items-center justify-between gap-4 border-t border-border bg-muted/20 px-4 py-3 sm:px-6">
           <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
             <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
               <Sparkles className="h-3.5 w-3.5 text-primary" />
@@ -99,7 +99,7 @@ export default function PromptForm({ onSubmit, isLoading = false, stage = null, 
           <Button 
             type="submit" 
             disabled={isLoading || !prompt.trim()}
-            className={`relative overflow-hidden group rounded-full px-6 transition-all ${isLoading ? 'cursor-progress opacity-90' : 'hover:shadow-[0_0_20px_hsl(var(--primary)/0.3)] hover:-translate-y-0.5'}`}
+            className={`relative overflow-hidden group rounded-full px-6 transition-all ${isLoading ? 'cursor-progress opacity-90' : ''}`}
           >
             <span className="relative z-10 flex items-center font-semibold">
               {isLoading ? (
@@ -138,7 +138,7 @@ export default function PromptForm({ onSubmit, isLoading = false, stage = null, 
             <div className="flex flex-col items-center gap-6 relative z-10 px-6">
               <div className="relative">
                 <div className="absolute inset-0 rounded-full blur-xl bg-primary/40 animate-pulse" />
-                <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-card to-background border border-primary/30 flex items-center justify-center shadow-[0_0_30px_hsl(var(--primary)/0.3)] relative z-10 animate-float">
+                <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-card to-background border border-primary/30 flex items-center justify-center relative z-10 animate-float">
                   <Sparkles className="h-7 w-7 text-primary animate-pulse" />
                 </div>
               </div>
@@ -159,7 +159,7 @@ export default function PromptForm({ onSubmit, isLoading = false, stage = null, 
                       ) : isCurrent ? (
                         <Loader2 className="h-4 w-4 shrink-0 animate-spin text-primary" />
                       ) : (
-                        <span className="h-4 w-4 shrink-0 rounded-full border border-border/60" />
+                        <span className="h-4 w-4 shrink-0 rounded-full border border-border" />
                       )}
                       <span className={isComplete ? 'text-foreground/70 line-through decoration-success/50' : isCurrent ? 'font-semibold text-foreground' : 'text-muted-foreground'}>
                         {s.label}

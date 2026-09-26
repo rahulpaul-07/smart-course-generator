@@ -39,15 +39,15 @@ function ToolCard({
       aria-pressed={active}
       className={`group relative flex w-full shrink-0 flex-col overflow-hidden rounded-xl border p-4 text-left transition-all duration-300 ${
         active
-          ? 'border-primary bg-primary/10 shadow-[0_0_20px_hsl(var(--primary)/0.15)] ring-1 ring-primary/50'
-          : 'border-border/50 bg-card hover:bg-accent/40 hover:border-primary/30 hover:shadow-lg'
-      } disabled:opacity-60 ${disabled ? 'cursor-progress' : 'cursor-pointer'} hover:-translate-y-0.5`}
+          ? 'border-primary bg-primary/10 ring-1 ring-primary/50'
+          : 'border-border bg-card hover:bg-accent/40 hover:border-primary/30 hover:shadow-lg'
+      } disabled:opacity-60 ${disabled ? 'cursor-progress' : 'cursor-pointer'}`}
     >
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 pointer-events-none" />
       <div className="relative flex items-start gap-4 z-10">
         <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border transition-all duration-300 ${
           active
-            ? 'border-primary bg-primary text-primary-foreground shadow-[0_0_15px_hsl(var(--primary)/0.4)]'
+            ? 'border-primary bg-primary text-primary-foreground'
             : 'border-border bg-muted text-muted-foreground group-hover:text-primary group-hover:border-primary/30 group-hover:bg-primary/10 group-hover:scale-110'
         }`}>
           <Icon className="h-5 w-5" />
@@ -115,7 +115,7 @@ const StudyTools = React.memo(({
     const { icon: Icon, title } = INLINE_TOOLS[activePanel]!;
     return (
       <aside className="h-full flex flex-col relative overflow-hidden">
-        <div className="shrink-0 flex items-center gap-3 px-4 py-4 border-b border-border/30 bg-card">
+        <div className="shrink-0 flex items-center gap-3 px-4 py-4 border-b border-border bg-card">
           <button
             type="button"
             onClick={() => onActivePanelChange(null)}
@@ -195,7 +195,7 @@ const StudyTools = React.memo(({
           type="button"
           onClick={onClose}
           aria-label="Close study tools"
-          className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full border border-border/50 bg-card text-muted-foreground shadow-sm transition-colors hover:bg-muted hover:text-foreground"
+          className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-muted-foreground shadow-sm transition-colors hover:bg-muted hover:text-foreground"
         >
           <X className="h-4 w-4" />
         </button>
@@ -249,7 +249,7 @@ const StudyTools = React.memo(({
 
         <Link
           to="/interview-prep"
-          className="group relative flex w-full shrink-0 items-center gap-4 overflow-hidden rounded-xl border border-border/50 bg-card p-4 text-left transition-all duration-300 hover:-translate-y-0.5 hover:border-destructive/30 hover:bg-accent/40 hover:shadow-lg"
+          className="group relative flex w-full shrink-0 items-center gap-4 overflow-hidden rounded-xl border border-border bg-card p-4 text-left transition-all duration-300 hover:border-destructive/30 hover:bg-accent/40 hover:shadow-lg"
         >
           <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-border bg-muted text-muted-foreground transition-all duration-300 group-hover:scale-110 group-hover:border-destructive/30 group-hover:bg-destructive/10 group-hover:text-destructive">
             <Brain className="h-5 w-5" />
@@ -257,13 +257,13 @@ const StudyTools = React.memo(({
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5">
               <span className="font-semibold text-sm text-foreground">Practice in a Mock Interview</span>
-              <ArrowUpRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+              <ArrowUpRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground transition-transform group- group-hover:translate-x-0.5" />
             </div>
             <span className="mt-1 block text-xs leading-relaxed text-muted-foreground line-clamp-2">Test this topic under real interview conditions.</span>
           </div>
         </Link>
 
-        <div className="pt-3 mt-1 border-t border-border/30 flex-col gap-3 shrink-0 hidden lg:flex">
+        <div className="pt-3 mt-1 border-t border-border flex-col gap-3 shrink-0 hidden lg:flex">
           <button
             type="button"
             disabled={saving}
