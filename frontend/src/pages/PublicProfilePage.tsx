@@ -101,7 +101,7 @@ export default function PublicProfilePage() {
     <div className="page-shell max-w-5xl mx-auto">
       {/* Profile Header */}
       <div className="glass-card rounded-2xl p-8 mb-8 relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-r from-brand-500/20 to-primary/20"></div>
+        <div className="absolute top-0 left-0 w-full h-32 bg-primary/10"></div>
         
         <div className="relative flex flex-col md:flex-row items-center md:items-start gap-6 mt-12">
           <div className="h-32 w-32 rounded-full bg-card border-4 border-border flex items-center justify-center text-4xl text-foreground font-bold shadow-lg overflow-hidden shrink-0">
@@ -156,7 +156,7 @@ export default function PublicProfilePage() {
               <div className="space-y-4">
                 {user.achievements.map((ach) => (
                   <div key={ach.badge} className="flex gap-3 items-start bg-foreground/10 p-3 rounded-xl border border-border">
-                    <div className="h-10 w-10 shrink-0 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/30 flex items-center justify-center">
+                    <div className="h-10 w-10 shrink-0 rounded-full bg-primary/15 border border-primary/30 flex items-center justify-center">
                       <Award className="h-5 w-5 text-primary" />
                     </div>
                     <div>

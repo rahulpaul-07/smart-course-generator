@@ -43,7 +43,6 @@ function ToolCard({
           : 'border-border bg-card hover:bg-accent/40 hover:border-primary/30 hover:shadow-lg'
       } disabled:opacity-60 ${disabled ? 'cursor-progress' : 'cursor-pointer'}`}
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 pointer-events-none" />
       <div className="relative flex items-start gap-4 z-10">
         <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border transition-all duration-300 ${
           active
@@ -187,8 +186,6 @@ const StudyTools = React.memo(({
   return (
     <aside className="h-full flex flex-col relative overflow-hidden">
       {/* Premium subtle background texture */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:16px_16px] [mask-image:radial-gradient(ellipse_80%_30%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
-      <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
 
       <div className="relative z-10 px-6 py-8 mb-4 shrink-0">
         <button

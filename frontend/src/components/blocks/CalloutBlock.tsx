@@ -7,31 +7,31 @@ export default function CalloutBlock({ block }: { block: LessonContentBlock }) {
   
   const styles = {
     info: {
-      container: 'border-primary/20 bg-gradient-to-br from-primary/10 to-primary/[0.02]',
+      container: 'border-primary/20 bg-primary/[0.06]',
       iconBg: 'bg-primary/10 border-primary/20 text-primary',
       title: 'text-primary',
       icon: <Info className="h-5 w-5" />
     },
     warning: {
-      container: 'border-warning/20 bg-gradient-to-br from-warning/10 to-warning/[0.02]',
+      container: 'border-warning/20 bg-warning/[0.06]',
       iconBg: 'bg-warning/10 border-warning/20 text-warning',
       title: 'text-warning',
       icon: <AlertTriangle className="h-5 w-5" />
     },
     tip: {
-      container: 'border-primary/20 bg-gradient-to-br from-primary/10 to-primary/[0.02]',
+      container: 'border-primary/20 bg-primary/[0.06]',
       iconBg: 'bg-primary/10 border-primary/20 text-primary',
       title: 'text-primary',
       icon: <Lightbulb className="h-5 w-5" />
     },
     success: {
-      container: 'border-success/20 bg-gradient-to-br from-success/10 to-success/[0.02]',
+      container: 'border-success/20 bg-success/[0.06]',
       iconBg: 'bg-success/10 border-success/20 text-success',
       title: 'text-success',
       icon: <CheckCircle2 className="h-5 w-5" />
     },
     example: {
-      container: 'border-success/20 bg-gradient-to-br from-success/10 to-success/[0.02]',
+      container: 'border-success/20 bg-success/[0.06]',
       iconBg: 'bg-success/10 border-success/20 text-success',
       title: 'text-success',
       icon: <FileCode2 className="h-5 w-5" />

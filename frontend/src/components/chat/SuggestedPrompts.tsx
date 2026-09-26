@@ -15,7 +15,7 @@ interface SuggestedPromptsProps {
 export function SuggestedPrompts({ onSelect }: SuggestedPromptsProps) {
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center justify-center h-full text-center px-4 max-w-sm mx-auto">
-      <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center mb-6 shadow-inner border border-primary/20">
+      <div className="h-16 w-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 border border-primary/20">
         <Sparkles className="h-8 w-8 text-primary" />
       </div>
       <h3 className="text-xl font-bold text-foreground mb-3 font-display">How can I help you?</h3>

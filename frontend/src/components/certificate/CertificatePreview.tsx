@@ -10,7 +10,7 @@ interface CertificatePreviewProps {
 
 export function CertificatePreview({ certificate, certificateRef, issueDate }: CertificatePreviewProps) {
   return (
-    <div className="relative p-2 sm:p-4 md:p-6 bg-gradient-to-br from-border/50 to-background rounded-[2rem] shadow-lg flex justify-center items-center">
+    <div className="relative p-2 sm:p-4 md:p-6 bg-muted/40 rounded-xl flex justify-center items-center">
       <div 
         ref={certificateRef}
         className="relative w-full max-w-[900px] aspect-[1.414/1] bg-[#FAFAFA] text-[#111] overflow-hidden flex flex-col border-[1px] border-[#E0E0E0] shadow-sm"

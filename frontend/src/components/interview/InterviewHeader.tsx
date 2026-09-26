@@ -27,7 +27,7 @@ export function InterviewHeader({
     <div className="min-h-screen bg-background p-6 lg:p-12 selection:bg-primary/20">
       <div className="max-w-5xl mx-auto space-y-16">
         <section className="text-center space-y-6 max-w-2xl mx-auto pt-10">
-          <div className="inline-flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20 mb-2 shadow-lg shadow-primary/10">
+          <div className="inline-flex h-20 w-20 items-center justify-center rounded-2xl bg-primary/10 border border-primary/20 mb-2">
             <Brain className="h-10 w-10 text-primary" />
           </div>
           <h1 className="font-display text-5xl font-extrabold tracking-tight text-foreground md:text-6xl drop-shadow-sm">
@@ -39,7 +39,6 @@ export function InterviewHeader({
         </section>
 
         <form onSubmit={generate} className="max-w-2xl mx-auto relative group">
-          <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-primary/30 via-primary/30 to-primary/30 opacity-20 blur-xl transition duration-200 group-hover:opacity-40" />
           <div className="relative flex flex-col sm:flex-row gap-3 bg-card p-3 rounded-2xl border border-border shadow-md">
             <input
               aria-label="Interview topic"

@@ -36,7 +36,6 @@ class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         <div className="min-h-screen flex items-center justify-center p-6 bg-background relative overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-destructive/10 via-background to-background z-0" />
           <div className="max-w-md w-full surface-card p-8 text-center animate-enter z-10 relative">
             <div className="w-16 h-16 rounded-2xl bg-destructive/10 flex items-center justify-center mx-auto mb-6">
               <AlertTriangle className="w-8 h-8 text-destructive animate-pulse" />

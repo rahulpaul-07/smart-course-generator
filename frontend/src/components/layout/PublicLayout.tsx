@@ -8,7 +8,7 @@ const AppShell = lazy(() => import('./AppShell').then((m) => ({ default: m.AppSh
 
 function PublicLayout({ children }: { children: ReactNode }) {
   const tab = ({ isActive }: { isActive: boolean }) =>
-    cn('rounded-full px-3 py-1.5 text-sm transition-colors', isActive ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground');
+    cn('rounded-md px-3 py-1.5 text-sm transition-colors', isActive ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground');
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -21,11 +21,20 @@ function PublicLayout({ children }: { children: ReactNode }) {
           </nav>
           <div className="flex items-center gap-2">
             <Link to="/login" className="px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground">Sign in</Link>
-            <Link to="/signup" className="inline-flex h-9 items-center rounded-full bg-foreground px-4 text-sm font-medium text-background hover:opacity-90">Get started</Link>
+            <Link to="/signup" className="inline-flex h-9 items-center rounded-md bg-foreground px-4 text-sm font-medium text-background hover:opacity-90">Get started</Link>
           </div>
         </div>
       </header>
       <main>{children}</main>
+      <footer className="border-t border-border">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-6 text-xs text-muted-foreground sm:px-6 lg:px-8">
+          <p>AI-generated content can be wrong. Verify anything important.</p>
+          <nav aria-label="Legal" className="flex gap-4">
+            <Link to="/privacy" className="hover:text-foreground">Privacy</Link>
+            <Link to="/terms" className="hover:text-foreground">Terms</Link>
+          </nav>
+        </div>
+      </footer>
     </div>
   );
 }

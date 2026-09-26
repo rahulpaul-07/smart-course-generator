@@ -86,7 +86,9 @@ export default function AuthLayout({ children, title, description, footer, eyebr
         </main>
 
         <p className="text-xs text-muted-foreground">
-          By continuing you agree to use AI-generated content responsibly.
+          By continuing you agree to the{' '}
+          <Link to="/terms" className="underline underline-offset-4 hover:text-foreground">terms of use</Link> and{' '}
+          <Link to="/privacy" className="underline underline-offset-4 hover:text-foreground">privacy policy</Link>.
         </p>
       </div>
       <Showcase />

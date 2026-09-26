@@ -1,6 +1,5 @@
 import { Check, Copy } from 'lucide-react';
 import { useState } from 'react';
-import { motion } from 'framer-motion';
 import { Highlight, themes } from 'prism-react-renderer';
 import clsx from 'clsx';
 import { useClipboard } from '../../hooks/useClipboard';
@@ -42,10 +41,7 @@ export default function CodeSnippet({ block }: { block: LessonContentBlock }) {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
+    <div
       className="my-8 overflow-hidden rounded-xl border border-border bg-[#0d1117] shadow-md"
     >
       <div className="flex items-center justify-between border-b border-border bg-[#161b22] px-4 py-2">
@@ -138,6 +134,6 @@ export default function CodeSnippet({ block }: { block: LessonContentBlock }) {
           )}
         </Highlight>
       </div>
-    </motion.div>
+    </div>
   );
 }

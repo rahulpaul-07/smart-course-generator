@@ -22,7 +22,7 @@ const STATUS_COPY: Record<BreakerStatus, { label: string; rail: string; dot: str
 };
 
 function formatMs(ms: number | null) {
-  if (ms == null) return '—';
+  if (ms == null) return 'n/a';
   return ms >= 1000 ? `${(ms / 1000).toFixed(1)}s` : `${ms}ms`;
 }
 
@@ -61,7 +61,7 @@ function ProviderRow({ p, isLast }: { p: ProviderStatus; isLast: boolean }) {
         <dl className="mt-3 flex flex-wrap gap-x-8 gap-y-2 text-sm">
           <div>
             <dt className="text-xs text-muted-foreground">Success rate</dt>
-            <dd className="font-mono">{p.window.successRate == null ? '—' : `${p.window.successRate}%`}</dd>
+            <dd className="font-mono">{p.window.successRate == null ? 'n/a' : `${p.window.successRate}%`}</dd>
           </div>
           <div>
             <dt className="text-xs text-muted-foreground">Avg latency</dt>
@@ -78,7 +78,7 @@ function ProviderRow({ p, isLast }: { p: ProviderStatus; isLast: boolean }) {
           </div>
           <div>
             <dt className="text-xs text-muted-foreground">Keys in pool</dt>
-            <dd className="font-mono">{p.keyCount || '—'}</dd>
+            <dd className="font-mono">{p.keyCount || 'n/a'}</dd>
           </div>
         </dl>
 
@@ -156,7 +156,7 @@ export default function AiRouterPage() {
             <h1 className="text-3xl font-bold tracking-tight">AI Router</h1>
             <p className="mt-2 max-w-2xl text-muted-foreground">
               Requests walk this chain top to bottom. A provider is skipped when its circuit breaker
-              trips, and the next one takes over — every generation you have run is accounted for below.
+              trips, and the next one takes over. Every generation you have run is accounted for below.
             </p>
           </div>
 
