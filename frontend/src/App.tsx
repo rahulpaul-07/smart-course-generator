@@ -48,6 +48,8 @@ const LeaderboardPage = withSuspense(lazy(() => import('./pages/LeaderboardPage'
 const SettingsPage = withSuspense(lazy(() => import('./pages/SettingsPage')));
 const CoursesPage = withSuspense(lazy(() => import('./pages/CoursesPage')));
 const SaveAccountPage = withSuspense(lazy(() => import('./pages/SaveAccountPage')));
+const PrivacyPage = withSuspense(lazy(() => import('./pages/PrivacyPage')));
+const TermsPage = withSuspense(lazy(() => import('./pages/TermsPage')));
 const NotFoundPage = withSuspense(lazy(() => import('./pages/NotFoundPage')));
 
 /** Only same-app paths: "//evil.example" and absolute URLs would be an open redirect. */
@@ -110,6 +112,8 @@ export default function App() {
         <Route path="/status" element={<OpenPage><AiRouterPage /></OpenPage>} />
         <Route path="/ai-router" element={<Navigate to="/status" replace />} />
         <Route path="/evals" element={<OpenPage><EvalsPage /></OpenPage>} />
+        <Route path="/privacy" element={<OpenPage><PrivacyPage /></OpenPage>} />
+        <Route path="/terms" element={<OpenPage><TermsPage /></OpenPage>} />
         <Route path="/course/:id" element={<DashboardPage><CourseOverviewPage /></DashboardPage>} />
         <Route path="/course/:id/certificate" element={<DashboardPage><CertificatePage /></DashboardPage>} />
         <Route path="/certificate/:id" element={<CertificatePage />} />

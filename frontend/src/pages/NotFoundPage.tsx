@@ -21,7 +21,7 @@ export default function NotFoundPage() {
           We couldn't find the page you were looking for. It might have been moved, deleted, or perhaps the URL is incorrect.
         </p>
         
-        <Button size="lg" className="h-12 px-8 rounded-full shadow-lg hover:shadow-md transition-all duration-300 w-full sm:w-auto" onClick={() => navigate("/")}>
+        <Button size="lg" className="h-12 px-8 w-full sm:w-auto" onClick={() => navigate("/")}>
           <Home className="mr-2 w-5 h-5" />
           Back to Home
         </Button>

@@ -109,7 +109,7 @@ export default function LeaderboardPage() {
 
               <div className="col-span-3 flex flex-wrap items-center gap-2">
                 {user.achievements?.slice(0, 4).map((ach) => (
-                  <div key={ach.badge} title={ach.name} className="h-7 w-7 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/30 flex items-center justify-center">
+                  <div key={ach.badge} title={ach.name} className="h-7 w-7 rounded-full bg-primary/15 border border-primary/30 flex items-center justify-center">
                     <Award className="h-4 w-4 text-primary" />
                   </div>
                 ))}

@@ -184,7 +184,7 @@ export default function LessonAudioPlayer({ lesson }: { lesson: Lesson }) {
 
       <div className="relative mt-4 h-1.5 overflow-hidden rounded-full bg-foreground/10">
         <div
-          className="h-full rounded-full bg-gradient-to-r from-primary/60 via-brand-400 to-primary transition-all duration-300"
+          className="h-full rounded-full bg-primary transition-all duration-300"
           style={{ width: `${progress}%` }}
         />
       </div>

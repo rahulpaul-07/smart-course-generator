@@ -107,7 +107,7 @@ export function LessonLayout({
           transition={{ type: 'spring', damping: 20, stiffness: 250 }}
           onClick={() => onToolsOpenChange(true)}
           aria-label="Open study tools"
-          className="lg:hidden fixed bottom-5 right-5 z-40 flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20"
+          className="lg:hidden fixed bottom-5 right-5 z-40 flex items-center gap-2 rounded-lg bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20"
         >
           <Wrench className="h-4 w-4" />
           Study Tools

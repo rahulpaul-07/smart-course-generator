@@ -174,7 +174,7 @@ export default function ProfilePage() {
         </div>
 
         <div className="space-y-6">
-          <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20 rounded-2xl">
+          <Card className="bg-primary/[0.06] border-primary/20 rounded-2xl">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-primary" />

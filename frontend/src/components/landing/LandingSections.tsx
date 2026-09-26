@@ -21,8 +21,8 @@ export function HowItWorks() {
         <ol className="mt-12 grid gap-10 md:grid-cols-3 md:gap-8">
           {STEPS.map((s) => (
             <li key={s.n} className="border-t border-border pt-6">
-              <span className="font-mono text-sm text-muted-foreground">Step {s.n}</span>
-              <h3 className="mt-2 text-xl font-semibold tracking-tight">{s.title}</h3>
+              <span className="font-mono text-4xl font-medium tabular-nums text-muted-foreground/60" aria-hidden>0{s.n}</span>
+              <h3 className="mt-4 text-xl font-semibold tracking-tight">{s.title}</h3>
               <p className="mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground">{s.body}</p>
             </li>
           ))}
@@ -177,7 +177,7 @@ export function FinalCTA() {
           <Button asChild className="h-12 px-6">
             <Link to="/signup">Start learning <ArrowRight className="ml-2 h-4 w-4" aria-hidden /></Link>
           </Button>
-          <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="inline-flex h-12 items-center gap-2 rounded-xl border border-border px-6 text-sm font-medium transition-colors hover:border-foreground/40">
+          <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="inline-flex h-12 items-center gap-2 rounded-lg border border-border px-6 text-sm font-medium transition-colors hover:border-foreground/40">
             <GithubIcon className="h-4 w-4" /> Source on GitHub
           </a>
         </div>

@@ -1,9 +1,8 @@
 import { useId } from 'react';
 
-// Hue pairs chosen to sit well on the dark and light themes alike.
-const PALETTES: [number, number][] = [
-  [245, 290], [200, 245], [160, 200], [20, 330], [270, 320], [185, 230], [35, 10], [300, 250],
-];
+// Flat, muted hues that hold white text on both themes. No violets: the
+// brand is cobalt, and violet covers read as generic AI artwork.
+const HUES = [214, 199, 173, 152, 28, 12, 350, 42];
 
 function hash(s: string) {
   let h = 0;
@@ -25,21 +24,16 @@ function initials(title: string) {
 export function CourseCover({ id, title, className }: { id: string; title: string; className?: string }) {
   const gid = useId();
   const n = hash(id || title);
-  const [a, b] = PALETTES[n % PALETTES.length];
-  const rot = n % 360;
+  const hue = HUES[n % HUES.length];
 
   return (
     <svg viewBox="0 0 400 200" preserveAspectRatio="xMidYMid slice" aria-hidden className={className}>
       <defs>
-        <linearGradient id={`${gid}-g`} gradientTransform={`rotate(${rot % 90} .5 .5)`}>
-          <stop offset="0" stopColor={`hsl(${a} 70% 45%)`} />
-          <stop offset="1" stopColor={`hsl(${b} 65% 30%)`} />
-        </linearGradient>
         <pattern id={`${gid}-p`} width="18" height="18" patternUnits="userSpaceOnUse">
           <circle cx="1" cy="1" r="1" fill="white" fillOpacity="0.18" />
         </pattern>
       </defs>
-      <rect width="400" height="200" fill={`url(#${gid}-g)`} />
+      <rect width="400" height="200" fill={`hsl(${hue} 45% 32%)`} />
       <rect width="400" height="200" fill={`url(#${gid}-p)`} />
       <circle cx={300 + (n % 60)} cy={40 + (n % 50)} r="110" fill="white" fillOpacity="0.08" />
       <circle cx={60 + (n % 80)} cy={190} r="80" fill="black" fillOpacity="0.12" />

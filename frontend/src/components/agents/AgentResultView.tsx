@@ -178,7 +178,7 @@ export function AgentResultView({ activeTab, result, onRun }: AgentResultViewPro
                   <p className="text-xs text-muted-foreground">{item.day}</p>
                 </div>
               </div>
-              <div className="rounded-full bg-foreground/10 px-3 py-1 text-xs font-medium text-foreground/90">
+              <div className="rounded-lg bg-foreground/10 px-3 py-1 text-xs font-medium text-foreground/90">
                 {item.method}
               </div>
             </div>

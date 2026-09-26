@@ -206,7 +206,7 @@ export default function FinalTestPage() {
               <div className="mb-12">
                 <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight mb-4">Final Certification Test</h1>
                 <p className="text-xl text-muted-foreground font-medium mb-2">{course.title}</p>
-                <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary mt-4">
+                <div className="inline-flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary mt-4">
                   <CheckCircle2 className="h-4 w-4" />
                   Pass mark: 70%
                 </div>

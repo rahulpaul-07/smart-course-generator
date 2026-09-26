@@ -1,6 +1,7 @@
 import { BookOpen, ChevronRight, Globe2, Sparkles } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { LogoMark } from '../components/brand/Logo';
 import LoadingSpinner from '../components/LoadingSpinner';
 import LessonAudioPlayer from '../components/lesson/LessonAudioPlayer';
 import LessonRenderer from '../components/lesson/LessonRenderer';
@@ -51,15 +52,13 @@ export default function SharedCoursePage() {
       <header className="sticky top-0 z-20 border-b border-border bg-background/80 px-4 py-4 sm:px-6 lg:px-8">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
-            <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-brand-500 to-primary shadow-lg shadow-brand-500/20">
-              <BookOpen className="h-4 w-4 text-white" />
-            </span>
+            <LogoMark className="h-9 w-9" />
             <div>
-              <p className="font-display text-sm font-bold text-foreground">Course<span className="text-brand-300">AI</span></p>
+              <p className="text-sm font-semibold tracking-tight text-foreground">CourseAI</p>
               <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Shared learning path</p>
             </div>
           </div>
-          <span className="flex items-center gap-1.5 rounded-full border border-primary/15 bg-primary/[0.07] px-3 py-1.5 text-xs text-primary">
+          <span className="flex items-center gap-1.5 rounded-lg border border-primary/15 bg-primary/[0.07] px-3 py-1.5 text-xs text-primary">
             <Globe2 className="h-3.5 w-3.5" />
             Read only
           </span>

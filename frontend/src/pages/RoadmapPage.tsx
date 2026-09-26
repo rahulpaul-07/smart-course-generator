@@ -177,8 +177,7 @@ export default function RoadmapPage() {
                 />
               ) : (
                 <div className="h-full min-h-[400px] border border-border rounded-2xl bg-card/10 flex flex-col items-center justify-center text-center p-10 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/5 via-background to-background pointer-events-none" />
-                  <div className="h-24 w-24 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20 flex items-center justify-center mb-6 shadow-lg z-10">
+                  <div className="h-24 w-24 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mb-6 z-10">
                     <Map className="h-10 w-10 text-primary" />
                   </div>
                   <h2 className="font-display text-3xl font-extrabold text-foreground mb-3 z-10">Select a Roadmap</h2>

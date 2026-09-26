@@ -49,7 +49,7 @@ export default function LearningSummary({ courses }: { courses: PopulatedCourse[
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-10">
       <div className="md:col-span-2 lg:col-span-2">
-        <Card className="h-full relative overflow-hidden border-primary/20 bg-gradient-to-br from-card to-card/50">
+        <Card className="h-full relative overflow-hidden border-primary/20">
           <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-primary/10 blur-3xl pointer-events-none" />
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
