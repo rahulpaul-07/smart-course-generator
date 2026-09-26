@@ -12,6 +12,10 @@ services:
         value: production
       - key: PORT
         value: "8000"
+      # Browsers reach the API through the Vercel /api rewrite, then Render's
+      # proxy. Set to "1" if you serve the frontend below instead.
+      - key: TRUST_PROXY_HOPS
+        value: "2"
       - key: CLIENT_URL
         fromService:
           name: unified-course-frontend
@@ -33,6 +37,10 @@ services:
       - key: DEMO_TTL_HOURS
         value: "24"
 
+  # Alternative to the Vercel frontend (the documented deployment). This static
+  # site calls the API cross-site via VITE_API_BASE_URL, so the SameSite=Strict
+  # refresh cookie is never sent and sessions end when the access token
+  # expires. Prefer Vercel, which proxies /api same-origin (frontend/vercel.json).
   - type: web
     name: unified-course-frontend
     env: static

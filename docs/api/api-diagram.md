@@ -8,8 +8,6 @@ This document presents the API design for **CourseAI**, mapping out the routes, 
 graph LR
     subgraph PublicEndpoints [Public API Routes]
         CertGet["GET /api/certificates/:certificateId<br/>(Public Verification)"]
-        HinglishText["POST /api/explanations/hinglish-text<br/>(Text Translation)"]
-        HinglishAudio["POST /api/explanations/hinglish-audio<br/>(Audio Explanation)"]
         Health["GET /api/health<br/>(System Health Check)"]
         AuthReg["POST /api/auth/register<br/>(Rate-limited, Zod-validated)"]
         AuthLogin["POST /api/auth/login<br/>(Rate-limited, Zod-validated)"]
@@ -32,7 +30,7 @@ graph LR
     classDef public fill:#d4edda,stroke:#28a745,stroke-width:2px;
     classDef protected fill:#f8d7da,stroke:#dc3545,stroke-width:2px;
     
-    class CertGet,HinglishText,HinglishAudio,Health,AuthReg,AuthLogin public;
+    class CertGet,Health,AuthReg,AuthLogin public;
     class CourseCreate,CourseMine,CourseGet,CourseDelete,LessonOutline,LessonChunk,LessonQuiz,LessonProgress,CertClaim protected;
 ```
 
@@ -57,10 +55,6 @@ graph LR
 ### Certificate Routes
 * `POST /api/certificates/claim/:courseId` (Protected): Evaluates final exam responses, creates the `Certificate` collection record, and updates the `Course` representation.
 * `GET /api/certificates/:certificateId` (Public): Fetches verifiable certificate metadata to display on a public page.
-
-### Explanations Routes (Public / Demo Mode)
-* `POST /api/explanations/hinglish-text`: Translates and explains selected technical terms in Hinglish.
-* `POST /api/explanations/hinglish-audio`: Synthesizes spoken audio explanation for technical blocks.
 
 ### Analytics Routes (Protected)
 * `GET /api/analytics/dashboard`: Returns comprehensive learning analytics including streak, study hours, completion rates, quiz performance, weak/strong topics, and per-course progress.
