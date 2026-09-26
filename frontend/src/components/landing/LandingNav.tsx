@@ -26,15 +26,10 @@ export function LandingNav() {
   }, []);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 px-4 pt-3 sm:pt-4">
+    <header className={cn('fixed inset-x-0 top-0 z-50 border-b transition-colors', scrolled || open ? 'border-border bg-background' : 'border-transparent bg-background/0')}>
       <nav
         aria-label="Main"
-        className={cn(
-          'mx-auto flex h-14 max-w-5xl items-center justify-between rounded-full border px-3 pl-4 transition-all duration-300',
-          scrolled || open
-            ? 'border-border/80 bg-background/70 shadow-[0_8px_32px_-12px_rgba(0,0,0,0.6)] backdrop-blur-xl'
-            : 'border-transparent bg-transparent'
-        )}
+        className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6"
       >
         <Link to="/" className="rounded-lg text-[15px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
           <Logo />
@@ -43,7 +38,7 @@ export function LandingNav() {
         <ul className="hidden items-center gap-1 md:flex">
           {LINKS.map((l) => (
             <li key={l.href}>
-              <a href={l.href} className="rounded-full px-3.5 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground">
+              <a href={l.href} className="rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground">
                 {l.label}
               </a>
             </li>
@@ -56,22 +51,22 @@ export function LandingNav() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Source code on GitHub"
-            className="hidden h-9 w-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground sm:inline-flex"
+            className="hidden h-9 w-9 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground sm:inline-flex"
           >
             <GithubIcon className="h-[18px] w-[18px]" />
           </a>
-          <Link to="/login" className="hidden rounded-full px-3.5 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground sm:inline-block">
+          <Link to="/login" className="hidden rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground sm:inline-block">
             Sign in
           </Link>
           <Link
             to="/signup"
-            className="inline-flex h-9 items-center rounded-full bg-foreground px-4 text-sm font-medium text-background transition-opacity hover:opacity-90"
+            className="inline-flex h-9 items-center rounded-md bg-foreground px-4 text-sm font-medium text-background transition-opacity hover:opacity-90"
           >
             Get started
           </Link>
           <button
             type="button"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground hover:bg-muted md:hidden"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground hover:bg-muted md:hidden"
             aria-expanded={open}
             aria-controls="mobile-nav"
             aria-label={open ? 'Close menu' : 'Open menu'}
@@ -83,9 +78,9 @@ export function LandingNav() {
       </nav>
 
       {open && (
-        <div id="mobile-nav" className="mx-auto mt-2 max-w-5xl rounded-3xl border border-border/80 bg-background/90 p-2 backdrop-blur-xl md:hidden">
+        <div id="mobile-nav" className="border-t border-border bg-background px-2 py-2 md:hidden">
           {[...LINKS, { href: '/login', label: 'Sign in' }].map((l) => (
-            <a key={l.href} href={l.href} onClick={() => setOpen(false)} className="block rounded-2xl px-4 py-3 text-sm text-muted-foreground hover:bg-muted hover:text-foreground">
+            <a key={l.href} href={l.href} onClick={() => setOpen(false)} className="block rounded-md px-4 py-3 text-sm text-muted-foreground hover:bg-muted hover:text-foreground">
               {l.label}
             </a>
           ))}

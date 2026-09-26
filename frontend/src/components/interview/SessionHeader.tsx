@@ -42,13 +42,13 @@ export function SessionHeader({ prep, activeTab, setActiveTab, onExit, formatted
   };
 
   return (
-    <header className="sticky top-0 z-20 border-b border-border/70 bg-background/85 backdrop-blur-xl">
+    <header className="sticky top-0 z-20 border-b border-border bg-background/85 backdrop-blur-xl">
       <div className="flex items-center gap-3 px-4 py-3 sm:px-6">
         <button
           type="button"
           onClick={onExit}
           aria-label="Exit session"
-          className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border/70 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
         >
           <ArrowLeft className="h-4 w-4" />
         </button>
@@ -60,7 +60,7 @@ export function SessionHeader({ prep, activeTab, setActiveTab, onExit, formatted
           </p>
         </div>
         {prep.status === 'pending' && (
-          <span className="hidden items-center gap-1.5 rounded-lg border border-border/70 px-2.5 py-1.5 font-mono text-xs tabular-nums text-foreground sm:inline-flex" aria-label={`Elapsed time ${formattedTime}`}>
+          <span className="hidden items-center gap-1.5 rounded-lg border border-border px-2.5 py-1.5 font-mono text-xs tabular-nums text-foreground sm:inline-flex" aria-label={`Elapsed time ${formattedTime}`}>
             <Clock className="h-3.5 w-3.5 text-muted-foreground" /> {formattedTime}
           </span>
         )}

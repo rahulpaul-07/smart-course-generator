@@ -6,7 +6,7 @@ import type { LessonContentBlock } from '../../types';
 const LessonRenderer = React.memo(({ content = [], isStreaming = false }: { content: LessonContentBlock[], isStreaming?: boolean }) => {
   if (!content.length && !isStreaming) {
     return (
-      <div className="p-16 text-center rounded-2xl border border-dashed border-border bg-card/20 backdrop-blur-sm">
+      <div className="p-16 text-center rounded-2xl border border-dashed border-border bg-card">
         <p className="text-muted-foreground text-lg">Generate the lesson to begin learning.</p>
       </div>
     );

@@ -40,7 +40,9 @@ export default defineConfig({
       url: `http://localhost:${WEB_PORT}`,
       reuseExistingServer: !process.env.CI,
       timeout: 180_000,
-      env: { VITE_API_BASE_URL: `http://localhost:${API_PORT}/api` },
+      // No VITE_API_BASE_URL: the app calls /api on its own origin and preview
+      // proxies it, the same topology as production (vercel.json rewrite).
+      env: { API_PROXY_TARGET: `http://localhost:${API_PORT}` },
     },
   ],
 });

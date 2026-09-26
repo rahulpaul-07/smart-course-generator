@@ -50,8 +50,8 @@ export default function LessonSidebar({ course, currentLessonId, lessonContent, 
   };
 
   return (
-    <aside className="hidden h-full w-[280px] xl:w-[320px] flex-shrink-0 overflow-y-auto bg-card lg:flex flex-col border-r border-border/30">
-      <header className="sticky top-0 z-10 bg-card p-5 border-b border-border/30">
+    <aside className="hidden h-full w-[280px] xl:w-[320px] flex-shrink-0 overflow-y-auto bg-card lg:flex flex-col border-r border-border">
+      <header className="sticky top-0 z-10 bg-card p-5 border-b border-border">
         <BackButton onClick={onBack} label="Back to Course" className="mb-4 -ml-2" />
         <h2 className="line-clamp-2 text-lg font-semibold text-foreground leading-tight">{course.title}</h2>
       </header>
@@ -82,7 +82,7 @@ export default function LessonSidebar({ course, currentLessonId, lessonContent, 
                       className={`relative w-full text-left flex items-start py-1.5 pl-6 pr-2 text-sm transition-colors duration-200 focus-visible:outline-none ${
                         isActive 
                           ? 'text-primary font-medium before:absolute before:left-[9px] before:top-1/2 before:-translate-y-1/2 before:w-1.5 before:h-1.5 before:rounded-full before:bg-primary' 
-                          : 'text-muted-foreground/80 hover:text-foreground font-medium'
+                          : 'text-muted-foreground hover:text-foreground font-medium'
                       } ${h.level === 3 ? 'pl-8 text-[13px] opacity-80' : ''}`}
                     >
                       <span className="line-clamp-2 leading-tight">{h.text}</span>
@@ -94,7 +94,7 @@ export default function LessonSidebar({ course, currentLessonId, lessonContent, 
           </div>
         )}
 
-        <hr className="border-border/30" />
+        <hr className="border-border" />
 
         {/* Course Navigation Section */}
         <div>
@@ -110,7 +110,7 @@ export default function LessonSidebar({ course, currentLessonId, lessonContent, 
 
           {!navCollapsed && course?.modules?.map((moduleDoc, moduleIndex: number) => (
             <section key={moduleDoc._id} className="mb-6">
-              <h3 className="px-2 mb-2 text-xs font-semibold text-muted-foreground/70">
+              <h3 className="px-2 mb-2 text-xs font-semibold text-muted-foreground">
                 Module {moduleIndex + 1}
               </h3>
               <div className="space-y-1">
@@ -131,7 +131,7 @@ export default function LessonSidebar({ course, currentLessonId, lessonContent, 
                           ? 'bg-success/10 border-success/20 text-success' 
                           : isActive 
                             ? 'bg-primary/20 border-primary/30 text-primary'
-                            : 'bg-background border-border text-muted-foreground/50'
+                            : 'bg-background border-border text-muted-foreground'
                       }`}>
                         {lesson.completedAt ? <CheckCircle2 className="h-3 w-3" /> : <div className="h-1.5 w-1.5 rounded-full bg-current" />}
                       </div>

@@ -103,7 +103,7 @@ function EventRow({ e }: { e: TelemetryEvent }) {
   return (
     <li
       className={cn(
-        'grid grid-cols-[4.5rem_1fr_auto] items-baseline gap-3 border-b border-border/60 py-2 font-mono text-xs last:border-0',
+        'grid grid-cols-[4.5rem_1fr_auto] items-baseline gap-3 border-b border-border py-2 font-mono text-xs last:border-0',
         failed && 'text-red-500'
       )}
     >

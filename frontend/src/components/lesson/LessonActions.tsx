@@ -18,7 +18,7 @@ export function LessonActions({ isFocusMode, setIsFocusMode, toolsAvailable, too
         <button
           onClick={onToggleTools}
           aria-pressed={toolsOpen}
-          className={`flex items-center gap-2 px-3 py-1.5 rounded-lg font-medium text-xs transition-colors border ${toolsOpen ? 'border-primary bg-primary/10 text-primary' : 'border-border/30 bg-background text-muted-foreground hover:bg-muted hover:text-foreground'}`}
+          className={`flex items-center gap-2 px-3 py-1.5 rounded-lg font-medium text-xs transition-colors border ${toolsOpen ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-background text-muted-foreground hover:bg-muted hover:text-foreground'}`}
         >
           <Wrench className="w-3.5 h-3.5" />
           Study Tools
@@ -26,7 +26,7 @@ export function LessonActions({ isFocusMode, setIsFocusMode, toolsAvailable, too
       )}
       <button
         onClick={() => setIsFocusMode(true)}
-        className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-background hover:bg-muted text-muted-foreground hover:text-foreground font-medium text-xs transition-colors border border-border/30"
+        className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-background hover:bg-muted text-muted-foreground hover:text-foreground font-medium text-xs transition-colors border border-border"
       >
         <Maximize className="w-3.5 h-3.5" />
         Focus

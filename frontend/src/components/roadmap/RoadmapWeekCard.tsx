@@ -47,8 +47,8 @@ export function RoadmapWeekCard({
         isCurrent 
           ? 'border-primary/40 bg-card/60 shadow-lg shadow-primary/5 ring-1 ring-primary/10' 
           : isCompleted 
-            ? 'border-border/30 bg-muted/20 opacity-80' 
-            : 'border-border/30 bg-card/30 hover:border-primary/30 hover:bg-card/50'
+            ? 'border-border bg-muted/20 opacity-80' 
+            : 'border-border bg-card/30 hover:border-primary/30 hover:bg-card/50'
       }`}>
         
         {/* Expand and complete are siblings: "Mark complete" used to be a
@@ -101,7 +101,7 @@ export function RoadmapWeekCard({
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.3, ease: 'easeOut' }}
-              className="overflow-hidden bg-background/50 border-t border-border/30"
+              className="overflow-hidden bg-background/50 border-t border-border"
             >
               <div className="p-6 space-y-8">
                 
@@ -119,7 +119,7 @@ export function RoadmapWeekCard({
                             key={i}
                             disabled={isGenerating}
                             onClick={() => handleGenerateCourse(topic)}
-                            className={`group flex items-center gap-2 rounded-xl border border-border/30 bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-all hover:border-primary/50 hover:bg-primary/5 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${isGenerating ? 'cursor-progress opacity-70' : ''}`}
+                            className={`group flex items-center gap-2 rounded-xl border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-all hover:border-primary/50 hover:bg-primary/5 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${isGenerating ? 'cursor-progress opacity-70' : ''}`}
                             title={`Generate a course on "${topic}"`}
                           >
                             {isGenerating ? (

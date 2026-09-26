@@ -69,7 +69,7 @@ function Score({
     return (
       <span
         className={cn(
-          'font-mono text-muted-foreground/70',
+          'font-mono text-muted-foreground',
           size === 'lg' ? 'text-2xl' : 'text-sm'
         )}
         title="Not measured in this run"
@@ -145,10 +145,10 @@ export default function EvalsPage() {
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Evals</h1>
             <p className="mt-2 max-w-2xl text-muted-foreground">
-              Every course generator claims it works. This is the scorecard that checks: four golden
-              prompts, run through the real generation path, scored on structure, topic coverage and
-              faithfulness. Written by <code className="font-mono text-xs">npm run eval</code> and
-              committed to the repo — this page reads that file, it does not re-run the harness.
+              Four fixed prompts run through the real generation path and scored on structure, topic
+              coverage and faithfulness. The results are written by{' '}
+              <code className="font-mono text-xs">npm run eval</code> and committed to the repo; this
+              page reads that file and does not re-run the harness.
             </p>
           </div>
 
@@ -185,6 +185,17 @@ export default function EvalsPage() {
               : 'The API found evals/report.md but could not read it.'}{' '}
             Run <code className="font-mono text-xs">npm run eval</code> from the backend directory to
             generate one, then commit the result.
+          </p>
+        </div>
+      )}
+
+      {data?.available && data.mode === 'mock' && (
+        <div role="note" className="mb-8 rounded-xl border border-warning/50 bg-warning/10 p-5 text-sm">
+          <p className="font-semibold text-foreground">These results come from mock mode</p>
+          <p className="mt-1 max-w-2xl text-muted-foreground">
+            No AI provider key was set when this report was recorded, so generation used deterministic
+            fixtures. Structure scores only confirm the output contract is intact. They say nothing about
+            content quality, and coverage and faithfulness were not measured.
           </p>
         </div>
       )}
@@ -255,7 +266,7 @@ export default function EvalsPage() {
                 </thead>
                 <tbody>
                   {data.rows.map((row) => (
-                    <tr key={row.id} className="border-b border-border/60 align-top last:border-0">
+                    <tr key={row.id} className="border-b border-border align-top last:border-0">
                       <td className="px-5 py-4">
                         <PromptCell row={row} />
                       </td>

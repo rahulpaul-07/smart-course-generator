@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { useAuth } from './hooks/useAuth';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -50,12 +50,21 @@ const CoursesPage = withSuspense(lazy(() => import('./pages/CoursesPage')));
 const SaveAccountPage = withSuspense(lazy(() => import('./pages/SaveAccountPage')));
 const NotFoundPage = withSuspense(lazy(() => import('./pages/NotFoundPage')));
 
+/** Only same-app paths: "//evil.example" and absolute URLs would be an open redirect. */
+function safeReturnPath(value: unknown): string | null {
+  return typeof value === 'string' && value.startsWith('/') && !value.startsWith('//') ? value : null;
+}
+
 function GuestRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, loading } = useAuth();
+  const location = useLocation();
 
-  // If we know the user is authenticated, redirect to dashboard.
-  // Otherwise, render the public content immediately without blocking for auth to load.
-  if (!loading && isAuthenticated) return <Navigate to="/dashboard" replace />;
+  // Signed in: go back to the page that sent them to login, else the dashboard.
+  // Otherwise render the public content immediately without blocking on auth.
+  if (!loading && isAuthenticated) {
+    const from = safeReturnPath((location.state as { from?: unknown } | null)?.from);
+    return <Navigate to={from ?? '/dashboard'} replace />;
+  }
   return <div key="content" className="w-full h-full">{children}</div>;
 }
 
@@ -99,7 +108,7 @@ export default function App() {
         <Route path="/courses" element={<DashboardPage><CoursesPage /></DashboardPage>} />
         {/* Transparency pages: public, and inside the shell when signed in. */}
         <Route path="/status" element={<OpenPage><AiRouterPage /></OpenPage>} />
-        <Route path="/ai-router" element={<OpenPage><AiRouterPage /></OpenPage>} />
+        <Route path="/ai-router" element={<Navigate to="/status" replace />} />
         <Route path="/evals" element={<OpenPage><EvalsPage /></OpenPage>} />
         <Route path="/course/:id" element={<DashboardPage><CourseOverviewPage /></DashboardPage>} />
         <Route path="/course/:id/certificate" element={<DashboardPage><CertificatePage /></DashboardPage>} />
@@ -115,7 +124,7 @@ export default function App() {
         <Route path="/interview-prep" element={<DashboardPage><InterviewPrepPage /></DashboardPage>} />
         <Route path="/agents" element={<DashboardPage><AiAgentsPage /></DashboardPage>} />
         <Route path="/profile" element={<DashboardPage><ProfilePage /></DashboardPage>} />
-        <Route path="/profile/:userId" element={<DashboardPage><PublicProfilePage /></DashboardPage>} />
+        <Route path="/profile/:userId" element={<OpenPage><PublicProfilePage /></OpenPage>} />
         <Route path="/community" element={<DashboardPage><CommunityTemplatesPage /></DashboardPage>} />
         <Route path="/leaderboard" element={<DashboardPage><LeaderboardPage /></DashboardPage>} />
         <Route path="/save-account" element={<DashboardPage><SaveAccountPage /></DashboardPage>} />

@@ -21,8 +21,8 @@ const CodeBlock = ({ language, value }: { language: string, value: string }) => 
   };
 
   return (
-    <div className="relative group my-6 rounded-xl overflow-hidden bg-[#0D0D0D] border border-border/30 shadow-lg">
-      <div className="flex items-center justify-between px-4 py-2 bg-muted/30 border-b border-border/30">
+    <div className="relative group my-6 rounded-xl overflow-hidden bg-[#0D0D0D] border border-border shadow-lg">
+      <div className="flex items-center justify-between px-4 py-2 bg-muted/30 border-b border-border">
         <span className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground">{language || 'text'}</span>
         <button
           onClick={handleCopy}
@@ -60,7 +60,7 @@ const CodeBlock = ({ language, value }: { language: string, value: string }) => 
 export const AssistantMessageContent = memo(function AssistantMessageContent({ content, isStreaming }: { content: string, isStreaming?: boolean }) {
   return (
     <div className="min-w-0 text-[15px] leading-relaxed text-foreground/90 prose dark:prose-invert max-w-none 
-      prose-p:leading-relaxed prose-p:my-3 
+ prose-p:leading-relaxed prose-p:my-3 
       prose-pre:p-0 prose-pre:bg-transparent prose-pre:border-none prose-pre:my-0
       prose-a:text-primary prose-a:underline-offset-2 hover:prose-a:text-primary/80 
       prose-headings:text-foreground prose-headings:font-bold prose-headings:mb-3 prose-headings:mt-6 prose-headings:tracking-tight
@@ -68,10 +68,10 @@ export const AssistantMessageContent = memo(function AssistantMessageContent({ c
       prose-ol:my-4 prose-ol:list-decimal prose-ol:pl-6
       prose-li:my-1.5
       prose-blockquote:border-l-4 prose-blockquote:border-primary/50 prose-blockquote:bg-primary/5 prose-blockquote:py-2 prose-blockquote:px-4 prose-blockquote:rounded-r-lg prose-blockquote:italic prose-blockquote:text-muted-foreground
-      prose-hr:my-6 prose-hr:border-border/30
+      prose-hr:my-6 prose-hr:border-border
       prose-table:w-full prose-table:my-6 prose-table:rounded-lg prose-table:overflow-hidden
-      prose-th:bg-muted/30 prose-th:p-3 prose-th:border prose-th:border-border/30 prose-th:font-semibold prose-th:text-left
-      prose-td:p-3 prose-td:border prose-td:border-border/30
+      prose-th:bg-muted/30 prose-th:p-3 prose-th:border prose-th:border-border prose-th:font-semibold prose-th:text-left
+      prose-td:p-3 prose-td:border prose-td:border-border
     ">
       <ReactMarkdown
         remarkPlugins={[remarkGfm, remarkMath]}
@@ -137,7 +137,7 @@ export function ChatMessage({ message, isUser, isStreamingThis, onRegenerate, ca
         <div className={`rounded-2xl px-4 py-2.5 shadow-sm overflow-hidden ${
           isUser
             ? 'rounded-tr-sm bg-primary text-primary-foreground'
-            : 'rounded-tl-sm border border-border/30 bg-muted/20'
+            : 'rounded-tl-sm border border-border bg-muted/20'
         }`}>
           {isUser
             ? <p className="whitespace-pre-wrap break-words text-[14px] font-medium leading-relaxed">{message.content}</p>
@@ -191,7 +191,7 @@ export function ChatMessage({ message, isUser, isStreamingThis, onRegenerate, ca
       </div>
 
       {isUser && (
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted border border-border/30 text-foreground mt-1">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted border border-border text-foreground mt-1">
           <UserRound className="h-4 w-4" />
         </div>
       )}

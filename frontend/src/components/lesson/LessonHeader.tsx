@@ -58,7 +58,7 @@ export function LessonHeader({
   const estimatedMinutes = estimateLessonMinutes(lesson?.content);
 
   return (
-    <div className="sticky top-0 z-20 w-full bg-background/90 backdrop-blur-2xl border-b border-border/30 shadow-sm transition-all">
+    <div className="sticky top-0 z-20 w-full bg-background/90 border-b border-border shadow-sm transition-all">
       <div className={`mx-auto flex items-center justify-between px-6 py-3 min-h-[64px] ${isFocusMode ? 'max-w-[900px]' : ''}`}>
         
         <div className="flex items-center min-w-0 pr-4">

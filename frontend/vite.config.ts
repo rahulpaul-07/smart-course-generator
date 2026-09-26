@@ -1,14 +1,45 @@
+import { readFileSync } from 'node:fs'
+import path from 'node:path'
 import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
-import path from 'path'
+
+// The SPA calls the API same-origin under /api (see src/utils/api.ts). Locally
+// that path is proxied to the Express server; in production the host rewrites
+// it (vercel.json).
+const apiProxy = {
+  '/api': {
+    target: process.env.API_PROXY_TARGET || 'http://localhost:8000',
+    changeOrigin: true,
+  },
+}
+
+/**
+ * The production security headers live in vercel.json. `vite preview` serves
+ * the same set, so the Playwright suite (which runs against preview) fails if a
+ * CSP change breaks the app instead of that surfacing only after a deploy.
+ */
+function productionHeaders(): Record<string, string> {
+  const config = JSON.parse(readFileSync(path.join(import.meta.dirname, 'vercel.json'), 'utf8')) as {
+    headers?: { source: string; headers: { key: string; value: string }[] }[]
+  }
+  const all = config.headers?.find((rule) => rule.source === '/(.*)')?.headers ?? []
+  return Object.fromEntries(all.map(({ key, value }) => [key, value]))
+}
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      "@": path.resolve(import.meta.dirname, "./src"),
     },
+  },
+  server: {
+    proxy: apiProxy,
+  },
+  preview: {
+    proxy: apiProxy,
+    headers: productionHeaders(),
   },
   build: {
     rolldownOptions: {

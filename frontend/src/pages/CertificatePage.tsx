@@ -47,7 +47,7 @@ export default function CertificatePage() {
           description="This verification link is invalid, expired, or the certificate could not be found." 
           onRetry={refetch}
         />
-        <Button onClick={() => navigate('/')} className="mt-8 h-12 px-10 rounded-xl bg-foreground text-background font-bold hover:bg-foreground/90 transition-all shadow-md hover:shadow-lg hover:-translate-y-1">
+        <Button onClick={() => navigate('/')} className="mt-8 h-12 px-10 rounded-xl bg-foreground text-background font-bold hover:bg-foreground/90 transition-all shadow-md hover:shadow-lg">
           Return to Dashboard
         </Button>
       </div>
@@ -139,7 +139,7 @@ export default function CertificatePage() {
               View Roadmaps
             </Button>
           </div>
-          <div className="bg-card/40 backdrop-blur-md border border-border/30 rounded-2xl p-8 shadow-lg text-center">
+          <div className="bg-card border border-border rounded-2xl p-8 shadow-lg text-center">
             <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
               <Target className="w-8 h-8 text-primary opacity-80" />
             </div>
@@ -147,7 +147,7 @@ export default function CertificatePage() {
             <p className="text-[14px] font-medium text-muted-foreground mb-6 max-w-md mx-auto">
               Your AI tutor is ready to build your next custom course. Continue expanding your skills based on your recent achievement.
             </p>
-            <Button onClick={() => navigate('/')} className="h-12 px-8 rounded-xl bg-foreground text-background font-bold shadow-lg hover:shadow-md hover:-translate-y-0.5 transition-all">
+            <Button onClick={() => navigate('/')} className="h-12 px-8 rounded-xl bg-foreground text-background font-bold shadow-lg hover:shadow-md transition-all">
               Generate Next Course
             </Button>
           </div>

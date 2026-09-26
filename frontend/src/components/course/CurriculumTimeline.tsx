@@ -46,7 +46,7 @@ const ModuleCard = ({ moduleDoc, moduleIndex, courseId }: { moduleDoc: Populated
   const activeLessonIdx = currentLessonIndex === -1 ? totalLessons - 1 : currentLessonIndex;
 
   return (
-    <Card className="overflow-hidden border border-border/30 bg-card shadow-sm hover:shadow-md hover:border-border/30 transition-all duration-300">
+    <Card className="overflow-hidden border border-border bg-card shadow-sm hover:shadow-md hover:border-border transition-all duration-300">
       <button 
         onClick={() => setIsExpanded(!isExpanded)}
         className="w-full p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-left focus-visible:outline-none focus-visible:bg-muted/50"
@@ -75,7 +75,7 @@ const ModuleCard = ({ moduleDoc, moduleIndex, courseId }: { moduleDoc: Populated
             </div>
           </div>
           
-          <div className="shrink-0 h-8 w-8 rounded-full bg-background/80 border border-border/30 flex items-center justify-center text-muted-foreground shadow-sm">
+          <div className="shrink-0 h-8 w-8 rounded-full bg-background/80 border border-border flex items-center justify-center text-muted-foreground shadow-sm">
             {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
           </div>
         </div>
@@ -90,7 +90,7 @@ const ModuleCard = ({ moduleDoc, moduleIndex, courseId }: { moduleDoc: Populated
             transition={{ duration: 0.2, ease: "easeOut" }}
           >
             <div className="px-5 sm:px-6 pb-6 pt-2">
-              <div className="relative pl-4 border-l-2 border-border/30 ml-4 space-y-4 py-2">
+              <div className="relative pl-4 border-l-2 border-border ml-4 space-y-4 py-2">
                 {moduleDoc.lessons?.map((lesson: Lesson, lessonIndex: number) => {
                   const isLessonCompleted = !!lesson.completedAt;
                   const isCurrent = lessonIndex === activeLessonIdx;
@@ -115,13 +115,13 @@ const ModuleCard = ({ moduleDoc, moduleIndex, courseId }: { moduleDoc: Populated
                       key={lesson._id}
                       disabled={isLocked}
                       onClick={() => navigate(`/course/${courseId}/lesson/${lesson._id}`)}
-                      className={`relative w-full flex items-start sm:items-center gap-4 text-left group/lesson focus-visible:outline-none ${isLocked ? 'cursor-not-allowed opacity-60' : 'hover:-translate-y-0.5 transition-transform'}`}
+                      className={`relative w-full flex items-start sm:items-center gap-4 text-left group/lesson focus-visible:outline-none ${isLocked ? 'cursor-not-allowed opacity-60' : ' transition-transform'}`}
                     >
                       <div className={`absolute -left-[27px] sm:-left-[27px] top-1 sm:top-1/2 sm:-translate-y-1/2 w-6 h-6 rounded-full border-2 flex items-center justify-center z-10 transition-colors shadow-sm ${nodeColor}`}>
                         {icon}
                       </div>
                       
-                      <Card className={`flex-1 p-3 sm:p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm border transition-colors ${isCurrent ? 'bg-card border-primary/30 shadow-primary/5' : 'bg-card border-border/30 hover:shadow-md hover:border-border/30'}`}>
+                      <Card className={`flex-1 p-3 sm:p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm border transition-colors ${isCurrent ? 'bg-card border-primary/30 shadow-primary/5' : 'bg-card border-border hover:shadow-md hover:border-border'}`}>
                         <div className="flex-1 min-w-0 pr-4">
                           <p className={`text-sm truncate ${textColor} ${!isLocked && 'group-hover/lesson:text-primary transition-colors'}`}>
                             {lessonIndex + 1}. {lesson.title}
@@ -137,11 +137,11 @@ const ModuleCard = ({ moduleDoc, moduleIndex, courseId }: { moduleDoc: Populated
                           <div className="flex items-center gap-3 shrink-0">
                             {lesson.bookmarked && <Bookmark className="h-4 w-4 text-primary fill-primary/20" />}
                             {(lesson.quizBestScore ?? 0) > 0 && (
-                              <span className="text-xs font-semibold text-foreground bg-foreground/10 px-2 py-0.5 rounded-full border border-border/30">
+                              <span className="text-xs font-semibold text-foreground bg-foreground/10 px-2 py-0.5 rounded-full border border-border">
                                 {lesson.quizBestScore}/5 Score
                               </span>
                             )}
-                            <div className={`h-8 w-8 rounded-full flex items-center justify-center border shadow-sm transition-colors ${isLessonCompleted ? 'bg-background border-border/30 text-success' : 'bg-primary/10 border-primary/20 text-primary'}`}>
+                            <div className={`h-8 w-8 rounded-full flex items-center justify-center border shadow-sm transition-colors ${isLessonCompleted ? 'bg-background border-border text-success' : 'bg-primary/10 border-primary/20 text-primary'}`}>
                               <PlayCircle className="h-4 w-4" />
                             </div>
                           </div>

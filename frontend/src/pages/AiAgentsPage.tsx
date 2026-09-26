@@ -35,7 +35,7 @@ export default function AiAgentsPage() {
       <div className="grid gap-8 lg:grid-cols-[280px_1fr]">
         <AgentSidebar activeTab={activeTab} setActiveTab={setActiveTab} setResult={setResult} />
 
-        <div className="glass-card flex flex-col rounded-2xl overflow-hidden border border-border/30">
+        <div className="glass-card flex flex-col rounded-2xl overflow-hidden border border-border">
           <AgentHeaderInputs 
             activeTab={activeTab}
             courses={courses}

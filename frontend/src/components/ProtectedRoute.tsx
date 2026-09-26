@@ -16,7 +16,8 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    // Remember where the visitor was going so login can send them back there.
+    return <Navigate to="/login" replace state={{ from: `${location.pathname}${location.search}` }} />;
   }
 
   if (user && !user.onboardingCompleted && location.pathname !== '/onboarding') {

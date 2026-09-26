@@ -4,6 +4,7 @@ import { AuthProvider } from './hooks/useAuth';
 import { AuthWrapper } from './AuthWrapper';
 import App from './App';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { MotionConfig } from 'framer-motion';
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { staleTime: 1000 * 60 * 5, refetchOnWindowFocus: false } } });
 import './index.css';
@@ -24,6 +25,9 @@ if (!window._reactRoot) {
 
 window._reactRoot.render(
   <BrowserRouter>
+    {/* The CSS reduced-motion guard does not reach framer-motion, which animates
+        from JavaScript; this makes every motion component honour the setting. */}
+    <MotionConfig reducedMotion="user">
     <AuthWrapper>
       <QueryClientProvider client={queryClient}>
       <AuthProvider>
@@ -31,5 +35,6 @@ window._reactRoot.render(
       </AuthProvider>
       </QueryClientProvider>
     </AuthWrapper>
+    </MotionConfig>
   </BrowserRouter>
 );

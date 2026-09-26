@@ -34,7 +34,7 @@ export function CommunitySkeleton() {
               <Skeleton className="h-3 w-4/6 rounded-md" />
             </div>
             
-            <div className="flex items-center justify-between border-t border-border/30 pt-4 mb-4 mt-auto">
+            <div className="flex items-center justify-between border-t border-border pt-4 mb-4 mt-auto">
               <div className="flex items-center gap-2">
                 <Skeleton className="h-7 w-7 rounded-full" />
                 <Skeleton className="h-3 w-20 rounded-md" />

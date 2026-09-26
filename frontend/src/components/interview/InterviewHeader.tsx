@@ -68,7 +68,7 @@ export function InterviewHeader({
                 <button
                   type="button"
                   onClick={() => viewPrep(p._id)}
-                  className="flex min-h-[160px] w-full flex-col justify-between rounded-2xl border border-border/70 bg-card/40 p-6 pr-14 text-left transition-colors hover:border-primary/40 hover:bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                  className="flex min-h-[160px] w-full flex-col justify-between rounded-2xl border border-border bg-card/40 p-6 pr-14 text-left transition-colors hover:border-primary/40 hover:bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                 >
                   <div>
                     <span className={`inline-block rounded-lg px-3 py-1 text-[10px] font-bold uppercase tracking-wider ${p.status === 'completed' ? 'border border-success/20 bg-success/10 text-success' : 'border border-warning/20 bg-warning/10 text-warning'}`}>
@@ -98,7 +98,7 @@ export function InterviewHeader({
                   icon={BookOpen}
                   title="No interview sessions yet"
                   description="Generate your first mock interview above to start practicing."
-                  className="min-h-[250px] bg-card/10 border-border/30"
+                  className="min-h-[250px] bg-card/10 border-border"
                   action={
                     <button 
                       onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} 

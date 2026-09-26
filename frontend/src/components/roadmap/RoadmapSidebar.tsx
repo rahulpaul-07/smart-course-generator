@@ -23,7 +23,7 @@ export function RoadmapSidebar({ roadmaps, viewRoadmap, deleteRoadmap }: Roadmap
               <button
                 type="button"
                 onClick={() => viewRoadmap(r._id)}
-                className="flex min-h-[112px] w-full flex-col justify-between rounded-2xl border border-border/70 bg-card/40 p-4 pr-12 text-left transition-colors hover:border-primary/40 hover:bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                className="flex min-h-[112px] w-full flex-col justify-between rounded-2xl border border-border bg-card/40 p-4 pr-12 text-left transition-colors hover:border-primary/40 hover:bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
               >
                 <p className="line-clamp-2 text-sm font-semibold leading-snug">{r.goal}</p>
                 <div className="mt-4 flex flex-wrap items-center gap-2">
@@ -43,7 +43,7 @@ export function RoadmapSidebar({ roadmaps, viewRoadmap, deleteRoadmap }: Roadmap
           );
         })}
         {roadmaps.length === 0 && (
-          <EmptyState icon={Layers} title="No blueprints yet" description="Create your first roadmap." className="min-h-[160px] border-border/30 bg-card/10 p-6" />
+          <EmptyState icon={Layers} title="No blueprints yet" description="Create your first roadmap." className="min-h-[160px] border-border bg-card/10 p-6" />
         )}
       </div>
     </div>

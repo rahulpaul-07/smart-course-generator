@@ -99,7 +99,7 @@ export default function RoadmapPage() {
               onSubmit={handleGenerate} 
               className="overflow-hidden"
             >
-              <div className="bg-card/30 backdrop-blur-md mb-8 rounded-2xl border border-border/30 p-8 shadow-md">
+              <div className="bg-card mb-8 rounded-2xl border border-border p-8 shadow-md">
                 <div className="flex items-center justify-between mb-8">
                   <div>
                     <h2 className="mb-1 text-xl font-semibold tracking-tight">Configure your path</h2>
@@ -118,7 +118,7 @@ export default function RoadmapPage() {
                       value={form.goal}
                       onChange={(e) => setForm({ ...form, goal: e.target.value })}
                       placeholder="e.g. Senior Frontend Engineer, Full-Stack Web Development..."
-                      className="w-full h-12 rounded-xl border-2 border-border/30 bg-background/50 px-5 text-[15px] font-medium text-foreground outline-none transition focus:border-primary/50 focus:ring-4 focus:ring-primary/10 shadow-inner"
+                      className="w-full h-12 rounded-xl border-2 border-border bg-background/50 px-5 text-[15px] font-medium text-foreground outline-none transition focus:border-primary/50 focus:ring-4 focus:ring-primary/10 shadow-inner"
                       maxLength={150}
                     />
                   </div>
@@ -128,7 +128,7 @@ export default function RoadmapPage() {
                       id="duration-select"
                       value={form.duration}
                       onChange={(e) => setForm({ ...form, duration: e.target.value })}
-                      className="w-full h-12 rounded-xl border-2 border-border/30 bg-background/50 px-5 text-[15px] font-medium text-foreground outline-none transition focus:border-primary/50 focus:ring-4 focus:ring-primary/10 shadow-inner appearance-none"
+                      className="w-full h-12 rounded-xl border-2 border-border bg-background/50 px-5 text-[15px] font-medium text-foreground outline-none transition focus:border-primary/50 focus:ring-4 focus:ring-primary/10 shadow-inner appearance-none"
                     >
                       <option value="2 weeks">2 Weeks</option>
                       <option value="4 weeks">4 Weeks</option>
@@ -143,7 +143,7 @@ export default function RoadmapPage() {
                       id="skill-level-select"
                       value={form.skillLevel}
                       onChange={(e) => setForm({ ...form, skillLevel: e.target.value })}
-                      className="w-full h-12 rounded-xl border-2 border-border/30 bg-background/50 px-5 text-[15px] font-medium text-foreground outline-none transition focus:border-primary/50 focus:ring-4 focus:ring-primary/10 shadow-inner appearance-none"
+                      className="w-full h-12 rounded-xl border-2 border-border bg-background/50 px-5 text-[15px] font-medium text-foreground outline-none transition focus:border-primary/50 focus:ring-4 focus:ring-primary/10 shadow-inner appearance-none"
                     >
                       <option value="beginner">Beginner</option>
                       <option value="intermediate">Intermediate</option>
@@ -176,7 +176,7 @@ export default function RoadmapPage() {
                   action={<Button onClick={() => setShowForm(true)}>Generate Roadmap</Button>}
                 />
               ) : (
-                <div className="h-full min-h-[400px] border border-border/30 rounded-2xl bg-card/10 flex flex-col items-center justify-center text-center p-10 relative overflow-hidden">
+                <div className="h-full min-h-[400px] border border-border rounded-2xl bg-card/10 flex flex-col items-center justify-center text-center p-10 relative overflow-hidden">
                   <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/5 via-background to-background pointer-events-none" />
                   <div className="h-24 w-24 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20 flex items-center justify-center mb-6 shadow-lg z-10">
                     <Map className="h-10 w-10 text-primary" />
@@ -196,7 +196,7 @@ export default function RoadmapPage() {
           <div className="grid lg:grid-cols-12 gap-8 items-start">
             <div className="lg:col-span-8 space-y-8">
               <RoadmapHero activeRoadmap={activeRoadmap} setActiveRoadmap={setActiveRoadmap} deleteRoadmap={deleteRoadmap} generateCourseFromTopic={generateCourseFromTopic} />
-              <div className="rounded-2xl border border-border/30 bg-background/50 p-6 lg:p-10 shadow-sm relative">
+              <div className="rounded-2xl border border-border bg-background/50 p-6 lg:p-10 shadow-sm relative">
                 <h3 className="text-xl font-bold text-foreground mb-8">Curriculum Timeline</h3>
                 <RoadmapTimeline roadmap={activeRoadmap} onGenerateCourse={generateCourseFromTopic} onToggleWeekCompletion={toggleWeekCompletion} />
               </div>

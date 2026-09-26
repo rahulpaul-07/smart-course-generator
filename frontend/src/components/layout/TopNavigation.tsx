@@ -186,7 +186,7 @@ export function TopNavigation() {
                 })}
               </div>
 
-              <div className="mt-auto pt-6 border-t border-border/30 space-y-2">
+              <div className="mt-auto pt-6 border-t border-border space-y-2">
                 <div className="eyebrow px-2">
                   Account
                 </div>

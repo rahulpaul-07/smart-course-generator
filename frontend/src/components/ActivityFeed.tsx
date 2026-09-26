@@ -60,7 +60,7 @@ export default function ActivityFeed() {
       {activities.map((activity) => (
         <div key={activity._id} className="flex gap-4 p-3 rounded-xl hover:bg-foreground/10 transition-colors">
           <div className="shrink-0 mt-0.5">
-            <Link to={`/profile/${activity.userId?._id}`} className="h-8 w-8 rounded-full bg-card flex items-center justify-center cursor-pointer overflow-hidden border border-border/30 hover:border-brand-500/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
+            <Link to={`/profile/${activity.userId?._id}`} className="h-8 w-8 rounded-full bg-card flex items-center justify-center cursor-pointer overflow-hidden border border-border hover:border-brand-500/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
               {activity.userId?.avatar ? (
                 <img src={activity.userId.avatar} alt={`${activity.userId?.name || 'User'}'s Avatar`} className="h-full w-full object-cover" />
               ) : (
@@ -73,7 +73,7 @@ export default function ActivityFeed() {
               {getMessage(activity)}
             </p>
             <div className="flex items-center gap-2 mt-1.5 text-xs text-muted-foreground font-medium">
-              <span className="flex items-center gap-1.5 bg-card px-2 py-0.5 rounded-full border border-border/30">
+              <span className="flex items-center gap-1.5 bg-card px-2 py-0.5 rounded-full border border-border">
                 {getIcon(activity.action)}
                 <span className="capitalize">{activity.action.split('_').join(' ').toLowerCase()}</span>
               </span>

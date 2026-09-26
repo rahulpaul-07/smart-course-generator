@@ -1,64 +1,49 @@
-import { useAuth } from './useAuth';
-import { baseURL } from '../utils/api';
+import { authFetch } from '../utils/api';
 
-interface Auth0LikeError {
-  error?: string;
+/** Pull a readable message out of either error shape the API returns. */
+export function messageFromErrorBody(text: string, fallback: string): string {
+  if (!text) return fallback;
+  try {
+    const body = JSON.parse(text) as { error?: unknown; message?: unknown };
+    if (typeof body.error === 'string' && body.error) return body.error;
+    if (body.error && typeof body.error === 'object') {
+      const nested = (body.error as { message?: unknown }).message;
+      if (typeof nested === 'string' && nested) return nested;
+    }
+    if (typeof body.message === 'string' && body.message) return body.message;
+    return fallback;
+  } catch {
+    return fallback;
+  }
 }
 
-function isAuth0LikeError(err: unknown): err is Auth0LikeError {
-  return typeof err === 'object' && err !== null && 'error' in err;
+/**
+ * JSON fetch with the app's auth contract (Bearer token, cookies, one
+ * transparent refresh-and-retry on 401 via authFetch).
+ *
+ * This used to call `login()` with no arguments on any 401, which cleared the
+ * user and logged them out instead of refreshing the session.
+ */
+async function fetchApi(endpoint: string, options: RequestInit = {}) {
+  const res = await authFetch(endpoint, options);
+
+  if (res.status === 401) {
+    // authFetch already tried a refresh and announced the expiry.
+    throw new Error('Your session has expired. Please log in again.');
+  }
+
+  if (!res.ok) {
+    throw new Error(messageFromErrorBody(await res.text(), 'API request failed'));
+  }
+
+  // Some endpoints return an empty body (DELETE, 204).
+  try {
+    return await res.json();
+  } catch {
+    return null;
+  }
 }
 
 export function useApi() {
-  const { getToken, login } = useAuth();
-
-  const fetchApi = async (endpoint: string, options: RequestInit = {}) => {
-    let token: string | null = null;
-    try {
-      token = await getToken();
-    } catch (err) {
-      console.warn('Failed to get token for API request', err);
-      if (isAuth0LikeError(err) && (err.error === 'login_required' || err.error === 'consent_required')) {
-        login();
-        const sessionError = new Error('Session expired. Redirecting to login...');
-        (sessionError as Error & { cause?: unknown }).cause = err;
-        throw sessionError;
-      }
-    }
-
-    const res = await fetch(`${baseURL}${endpoint}`, {
-      ...options,
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers,
-        ...(token ? { Authorization: `Bearer ${token}` } : {})
-      }
-    });
-
-    if (res.status === 401) {
-      login();
-      throw new Error('Session expired. Please log in again.');
-    }
-
-    if (!res.ok) {
-      const errorText = await res.text();
-      let errorMessage = errorText || 'API request failed';
-      try {
-        const errorJson = JSON.parse(errorText);
-        if (errorJson.error) errorMessage = errorJson.error;
-      } catch {
-        // Fallback to text
-      }
-      throw new Error(errorMessage);
-    }
-
-    // Some endpoints might return empty body (e.g. DELETE or 204 No Content)
-    try {
-      return await res.json();
-    } catch {
-      return null;
-    }
-  };
-
   return fetchApi;
 }
