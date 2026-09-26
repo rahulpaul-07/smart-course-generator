@@ -2,11 +2,11 @@
 
 <img src="frontend/public/favicon.svg" width="56" alt="CourseAI logo" />
 
-# CourseAI — Smart Course Generator
+# CourseAI: Smart Course Generator
 
 **Turn one sentence into a structured course, streamed lesson by lesson, then learn it properly with quizzes, flashcards, a per-lesson tutor and scored mock interviews.**
 
-<a href="https://smart-course-generator.vercel.app/"><img src="https://img.shields.io/badge/Live_demo-no_sign--up-6d5dfc?style=for-the-badge" alt="Live demo" /></a>
+<a href="https://smart-course-generator.vercel.app/"><img src="https://img.shields.io/badge/Live_demo-no_sign--up-1D4ED8?style=for-the-badge" alt="Live demo" /></a>
 <a href="https://github.com/rahulpaul-07/smart-course-generator/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/rahulpaul-07/smart-course-generator/ci.yml?style=for-the-badge&label=CI" alt="CI" /></a>
 <a href="https://github.com/rahulpaul-07/smart-course-generator/actions/workflows/codeql.yml"><img src="https://img.shields.io/github/actions/workflow/status/rahulpaul-07/smart-course-generator/codeql.yml?style=for-the-badge&label=CodeQL" alt="CodeQL" /></a>
 <img src="https://img.shields.io/badge/TypeScript-strict-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript strict" />
@@ -18,7 +18,7 @@
 
 </div>
 
-> **Try it in one click.** Hit *"Try the demo, no sign-up"* on the landing page for a private guest account with a sample course already in it. The API runs on Render's free tier, so the first request after idling can take ~30–60 s to wake up.
+> **Try it in one click.** Hit *"Try the demo without signing up"* on the landing page for a private guest account with a sample course already in it. The API runs on Render's free tier, so the first request after idling can take ~30–60 s to wake up.
 
 ---
 
@@ -45,6 +45,7 @@ Most "AI course generator" demos are a prompt and a text box. The hard part of a
 - **Progress & motivation.** Timezone-correct streaks, XP, achievements, a leaderboard (XP is idempotent, so it can't be farmed), analytics and certificates with a public verification page.
 - **Community.** Publish, upvote, rate and clone courses; public profiles; shareable read-only course links.
 - **Transparency pages.** Live router status (`/status`) and eval results (`/evals`) are public.
+- **Privacy and terms.** A [privacy policy](https://smart-course-generator.vercel.app/privacy) and [terms of use](https://smart-course-generator.vercel.app/terms) written against what the code actually stores, linked from sign-up and every public page.
 
 <table>
   <tr>
@@ -86,7 +87,7 @@ Frontend and backend deploy independently (Vercel + Render). Deeper dives: [syst
 
 ## Tech stack
 
-**Frontend** React 19, TypeScript (strict), Vite, Tailwind CSS, Radix UI, TanStack Query, Framer Motion · **Backend** Node 24 (22+), Express, MongoDB/Mongoose, Zod · **AI** Gemini, Groq, OpenRouter behind a custom router · **Quality** Jest + Supertest, Vitest + Testing Library, Playwright, ESLint, GitHub Actions, CodeQL, Dependabot
+**Frontend** React 19, TypeScript (strict), Vite, Tailwind CSS, Radix UI, TanStack Query, Framer Motion, and [Magic UI](https://magicui.design) components (Bento Grid, Animated Beam, Dot Pattern) vendored in `frontend/src/components/magicui` · **Backend** Node 24 (22+), Express, MongoDB/Mongoose, Zod · **AI** Gemini, Groq, OpenRouter behind a custom router · **Quality** Jest + Supertest, Vitest + Testing Library, Playwright, ESLint, GitHub Actions, CodeQL, Dependabot
 
 ## Run it locally in two commands
 
@@ -111,7 +112,7 @@ The web app calls the API on its own origin under `/api`; Vite proxies that to `
 | API unit | `npm run test:unit` (backend) | Router failover, circuit breaker, JSON repair, streaks, XP rules, SSE heartbeat. No DB, ~2 s. |
 | API integration | `npm run test:integration` | Supertest against in-memory MongoDB: auth, refresh rotation and reuse detection, authorization status codes, ObjectId validation, XP integrity, certificates, guest accounts, community. |
 | Coverage | `npm run test:coverage` (backend) | Both suites with a coverage floor that fails the build if coverage drops. |
-| UI | `npm test` (frontend) | Components, token refresh/retry, theme, pending-prompt handoff. |
+| UI | `npm test` (frontend) | Components, token refresh/retry, theme, pending-prompt handoff, legal pages. |
 | End-to-end | `npm run e2e` (frontend) | Playwright against the real API behind the same `/api` proxy and security headers as production: landing, auth and return-to-page, session refresh, guest journey through a lesson with no CSP violations, interview session, phone layouts of public and signed-in pages. |
 | Evals | `npm run eval` (backend) | Output contract in mock mode (CI); coverage and faithfulness scores with a provider key. |
 
@@ -133,6 +134,7 @@ Full guide: [`docs/deployment.md`](./docs/deployment.md).
 - The RAG corpus is a small demonstrator set; production would expand it and move to Atlas Vector Search.
 - The committed eval results are from mock mode, so they check the output contract, not content quality; run `npm run eval` with a key to record real numbers.
 - Password reset needs an email provider and isn't implemented; accounts can use Google or Auth0 instead.
+- There is no self-serve account deletion yet; the privacy policy explains how to request it by email.
 
 ## License
 
