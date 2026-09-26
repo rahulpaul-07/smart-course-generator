@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { useNavigate } from 'react-router-dom';
-import { BarChart3, BookOpen, Brain, Clock, Flame, Target, TrendingDown, TrendingUp, Trophy, Zap, PlusCircle } from 'lucide-react';
+import { Award, BarChart3, BookOpen, Brain, Clock, Flame, Target, TrendingDown, TrendingUp, Trophy, Zap, PlusCircle } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { analyticsService, type AnalyticsDashboard, type CourseStat, type TopicScore } from '../services/analyticsService';
 import type { LucideIcon } from 'lucide-react';
@@ -116,13 +116,13 @@ export default function AnalyticsPage() {
 
       {/* Stat Cards */}
       <section className="mb-10 grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-7 animate-enter-delay">
-        <StatCard icon={Zap} label="Total XP" value={data.xp || 0} color="from-primary to-primary/60" />
-        <StatCard icon={Flame} label="Study Streak" value={`${data.studyStreak} ${data.studyStreak === 1 ? 'day' : 'days'}`} color="from-brand-400 to-primary" />
-        <StatCard icon={Clock} label="Study Hours" value={`${data.totalStudyHours}h`} color="from-success to-success/70" />
-        <StatCard icon={BookOpen} label="Courses" value={data.totalCourses} color="from-primary to-primary/60" />
-        <StatCard icon={Target} label="Completion" value={`${data.overallCompletion}%`} color="from-success to-success/70" />
-        <StatCard icon={Trophy} label="Lessons Done" value={`${data.completedLessons}/${data.totalLessons}`} color="from-brand-400 to-primary" />
-        <StatCard icon={Brain} label="Avg Quiz" value={`${data.avgQuizScore}/${data.maxQuizScore}`} color="from-success to-success/70" />
+        <StatCard icon={Zap} label="Total XP" value={data.xp || 0} color="bg-primary/15 text-primary" />
+        <StatCard icon={Flame} label="Study Streak" value={`${data.studyStreak} ${data.studyStreak === 1 ? 'day' : 'days'}`} color="bg-primary/15 text-primary" />
+        <StatCard icon={Clock} label="Study Hours" value={`${data.totalStudyHours}h`} color="bg-success/15 text-success" />
+        <StatCard icon={BookOpen} label="Courses" value={data.totalCourses} color="bg-primary/15 text-primary" />
+        <StatCard icon={Target} label="Completion" value={`${data.overallCompletion}%`} color="bg-success/15 text-success" />
+        <StatCard icon={Trophy} label="Lessons Done" value={`${data.completedLessons}/${data.totalLessons}`} color="bg-primary/15 text-primary" />
+        <StatCard icon={Brain} label="Avg Quiz" value={`${data.avgQuizScore}/${data.maxQuizScore}`} color="bg-success/15 text-success" />
       </section>
 
       {/* Charts Section */}
@@ -168,14 +168,14 @@ export default function AnalyticsPage() {
                   <p className="truncate text-sm font-bold text-foreground">{course.title}</p>
                   <p className="mt-1 text-xs text-muted-foreground font-medium">
                     {course.completedLessons}/{course.totalLessons} lessons
-                    {course.hasCertificate && <span className="ml-2 text-primary font-bold tracking-wider">🏆 CERTIFIED</span>}
+                    {course.hasCertificate && <span className="ml-2 inline-flex items-center gap-1 text-primary font-bold tracking-wider"><Award className="h-3.5 w-3.5" aria-hidden /> CERTIFIED</span>}
                   </p>
                 </div>
                 <span className="text-sm font-bold text-brand-300">{course.completionPct}%</span>
               </div>
               <div className="mt-3 h-2 overflow-hidden rounded-full bg-foreground/10 border border-border">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-primary to-primary/70 transition-all duration-200 opacity-80"
+                  className="h-full rounded-full bg-primary transition-all duration-200 opacity-80"
                   style={{ width: `${course.completionPct}%` }}
                 />
               </div>
@@ -263,8 +263,8 @@ export default function AnalyticsPage() {
 function StatCard({ icon: Icon, label, value, color }: { icon: LucideIcon; label: string; value: string | number; color: string }) {
   return (
     <div className="glass-card group rounded-2xl p-4 transition duration-300 hover:border-brand-400/25">
-      <span className={`grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br ${color} shadow-lg`}>
-        <Icon className="h-5 w-5 text-foreground" />
+      <span className={`grid h-10 w-10 place-items-center rounded-lg ${color}`}>
+        <Icon className="h-5 w-5" />
       </span>
       <p className="mt-4 font-display text-2xl font-bold text-foreground">{value}</p>
       <p className="mt-1 text-xs text-muted-foreground">{label}</p>
@@ -335,7 +335,7 @@ function ActivityGrid({ activityHistory }: { activityHistory: string[] }) {
                   ? 'bg-success shadow-sm shadow-success/30'
                   : 'bg-foreground/10 hover:bg-foreground/10'
               }`}
-              title={`${day.date}${day.active ? ' — Active' : ''}`}
+              title={`${day.date}${day.active ? ': active' : ''}`}
             />
           ))}
         </div>

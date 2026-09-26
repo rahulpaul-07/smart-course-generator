@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { DotPattern } from '@/components/magicui/dot-pattern';
 import { useAuthConfig } from '@/hooks/useAuthConfig';
 import { useDemoLogin } from '@/hooks/useDemoLogin';
 import { setPendingPrompt } from '@/lib/pendingPrompt';
@@ -32,10 +33,11 @@ export function LandingHero() {
   }
 
   return (
-    <section className="border-b border-border pt-28 sm:pt-36">
+    <section className="relative isolate overflow-hidden border-b border-border pt-28 sm:pt-36">
+      <DotPattern className="-z-10 [mask-image:radial-gradient(ellipse_70%_50%_at_30%_0%,#000_40%,transparent_100%)]" />
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="max-w-3xl">
-          <h1 className="text-balance text-4xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
+          <h1 className="text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-6xl lg:text-7xl">
             Describe a topic. Get a course you can work through.
           </h1>
           <p className="mt-6 max-w-2xl text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">

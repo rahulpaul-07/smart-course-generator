@@ -34,7 +34,7 @@ export function ResultsDashboard({ prep, readiness, strengths, weaknesses, aiRec
   return (
     <div className="space-y-8 animate-enter pb-16">
       <div className="text-center space-y-3 mb-10 pt-4">
-        <div className="inline-flex items-center justify-center h-20 w-20 sm:h-24 sm:w-24 rounded-2xl bg-gradient-to-br from-primary to-primary shadow-lg shadow-primary/20 mb-2 border border-white/10">
+        <div className="inline-flex items-center justify-center h-20 w-20 sm:h-24 sm:w-24 rounded-2xl bg-primary mb-2">
           <Trophy className="h-10 w-10 sm:h-12 sm:w-12 text-primary-foreground" />
         </div>
         <h2 className="text-3xl sm:text-4xl 2xl:text-5xl font-extrabold font-display tracking-tight text-foreground text-balance drop-shadow-sm">Assessment Complete</h2>
@@ -43,7 +43,6 @@ export function ResultsDashboard({ prep, readiness, strengths, weaknesses, aiRec
 
       <div className="space-y-6">
         <div className="min-w-0 rounded-2xl border border-border bg-card p-6 sm:p-8 flex flex-col justify-center items-center text-center shadow-md relative overflow-hidden group">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity duration-200" />
           <h3 className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-6 z-10">Overall Score</h3>
           <div className="relative flex h-40 w-40 sm:h-44 sm:w-44 max-w-full items-center justify-center mb-6 z-10">
             <svg className="h-full w-full -rotate-90 drop-shadow-md" viewBox="0 0 100 100">

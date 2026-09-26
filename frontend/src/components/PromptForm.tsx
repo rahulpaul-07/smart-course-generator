@@ -80,7 +80,7 @@ export default function PromptForm({ onSubmit, isLoading = false, stage = null, 
                 type="button"
                 onClick={() => setPrompt(example)}
                 disabled={isLoading}
-                className="rounded-full border border-border bg-muted/50 px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary hover:border-primary/30"
+                className="rounded-lg border border-border bg-muted/50 px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary hover:border-primary/30"
               >
                 {example}
               </motion.button>
@@ -99,7 +99,7 @@ export default function PromptForm({ onSubmit, isLoading = false, stage = null, 
           <Button 
             type="submit" 
             disabled={isLoading || !prompt.trim()}
-            className={`relative overflow-hidden group rounded-full px-6 transition-all ${isLoading ? 'cursor-progress opacity-90' : ''}`}
+            className={`relative overflow-hidden group rounded-lg px-6 transition-all ${isLoading ? 'cursor-progress opacity-90' : ''}`}
           >
             <span className="relative z-10 flex items-center font-semibold">
               {isLoading ? (
@@ -116,7 +116,6 @@ export default function PromptForm({ onSubmit, isLoading = false, stage = null, 
               )}
             </span>
             {/* Hover highlight effect */}
-            {!isLoading && <div className="absolute inset-0 bg-gradient-to-r from-primary to-primary/60 opacity-0 transition-opacity group-hover:opacity-100" />}
             {!isLoading && <div className="absolute inset-0 bg-foreground/10 translate-y-full transition-transform group-hover:translate-y-0" />}
           </Button>
         </div>
@@ -131,20 +130,15 @@ export default function PromptForm({ onSubmit, isLoading = false, stage = null, 
             exit={{ opacity: 0 }}
             className="absolute inset-0 z-50 overflow-hidden flex items-center justify-center rounded-xl bg-background/60 backdrop-blur-xl"
           >
-            {/* Moving gradient orb */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-primary/20 rounded-full blur-[60px] animate-pulse" />
-            <div className="absolute inset-0 z-0 bg-[linear-gradient(110deg,transparent,hsl(var(--primary)/0.15),transparent)] bg-[length:200%_100%] animate-shimmer pointer-events-none" />
-            
             <div className="flex flex-col items-center gap-6 relative z-10 px-6">
               <div className="relative">
-                <div className="absolute inset-0 rounded-full blur-xl bg-primary/40 animate-pulse" />
-                <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-card to-background border border-primary/30 flex items-center justify-center relative z-10 animate-float">
+                <div className="h-16 w-16 rounded-2xl bg-card border border-primary/30 flex items-center justify-center relative z-10">
                   <Sparkles className="h-7 w-7 text-primary animate-pulse" />
                 </div>
               </div>
 
               <div className="space-y-1 text-center">
-                <h4 className="text-xl font-bold text-foreground font-display bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">Crafting Your Journey</h4>
+                <h4 className="text-xl font-bold text-foreground font-display">Crafting Your Journey</h4>
                 <p className="text-xs text-muted-foreground">Real-time progress from the AI pipeline, not a fake spinner.</p>
               </div>
 
