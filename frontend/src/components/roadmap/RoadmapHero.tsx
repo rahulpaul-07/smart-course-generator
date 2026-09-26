@@ -19,7 +19,7 @@ export function RoadmapHero({ activeRoadmap, setActiveRoadmap, deleteRoadmap, ge
     setStartingCourse(false);
   }
   return (
-    <div className="rounded-2xl border border-border/30 bg-card/30 backdrop-blur-xl p-8 shadow-sm relative overflow-hidden">
+    <div className="rounded-2xl border border-border bg-card p-8 shadow-sm relative overflow-hidden">
       <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none" />
       <div className="flex items-center gap-3 mb-6 relative z-10">
         <BackButton onClick={() => setActiveRoadmap(null)} label="All Roadmaps" className="-ml-2" />

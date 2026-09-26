@@ -1,7 +1,7 @@
 import React from 'react';
 import { CourseCover } from './CourseCover';
 import { motion } from 'framer-motion';
-import { Sparkles, MoreVertical, Layers, Clock, ArrowRight, Trash2 } from 'lucide-react';
+import { MoreVertical, Layers, Clock, ArrowRight, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useNavigate } from 'react-router-dom';
@@ -35,7 +35,7 @@ export function CourseCard({ course, viewMode, onDeleted }: CourseCardProps) {
     if (!error) onDeleted?.();
   }
   const modules = (course.modules as (Module | string)[] | undefined)?.filter(isPopulatedModule);
-  const totalLessons = modules?.reduce((acc: number, m: Module) => acc + ((m.lessons as Lesson[] | undefined)?.length || 0), 0) || 12;
+  const totalLessons = modules?.reduce((acc: number, m: Module) => acc + ((m.lessons as Lesson[] | undefined)?.length || 0), 0) ?? 0;
   const completedLessons = modules?.reduce((acc: number, m: Module) => acc + ((m.lessons as Lesson[] | undefined)?.filter((l: Lesson) => l.completedAt)?.length || 0), 0) || 0;
   const progress = course.progress || calculatePercentage(completedLessons, totalLessons);
   const difficulty = course.difficulty || 'Intermediate';
@@ -51,21 +51,14 @@ export function CourseCard({ course, viewMode, onDeleted }: CourseCardProps) {
       tabIndex={0}
       onClick={() => navigate(`/course/${course._id}`)}
       onKeyDown={(e) => { if (e.key === 'Enter') navigate(`/course/${course._id}`); }}
-      className={`group relative rounded-2xl border border-border/30 bg-card/40 backdrop-blur-md overflow-hidden hover:-translate-y-0.5 hover:shadow-md hover:border-primary/30 transition-all duration-200 cursor-pointer focus-within:ring-2 focus-within:ring-primary focus-within:border-primary ${deleting ? 'opacity-50 pointer-events-none' : ''} ${viewMode === 'list' ? 'flex flex-col sm:flex-row gap-0' : 'flex flex-col'}`}
+      className={`group relative rounded-xl border border-border bg-card overflow-hidden hover:border-foreground/30 transition-colors duration-200 cursor-pointer focus-within:ring-2 focus-within:ring-primary focus-within:border-primary ${deleting ? 'opacity-50 pointer-events-none' : ''} ${viewMode === 'list' ? 'flex flex-col sm:flex-row gap-0' : 'flex flex-col'}`}
     >
       {/* Cover Thumbnail */}
-      <div className={`relative bg-muted/30 border-b border-border/30 overflow-hidden shrink-0 flex items-center justify-center ${viewMode === 'list' ? 'w-full sm:w-[280px] sm:border-r sm:border-b-0' : 'h-40'}`}>
-        {course.bannerUrl ? (
-          <img src={course.bannerUrl} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
-        ) : (
-          <CourseCover id={course._id} title={course.title} className="absolute inset-0 h-full w-full" />
-        )}
+      <div className={`relative bg-muted/30 border-b border-border overflow-hidden shrink-0 flex items-center justify-center ${viewMode === 'list' ? 'w-full sm:w-[280px] sm:border-r sm:border-b-0' : 'h-40'}`}>
+        <CourseCover id={course._id} title={course.title} className="absolute inset-0 h-full w-full" />
         
         <div className="absolute top-3 left-3 flex flex-wrap gap-2">
-          <span className="inline-flex items-center gap-1 rounded-md bg-background/90 backdrop-blur-md px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-primary shadow-sm border border-border/30">
-            <Sparkles className="h-3 w-3" /> AI
-          </span>
-          <span className="inline-flex items-center rounded-md bg-background/90 backdrop-blur-md px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-foreground shadow-sm border border-border/30">
+          <span className="inline-flex items-center rounded-md bg-background px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-foreground border border-border">
             {difficulty}
           </span>
         </div>
@@ -75,7 +68,7 @@ export function CourseCard({ course, viewMode, onDeleted }: CourseCardProps) {
             <button
               onClick={(e) => e.stopPropagation()}
               aria-label="Course options"
-              className="absolute top-3 right-3 h-8 w-8 rounded-md bg-background/50 backdrop-blur-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-background/90 border border-border/30 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary shadow-sm"
+              className="absolute top-3 right-3 h-8 w-8 rounded-md bg-background/50 backdrop-blur-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-background/90 border border-border focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary shadow-sm"
             >
               <MoreVertical className="h-4 w-4 text-foreground" />
             </button>
@@ -102,7 +95,7 @@ export function CourseCard({ course, viewMode, onDeleted }: CourseCardProps) {
 
         <div className="mt-auto space-y-5">
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs font-semibold text-muted-foreground">
-            <span className="flex items-center gap-1.5"><Layers className="h-3.5 w-3.5" /> {totalLessons} lessons</span>
+            <span className="flex items-center gap-1.5"><Layers className="h-3.5 w-3.5" /> {totalLessons} {totalLessons === 1 ? 'lesson' : 'lessons'}</span>
             <span className="flex items-center gap-1.5"><Clock className="h-3.5 w-3.5" /> ~{calculateEstimatedHours(totalLessons)} hours</span>
           </div>
 
@@ -112,7 +105,7 @@ export function CourseCard({ course, viewMode, onDeleted }: CourseCardProps) {
               <span className="text-xs font-semibold text-muted-foreground">Progress</span>
               <span className="text-sm font-extrabold text-foreground">{progress}%</span>
             </div>
-            <div className="h-1.5 w-full bg-muted/60 rounded-full overflow-hidden border border-border/30">
+            <div className="h-1.5 w-full bg-muted/60 rounded-full overflow-hidden border border-border">
               <div 
                 className={`h-full rounded-full transition-all duration-200 ease-out ${progress === 100 ? 'bg-success' : 'bg-primary'}`} 
                 style={{ width: `${progress}%` }} 
@@ -120,7 +113,7 @@ export function CourseCard({ course, viewMode, onDeleted }: CourseCardProps) {
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center gap-4 justify-between border-t border-border/30 pt-4">
+          <div className="flex flex-col sm:flex-row items-center gap-4 justify-between border-t border-border pt-4">
             <span className="text-xs font-medium text-muted-foreground w-full sm:w-auto">
               Opened {new Date(course.updatedAt || course.createdAt || '').toLocaleDateString()}
             </span>

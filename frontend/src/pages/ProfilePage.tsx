@@ -82,7 +82,7 @@ export default function ProfilePage() {
 
       <div className="grid lg:grid-cols-[1fr_350px] gap-8 mt-8 [&>*]:min-w-0">
         <div className="space-y-6">
-          <Card className="bg-card/50 backdrop-blur-sm border-border/30 rounded-2xl">
+          <Card className="bg-card border-border rounded-2xl">
             <CardHeader>
               <CardTitle>Personal Information</CardTitle>
               <CardDescription>Update your photo and personal details.</CardDescription>
@@ -111,7 +111,7 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              <div className="space-y-4 pt-4 border-t border-border/30">
+              <div className="space-y-4 pt-4 border-t border-border">
                 <div className="grid gap-2">
                   <label htmlFor="display-name" className="text-sm font-medium">Display Name</label>
                   <Input 
@@ -139,7 +139,7 @@ export default function ProfilePage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-card/50 backdrop-blur-sm border-border/30 rounded-2xl">
+          <Card className="bg-card border-border rounded-2xl">
             <CardHeader>
               <CardTitle>Privacy & Display</CardTitle>
               <CardDescription>Control how others see your profile.</CardDescription>
@@ -148,12 +148,16 @@ export default function ProfilePage() {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <label htmlFor="public-profile-switch" className="text-sm font-medium">Public Profile</label>
-                  <p className="text-sm text-muted-foreground">
-                    Allow your profile to appear on the leaderboard and community templates.
+                  <p id="public-profile-help" className="text-sm text-muted-foreground">
+                    {user?.isDemo
+                      ? 'Guest profiles stay private. Save your account to appear on the leaderboard.'
+                      : 'Allow your profile to appear on the leaderboard and community templates.'}
                   </p>
                 </div>
-                <Switch 
+                <Switch
                   id="public-profile-switch"
+                  aria-describedby="public-profile-help"
+                  disabled={Boolean(user?.isDemo)}
                   checked={profile.isProfilePublic}
                   onCheckedChange={(c) => setProfile({...profile, isProfilePublic: c})}
                 />
@@ -192,7 +196,7 @@ export default function ProfilePage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-card/50 backdrop-blur-sm border-border/30 rounded-2xl">
+          <Card className="bg-card border-border rounded-2xl">
             <CardHeader>
               <CardTitle>Account Stats</CardTitle>
             </CardHeader>

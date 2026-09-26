@@ -124,7 +124,7 @@ export function LessonLayout({
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: '100%', opacity: 0 }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed inset-x-0 bottom-0 z-40 flex h-[75vh] flex-col rounded-t-2xl border-t border-border/30 bg-background shadow-2xl lg:inset-x-auto lg:right-0 lg:top-[4.5rem] lg:h-auto lg:rounded-none lg:border-l lg:border-t-0 lg:w-[380px] xl:w-[400px]"
+            className="fixed inset-x-0 bottom-0 z-40 flex h-[75vh] flex-col rounded-t-2xl border-t border-border bg-background shadow-2xl lg:inset-x-auto lg:right-0 lg:top-[4.5rem] lg:h-auto lg:rounded-none lg:border-l lg:border-t-0 lg:w-[380px] xl:w-[400px]"
           >
             <Suspense fallback={<div className="flex items-center justify-center h-full"><LoadingSpinner text="Loading study tools..." /></div>}>
               {activePanel === 'chat' ? (

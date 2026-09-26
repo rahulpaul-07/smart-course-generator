@@ -28,9 +28,12 @@ const logger = require("./utils/logger");
 
 const app = express();
 
-// Behind Render/Vercel/other proxies: trust the first hop so req.ip and
-// express-rate-limit see the real client IP instead of the proxy's.
-app.set("trust proxy", 1);
+// Number of reverse proxies in front of the API, so req.ip (and every
+// IP-keyed rate limit) is the client rather than a proxy. Render alone is 1.
+// With the SPA's /api rewrite on Vercel in front of Render it is 2 -- left at 1,
+// every user would share Vercel's egress IP and one rate-limit bucket.
+const trustProxyHops = Number.parseInt(process.env.TRUST_PROXY_HOPS ?? "1", 10);
+app.set("trust proxy", Number.isInteger(trustProxyHops) && trustProxyHops >= 0 ? trustProxyHops : 1);
 
 // Security headers
 app.use(helmet());
@@ -66,20 +69,11 @@ app.use(mongoSanitize());
 // Apply global rate limiting
 app.use("/api", apiLimiter);
 
-
-
 // Base Route
 app.get("/", (req, res) => {
   res.json({
     success: true,
-    message: "Unified Course Platform API is running...",
-  });
-});
-
-app.get("/api/health", (req, res) => {
-  res.json({
-    success: true,
-    message: "Backend health check successful",
+    message: "CourseAI API is running.",
   });
 });
 
@@ -114,11 +108,16 @@ const startServer = async () => {
   try {
     if (process.env.MONGO_URI) {
       await connectDB();
+    } else if (process.env.NODE_ENV === "production") {
+      // Without a database every request would hang on Mongoose's command
+      // buffer and then time out; refuse to start so the deploy fails visibly.
+      logger.error("FATAL ERROR: MONGO_URI is not set.");
+      process.exit(1);
     } else {
-      console.log("No MONGO_URI provided. Skipping DB connection for demo mode.");
+      logger.warn("No MONGO_URI provided; starting without a database.");
     }
     const server = app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
+      logger.info(`Server running on port ${PORT}`);
     });
 
     // Handle graceful shutdown

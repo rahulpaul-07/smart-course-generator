@@ -6,28 +6,9 @@ const AuditLog = require("../models/AuditLog");
 const { recordActivity } = require("../services/achievementsService");
 const { cloneCourseTree } = require("../services/courseClone");
 
-async function getUserProfile(req, res) {
-  const user = await User.findById(req.user._id).select("-password -auth0Id -googleId");
-  res.json(user);
-}
-
-async function updateUserProfile(req, res) {
-  // Only fields that were actually sent. $set-ing an undefined `name` fails
-  // the required validator and turned a bio-only update into a 400.
-  const update = {};
-  for (const key of ["name", "bio", "isProfilePublic"]) {
-    if (req.body[key] !== undefined) update[key] = req.body[key];
-  }
-  const user = await User.findByIdAndUpdate(
-    req.user._id,
-    { $set: update },
-    { returnDocument: "after", runValidators: true }
-  ).select("-password -auth0Id -googleId");
-  res.json(user);
-}
-
 async function getLeaderboard(req, res) {
-  const topUsers = await User.find({ isProfilePublic: true })
+  // Guest accounts never appear publicly (see updateProfile).
+  const topUsers = await User.find({ isProfilePublic: true, isDemo: { $ne: true } })
     .select("name avatar studyStreak totalStudyMinutes xp achievements")
     .sort({ xp: -1, studyStreak: -1 })
     .limit(20)
@@ -36,11 +17,12 @@ async function getLeaderboard(req, res) {
 }
 
 async function getPublicProfile(req, res) {
-  const user = await User.findById(req.params.userId).select("name avatar bio studyStreak totalStudyMinutes xp achievements isProfilePublic");
-  if (!user || !user.isProfilePublic) {
+  const user = await User.findById(req.params.userId).select("name avatar bio studyStreak totalStudyMinutes xp achievements isProfilePublic isDemo").lean();
+  if (!user || !user.isProfilePublic || user.isDemo) {
     res.status(404);
     throw new Error("Profile not found or is private");
   }
+  delete user.isDemo;
   
   // Fetch user's public courses
   const courses = await Course.find({ creator: user._id, isPublic: true })
@@ -161,9 +143,9 @@ async function getActivityFeed(req, res) {
     { $match: { action: { $in: ["COMPLETED_COURSE", "PUBLISHED_COURSE", "UNLOCKED_ACHIEVEMENT"] } } },
     { $sort: { createdAt: -1 } },
     { $limit: 200 },
-    { $lookup: { from: "users", localField: "userId", foreignField: "_id", as: "user", pipeline: [{ $project: { name: 1, avatar: 1, isProfilePublic: 1 } }] } },
+    { $lookup: { from: "users", localField: "userId", foreignField: "_id", as: "user", pipeline: [{ $project: { name: 1, avatar: 1, isProfilePublic: 1, isDemo: 1 } }] } },
     { $unwind: "$user" },
-    { $match: { "user.isProfilePublic": true } },
+    { $match: { "user.isProfilePublic": true, "user.isDemo": { $ne: true } } },
     { $limit: 50 },
     {
       $project: {
@@ -181,8 +163,6 @@ async function getActivityFeed(req, res) {
 const asyncHandler = require("express-async-handler");
 
 module.exports = {
-  getUserProfile: asyncHandler(getUserProfile),
-  updateUserProfile: asyncHandler(updateUserProfile),
   getLeaderboard: asyncHandler(getLeaderboard),
   getPublicProfile: asyncHandler(getPublicProfile),
   getCommunityTemplates: asyncHandler(getCommunityTemplates),

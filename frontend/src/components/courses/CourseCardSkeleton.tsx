@@ -10,13 +10,13 @@ export function CourseCardSkeleton({ viewMode = 'grid' }: CourseCardSkeletonProp
   return (
     <div
       className={cn(
-        "group relative rounded-2xl border border-border/30 bg-card/40 overflow-hidden",
+        "group relative rounded-2xl border border-border bg-card/40 overflow-hidden",
         viewMode === 'list' ? 'flex flex-col sm:flex-row gap-0' : 'flex flex-col'
       )}
     >
       {/* Cover Thumbnail Skeleton */}
       <div className={cn(
-        "relative bg-muted/30 border-b border-border/30 overflow-hidden shrink-0",
+        "relative bg-muted/30 border-b border-border overflow-hidden shrink-0",
         viewMode === 'list' ? 'w-full sm:w-[280px] sm:border-r sm:border-b-0' : 'h-40'
       )} />
 
@@ -44,7 +44,7 @@ export function CourseCardSkeleton({ viewMode = 'grid' }: CourseCardSkeletonProp
             <Skeleton className="h-1.5 w-full rounded-full" />
           </div>
 
-          <div className="pt-5 border-t border-border/30">
+          <div className="pt-5 border-t border-border">
             <SkeletonButton className="w-full" />
           </div>
         </div>

@@ -2,8 +2,6 @@ import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, Check, Loader2 } from 'lucide-react';
 import { Logo } from '@/components/brand/Logo';
-import { BorderBeam } from '@/components/magic/border-beam';
-import { DotPattern } from '@/components/magic/dot-pattern';
 import { useAuthConfig } from '@/hooks/useAuthConfig';
 import { useDemoLogin } from '@/hooks/useDemoLogin';
 
@@ -22,50 +20,24 @@ const PERKS = [
   'A full curriculum from one sentence, in your language',
   'Lessons that stream in as they are written',
   'Quizzes, flashcards, labs and a tutor on every lesson',
-  'Mock interviews and verifiable certificates',
+  'Mock interviews, and certificates with a public verification page',
 ];
 
 function Showcase() {
   return (
-    <div className="dark relative hidden overflow-hidden border-l border-border bg-background text-foreground lg:flex lg:flex-col lg:justify-between">
-      <DotPattern className="[mask-image:radial-gradient(ellipse_at_top_right,black,transparent_70%)]" />
-      <div aria-hidden className="absolute -right-24 -top-24 h-96 w-96 rounded-full bg-primary/25 blur-3xl" />
-      <div aria-hidden className="absolute -bottom-32 left-10 h-80 w-80 rounded-full bg-fuchsia-500/10 blur-3xl" />
-
-      <div className="relative p-12 xl:p-16">
-        <p className="text-sm font-medium text-primary">Why CourseAI</p>
-        <h2 className="mt-4 max-w-md text-4xl font-semibold leading-[1.1] tracking-tight xl:text-5xl">
-          Learn anything, <span className="font-serif font-normal italic text-muted-foreground">properly.</span>
+    <div className="dark hidden border-l border-border bg-background text-foreground lg:flex lg:flex-col lg:justify-center">
+      <div className="p-12 xl:p-16">
+        <h2 className="max-w-md text-4xl font-semibold leading-[1.1] tracking-tight">
+          A course from one sentence, and the tools to learn it.
         </h2>
         <ul className="mt-10 space-y-4">
           {PERKS.map((perk) => (
             <li key={perk} className="flex items-start gap-3 text-[15px] text-muted-foreground">
-              <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/15">
-                <Check className="h-3 w-3 text-primary" />
-              </span>
+              <Check className="mt-1 h-4 w-4 shrink-0 text-primary" aria-hidden />
               {perk}
             </li>
           ))}
         </ul>
-      </div>
-
-      <div className="relative m-12 mt-0 rounded-2xl border border-border bg-card/70 p-5 backdrop-blur xl:m-16 xl:mt-0">
-        <div className="flex items-center justify-between text-xs text-muted-foreground">
-          <span className="font-mono">event: stage</span>
-          <span className="inline-flex items-center gap-1.5">
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" /> streaming
-          </span>
-        </div>
-        <p className="mt-3 text-sm font-medium">Asynchronous JavaScript, From Callbacks to Async Iterators</p>
-        <div className="mt-4 space-y-2">
-          {['The Event Loop, Macrotasks and Microtasks', 'Promises as State Machines', 'async/await Without Accidental Serialisation'].map((l, i) => (
-            <div key={l} className="flex items-center gap-2 text-xs text-muted-foreground">
-              <span className={i === 0 ? 'h-1.5 w-1.5 rounded-full bg-emerald-400' : i === 1 ? 'h-1.5 w-1.5 animate-pulse rounded-full bg-primary' : 'h-1.5 w-1.5 rounded-full bg-muted-foreground/40'} />
-              {l}
-            </div>
-          ))}
-        </div>
-        <BorderBeam size={140} duration={10} />
       </div>
     </div>
   );

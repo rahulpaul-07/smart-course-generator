@@ -59,7 +59,7 @@ const FlashcardDeck = React.memo(({ lessonId, courseId, initialFlashcards = [], 
             Turn this lesson into an interactive review deck. Great for memorizing key concepts.
           </p>
           {error && <p className="text-sm font-medium text-destructive">{error}</p>}
-          <Button variant="outline" onClick={() => generateFlashcards()} disabled={loading} className={`w-full rounded-full shadow-sm hover:shadow-md transition-all ${loading ? 'cursor-progress opacity-90' : 'hover:-translate-y-0.5 border-primary/30 hover:bg-primary/5 hover:text-primary'}`}>
+          <Button variant="outline" onClick={() => generateFlashcards()} disabled={loading} className={`w-full rounded-full shadow-sm hover:shadow-md transition-all ${loading ? 'cursor-progress opacity-90' : ' border-primary/30 hover:bg-primary/5 hover:text-primary'}`}>
             {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Layers3 className="mr-2 h-4 w-4" />}
             {loading ? 'Creating Deck...' : 'Generate Flashcards'}
           </Button>
@@ -70,7 +70,7 @@ const FlashcardDeck = React.memo(({ lessonId, courseId, initialFlashcards = [], 
       <div className="surface-card rounded-2xl p-6">
         <div className="flex flex-col items-center justify-center text-center py-10 relative">
           <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:14px_14px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
-          <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center mb-6 border border-primary/20 shadow-[0_0_30px_hsl(var(--primary)/0.15)] relative z-10 animate-float">
+          <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center mb-6 border border-primary/20 relative z-10 animate-float">
             <Layers3 className="h-10 w-10 text-primary" />
           </div>
           <h3 className="text-2xl font-bold text-foreground mb-3 font-display relative z-10">AI Flashcards</h3>
@@ -78,7 +78,7 @@ const FlashcardDeck = React.memo(({ lessonId, courseId, initialFlashcards = [], 
             Turn this lesson into an interactive review deck. Great for memorizing key concepts.
           </p>
           {error && <p className="mb-4 text-sm font-medium text-destructive">{error}</p>}
-          <Button variant="outline" onClick={() => generateFlashcards()} disabled={loading} size="lg" className={`w-full sm:w-auto relative z-10 rounded-full px-8 shadow-sm hover:shadow-md transition-all ${loading ? 'cursor-progress opacity-90' : 'hover:-translate-y-0.5 border-primary/30 hover:bg-primary/5 hover:text-primary'}`}>
+          <Button variant="outline" onClick={() => generateFlashcards()} disabled={loading} size="lg" className={`w-full sm:w-auto relative z-10 rounded-full px-8 shadow-sm hover:shadow-md transition-all ${loading ? 'cursor-progress opacity-90' : ' border-primary/30 hover:bg-primary/5 hover:text-primary'}`}>
             {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Layers3 className="mr-2 h-4 w-4" />}
             {loading ? 'Creating Deck...' : 'Generate Flashcards'}
           </Button>
@@ -135,7 +135,7 @@ const FlashcardDeck = React.memo(({ lessonId, courseId, initialFlashcards = [], 
           }}
         >
           <div 
-            className="card__face card__face--front flex flex-col p-6 sm:p-8 bg-card border border-border/50 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] group-hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-shadow"
+            className="card__face card__face--front flex flex-col p-6 sm:p-8 bg-card border border-border rounded-2xl group- transition-shadow"
             style={{ 
               position: 'absolute',
               inset: 0,
@@ -156,7 +156,7 @@ const FlashcardDeck = React.memo(({ lessonId, courseId, initialFlashcards = [], 
           </div>
 
           <div 
-            className="card__face card__face--back flex flex-col p-6 sm:p-8 bg-primary/5 border border-primary/20 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.08)]"
+            className="card__face card__face--back flex flex-col p-6 sm:p-8 bg-primary/5 border border-primary/20 rounded-2xl"
             style={{ 
               position: 'absolute',
               inset: 0,

@@ -56,13 +56,13 @@ export function CodingWorkspace({ prep, codingSolutions, setCodingSolutions, sub
       <SectionIntro title="Coding" description="Write a working solution. Correctness first, then complexity." />
 
       {prep.codingQuestions?.map((q: CodingQuestionWithIdealSolution, i: number) => { const lang = detectLanguage(q); return (
-        <div key={i} className="flex flex-col overflow-hidden rounded-2xl border border-border/70 bg-card/40">
-          <div className="flex items-center gap-3 border-b border-border/70 bg-muted/30 px-5 py-4 sm:px-6">
+        <div key={i} className="flex flex-col overflow-hidden rounded-2xl border border-border bg-card/40">
+          <div className="flex items-center gap-3 border-b border-border bg-muted/30 px-5 py-4 sm:px-6">
             <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20 shadow-sm">
               <Code2 className="h-5 w-5 text-primary" />
             </div>
             <h3 className="text-lg font-bold text-foreground flex-1 tracking-tight">{q.title}</h3>
-            <span className="rounded-lg border border-border/30 bg-background px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-muted-foreground shadow-sm">
+            <span className="rounded-lg border border-border bg-background px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-muted-foreground shadow-sm">
               Problem {i + 1}
             </span>
           </div>
@@ -80,7 +80,7 @@ export function CodingWorkspace({ prep, codingSolutions, setCodingSolutions, sub
             )}
             
             {q.starterCode && (
-              <div className="rounded-2xl overflow-hidden border border-border/30 shadow-lg bg-[#0D0D0D]">
+              <div className="rounded-2xl overflow-hidden border border-border shadow-lg bg-[#0D0D0D]">
                 <div className="bg-[#1a1a1a] px-5 py-3 text-[11px] font-mono font-bold uppercase tracking-widest text-muted-foreground border-b border-white/5 flex items-center justify-between">
                   <span>Starter Code</span>
                   <span className="text-primary/70">{lang.label}</span>
@@ -93,7 +93,7 @@ export function CodingWorkspace({ prep, codingSolutions, setCodingSolutions, sub
               </div>
             )}
             
-            <div className="overflow-hidden rounded-2xl border border-border/70 transition-colors focus-within:border-primary/60">
+            <div className="overflow-hidden rounded-2xl border border-border transition-colors focus-within:border-primary/60">
               <div className="flex h-10 items-center justify-between border-b border-white/5 bg-[#161616] px-4">
                 <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2"><Code2 className="w-3.5 h-3.5" /> Your Workspace</span>
                 <span className="px-2 py-0.5 rounded text-[10px] bg-primary/20 text-primary font-bold">{lang.label}</span>
@@ -106,7 +106,7 @@ export function CodingWorkspace({ prep, codingSolutions, setCodingSolutions, sub
                 rows={14}
                 wrap="off"
                 aria-label={`Your solution for ${q.title}`}
-                className="block w-full resize-y overflow-x-auto whitespace-pre bg-[#0D0D0D] p-4 font-mono text-[13px] leading-6 text-[#d4d4d4] outline-none [tab-size:2] placeholder:text-muted-foreground/40 disabled:opacity-90"
+                className="block w-full resize-y overflow-x-auto whitespace-pre bg-[#0D0D0D] p-4 font-mono text-[13px] leading-6 text-[#d4d4d4] outline-none [tab-size:2] placeholder:text-muted-foreground disabled:opacity-90"
                 placeholder="// Write your optimized solution here..."
                 spellCheck={false}
               />
@@ -132,7 +132,7 @@ export function CodingWorkspace({ prep, codingSolutions, setCodingSolutions, sub
                 </div>
                 <p className="text-[14px] text-foreground/90 leading-relaxed mb-6">{q.feedback}</p>
                 {q.idealSolution && (
-                  <div className="rounded-2xl overflow-hidden border border-border/30 shadow-lg bg-[#0D0D0D]">
+                  <div className="rounded-2xl overflow-hidden border border-border shadow-lg bg-[#0D0D0D]">
                     <div className="bg-[#1a1a1a] px-5 py-3 text-[11px] font-mono font-bold uppercase tracking-widest text-success border-b border-white/5 flex items-center justify-between">
                       <span className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5" /> Ideal Solution</span>
                       <span>{lang.label}</span>

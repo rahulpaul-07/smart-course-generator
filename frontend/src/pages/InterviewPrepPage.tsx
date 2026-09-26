@@ -120,9 +120,9 @@ export default function InterviewPrepPage() {
       )}
       <aside
         aria-label="AI interview coach"
-        className={`fixed inset-y-0 right-0 z-50 flex w-full flex-col border-l border-border/70 bg-background transition-transform duration-300 sm:w-[400px] xl:static xl:z-auto xl:w-[360px] xl:translate-x-0 xl:shrink-0 2xl:w-[400px] ${isMobileCoachOpen ? 'translate-x-0' : 'translate-x-full'}`}
+        className={`fixed inset-y-0 right-0 z-50 flex w-full flex-col border-l border-border bg-background transition-transform duration-300 sm:w-[400px] xl:static xl:z-auto xl:w-[360px] xl:translate-x-0 xl:shrink-0 2xl:w-[400px] ${isMobileCoachOpen ? 'translate-x-0' : 'translate-x-full'}`}
       >
-        <div className="flex items-center justify-between gap-3 border-b border-border/70 px-5 py-4">
+        <div className="flex items-center justify-between gap-3 border-b border-border px-5 py-4">
           <div className="flex items-center gap-3">
             <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/15">
               <Brain className="h-4 w-4 text-primary" />

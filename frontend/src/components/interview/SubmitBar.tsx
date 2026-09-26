@@ -17,7 +17,7 @@ export function SubmitBar({ counts, submitting, onSubmit }: SubmitBarProps) {
   };
 
   return (
-    <div className="sticky bottom-0 z-10 -mx-4 mt-8 border-t border-border/70 bg-background/90 px-4 py-4 backdrop-blur-xl sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+    <div className="sticky bottom-0 z-10 -mx-4 mt-8 border-t border-border bg-background/90 px-4 py-4 backdrop-blur-xl sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <ul className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground" aria-label="Progress">
           {sections.map((c) => (

@@ -25,28 +25,18 @@ export function CourseHero({ course, courseId, difficulty, estimatedHours, progr
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2 }}
-      className="relative w-full rounded-2xl border border-border/30 bg-card/40 backdrop-blur-2xl shadow-md overflow-hidden mb-12"
+      className="w-full rounded-xl border border-border bg-card mb-12"
     >
-      {course.bannerUrl && (
-        <img
-          src={course.bannerUrl}
-          alt=""
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-      )}
-      <div className={`absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent pointer-events-none ${course.bannerUrl ? 'bg-background/80' : ''}`} />
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
-      
-      <div className="relative z-10 p-8 flex flex-col items-start gap-6">
+      <div className="p-8 flex flex-col items-start gap-6">
         {/* 1. Title */}
-        <h1 className="text-3xl font-bold tracking-tight text-foreground drop-shadow-sm max-w-3xl">
+        <h1 className="text-3xl font-bold tracking-tight text-foreground max-w-3xl">
           {course.title}
         </h1>
         
         {/* 2. Description */}
-        <p className="text-sm text-muted-foreground leading-6 max-w-3xl">
-          {course.description || `A comprehensive AI-generated learning experience covering the fundamentals and advanced concepts of ${course.title}.`}
-        </p>
+        {course.description && (
+          <p className="text-sm text-muted-foreground leading-6 max-w-3xl">{course.description}</p>
+        )}
         
         {/* 3. Progress */}
         <div className="w-full max-w-md pt-2">
@@ -54,7 +44,7 @@ export function CourseHero({ course, courseId, difficulty, estimatedHours, progr
             <span className="text-sm font-semibold text-foreground">Course Progress</span>
             <span className="text-sm font-semibold text-primary">{progress.percentage}%</span>
           </div>
-          <div className="h-2 w-full bg-muted/60 rounded-full overflow-hidden shadow-inner">
+          <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
             <div 
               className={`h-full rounded-full transition-all duration-200 ease-out ${progress.percentage === 100 ? 'bg-success' : 'bg-primary'}`} 
               style={{ width: `${progress.percentage}%` }} 
@@ -65,7 +55,7 @@ export function CourseHero({ course, courseId, difficulty, estimatedHours, progr
         {/* 4. Primary CTA & Actions */}
         <div className="flex flex-col sm:flex-row gap-4 pt-2">
           <Button 
-            className="h-10 px-6 rounded-lg text-sm font-semibold bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm hover:-translate-y-0.5 transition-all duration-200" 
+            className="h-10 px-6" 
             onClick={() => nextLessonId && navigate(`/course/${courseId}/lesson/${nextLessonId}`)}
           >
             {progress.percentage === 0 ? 'Start Course' : progress.percentage === 100 ? 'Review Course' : 'Continue Learning'}
@@ -75,7 +65,7 @@ export function CourseHero({ course, courseId, difficulty, estimatedHours, progr
           {progress.percentage === 100 && (
             <Button 
               variant="outline" 
-              className="h-10 px-6 rounded-lg text-sm font-semibold border border-border/30 hover:bg-muted/50 backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5 shadow-sm" 
+              className="h-10 px-6" 
               onClick={() => navigate(`/course/${courseId}/certificate`)}
             >
               <Award className="mr-2 h-4 w-4 text-success" />
@@ -89,7 +79,7 @@ export function CourseHero({ course, courseId, difficulty, estimatedHours, progr
         </div>
 
         {/* 5. Metadata */}
-        <div className="flex flex-wrap items-center gap-3 pt-6 mt-2 border-t border-border/30 w-full max-w-3xl">
+        <div className="flex flex-wrap items-center gap-3 pt-6 mt-2 border-t border-border w-full max-w-3xl">
           <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
             <Sparkles className="h-4 w-4 text-primary" /> AI Generated
           </span>
