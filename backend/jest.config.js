@@ -31,9 +31,10 @@ module.exports = {
       setupFilesAfterEnv: ['<rootDir>/tests/setup.js'],
     },
   ],
-  // NOTE: coverage instrumentation is currently disabled. The repo pins
-  // minimatch@^10 via package.json "overrides", and istanbul's test-exclude
-  // calls minimatch() as a function (removed in v10), which crashes coverage
-  // runs. Re-enable collectCoverage + a coverageThreshold once that override
-  // is resolved (e.g. drop the override or align test-exclude).
+  // Applies to `npm run test:coverage` (run in CI). A floor just under the
+  // current figures, so coverage can only ratchet up; raise it as tests land.
+  collectCoverageFrom: ["controllers/**/*.js", "middlewares/**/*.js", "services/**/*.js", "models/**/*.js", "utils/**/*.js"],
+  coverageThreshold: {
+    global: { statements: 43, branches: 30, functions: 46, lines: 45 },
+  },
 };

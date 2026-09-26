@@ -134,6 +134,13 @@ async function updateProfile(req, res) {
     throw new Error("User not found");
   }
 
+  // Guest accounts are anonymous and throwaway; letting them publish a profile
+  // put unmoderated names and images on the public leaderboard and feed.
+  if (user.isDemo && isProfilePublic === true) {
+    res.status(403);
+    throw new Error("Guest accounts can't have a public profile. Save your account first.");
+  }
+
   if (bio !== undefined) user.bio = bio;
   if (avatar !== undefined) user.avatar = avatar;
   if (isProfilePublic !== undefined) user.isProfilePublic = isProfilePublic;

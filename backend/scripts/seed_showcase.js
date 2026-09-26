@@ -121,7 +121,6 @@ async function seedShowcase() {
       isPublic: true,
       isFeatured: true,
       shareId: `showcase-${index + 1}`,
-      bannerStatus: "failed",
     });
 
     const moduleIds = [];

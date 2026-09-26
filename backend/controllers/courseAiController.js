@@ -1,7 +1,7 @@
 const Course = require("../models/Course");
 const { createCourseOutline } = require("../services/courseGeneration");
 const { streamLessonContent, createLessonContent, answerLessonQuestion, answerLessonQuestionStream, createLessonIntro, createLessonMainContent } = require("../services/lessonGeneration");
-const { saveGeneratedCourse, generateCourseBanner } = require("../services/coursePersistence");
+const { saveGeneratedCourse } = require("../services/coursePersistence");
 const { getOwnedLesson } = require("../services/lessonAccessService");
 const { findLessonVideos } = require("../services/youtubeService");
 const { createLessonFlashcards, createPracticeLab, createLessonQuiz } = require("../services/studyGeneration");
@@ -9,6 +9,7 @@ const { recordActivity } = require("../services/achievementsService");
 const { watchSse } = require("../utils/sse");
 
 const VALID_DEPTHS = new Set(["brief", "standard", "deep"]);
+const MAX_STORED_CHAT_MESSAGES = 100;
 
 // Deliberately-thrown errors (statusCode < 500) carry a safe, user-facing
 // message. Anything that surfaces as an unclassified 500 is an unexpected
@@ -36,8 +37,6 @@ async function generateCourseContent(req, res) {
     course.difficulty = outline.difficulty;
     course.skills = outline.skills;
     await course.save();
-
-    generateCourseBanner(course);
 
     return res.status(201).json(course);
   } catch (error) {
@@ -83,9 +82,6 @@ async function generateCourseContentStream(req, res) {
     course.difficulty = outline.difficulty;
     course.skills = outline.skills;
     await course.save();
-
-    sendEvent("stage", { stage: "generating_banner" });
-    generateCourseBanner(course, (bannerUrl) => sendEvent("banner", { bannerUrl }));
 
     sendEvent("stage", { stage: "ready" });
     sendEvent("done", course);
@@ -374,6 +370,11 @@ async function chatAboutLesson(req, res) {
       role: 'assistant',
       content: fullReply.trim(),
     });
+
+    // The model only ever sees the last few turns; keep a bounded transcript
+    // so a long-running chat cannot grow the lesson document without limit.
+    const overflow = context.lesson.aiConversation.length - MAX_STORED_CHAT_MESSAGES;
+    if (overflow > 0) context.lesson.aiConversation.splice(0, overflow);
 
     await context.lesson.save();
     
