@@ -7,13 +7,6 @@ const generateCourseSchema = z.object({
   })
 });
 
-const generateLessonSchema = z.object({
-  params: z.object({
-    lessonId: z.string().length(24, "Invalid Lesson ID")
-  })
-});
-
 module.exports = {
-  generateCourseSchema,
-  generateLessonSchema
+  generateCourseSchema
 };

@@ -6,7 +6,7 @@ const { updateProfileSchema, updateSettingsSchema, finishOnboardingSchema } = re
 
 const router = express.Router();
 const validateObjectIds = require("../middlewares/validateObjectIds");
-router.use(validateObjectIds);
+validateObjectIds(router);
 
 router.use(verifyAuth0Token);
 

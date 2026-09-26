@@ -94,31 +94,46 @@ async function resolveAuth0User(profile) {
   });
 }
 
-async function verifyAuth0Token(req, res, next) {
-  let token = "";
-  const authorization = req.headers.authorization || "";
+function isLocalTokenShape(token) {
+  const header = jwt.decode(token, { complete: true })?.header;
+  return header?.alg === "HS256";
+}
 
-  if (authorization.startsWith("Bearer ")) {
-    token = authorization.slice(7);
-  } else if (req.headers.cookie) {
-    const match = req.headers.cookie.match(/(?:^|;\s*)token=([^;]*)/);
-    if (match) token = match[1];
-  }
+async function verifyAuth0Token(req, res, next) {
+  // Bearer only. Accepting a cookie here would make every mutation
+  // CSRF-able; the refresh cookie is scoped to /api/auth and never
+  // authenticates a request on its own.
+  const authorization = req.headers.authorization || "";
+  const token = authorization.startsWith("Bearer ") ? authorization.slice(7).trim() : "";
 
   if (!token) {
     return res.status(401).json({ error: "Access token is required" });
   }
 
   // 1. Local JWT (the common path).
+  let decoded = null;
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET, { algorithms: ["HS256"] });
-    const user = await User.findById(decoded.id);
-    if (user) {
+    decoded = jwt.verify(token, process.env.JWT_SECRET, { algorithms: ["HS256"] });
+  } catch {
+    // Expired, forged, or not one of ours; handled below.
+  }
+
+  if (decoded) {
+    try {
+      const user = await User.findById(decoded.id);
+      if (!user) return res.status(401).json({ error: "Account no longer exists" });
       req.user = user;
       return next();
+    } catch (err) {
+      return next(err);
     }
-  } catch {
-    // Not a local JWT -- try Auth0 below.
+  }
+
+  // An HS256 token is one of ours that failed verification (usually expired).
+  // Sending it on to Auth0 would only turn every stale or forged token into an
+  // outbound request; the client refreshes on this 401 instead.
+  if (isLocalTokenShape(token) || !process.env.AUTH0_DOMAIN) {
+    return res.status(401).json({ error: "Access token is invalid or expired" });
   }
 
   // 2. Auth0 access token.

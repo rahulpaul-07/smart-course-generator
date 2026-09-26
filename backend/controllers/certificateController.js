@@ -5,6 +5,8 @@ const Module = require("../models/Module");
 const User = require("../models/User");
 const { recordActivity } = require("../services/achievementsService");
 
+const PASS_MARK = 70;
+
 async function claimCertificate(req, res) {
   try {
     const { courseId } = req.params;
@@ -43,11 +45,15 @@ async function claimCertificate(req, res) {
     });
     const percentage = Math.round((correctCount / totalQuestions) * 100);
 
-    if (percentage < 70) {
+    // A failed attempt reports pass/fail only. Returning the exact percentage
+    // turned the endpoint into an oracle: the questions never change, so
+    // flipping one answer per attempt and watching the score move recovered
+    // the whole answer key in a few dozen requests. Attempts are also capped
+    // per account (certificateClaimLimiter).
+    if (percentage < PASS_MARK) {
       return res.json({
         passed: false,
-        averageScore: percentage,
-        message: "Average score must be at least 70% to claim a certificate."
+        message: `You need at least ${PASS_MARK}% to earn the certificate.`
       });
     }
 
@@ -75,7 +81,7 @@ async function claimCertificate(req, res) {
         certificate.averageScore = percentage;
       }
       // Update passed flag and answers if newly passed
-      if (percentage >= 70) {
+      if (percentage >= PASS_MARK) {
         certificate.passed = true;
         certificate.answers = answers;
       }
@@ -85,7 +91,7 @@ async function claimCertificate(req, res) {
     // Ensure the course records the earned certificate ID for easy lookup
     await Course.updateOne({ _id: courseId }, { $set: { earnedCertificateId: certificate.certificateId } });
 
-    if (percentage >= 70 && !wasPassed) {
+    if (percentage >= PASS_MARK && !wasPassed) {
       await recordActivity(userId, "COMPLETED_COURSE", "Course", courseId, { title: course.title, certificateId: certificate.certificateId });
     }
 

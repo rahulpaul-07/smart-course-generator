@@ -11,13 +11,13 @@ const {
 } = require("../../controllers/courseController");
 const { verifyAuth0Token } = require("../../middlewares/auth0Auth");
 const { validateRequest } = require("../../middlewares/validateRequest");
-const { generateCourseSchema, generateLessonSchema } = require("../../validations/courseValidation");
+const { generateCourseSchema } = require("../../validations/courseValidation");
 const { aiLimiter } = require("../../middlewares/rateLimit");
 
 const router = Router();
 const { courseGenLimiter, lessonEnrichLimiter, practiceLabLimiter, askAiLimiter } = require("../../middlewares/aiRateLimiters");
 const validateObjectIds = require("../../middlewares/validateObjectIds");
-router.use(validateObjectIds);
+validateObjectIds(router);
 
 router.use(verifyAuth0Token); // Ensure user is authenticated via Auth0
 

@@ -1,7 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const validateObjectIds = require("../middlewares/validateObjectIds");
-router.use(validateObjectIds);
 const { verifyAuth0Token } = require("../middlewares/auth0Auth");
 const { getDashboard, recordStudyTime } = require("../controllers/analyticsController");
 

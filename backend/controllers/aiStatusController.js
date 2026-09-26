@@ -40,6 +40,23 @@ function describeChain() {
  * showed as "closed" -- healthy -- while 100% of its calls returned 404. That
  * is exactly how production generation broke unnoticed in September 2026.
  */
+/**
+ * Raw provider error text can carry account, quota and request details. This
+ * endpoint is public, so it reports only what kind of failure happened.
+ */
+function publicReason(reason) {
+  if (!reason) return null;
+  const text = String(reason).toLowerCase();
+  if (text.includes("model_not_found") || text.includes("does not exist") || text.startsWith("404")) return "model_not_found";
+  if (text.includes("timeout") || text.includes("timed out") || text.includes("abort")) return "timeout";
+  if (text.includes("429") || text.includes("rate limit") || text.includes("quota") || text.includes("exhausted")) return "rate_limited";
+  if (text.includes("401") || text.includes("403") || text.includes("api key") || text.includes("unauthorized")) return "auth_error";
+  if (text.includes("json") || text.includes("validation") || text.includes("malformed") || text.includes("empty")) return "invalid_output";
+  if (/\b5\d\d\b/.test(text) || text.includes("unavailable") || text.includes("overloaded")) return "server_error";
+  if (text.includes("fetch failed") || text.includes("econn") || text.includes("network") || text.includes("enotfound")) return "network_error";
+  return "error";
+}
+
 function classifyHealth(entry, s, recent) {
   if (!entry.configured) return { status: "unconfigured", message: `${entry.envVar} is not set.` };
   const last = recent.find((r) => r.provider === entry.provider && r.model === entry.model);
@@ -49,7 +66,7 @@ function classifyHealth(entry, s, recent) {
   }
   const total = s.success + s.failure;
   if (total >= 3 && s.success === 0) {
-    return { status: "failing", message: `All ${total} recent calls failed. Last error: ${last?.reason || "unknown"}` };
+    return { status: "failing", message: `All ${total} recent calls failed. Last error: ${publicReason(last?.reason) || "unknown"}` };
   }
   return { status: total === 0 ? "idle" : "ok", message: null };
 }
@@ -139,7 +156,7 @@ async function getAiStatus(req, res) {
       generatedAt: new Date().toISOString(),
       anyProviderConfigured: providers.some((p) => p.configured),
       providers,
-      recent,
+      recent: recent.map((event) => ({ ...event, reason: publicReason(event.reason) })),
       summary: {
         requests: recent.length,
         failovers,
@@ -151,4 +168,4 @@ async function getAiStatus(req, res) {
   }
 }
 
-module.exports = { getAiStatus, describeChain };
+module.exports = { getAiStatus, describeChain, publicReason };

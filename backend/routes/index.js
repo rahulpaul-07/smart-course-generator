@@ -1,7 +1,6 @@
 const { Router } = require("express");
 const courseRoutes = require("./courses/courseRoutes");
 const userRoutes = require("./user");
-const explanationsRoutes = require("./explanations");
 const certificateRoutes = require("./certificates");
 const authRoutes = require("./auth");
 const analyticsRoutes = require("./analytics");
@@ -22,7 +21,6 @@ router.get("/public/courses/:shareId", getPublicCourse);
 router.use("/dashboard", dashboardRoutes);
 router.use("/courses", courseRoutes);
 router.use("/user", userRoutes);
-router.use("/explanations", explanationsRoutes);
 router.use("/certificates", certificateRoutes);
 router.use("/auth", authRoutes);
 router.use("/analytics", analyticsRoutes);

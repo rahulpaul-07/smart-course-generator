@@ -66,4 +66,43 @@ const demoLimiter = rateLimit({
   message: createErrorResponse("Too many demo sessions from this network. Please sign up instead."),
 });
 
-module.exports = { apiLimiter, authLimiter, aiLimiter, communityLimiter, demoLimiter };
+// Failed logins per target account, independent of the caller's IP. IP-keyed
+// limits alone can be sidestepped by rotating addresses (or a forged
+// X-Forwarded-For when the API is reachable around its proxy), so password
+// guessing against one account is capped here regardless of source.
+const loginAccountLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 10,
+  skipSuccessfulRequests: true,
+  keyGenerator: (req) => `login:${String(req.body?.email || "").trim().toLowerCase()}`,
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: skipInTest,
+  message: createErrorResponse("Too many failed sign-in attempts for this account. Try again in an hour."),
+});
+
+// Backstop for the per-IP demo limit: guest accounts created per hour across
+// all callers, so address rotation cannot mint them without bound.
+const demoGlobalLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 120,
+  keyGenerator: () => "demo:global",
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: skipInTest,
+  message: createErrorResponse("The demo is busy right now. Please try again later or create a free account."),
+});
+
+// Final-test submissions, per account. Generous for a learner retrying after
+// review, far too few to search the answer space one flip at a time.
+const certificateClaimLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 5,
+  keyGenerator: (req) => require("./aiRateLimiters").aiKey(req),
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: skipInTest,
+  message: createErrorResponse("Too many test attempts. Review the course and try again in an hour."),
+});
+
+module.exports = { apiLimiter, authLimiter, loginAccountLimiter, aiLimiter, communityLimiter, demoLimiter, demoGlobalLimiter, certificateClaimLimiter };

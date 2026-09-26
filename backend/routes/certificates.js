@@ -1,15 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const validateObjectIds = require("../middlewares/validateObjectIds");
-router.use(validateObjectIds);
+validateObjectIds(router);
 const { verifyAuth0Token } = require('../middlewares/auth0Auth');
 const certificateController = require('../controllers/certificateController');
+const { certificateClaimLimiter } = require('../middlewares/rateLimit');
 
 // Public route to view certificate
 router.get('/:certificateId', certificateController.getCertificate);
 
 // Protected route to claim certificate
-router.post('/claim/:courseId', verifyAuth0Token, certificateController.claimCertificate);
+router.post('/claim/:courseId', verifyAuth0Token, certificateClaimLimiter, certificateController.claimCertificate);
 
 // Protected route to get user's certificates
 router.get('/mine/all', verifyAuth0Token, certificateController.getMyCertificates);

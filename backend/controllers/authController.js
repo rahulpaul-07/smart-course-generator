@@ -11,7 +11,10 @@ const {
 const { isDemoEnabled, createDemoUser, purgeExpiredDemoUsers } = require("../services/demoService");
 
 const REFRESH_COOKIE = "refreshToken";
-const ACCESS_COOKIE = "token"; // kept for the cookie fallback in verifyAuth0Token
+// Legacy access-token cookie. No longer issued (the access token is Bearer-only,
+// so cookie-authenticated cross-site requests are impossible), but still
+// cleared on logout for browsers that hold one from an older session.
+const LEGACY_ACCESS_COOKIE = "token";
 
 function isProd() {
   return process.env.NODE_ENV === "production";
@@ -34,19 +37,8 @@ function setRefreshCookie(res, value) {
   });
 }
 
-function setAccessCookie(res, token) {
-  // Short-lived; primarily for non-Bearer clients. The Bearer access token in
-  // the response body is the primary credential for the SPA.
-  res.cookie(ACCESS_COOKIE, token, {
-    httpOnly: true,
-    secure: isProd(),
-    sameSite: "lax",
-    maxAge: 30 * 60 * 1000, // 30 minutes
-  });
-}
-
 function clearAuthCookies(res) {
-  res.cookie(ACCESS_COOKIE, "", { httpOnly: true, expires: new Date(0) });
+  res.cookie(LEGACY_ACCESS_COOKIE, "", { httpOnly: true, expires: new Date(0) });
   res.cookie(REFRESH_COOKIE, "", { httpOnly: true, path: "/api/auth", expires: new Date(0) });
 }
 
@@ -55,7 +47,6 @@ async function issueSession(res, user) {
   const accessToken = signAccessToken(user._id);
   const refreshValue = await issueRefreshToken(user._id);
   setRefreshCookie(res, refreshValue);
-  setAccessCookie(res, accessToken);
   return accessToken;
 }
 
@@ -122,7 +113,6 @@ async function refresh(req, res) {
     }
     const accessToken = signAccessToken(user._id);
     setRefreshCookie(res, refreshValue);
-    setAccessCookie(res, accessToken);
     res.json(userPayload(user, accessToken));
   } catch (err) {
     clearAuthCookies(res);
@@ -156,9 +146,32 @@ async function auth0Sync(req, res) {
 }
 
 const { OAuth2Client } = require("google-auth-library");
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID || "dummy_client_id");
+const googleClient = new OAuth2Client();
+
+// Google OAuth web client IDs look like "<project number>-<id>.apps.googleusercontent.com".
+const GOOGLE_CLIENT_ID_PATTERN = /^\d+-[a-z0-9]+\.apps\.googleusercontent\.com$/;
+
+/**
+ * The configured Google client ID, or null when it is missing or malformed.
+ *
+ * verifyIdToken skips the audience check entirely when `audience` is
+ * undefined, so with no client ID configured it accepted an ID token issued to
+ * *any* Google app -- a token a third-party site received could be replayed
+ * here to sign in as that user. Google sign-in must therefore be off unless a
+ * well-formed client ID is set.
+ */
+function getGoogleClientId() {
+  const clientId = (process.env.GOOGLE_CLIENT_ID || "").trim();
+  return GOOGLE_CLIENT_ID_PATTERN.test(clientId) ? clientId : null;
+}
 
 async function googleLogin(req, res) {
+  const clientId = getGoogleClientId();
+  if (!clientId) {
+    res.status(404);
+    throw new Error("Google sign-in is not enabled on this server");
+  }
+
   const { token } = req.body;
   if (!token) {
     res.status(400);
@@ -167,7 +180,7 @@ async function googleLogin(req, res) {
 
   let payload;
   try {
-    const ticket = await client.verifyIdToken({ idToken: token, audience: process.env.GOOGLE_CLIENT_ID });
+    const ticket = await googleClient.verifyIdToken({ idToken: token, audience: clientId });
     payload = ticket.getPayload();
   } catch (verifyError) {
     res.status(401);
@@ -240,7 +253,7 @@ async function claimGuest(req, res) {
 function authConfig(req, res) {
   res.json({
     demo: isDemoEnabled(),
-    google: Boolean(process.env.GOOGLE_CLIENT_ID),
+    google: Boolean(getGoogleClientId()),
     auth0: Boolean(process.env.AUTH0_DOMAIN),
   });
 }
