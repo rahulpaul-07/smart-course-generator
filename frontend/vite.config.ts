@@ -42,6 +42,9 @@ export default defineConfig({
     headers: productionHeaders(),
   },
   build: {
+    // The one chunk above the 500 kB default is html2pdf (~735 kB), which is
+    // only fetched by a dynamic import when the user exports a lesson PDF.
+    chunkSizeWarningLimit: 800,
     rolldownOptions: {
       output: {
         // Stable vendor chunks: app deploys don't invalidate the cached

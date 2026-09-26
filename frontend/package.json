@@ -80,6 +80,6 @@
   "author": "Rahul Paul",
   "license": "MIT",
   "engines": {
-    "node": ">=22"
+    "node": "24.x"
   }
 }
