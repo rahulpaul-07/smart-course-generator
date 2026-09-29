@@ -87,7 +87,7 @@ export function LandingHero() {
                 className="inline-flex items-center gap-2 font-medium text-foreground underline underline-offset-4 disabled:opacity-60"
               >
                 {starting && <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />}
-                <span aria-live="polite">{waking ? 'Waking the server, up to 30s…' : 'Try the demo without signing up'}</span>
+                <span aria-live="polite">{waking ? 'Waking the server, up to a minute…' : 'Try the demo without signing up'}</span>
               </button>
             ) : (
               <Link to="/signup" className="font-medium text-foreground underline underline-offset-4">

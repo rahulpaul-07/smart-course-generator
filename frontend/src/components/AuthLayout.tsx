@@ -77,7 +77,7 @@ export default function AuthLayout({ children, title, description, footer, eyebr
               className="mt-4 inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-dashed border-border text-sm text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground disabled:opacity-60"
             >
               {starting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-              <span aria-live="polite">{waking ? 'Waking the server, up to 30s…' : 'Just looking? Try a guest account'}</span>
+              <span aria-live="polite">{waking ? 'Waking the server, up to a minute…' : 'Just looking? Try a guest account'}</span>
               {!starting && <ArrowUpRight className="h-3.5 w-3.5" />}
             </button>
           )}

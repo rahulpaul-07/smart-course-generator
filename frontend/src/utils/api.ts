@@ -7,8 +7,24 @@ declare module 'axios' {
   export interface InternalAxiosRequestConfig {
     metadata?: { key: string };
     _retry?: boolean;
+    _wakeAttempt?: number;
   }
 }
+
+// --- Free-tier cold start ----------------------------------------------------
+// While the Render instance is asleep, Render's router answers proxied requests
+// itself with 429 and `X-Render-Routing: hibernate-rate-limited`. The request
+// never reached the API, so it is safe to replay (POSTs included) and it is not
+// the API's own rate limit. Without this, a first-time visitor got several
+// "Rate limit exceeded" toasts on the landing page and "Try the demo" failed.
+// The delays add up to about a minute, the longest a cold start takes.
+export const WAKE_RETRY_DELAYS_MS = [1500, 3000, 5000, 8000, 12000, 15000, 15000];
+
+export function isRenderWaking(status: number | undefined, routing: unknown): boolean {
+  return status === 429 && typeof routing === 'string' && routing.startsWith('hibernate');
+}
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // The API is served same-origin under /api: Vite proxies it in dev and preview,
 // and the host rewrites it in production (frontend/vercel.json). Same-origin is
@@ -137,7 +153,12 @@ export async function authFetch(path: string, init: RequestInit = {}): Promise<R
       },
     });
 
-  const response = await send(localStorage.getItem('token'));
+  let response = await send(localStorage.getItem('token'));
+  for (const delay of WAKE_RETRY_DELAYS_MS) {
+    if (!isRenderWaking(response.status, response.headers.get('x-render-routing'))) break;
+    await sleep(delay);
+    response = await send(localStorage.getItem('token'));
+  }
   if (response.status !== 401) return response;
 
   const fresh = await refreshAccessToken();
@@ -163,8 +184,22 @@ api.interceptors.response.use(
   async (error) => {
     if (error.isDuplicate) return Promise.reject(error);
 
-    // 401 -> attempt a one-shot token refresh, then replay the original request.
     const original = error.config;
+
+    // Cold start: wait for the instance to wake and replay (see WAKE_RETRY_DELAYS_MS).
+    const waking = isRenderWaking(error.response?.status, error.response?.headers?.['x-render-routing']);
+    if (waking && original) {
+      const attempt = original._wakeAttempt ?? 0;
+      if (attempt < WAKE_RETRY_DELAYS_MS.length) {
+        original._wakeAttempt = attempt + 1;
+        // The replay goes back through the request interceptor's duplicate guard.
+        releaseDedupLock(original);
+        await sleep(WAKE_RETRY_DELAYS_MS[attempt]);
+        return api(original);
+      }
+    }
+
+    // 401 -> attempt a one-shot token refresh, then replay the original request.
     const url: string = original?.url || '';
     const isAuthRoute = url.includes('/auth/refresh') || url.includes('/auth/login') || url.includes('/auth/register');
     if (error.response?.status === 401 && original && !original._retry && !isAuthRoute) {
@@ -211,6 +246,8 @@ api.interceptors.response.use(
       // Global toasts for specific status codes
       if (status === 403) {
         toast.error('You do not have permission to perform this action.');
+      } else if (waking) {
+        toast.error('The demo server is still waking up. Please try again in a minute.');
       } else if (status === 429) {
         toast.error('Rate limit exceeded. Please wait a moment and try again.');
       }
