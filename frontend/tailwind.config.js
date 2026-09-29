@@ -34,6 +34,8 @@ export default {
         sans: ['Geist', 'system-ui', 'sans-serif'],
         display: ['Geist', 'system-ui', 'sans-serif'],
         serif: ['Georgia', 'serif'],
+        // One italic accent phrase per landing headline.
+        accent: ['"Instrument Serif"', 'Georgia', 'serif'],
         mono: ['"Geist Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
       },
       colors: {

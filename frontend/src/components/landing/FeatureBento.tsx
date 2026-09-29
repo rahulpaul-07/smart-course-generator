@@ -4,6 +4,7 @@ import { BadgeCheck, Bot, Brain, Layers, Map, MessagesSquare, Network, ShieldChe
 import { AnimatedBeam } from '@/components/magicui/animated-beam';
 import { BentoCard, BentoGrid } from '@/components/magicui/bento-grid';
 import { cn } from '@/lib/utils';
+import { Accent } from './Accent';
 
 /* ── Router failover ─────────────────────────────────────────────────── */
 const PROVIDERS = ['Gemini', 'Groq', 'OpenRouter'];
@@ -200,7 +201,7 @@ export function FeatureBento() {
     <section id="features" className="scroll-mt-24 border-b border-border py-20 sm:py-28">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="max-w-2xl">
-          <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">What happens after the outline</h2>
+          <h2 className="text-balance text-3xl font-semibold tracking-tight sm:text-4xl">What happens <Accent>after</Accent> the outline</h2>
           <p className="mt-4 text-muted-foreground">
             A curriculum is only the start. Each lesson comes with ways to check you understood it.
           </p>

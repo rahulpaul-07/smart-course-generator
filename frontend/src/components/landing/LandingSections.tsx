@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { GithubIcon } from '@/components/brand/GithubIcon';
 import { cn } from '@/lib/utils';
 import { GITHUB_URL } from './LandingNav';
+import { Accent } from './Accent';
 
 /* ── How it works ────────────────────────────────────────────────────── */
 const STEPS = [
@@ -17,7 +18,7 @@ export function HowItWorks() {
   return (
     <section id="how-it-works" className="scroll-mt-24 border-b border-border py-20 sm:py-28">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <h2 className="max-w-2xl text-3xl font-semibold tracking-tight sm:text-4xl">From a sentence to a syllabus</h2>
+        <h2 className="max-w-2xl text-balance text-3xl font-semibold tracking-tight sm:text-4xl">From a sentence <Accent>to a syllabus</Accent></h2>
         <ol className="mt-12 grid gap-10 md:grid-cols-3 md:gap-8">
           {STEPS.map((s) => (
             <li key={s.n} className="border-t border-border pt-6">
@@ -67,7 +68,7 @@ export function EngineeringSection() {
     <section id="engineering" className="scroll-mt-24 border-b border-border bg-card/40 py-20 sm:py-28">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="max-w-2xl">
-          <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">Built for when the model is slow, wrong or down</h2>
+          <h2 className="text-balance text-3xl font-semibold tracking-tight sm:text-4xl">Built for when the model is <Accent>slow, wrong or down</Accent></h2>
           <p className="mt-4 text-muted-foreground">
             Calling a model is the easy part. Most of this codebase handles failures: retries, failover, validation and
             streams that survive long generations.
@@ -124,7 +125,7 @@ export function FAQ() {
     <section id="faq" className="scroll-mt-24 border-b border-border py-20 sm:py-28">
       <div className="mx-auto grid max-w-6xl gap-12 px-4 sm:px-6 lg:grid-cols-[1fr_1.4fr]">
         <div>
-          <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">Questions</h2>
+          <h2 className="text-balance text-3xl font-semibold tracking-tight sm:text-4xl">Questions, <Accent>answered</Accent></h2>
           <p className="mt-4 text-muted-foreground">
             Something else? <a href={`${GITHUB_URL}/issues`} target="_blank" rel="noopener noreferrer" className="text-foreground underline underline-offset-4">Open an issue</a>.
           </p>
@@ -170,7 +171,7 @@ export function FinalCTA() {
     <section className="py-20 sm:py-28">
       <div className="mx-auto flex max-w-6xl flex-col items-start gap-8 px-4 sm:px-6 md:flex-row md:items-end md:justify-between">
         <div className="max-w-xl">
-          <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">What do you want to learn next?</h2>
+          <h2 className="text-balance text-3xl font-semibold tracking-tight sm:text-4xl">What do you want to learn <Accent>next?</Accent></h2>
           <p className="mt-4 text-muted-foreground">Your first course is one sentence away.</p>
         </div>
         <div className="flex flex-col gap-3 sm:flex-row">

@@ -6,6 +6,7 @@ import { DotPattern } from '@/components/magicui/dot-pattern';
 import { useAuthConfig } from '@/hooks/useAuthConfig';
 import { useDemoLogin } from '@/hooks/useDemoLogin';
 import { setPendingPrompt } from '@/lib/pendingPrompt';
+import { Accent } from './Accent';
 import { RouterStatusLink } from './RouterStatusLink';
 import { StreamingDemo } from './StreamingDemo';
 
@@ -38,7 +39,7 @@ export function LandingHero() {
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="max-w-3xl">
           <h1 className="text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-6xl lg:text-7xl">
-            Describe a topic. Get a course you can work through.
+            Describe a topic. Get a course you can <Accent className="text-primary">work through.</Accent>
           </h1>
           <p className="mt-6 max-w-2xl text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">
             CourseAI plans the curriculum, streams each lesson as it is written, then tests you with quizzes,

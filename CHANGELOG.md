@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Cold-start handling
+- **First visit while the API sleeps:** Render answers requests to a sleeping free-tier instance itself, with 429 and `X-Render-Routing: hibernate-rate-limited`. Through the Vercel rewrite that reached the SPA as a plain 429, so the landing page showed several "Rate limit exceeded" toasts and "Try the demo" failed. Those responses never reached the API, so the client now waits and replays them (POSTs included) for about a minute, and says the demo server is waking if it is still asleep. The API's own 429s are unchanged. Pinned by tests that fail without the fix.
+- The demo button now says the wake can take up to a minute, matching the retry window.
+
+### Landing typography
+- One italic serif accent phrase (Instrument Serif) per landing headline, in the text colour rather than a gradient, matching the author's portfolio and project pages. Headlines are balanced so no word sits on a line alone.
+
 ### Submission-readiness audit
 - **Sessions:** the SPA now calls the API same-origin (`/api`, proxied by Vercel and Vite). The refresh cookie never reached the cross-site API, so sessions ended at access-token expiry. Requests are Bearer-only (no access-token cookie); refresh rotation is atomic with a 10 s grace for parallel tabs.
 - **Authorization:** another user's lesson now returns 403/404 instead of 500 (the error handler ignored `err.statusCode`). ObjectId validation now actually runs (`router.param`; the `router.use` version never saw route params).
