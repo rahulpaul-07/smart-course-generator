@@ -12,6 +12,14 @@ const createErrorResponse = (message) => ({
   }
 });
 
+// Health probes answer in constant time and are called by the platform's health
+// checks, uptime monitors and the keep-warm workflow, often from shared IPs.
+// Counting them against the per-IP API budget throttled those callers, and made
+// a load test of the running API measure the limiter instead of the server.
+// Paths are relative to the "/api" mount.
+const HEALTH_PATHS = new Set(["/health", "/health/liveness", "/health/readiness"]);
+const isHealthProbe = (req) => req.method === "GET" && HEALTH_PATHS.has(req.path);
+
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   // A single dashboard load fans out to ~8 queries, so 100/15min locked out
@@ -19,7 +27,7 @@ const apiLimiter = rateLimit({
   max: 600,
   standardHeaders: true,
   legacyHeaders: false,
-  skip: skipInTest,
+  skip: (req) => skipInTest() || isHealthProbe(req),
   message: createErrorResponse("Too many requests from this IP, please try again after 15 minutes.")
 });
 
@@ -105,4 +113,4 @@ const certificateClaimLimiter = rateLimit({
   message: createErrorResponse("Too many test attempts. Review the course and try again in an hour."),
 });
 
-module.exports = { apiLimiter, authLimiter, loginAccountLimiter, aiLimiter, communityLimiter, demoLimiter, demoGlobalLimiter, certificateClaimLimiter };
+module.exports = { apiLimiter, authLimiter, loginAccountLimiter, aiLimiter, communityLimiter, demoLimiter, demoGlobalLimiter, certificateClaimLimiter, isHealthProbe };
