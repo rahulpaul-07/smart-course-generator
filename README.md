@@ -114,9 +114,10 @@ The web app calls the API on its own origin under `/api`; Vite proxies that to `
 | Coverage | `npm run test:coverage` (backend) | Both suites with a coverage floor that fails the build if coverage drops. |
 | UI | `npm test` (frontend) | Components, token refresh/retry, theme, pending-prompt handoff, legal pages. |
 | End-to-end | `npm run e2e` (frontend) | Playwright against the real API behind the same `/api` proxy and security headers as production: landing, auth and return-to-page, session refresh, guest journey through a lesson with no CSP violations, interview session, phone layouts of public and signed-in pages. |
-| Evals | `npm run eval` (backend) | Output contract in mock mode (CI); coverage and faithfulness scores with a provider key. |
+| Evals | `npm run eval` (backend) | LLM-as-judge harness. Without a key it checks the output contract (mock mode) and fails below 90% structural validity. On pushes to main with a provider key set as a repository secret, CI also fails the build when faithfulness drops below `EVAL_FAIL_UNDER` (default 0.6). |
+| Load | `npm run load-test` (backend) | autocannon against the running API on in-memory MongoDB (liveness and readiness probes, 25 connections). Fails on any error or non-2xx response, or a p99 over `MAX_P99_MS` (250 ms in CI). |
 
-Every gate (lint, types, all test suites with the coverage floor, dependency audit, evals, build, E2E) runs in CI on each push and pull request.
+Every gate (lint, types, all test suites with the coverage floor, dependency audit, evals, build, E2E, load test) runs in CI on each push and pull request.
 
 ## Security
 

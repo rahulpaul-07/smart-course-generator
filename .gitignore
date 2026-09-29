@@ -41,3 +41,4 @@ tmp/
 temp/
 
 .claude/
+perf/results-*.json

@@ -100,7 +100,7 @@ jobs:
         run: npm audit --audit-level=high
 
   evals-smoke:
-    name: AI Eval Harness (smoke)
+    name: AI Eval Harness
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -117,7 +117,18 @@ jobs:
         working-directory: ./backend
         run: npm ci
 
-      - name: Run Eval Harness (mock mode)
+      # Without a provider key this is the mock-mode contract check: the build
+      # fails if structural validity drops below 90%. On pushes to main, with a
+      # key set as a repository secret, it becomes the LLM-as-judge quality gate:
+      # the build also fails if faithfulness falls below FAIL_UNDER (repository
+      # variable EVAL_FAIL_UNDER, default 0.6). Pull requests stay in mock mode so
+      # a provider outage cannot block a review.
+      - name: Run Eval Harness
+        env:
+          GEMINI_API_KEY: ${{ github.event_name == 'push' && secrets.GEMINI_API_KEY || '' }}
+          GROQ_API_KEY: ${{ github.event_name == 'push' && secrets.GROQ_API_KEY || '' }}
+          OPENROUTER_API_KEY: ${{ github.event_name == 'push' && secrets.OPENROUTER_API_KEY || '' }}
+          FAIL_UNDER: ${{ vars.EVAL_FAIL_UNDER || '0.6' }}
         run: node evals/runEvals.js
 
       - name: Upload Eval Scorecard
@@ -160,4 +171,60 @@ jobs:
         with:
           name: playwright-report
           path: frontend/playwright-report
+          retention-days: 7
+
+  load-test:
+    name: Load test (autocannon, real API on in-memory MongoDB)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+    env:
+      TARGET: http://localhost:8000
+      DURATION: "10"
+      CONNECTIONS: "25"
+      # Generous for a shared runner; the gate is for regressions, not a benchmark.
+      MAX_P99_MS: "250"
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js (LTS)
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: './backend/package-lock.json'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Start the API
+        run: |
+          nohup node scripts/dev_memory.js > ../perf/server.log 2>&1 &
+          for i in $(seq 1 60); do
+            curl -sf "$TARGET/api/health/readiness" > /dev/null && exit 0
+            sleep 2
+          done
+          echo "API did not become ready"; cat ../perf/server.log; exit 1
+
+      # Each step fails on any error, timeout or non-2xx, or a p99 over budget.
+      - name: Load test the liveness probe
+        env:
+          PATH_UNDER_TEST: /api/health/liveness
+        run: npm run load-test
+
+      - name: Load test the readiness probe (database connection state)
+        env:
+          PATH_UNDER_TEST: /api/health/readiness
+        run: npm run load-test
+
+      - name: Upload Load Test Results
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: load-test-results
+          path: |
+            perf/results-*.json
+            perf/server.log
           retention-days: 7

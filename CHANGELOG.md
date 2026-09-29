@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Load test and quality gate in CI
+- **Load test in CI:** a new job starts the API on in-memory MongoDB and runs autocannon against the liveness and readiness probes. It fails on any connection error, timeout or non-2xx response, or a p99 over 250 ms. `perf/load-test.js` could not find autocannon at all (a bare `require` from `perf/` never looks in `backend/node_modules`), had no pass/fail criteria, and documented `PATH=` for the path under test, which would have overwritten the shell's `PATH`. autocannon is now a backend devDependency; its nested `uuid` is pinned to 11.1.1 for GHSA-w5hq-g745-h8pq.
+- **Health probes are exempt from the per-IP API limit.** Health checks, uptime monitors and the keep-warm job counted against the 600-requests-per-15-minutes budget, and a load test from one IP measured only 429s. The rest of the API is limited as before; a test shows both.
+- **Eval quality gate:** on pushes to main, the eval job now receives the provider keys when they are configured as repository secrets, so the LLM-as-judge faithfulness gate (`EVAL_FAIL_UNDER`, default 0.6) can fail the build. Without keys, and on pull requests, it remains the mock-mode contract check.
+
 ### Cold-start handling
 - **First visit while the API sleeps:** Render answers requests to a sleeping free-tier instance itself, with 429 and `X-Render-Routing: hibernate-rate-limited`. Through the Vercel rewrite that reached the SPA as a plain 429, so the landing page showed several "Rate limit exceeded" toasts and "Try the demo" failed. Those responses never reached the API, so the client now waits and replays them (POSTs included) for about a minute, and says the demo server is waking if it is still asleep. The API's own 429s are unchanged. Pinned by tests that fail without the fix.
 - The demo button now says the wake can take up to a minute, matching the retry window.
