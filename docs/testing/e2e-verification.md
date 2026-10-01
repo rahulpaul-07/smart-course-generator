@@ -2,30 +2,54 @@
 
 **Product:** CourseAI
 
-This document describes the automated test coverage that actually exists in this repository, rather than a manual QA sign-off. No dedicated end-to-end (browser-driven) test suite exists yet — this document previously implied otherwise and has been rewritten.
+What the automated tests in this repository cover, and what they do not. Every job below is
+defined in [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml) and runs on each push and
+pull request to `main` that changes code (Markdown-only changes are skipped). A failure in any
+job fails the run.
 
-## Automated CI checks
+## CI jobs
 
-Every push and pull request to `main` runs the jobs defined in [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml):
+| Job | What it runs |
+|---|---|
+| Frontend CI | `npm audit --audit-level=high`, ESLint, the `tsc -b` type check, Vitest + React Testing Library unit and component tests, and the production Vite build |
+| Backend CI | ESLint, unit tests with no database (`npm run test:unit`), then unit and integration tests against an in-memory MongoDB with the coverage floor set in `backend/jest.config.js` (`npm run test:coverage`), and `npm audit --audit-level=high` |
+| AI Eval Harness | `evals/runEvals.js`. Without a provider key it checks the output contract (mock mode) and fails below 90% structural validity. On pushes to `main`, with a key set as a repository secret, it also fails when LLM-as-judge faithfulness drops below `EVAL_FAIL_UNDER` (default 0.6). Pull requests stay in mock mode, so a provider outage cannot block a review. The scorecard is uploaded as `evals/report.md`. |
+| E2E | Playwright against the real stack: the production build served by `vite preview`, calling the Express API on an in-memory MongoDB through the same `/api` proxy as production. No external services or API keys are needed; the AI router runs in its deterministic mock mode. The HTML report is uploaded as an artifact. |
+| Load test | autocannon against the liveness and readiness probes (25 connections, 10 s each). Fails on any error, timeout or non-2xx response, or a p99 above 250 ms. |
 
-**Frontend CI** (`frontend/`)
-- `npm run lint` — ESLint
-- `npm run typecheck` — full `tsc -b` project build
-- `npm run test` — Vitest + React Testing Library unit/component tests
-- `npm run build` — production Vite build
+A separate workflow, [`codeql.yml`](../../.github/workflows/codeql.yml), runs CodeQL analysis on
+the JavaScript and TypeScript code.
 
-**Backend CI** (`backend/`)
-- `npm run lint` — ESLint
-- `npm run test` — Jest + Supertest, run against an in-memory MongoDB instance (`mongodb-memory-server`)
+## End-to-end tests
 
-Both jobs must pass before a PR can be merged.
+Two Playwright specs in [`frontend/e2e/`](../../frontend/e2e), run in Chromium:
 
-## What's covered vs. not
+- **`smoke.spec.ts`** (desktop viewport): the landing page explains the product and routes to
+  sign-up; a topic typed on the landing page survives the sign-up detour; the router status and
+  eval pages are public; unknown routes show the 404 page; wrong credentials keep you on the login
+  page with an error; protected routes redirect anonymous visitors to login; signing in returns
+  you to the page that asked for it; sign-up creates an account and starts onboarding; a guest
+  lands on a dashboard with a ready course and reads a lesson with no Content-Security-Policy
+  violations; the session can be refreshed from the browser; and the interview session is usable
+  at laptop width with submit reachable from every section.
+- **`responsive.spec.ts`** (Pixel 7 viewport): no horizontal scroll on `/`, `/login`, `/signup`,
+  `/status` or the signed-in pages, and the mobile menu opens and links to its sections.
 
-- Backend: Jest + Supertest tests exercise controllers/routes against a real (in-memory) MongoDB, covering request validation, auth, and core business logic paths.
-- Frontend: Vitest + Testing Library tests cover components and hooks in isolation.
-- Not covered by automation: full browser-driven end-to-end flows (e.g. signup → generate a course → complete a lesson → earn a certificate). These have been exercised manually during development, but no pass/fail results from a formal manual QA pass are tracked here, and none should be assumed.
+Run them locally with `npm run e2e` in `frontend/`. The Playwright config starts the API
+(`npm run dev:memory`) and the preview server itself.
 
-## Screenshots / demo
+## What is not covered
 
-No screenshots or recorded demo currently exist for this project — see the "Screenshots" section in the root [`README.md`](../../README.md).
+- **Real model output.** The E2E suite runs the AI router in its mock mode, and the backend tests
+  replace the providers with Jest mocks, so neither calls a live model. Generation quality is
+  measured only by the eval harness, which calls a live model on pushes to `main` when a key is
+  configured (see [`evals/report.md`](../../evals/report.md)).
+- **Completing a course and earning a certificate in a browser.** Certificates are covered by the
+  backend integration tests, not by a Playwright test.
+- **Browsers other than Chromium.**
+- **Load on anything but the health probes.** The load test does not exercise course generation.
+
+## Screenshots
+
+Screenshots of the landing, dashboard, course, lesson, interview and router-status pages are in
+[`docs/screenshots/`](../screenshots).
